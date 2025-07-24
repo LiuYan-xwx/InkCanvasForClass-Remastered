@@ -1,5 +1,7 @@
 ﻿using Hardcodet.Wpf.TaskbarNotification;
 using InkCanvasForClass_Remastered.Helpers;
+using InkCanvasForClass_Remastered.Services;
+using InkCanvasForClass_Remastered.Services.InkCanvasForClass_Remastered.Services;
 using iNKORE.UI.WPF.Modern.Controls;
 using System.Reflection;
 using System.Windows;
@@ -16,6 +18,8 @@ namespace InkCanvasForClass_Remastered
 
         public static string[] StartArgs = null;
         public static string RootPath = Environment.GetEnvironmentVariable("APPDATA") + "\\Ink Canvas\\";
+
+        public static ISettingsService SettingsService { get; private set; }
 
         public App()
         {
@@ -34,6 +38,7 @@ namespace InkCanvasForClass_Remastered
 
         void App_Startup(object sender, StartupEventArgs e)
         {
+            SettingsService = new SettingsService();
             /*if (!StoreHelper.IsStoreApp) */
             RootPath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
 
