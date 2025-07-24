@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Windows;
 using System.Windows.Interop;
-using System.Windows;
 
-namespace InkCanvasForClass_Remastered.Helpers {
-    internal class IsOutsideOfScreenHelper {
-        public static bool IsOutsideOfScreen(FrameworkElement target) {
+namespace InkCanvasForClass_Remastered.Helpers
+{
+    internal class IsOutsideOfScreenHelper
+    {
+        public static bool IsOutsideOfScreen(FrameworkElement target)
+        {
             var hwndSource = (HwndSource)PresentationSource.FromVisual(target);
-            if (hwndSource is null) {
+            if (hwndSource is null)
+            {
                 return true;
             }
 
@@ -20,7 +19,8 @@ namespace InkCanvasForClass_Remastered.Helpers {
             var screens = System.Windows.Forms.Screen.AllScreens;
             return !screens.Any(x => x.Bounds.IntersectsWith(targetBounds));
 
-            System.Drawing.Rectangle GetPixelBoundsToScreen(FrameworkElement visual) {
+            System.Drawing.Rectangle GetPixelBoundsToScreen(FrameworkElement visual)
+            {
                 var pixelBoundsToScreen = Rect.Empty;
                 pixelBoundsToScreen.Union(visual.PointToScreen(new Point(0, 0)));
                 pixelBoundsToScreen.Union(visual.PointToScreen(new Point(visual.ActualWidth, 0)));

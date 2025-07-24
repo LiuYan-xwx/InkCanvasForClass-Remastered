@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using System.Text;
+﻿using System.Runtime.InteropServices;
 
 // 由衷感謝 lindexi 提供的 《WPF 稳定的全屏化窗口方法》
 // 文章鏈接：https://blog.lindexi.com/post/WPF-%E7%A8%B3%E5%AE%9A%E7%9A%84%E5%85%A8%E5%B1%8F%E5%8C%96%E7%AA%97%E5%8F%A3%E6%96%B9%E6%B3%95.html
@@ -83,7 +80,7 @@ namespace InkCanvasForClass_Remastered.Helpers
                 public static extern bool GetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl);
 
                 public static IntPtr GetWindowLongPtr(IntPtr hWnd, GetWindowLongFields nIndex) =>
-                    GetWindowLongPtr(hWnd, (int) nIndex);
+                    GetWindowLongPtr(hWnd, (int)nIndex);
 
                 public static IntPtr GetWindowLongPtr(IntPtr hWnd, int nIndex)
                 {
@@ -101,7 +98,7 @@ namespace InkCanvasForClass_Remastered.Helpers
                 public static extern IntPtr GetWindowLongPtr_x64(IntPtr hWnd, int nIndex);
 
                 public static IntPtr SetWindowLongPtr(IntPtr hWnd, GetWindowLongFields nIndex, IntPtr dwNewLong) =>
-                    SetWindowLongPtr(hWnd, (int) nIndex, dwNewLong);
+                    SetWindowLongPtr(hWnd, (int)nIndex, dwNewLong);
 
                 public static IntPtr SetWindowLongPtr(IntPtr hWnd, int nIndex, IntPtr dwNewLong)
                 {
@@ -266,8 +263,8 @@ namespace InkCanvasForClass_Remastered.Helpers
             /// </summary>
             public int Width
             {
-                get { return unchecked((int) (Right - Left)); }
-                set { Right = unchecked((int) (Left + value)); }
+                get { return unchecked((int)(Right - Left)); }
+                set { Right = unchecked((int)(Left + value)); }
             }
 
             /// <summary>
@@ -275,8 +272,8 @@ namespace InkCanvasForClass_Remastered.Helpers
             /// </summary>
             public int Height
             {
-                get { return unchecked((int) (Bottom - Top)); }
-                set { Bottom = unchecked((int) (Top + value)); }
+                get { return unchecked((int)(Bottom - Top)); }
+                set { Bottom = unchecked((int)(Top + value)); }
             }
 
             public bool Equals(Rectangle other)
@@ -298,10 +295,10 @@ namespace InkCanvasForClass_Remastered.Helpers
             {
                 unchecked
                 {
-                    var hashCode = (int) Left;
-                    hashCode = (hashCode * 397) ^ (int) Top;
-                    hashCode = (hashCode * 397) ^ (int) Right;
-                    hashCode = (hashCode * 397) ^ (int) Bottom;
+                    var hashCode = (int)Left;
+                    hashCode = (hashCode * 397) ^ (int)Top;
+                    hashCode = (hashCode * 397) ^ (int)Right;
+                    hashCode = (hashCode * 397) ^ (int)Bottom;
                     return hashCode;
                 }
             }

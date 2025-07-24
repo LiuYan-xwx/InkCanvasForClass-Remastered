@@ -1,18 +1,15 @@
 ﻿using InkCanvasForClass_Remastered.Helpers;
-using Microsoft.VisualBasic;
 using iNKORE.UI.WPF.Modern.Controls;
-using System;
-using System.Collections.Generic;
+using Microsoft.VisualBasic;
 using System.IO;
-using System.Linq;
-using System.Threading;
+using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Input;
-using System.Security.Cryptography;
 using MessageBox = System.Windows.MessageBox;
 
 
-namespace InkCanvasForClass_Remastered {
+namespace InkCanvasForClass_Remastered
+{
     /// <summary>
     /// Interaction logic for RandWindow.xaml
     /// </summary>

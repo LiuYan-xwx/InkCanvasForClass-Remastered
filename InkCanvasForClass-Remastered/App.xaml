@@ -1,25 +1,44 @@
-﻿<Application x:Class="InkCanvasForClass_Remastered.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:InkCanvasForClass_Remastered"
-             xmlns:tb="http://www.hardcodet.net/taskbar"
-             xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
-             xmlns:ikw="http://schemas.inkore.net/lib/ui/wpf"
-             StartupUri="MainWindow.xaml">
+﻿<Application
+    x:Class="InkCanvasForClass_Remastered.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ikw="http://schemas.inkore.net/lib/ui/wpf"
+    xmlns:local="clr-namespace:InkCanvasForClass_Remastered"
+    xmlns:tb="http://www.hardcodet.net/taskbar"
+    xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
+    StartupUri="MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
             <Style TargetType="ui:ScrollViewerEx">
-                <EventSetter Event="PreviewMouseWheel" Handler="ScrollViewer_PreviewMouseWheel"/>
+                <EventSetter Event="PreviewMouseWheel" Handler="ScrollViewer_PreviewMouseWheel" />
             </Style>
-            <ContextMenu Opened="SysTrayMenu_Opened" x:Shared="false" x:Key="SysTrayMenu" Padding="6" ui:ThemeManager.RequestedTheme="Light">
-                <MenuItem IsCheckable="True" IsChecked="False" Checked="HideICCMainWindowTrayIconMenuItem_Checked" Unchecked="HideICCMainWindowTrayIconMenuItem_UnChecked" Name="HideICCMainWindowTrayIconMenuItem">
+            <ContextMenu
+                x:Key="SysTrayMenu"
+                Padding="6"
+                ui:ThemeManager.RequestedTheme="Light"
+                x:Shared="false"
+                Opened="SysTrayMenu_Opened">
+                <MenuItem
+                    Name="HideICCMainWindowTrayIconMenuItem"
+                    Checked="HideICCMainWindowTrayIconMenuItem_Checked"
+                    IsCheckable="True"
+                    IsChecked="False"
+                    Unchecked="HideICCMainWindowTrayIconMenuItem_UnChecked">
                     <MenuItem.Header>
-                        <ikw:SimpleStackPanel Orientation="Horizontal" Margin="-4,0,0,0">
-                            <TextBlock Name="HideICCMainWindowTrayIconMenuItemHeaderText" FontSize="14" VerticalAlignment="Center" Foreground="#18181b" Text="隐藏ICC主窗口" />
+                        <ikw:SimpleStackPanel Margin="-4,0,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                Name="HideICCMainWindowTrayIconMenuItemHeaderText"
+                                VerticalAlignment="Center"
+                                FontSize="14"
+                                Foreground="#18181b"
+                                Text="隐藏ICC主窗口" />
                         </ikw:SimpleStackPanel>
                     </MenuItem.Header>
                     <MenuItem.Icon>
-                        <Image Width="28" Height="28" Margin="-2">
+                        <Image
+                            Width="28"
+                            Height="28"
+                            Margin="-2">
                             <Image.Source>
                                 <DrawingImage>
                                     <DrawingImage.Drawing>
@@ -35,12 +54,19 @@
                 <Separator Margin="0,3" />
                 <MenuItem>
                     <MenuItem.Header>
-                        <ikw:SimpleStackPanel Orientation="Horizontal" Margin="-4,0,0,0">
-                            <TextBlock FontSize="14" VerticalAlignment="Center" Foreground="#18181b" Text="禁用所有快捷键" />
+                        <ikw:SimpleStackPanel Margin="-4,0,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="14"
+                                Foreground="#18181b"
+                                Text="禁用所有快捷键" />
                         </ikw:SimpleStackPanel>
                     </MenuItem.Header>
                     <MenuItem.Icon>
-                        <Image Width="28" Height="28" Margin="-2">
+                        <Image
+                            Width="28"
+                            Height="28"
+                            Margin="-2">
                             <Image.Source>
                                 <DrawingImage>
                                     <DrawingImage.Drawing>
@@ -55,21 +81,53 @@
                 </MenuItem>
                 <MenuItem Name="ForceFullScreenTrayIconMenuItem" Click="ForceFullScreenTrayIconMenuItem_Clicked">
                     <MenuItem.Header>
-                        <ikw:SimpleStackPanel Orientation="Horizontal" Margin="-4,0,0,0">
-                            <TextBlock FontSize="14" VerticalAlignment="Center" Foreground="#18181b" Text="强制全屏化" />
-                            <ikw:SimpleStackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="4" Margin="16,0,0,0">
-                                <Border Padding="4,2,4,1" Background="#e4e4e7" BorderBrush="#a1a1aa" BorderThickness="1" CornerRadius="2.5">
-                                    <TextBlock FontSize="8" Foreground="#3f3f46" FontWeight="Bold" Text="CTRL" />
+                        <ikw:SimpleStackPanel Margin="-4,0,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="14"
+                                Foreground="#18181b"
+                                Text="强制全屏化" />
+                            <ikw:SimpleStackPanel
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                Orientation="Horizontal"
+                                Spacing="4">
+                                <Border
+                                    Padding="4,2,4,1"
+                                    Background="#e4e4e7"
+                                    BorderBrush="#a1a1aa"
+                                    BorderThickness="1"
+                                    CornerRadius="2.5">
+                                    <TextBlock
+                                        FontSize="8"
+                                        FontWeight="Bold"
+                                        Foreground="#3f3f46"
+                                        Text="CTRL" />
                                 </Border>
-                                <TextBlock FontSize="10" Foreground="#3f3f46" Text="+" />
-                                <Border Padding="4,2,4,1" Background="#e4e4e7" BorderBrush="#a1a1aa" BorderThickness="1" CornerRadius="2.5">
-                                    <TextBlock FontSize="8" Foreground="#3f3f46" FontWeight="Bold" Text="F" />
+                                <TextBlock
+                                    FontSize="10"
+                                    Foreground="#3f3f46"
+                                    Text="+" />
+                                <Border
+                                    Padding="4,2,4,1"
+                                    Background="#e4e4e7"
+                                    BorderBrush="#a1a1aa"
+                                    BorderThickness="1"
+                                    CornerRadius="2.5">
+                                    <TextBlock
+                                        FontSize="8"
+                                        FontWeight="Bold"
+                                        Foreground="#3f3f46"
+                                        Text="F" />
                                 </Border>
                             </ikw:SimpleStackPanel>
                         </ikw:SimpleStackPanel>
                     </MenuItem.Header>
                     <MenuItem.Icon>
-                        <Image Width="28" Height="28" Margin="-2">
+                        <Image
+                            Width="28"
+                            Height="28"
+                            Margin="-2">
                             <Image.Source>
                                 <DrawingImage>
                                     <DrawingImage.Drawing>
@@ -88,22 +146,57 @@
                 </MenuItem>
                 <MenuItem Name="FoldFloatingBarTrayIconMenuItem" Click="FoldFloatingBarTrayIconMenuItem_Clicked">
                     <MenuItem.Header>
-                        <ikw:SimpleStackPanel Orientation="Horizontal" Margin="-4,0,0,0">
-                            <TextBlock Name="FoldFloatingBarTrayIconMenuItemHeaderText" FontSize="14" VerticalAlignment="Center" Foreground="#18181b" Text="切换为收纳模式" />
-                            <ikw:SimpleStackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="4" Margin="16,0,0,0">
-                                <Border Padding="4,2,4,1" Background="#e4e4e7" BorderBrush="#a1a1aa" BorderThickness="1" CornerRadius="2.5">
-                                    <TextBlock FontSize="8" Foreground="#3f3f46" FontWeight="Bold" Text="CTRL" />
+                        <ikw:SimpleStackPanel Margin="-4,0,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                Name="FoldFloatingBarTrayIconMenuItemHeaderText"
+                                VerticalAlignment="Center"
+                                FontSize="14"
+                                Foreground="#18181b"
+                                Text="切换为收纳模式" />
+                            <ikw:SimpleStackPanel
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                Orientation="Horizontal"
+                                Spacing="4">
+                                <Border
+                                    Padding="4,2,4,1"
+                                    Background="#e4e4e7"
+                                    BorderBrush="#a1a1aa"
+                                    BorderThickness="1"
+                                    CornerRadius="2.5">
+                                    <TextBlock
+                                        FontSize="8"
+                                        FontWeight="Bold"
+                                        Foreground="#3f3f46"
+                                        Text="CTRL" />
                                 </Border>
-                                <TextBlock FontSize="10" Foreground="#3f3f46" Text="+" />
-                                <Border Padding="4,2,4,1" Background="#e4e4e7" BorderBrush="#a1a1aa" BorderThickness="1" CornerRadius="2.5">
-                                    <TextBlock FontSize="8" Foreground="#3f3f46" FontWeight="Bold" Text="S" />
+                                <TextBlock
+                                    FontSize="10"
+                                    Foreground="#3f3f46"
+                                    Text="+" />
+                                <Border
+                                    Padding="4,2,4,1"
+                                    Background="#e4e4e7"
+                                    BorderBrush="#a1a1aa"
+                                    BorderThickness="1"
+                                    CornerRadius="2.5">
+                                    <TextBlock
+                                        FontSize="8"
+                                        FontWeight="Bold"
+                                        Foreground="#3f3f46"
+                                        Text="S" />
                                 </Border>
                             </ikw:SimpleStackPanel>
                         </ikw:SimpleStackPanel>
                     </MenuItem.Header>
                     <MenuItem.Icon>
                         <Grid>
-                            <Image Width="28" Height="28" Margin="-2" x:Name="FoldFloatingBarTrayIconMenuItemIconEyeOff" Visibility="Hidden">
+                            <Image
+                                x:Name="FoldFloatingBarTrayIconMenuItemIconEyeOff"
+                                Width="28"
+                                Height="28"
+                                Margin="-2"
+                                Visibility="Hidden">
                                 <Image.Source>
                                     <DrawingImage>
                                         <DrawingImage.Drawing>
@@ -115,7 +208,12 @@
                                     </DrawingImage>
                                 </Image.Source>
                             </Image>
-                            <Image Width="28" Height="28" Margin="-2" x:Name="FoldFloatingBarTrayIconMenuItemIconEyeOn" Visibility="Hidden">
+                            <Image
+                                x:Name="FoldFloatingBarTrayIconMenuItemIconEyeOn"
+                                Width="28"
+                                Height="28"
+                                Margin="-2"
+                                Visibility="Hidden">
                                 <Image.Source>
                                     <DrawingImage>
                                         <DrawingImage.Drawing>
@@ -128,26 +226,58 @@
                                 </Image.Source>
                             </Image>
                         </Grid>
-                        
+
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Name="ResetFloatingBarPositionTrayIconMenuItem" Click="ResetFloatingBarPositionTrayIconMenuItem_Clicked">
                     <MenuItem.Header>
-                        <ikw:SimpleStackPanel Orientation="Horizontal" Margin="-4,0,0,0">
-                            <TextBlock FontSize="14" VerticalAlignment="Center" Foreground="#18181b" Text="重置工具栏位置" />
-                            <ikw:SimpleStackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="4" Margin="16,0,0,0">
-                                <Border  Padding="4,2,4,1" Background="#e4e4e7" BorderBrush="#a1a1aa" BorderThickness="1" CornerRadius="2.5">
-                                    <TextBlock FontSize="8" Foreground="#3f3f46" FontWeight="Bold" Text="CTRL" />
+                        <ikw:SimpleStackPanel Margin="-4,0,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="14"
+                                Foreground="#18181b"
+                                Text="重置工具栏位置" />
+                            <ikw:SimpleStackPanel
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                Orientation="Horizontal"
+                                Spacing="4">
+                                <Border
+                                    Padding="4,2,4,1"
+                                    Background="#e4e4e7"
+                                    BorderBrush="#a1a1aa"
+                                    BorderThickness="1"
+                                    CornerRadius="2.5">
+                                    <TextBlock
+                                        FontSize="8"
+                                        FontWeight="Bold"
+                                        Foreground="#3f3f46"
+                                        Text="CTRL" />
                                 </Border>
-                                <TextBlock FontSize="10" Foreground="#3f3f46" Text="+" />
-                                <Border Padding="4,2,4,1" Background="#e4e4e7" BorderBrush="#a1a1aa" BorderThickness="1" CornerRadius="2.5">
-                                    <TextBlock FontSize="8" Foreground="#3f3f46" FontWeight="Bold" Text="T" />
+                                <TextBlock
+                                    FontSize="10"
+                                    Foreground="#3f3f46"
+                                    Text="+" />
+                                <Border
+                                    Padding="4,2,4,1"
+                                    Background="#e4e4e7"
+                                    BorderBrush="#a1a1aa"
+                                    BorderThickness="1"
+                                    CornerRadius="2.5">
+                                    <TextBlock
+                                        FontSize="8"
+                                        FontWeight="Bold"
+                                        Foreground="#3f3f46"
+                                        Text="T" />
                                 </Border>
                             </ikw:SimpleStackPanel>
                         </ikw:SimpleStackPanel>
                     </MenuItem.Header>
                     <MenuItem.Icon>
-                        <Image Width="28" Height="28" Margin="-2">
+                        <Image
+                            Width="28"
+                            Height="28"
+                            Margin="-2">
                             <Image.Source>
                                 <DrawingImage>
                                     <DrawingImage.Drawing>
@@ -164,15 +294,45 @@
                 <Separator Margin="0,3" />
                 <MenuItem Name="RestartAppTrayIconMenuItem" Click="RestartAppTrayIconMenuItem_Clicked">
                     <MenuItem.Header>
-                        <ikw:SimpleStackPanel Orientation="Horizontal" Margin="-4,0,0,0">
-                            <TextBlock FontSize="14" FontWeight="Bold" VerticalAlignment="Center" Foreground="#2563eb" Text="重启软件" />
-                            <ikw:SimpleStackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="4" Margin="16,0,0,0">
-                                <Border  Padding="4,2,4,1" Background="#e4e4e7" BorderBrush="#a1a1aa" BorderThickness="1" CornerRadius="2.5">
-                                    <TextBlock FontSize="8" Foreground="#3f3f46" FontWeight="Bold" Text="CTRL" />
+                        <ikw:SimpleStackPanel Margin="-4,0,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="14"
+                                FontWeight="Bold"
+                                Foreground="#2563eb"
+                                Text="重启软件" />
+                            <ikw:SimpleStackPanel
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                Orientation="Horizontal"
+                                Spacing="4">
+                                <Border
+                                    Padding="4,2,4,1"
+                                    Background="#e4e4e7"
+                                    BorderBrush="#a1a1aa"
+                                    BorderThickness="1"
+                                    CornerRadius="2.5">
+                                    <TextBlock
+                                        FontSize="8"
+                                        FontWeight="Bold"
+                                        Foreground="#3f3f46"
+                                        Text="CTRL" />
                                 </Border>
-                                <TextBlock FontSize="10" Foreground="#3f3f46" Text="+" />
-                                <Border Padding="4,2,4,1" Background="#e4e4e7" BorderBrush="#a1a1aa" BorderThickness="1" CornerRadius="2.5">
-                                    <TextBlock FontSize="8" Foreground="#3f3f46" FontWeight="Bold" Text="R" />
+                                <TextBlock
+                                    FontSize="10"
+                                    Foreground="#3f3f46"
+                                    Text="+" />
+                                <Border
+                                    Padding="4,2,4,1"
+                                    Background="#e4e4e7"
+                                    BorderBrush="#a1a1aa"
+                                    BorderThickness="1"
+                                    CornerRadius="2.5">
+                                    <TextBlock
+                                        FontSize="8"
+                                        FontWeight="Bold"
+                                        Foreground="#3f3f46"
+                                        Text="R" />
                                 </Border>
                             </ikw:SimpleStackPanel>
                         </ikw:SimpleStackPanel>
@@ -183,10 +343,8 @@
                                 <DrawingImage>
                                     <DrawingImage.Drawing>
                                         <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
-                                            <GeometryDrawing Brush="#2563eb"
-                                                             Geometry="F1 M24,24z M0,0z M6.34315,6.34315C7.84299,4.8433 9.87707,4.0005 11.9981,4 14.2527,4.00897 16.4167,4.88785 18.039,6.45324L18.5858,7 16,7C15.4477,7 15,7.44772 15,8 15,8.55228 15.4477,9 16,9L21,9C21.1356,9 21.2649,8.97301 21.3828,8.92412 21.5007,8.87532 21.6112,8.80298 21.7071,8.70711 21.8902,8.52405 21.9874,8.28768 21.9989,8.04797 21.9996,8.03199 22,8.016 22,8L22,3C22,2.44772 21.5523,2 21,2 20.4477,2 20,2.44772 20,3L20,5.58579 19.4471,5.03289 19.435,5.02103C17.4405,3.09289,14.7779,2.01044,12.0038,2L12,2C9.34784,2 6.8043,3.05357 4.92893,4.92893 3.05357,6.8043 2,9.34784 2,12 2,12.5523 2.44772,13 3,13 3.55228,13 4,12.5523 4,12 4,9.87827 4.84285,7.84344 6.34315,6.34315z" />
-                                            <GeometryDrawing Brush="#2563eb"
-                                                             Geometry="F1 M24,24z M0,0z M22,12C22,14.6522 20.9464,17.1957 19.0711,19.0711 17.1957,20.9464 14.6522,22 12,22L11.9962,22C9.22213,21.9896,6.55946,20.9071,4.56496,18.979L4.55289,18.9671 4,18.4142 4,21C4,21.5523 3.55228,22 3,22 2.44772,22 2,21.5523 2,21L2,16.0002C2,15.8646 2.02699,15.7351 2.07588,15.6172 2.12432,15.5001 2.19595,15.3904 2.29078,15.295 2.29219,15.2936 2.2936,15.2922 2.29502,15.2908 2.48924,15.0977 2.74301,15.0008 2.997,15 2.998,15 2.999,15 3,15L8,15C8.55228,15 9,15.4477 9,16 9,16.5523 8.55228,17 8,17L5.41421,17 5.96095,17.5467C7.5833,19.1122 9.74736,19.9911 12.002,20 14.123,19.9995 16.157,19.1567 17.6569,17.6569 19.1571,16.1566 20,14.1217 20,12 20,11.4477 20.4477,11 21,11 21.5523,11 22,11.4477 22,12z" />
+                                            <GeometryDrawing Brush="#2563eb" Geometry="F1 M24,24z M0,0z M6.34315,6.34315C7.84299,4.8433 9.87707,4.0005 11.9981,4 14.2527,4.00897 16.4167,4.88785 18.039,6.45324L18.5858,7 16,7C15.4477,7 15,7.44772 15,8 15,8.55228 15.4477,9 16,9L21,9C21.1356,9 21.2649,8.97301 21.3828,8.92412 21.5007,8.87532 21.6112,8.80298 21.7071,8.70711 21.8902,8.52405 21.9874,8.28768 21.9989,8.04797 21.9996,8.03199 22,8.016 22,8L22,3C22,2.44772 21.5523,2 21,2 20.4477,2 20,2.44772 20,3L20,5.58579 19.4471,5.03289 19.435,5.02103C17.4405,3.09289,14.7779,2.01044,12.0038,2L12,2C9.34784,2 6.8043,3.05357 4.92893,4.92893 3.05357,6.8043 2,9.34784 2,12 2,12.5523 2.44772,13 3,13 3.55228,13 4,12.5523 4,12 4,9.87827 4.84285,7.84344 6.34315,6.34315z" />
+                                            <GeometryDrawing Brush="#2563eb" Geometry="F1 M24,24z M0,0z M22,12C22,14.6522 20.9464,17.1957 19.0711,19.0711 17.1957,20.9464 14.6522,22 12,22L11.9962,22C9.22213,21.9896,6.55946,20.9071,4.56496,18.979L4.55289,18.9671 4,18.4142 4,21C4,21.5523 3.55228,22 3,22 2.44772,22 2,21.5523 2,21L2,16.0002C2,15.8646 2.02699,15.7351 2.07588,15.6172 2.12432,15.5001 2.19595,15.3904 2.29078,15.295 2.29219,15.2936 2.2936,15.2922 2.29502,15.2908 2.48924,15.0977 2.74301,15.0008 2.997,15 2.998,15 2.999,15 3,15L8,15C8.55228,15 9,15.4477 9,16 9,16.5523 8.55228,17 8,17L5.41421,17 5.96095,17.5467C7.5833,19.1122 9.74736,19.9911 12.002,20 14.123,19.9995 16.157,19.1567 17.6569,17.6569 19.1571,16.1566 20,14.1217 20,12 20,11.4477 20.4477,11 21,11 21.5523,11 22,11.4477 22,12z" />
                                         </DrawingGroup>
                                     </DrawingImage.Drawing>
                                 </DrawingImage>
@@ -196,15 +354,45 @@
                 </MenuItem>
                 <MenuItem Name="CloseAppTrayIconMenuItem" Click="CloseAppTrayIconMenuItem_Clicked">
                     <MenuItem.Header>
-                        <ikw:SimpleStackPanel Orientation="Horizontal" Margin="-4,0,0,0">
-                            <TextBlock FontSize="14" FontWeight="Bold" VerticalAlignment="Center" Foreground="#dc2626" Text="退出软件" />
-                            <ikw:SimpleStackPanel Orientation="Horizontal" VerticalAlignment="Center" Spacing="4" Margin="16,0,0,0">
-                                <Border  Padding="4,2,4,1" Background="#e4e4e7" BorderBrush="#a1a1aa" BorderThickness="1" CornerRadius="2.5">
-                                    <TextBlock FontSize="8" Foreground="#3f3f46" FontWeight="Bold" Text="CTRL" />
+                        <ikw:SimpleStackPanel Margin="-4,0,0,0" Orientation="Horizontal">
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="14"
+                                FontWeight="Bold"
+                                Foreground="#dc2626"
+                                Text="退出软件" />
+                            <ikw:SimpleStackPanel
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                Orientation="Horizontal"
+                                Spacing="4">
+                                <Border
+                                    Padding="4,2,4,1"
+                                    Background="#e4e4e7"
+                                    BorderBrush="#a1a1aa"
+                                    BorderThickness="1"
+                                    CornerRadius="2.5">
+                                    <TextBlock
+                                        FontSize="8"
+                                        FontWeight="Bold"
+                                        Foreground="#3f3f46"
+                                        Text="CTRL" />
                                 </Border>
-                                <TextBlock FontSize="10" Foreground="#3f3f46" Text="+" />
-                                <Border Padding="4,2,4,1" Background="#e4e4e7" BorderBrush="#a1a1aa" BorderThickness="1" CornerRadius="2.5">
-                                    <TextBlock FontSize="8" Foreground="#3f3f46" FontWeight="Bold" Text="Q" />
+                                <TextBlock
+                                    FontSize="10"
+                                    Foreground="#3f3f46"
+                                    Text="+" />
+                                <Border
+                                    Padding="4,2,4,1"
+                                    Background="#e4e4e7"
+                                    BorderBrush="#a1a1aa"
+                                    BorderThickness="1"
+                                    CornerRadius="2.5">
+                                    <TextBlock
+                                        FontSize="8"
+                                        FontWeight="Bold"
+                                        Foreground="#3f3f46"
+                                        Text="Q" />
                                 </Border>
                             </ikw:SimpleStackPanel>
                         </ikw:SimpleStackPanel>
@@ -215,10 +403,8 @@
                                 <DrawingImage>
                                     <DrawingImage.Drawing>
                                         <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
-                                            <GeometryDrawing Brush="#dc2626"
-                                                             Geometry="F1 M24,24z M0,0z M13,2C13,1.44772 12.5523,1 12,1 11.4477,1 11,1.44772 11,2L11,12C11,12.5523 11.4477,13 12,13 12.5523,13 13,12.5523 13,12L13,2z" />
-                                            <GeometryDrawing Brush="#dc2626"
-                                                             Geometry="F1 M24,24z M0,0z M19.1073,5.89303C18.7168,5.50243 18.0837,5.50232 17.6931,5.89277 17.3025,6.28322 17.3024,6.91639 17.6928,7.30698 18.8098,8.42441 19.571,9.84758 19.8802,11.397 20.1894,12.9464 20.0329,14.5528 19.4305,16.0134 18.828,17.474 17.8065,18.7235 16.4948,19.6043 15.1831,20.4851 13.64,20.9578 12.06,20.9628 10.48,20.9677 8.93392,20.5047 7.61674,19.6321 6.29956,18.7595 5.27025,17.5164 4.65863,16.0596 4.04701,14.6028 3.88046,12.9975 4.17999,11.4462 4.47952,9.89485 5.23171,8.46694 6.3417,7.34254 6.7297,6.9495 6.72562,6.31635 6.33258,5.92835 5.93955,5.54036 5.3064,5.54444 4.9184,5.93747 3.5309,7.34298 2.59067,9.12786 2.21626,11.067 1.84185,13.0062 2.05003,15.0128 2.81456,16.8338 3.57909,18.6549 4.86572,20.2087 6.5122,21.2994 8.15867,22.3902 10.0913,22.9689 12.0662,22.9627 14.0412,22.9566 15.9701,22.3657 17.6098,21.2647 19.2494,20.1637 20.5262,18.6018 21.2793,16.776 22.0324,14.9502 22.2281,12.9424 21.8415,11.0056 21.455,9.06878 20.5036,7.28981 19.1073,5.89303z" />
+                                            <GeometryDrawing Brush="#dc2626" Geometry="F1 M24,24z M0,0z M13,2C13,1.44772 12.5523,1 12,1 11.4477,1 11,1.44772 11,2L11,12C11,12.5523 11.4477,13 12,13 12.5523,13 13,12.5523 13,12L13,2z" />
+                                            <GeometryDrawing Brush="#dc2626" Geometry="F1 M24,24z M0,0z M19.1073,5.89303C18.7168,5.50243 18.0837,5.50232 17.6931,5.89277 17.3025,6.28322 17.3024,6.91639 17.6928,7.30698 18.8098,8.42441 19.571,9.84758 19.8802,11.397 20.1894,12.9464 20.0329,14.5528 19.4305,16.0134 18.828,17.474 17.8065,18.7235 16.4948,19.6043 15.1831,20.4851 13.64,20.9578 12.06,20.9628 10.48,20.9677 8.93392,20.5047 7.61674,19.6321 6.29956,18.7595 5.27025,17.5164 4.65863,16.0596 4.04701,14.6028 3.88046,12.9975 4.17999,11.4462 4.47952,9.89485 5.23171,8.46694 6.3417,7.34254 6.7297,6.9495 6.72562,6.31635 6.33258,5.92835 5.93955,5.54036 5.3064,5.54444 4.9184,5.93747 3.5309,7.34298 2.59067,9.12786 2.21626,11.067 1.84185,13.0062 2.05003,15.0128 2.81456,16.8338 3.57909,18.6549 4.86572,20.2087 6.5122,21.2994 8.15867,22.3902 10.0913,22.9689 12.0662,22.9627 14.0412,22.9566 15.9701,22.3657 17.6098,21.2647 19.2494,20.1637 20.5262,18.6018 21.2793,16.776 22.0324,14.9502 22.2281,12.9424 21.8415,11.0056 21.455,9.06878 20.5036,7.28981 19.1073,5.89303z" />
                                         </DrawingGroup>
                                     </DrawingImage.Drawing>
                                 </DrawingImage>
@@ -227,18 +413,19 @@
                     </MenuItem.Icon>
                 </MenuItem>
             </ContextMenu>
-            <tb:TaskbarIcon x:Key="TaskbarTrayIcon"
-                            Visibility="Collapsed"
-                            ToolTipText="InkCanvasForClass"
-                            ContextMenu="{StaticResource SysTrayMenu}"
-                            IconSource="/Resources/icc.ico"/>
-                <ResourceDictionary.MergedDictionaries>
-                <ui:ThemeResources RequestedTheme="Light"/>
+            <tb:TaskbarIcon
+                x:Key="TaskbarTrayIcon"
+                ContextMenu="{StaticResource SysTrayMenu}"
+                IconSource="/Resources/icc.ico"
+                ToolTipText="InkCanvasForClass"
+                Visibility="Collapsed" />
+            <ResourceDictionary.MergedDictionaries>
+                <ui:ThemeResources RequestedTheme="Light" />
                 <ui:XamlControlsResources />
-                <ResourceDictionary Source="Resources/SeewoImageDictionary.xaml"/>
-                <ResourceDictionary Source="Resources/DrawShapeImageDictionary.xaml"/>
-                <ResourceDictionary Source="Resources/IconImageDictionary.xaml"/>
-                <ResourceDictionary Source="Resources/Styles/Light.xaml"/>
+                <ResourceDictionary Source="Resources/SeewoImageDictionary.xaml" />
+                <ResourceDictionary Source="Resources/DrawShapeImageDictionary.xaml" />
+                <ResourceDictionary Source="Resources/IconImageDictionary.xaml" />
+                <ResourceDictionary Source="Resources/Styles/Light.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

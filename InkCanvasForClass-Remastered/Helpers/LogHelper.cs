@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
 namespace InkCanvasForClass_Remastered.Helpers
 {

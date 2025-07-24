@@ -1,18 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using InkCanvasForClass_Remastered.Helpers;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
 using System.Windows.Ink;
 using System.Windows.Input;
-using System.Windows.Media;
-using InkCanvasForClass_Remastered.Helpers;
 
 namespace InkCanvasForClass_Remastered
 {
@@ -31,7 +22,8 @@ namespace InkCanvasForClass_Remastered
         /// </summary>
         private void RefreshBlackBoardSidePageListView()
         {
-            if (blackBoardSidePageListViewObservableCollection.Count == WhiteboardTotalCount) {
+            if (blackBoardSidePageListViewObservableCollection.Count == WhiteboardTotalCount)
+            {
                 foreach (int index in Enumerable.Range(1, WhiteboardTotalCount))
                 {
                     var st = ApplyHistoriesToNewStrokeCollection(TimeMachineHistories[index]);
@@ -41,13 +33,16 @@ namespace InkCanvasForClass_Remastered
                         Index = index,
                         Strokes = st,
                     };
-                    blackBoardSidePageListViewObservableCollection[index-1] = pitem;
+                    blackBoardSidePageListViewObservableCollection[index - 1] = pitem;
                 }
-            } else {
+            }
+            else
+            {
                 blackBoardSidePageListViewObservableCollection.Clear();
-                foreach (int index in Enumerable.Range(1, WhiteboardTotalCount)) {
+                foreach (int index in Enumerable.Range(1, WhiteboardTotalCount))
+                {
                     var st = ApplyHistoriesToNewStrokeCollection(TimeMachineHistories[index]);
-                    st.Clip(new Rect(0,0, (int)inkCanvas.ActualWidth, (int)inkCanvas.ActualHeight));
+                    st.Clip(new Rect(0, 0, (int)inkCanvas.ActualWidth, (int)inkCanvas.ActualHeight));
                     var pitem = new PageListViewItem()
                     {
                         Index = index,
@@ -66,8 +61,8 @@ namespace InkCanvasForClass_Remastered
             };
             blackBoardSidePageListViewObservableCollection[CurrentWhiteboardIndex - 1] = _pitem;
 
-            BlackBoardLeftSidePageListView.SelectedIndex = CurrentWhiteboardIndex -1;
-            BlackBoardRightSidePageListView.SelectedIndex = CurrentWhiteboardIndex -1;
+            BlackBoardLeftSidePageListView.SelectedIndex = CurrentWhiteboardIndex - 1;
+            BlackBoardRightSidePageListView.SelectedIndex = CurrentWhiteboardIndex - 1;
         }
 
         public static void ScrollViewToVerticalTop(FrameworkElement element, ScrollViewer scrollViewer)
@@ -79,7 +74,8 @@ namespace InkCanvasForClass_Remastered
         }
 
 
-        private void BlackBoardLeftSidePageListView_OnMouseUp(object sender, MouseButtonEventArgs e) {
+        private void BlackBoardLeftSidePageListView_OnMouseUp(object sender, MouseButtonEventArgs e)
+        {
             AnimationsHelper.HideWithSlideAndFade(BoardBorderLeftPageListView);
             AnimationsHelper.HideWithSlideAndFade(BoardBorderRightPageListView);
             var item = BlackBoardLeftSidePageListView.SelectedItem;
@@ -88,7 +84,7 @@ namespace InkCanvasForClass_Remastered
             {
                 SaveStrokes();
                 ClearStrokes(true);
-                CurrentWhiteboardIndex= index+1;
+                CurrentWhiteboardIndex = index + 1;
                 RestoreStrokes();
                 UpdateIndexInfoDisplay();
                 BlackBoardLeftSidePageListView.SelectedIndex = index;

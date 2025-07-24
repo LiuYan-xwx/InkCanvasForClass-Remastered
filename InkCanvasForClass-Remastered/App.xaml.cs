@@ -1,13 +1,9 @@
 ﻿using Hardcodet.Wpf.TaskbarNotification;
 using InkCanvasForClass_Remastered.Helpers;
 using iNKORE.UI.WPF.Modern.Controls;
-using System;
-using System.Linq;
 using System.Reflection;
 using System.Windows;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using MessageBox = System.Windows.MessageBox;
-using Window = System.Windows.Window;
 
 namespace InkCanvasForClass_Remastered
 {
@@ -38,7 +34,8 @@ namespace InkCanvasForClass_Remastered
 
         void App_Startup(object sender, StartupEventArgs e)
         {
-            /*if (!StoreHelper.IsStoreApp) */RootPath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
+            /*if (!StoreHelper.IsStoreApp) */
+            RootPath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
 
             LogHelper.NewLog(string.Format("Ink Canvas Starting (Version: {0})", Assembly.GetExecutingAssembly().GetName().Version.ToString()));
 
@@ -71,9 +68,9 @@ namespace InkCanvasForClass_Remastered
                         SenderScrollViewer.ScrollToVerticalOffset(SenderScrollViewer.VerticalOffset - e.Delta * 10 * System.Windows.Forms.SystemInformation.MouseWheelScrollLines / (double)120);
                         e.Handled = true;
                     }
-                    catch {  }
+                    catch { }
             }
-            catch {  }
+            catch { }
         }
     }
 }

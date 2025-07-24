@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows.Ink;
+﻿using System.Windows.Ink;
 using System.Windows.Input;
-using System.Windows.Media;
 
 namespace InkCanvasForClass_Remastered.Helpers
 {

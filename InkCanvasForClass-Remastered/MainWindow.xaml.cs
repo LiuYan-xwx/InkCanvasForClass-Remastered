@@ -1,28 +1,24 @@
 using InkCanvasForClass_Remastered.Helpers;
 using iNKORE.UI.WPF.Modern;
-using System;
-using System.Collections.ObjectModel;
+using Microsoft.Win32;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Ink;
+using System.Windows.Interop;
 using System.Windows.Media;
-using System.Diagnostics;
 using File = System.IO.File;
 using MessageBox = System.Windows.MessageBox;
-using System.Runtime.InteropServices;
-using System.Windows.Interop;
-using System.Windows.Controls.Primitives;
-using System.Drawing;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Win32;
 
-namespace InkCanvasForClass_Remastered {
-    public partial class MainWindow : Window {
+namespace InkCanvasForClass_Remastered
+{
+    public partial class MainWindow : Window
+    {
         #region Window Initialization
 
-        public MainWindow() {
+        public MainWindow()
+        {
             /*
                 处于画板模式内：Topmost == false / currentMode != 0
                 处于 PPT 放映内：BtnPPTSlideShowEnd.Visibility
@@ -51,32 +47,39 @@ namespace InkCanvasForClass_Remastered {
                 SystemParameters.WorkArea.Height - 60, -2000, -200);
             ViewboxFloatingBarMarginAnimation(100, true);
 
-            try {
+            try
+            {
                 if (File.Exists("debug.ini")) Label.Visibility = Visibility.Visible;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 LogHelper.WriteLogToFile(ex.ToString(), LogHelper.LogType.Error);
             }
 
-            try {
-                if (File.Exists("Log.txt")) {
+            try
+            {
+                if (File.Exists("Log.txt"))
+                {
                     var fileInfo = new FileInfo("Log.txt");
                     var fileSizeInKB = fileInfo.Length / 1024;
                     if (fileSizeInKB > 512)
-                        try {
+                        try
+                        {
                             File.Delete("Log.txt");
                             LogHelper.WriteLogToFile(
                                 "The Log.txt file has been successfully deleted. Original file size: " + fileSizeInKB +
                                 " KB", LogHelper.LogType.Info);
                         }
-                        catch (Exception ex) {
+                        catch (Exception ex)
+                        {
                             LogHelper.WriteLogToFile(
                                 ex + " | Can not delete the Log.txt file. File size: " + fileSizeInKB + " KB",
                                 LogHelper.LogType.Error);
                         }
                 }
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 LogHelper.WriteLogToFile(ex.ToString(), LogHelper.LogType.Error);
             }
 
@@ -86,10 +89,12 @@ namespace InkCanvasForClass_Remastered {
             inkCanvas.Strokes.StrokesChanged += StrokesOnStrokesChanged;
 
             Microsoft.Win32.SystemEvents.UserPreferenceChanged += SystemEvents_UserPreferenceChanged;
-            try {
+            try
+            {
                 if (File.Exists("SpecialVersion.ini")) SpecialVersionResetToSuggestion_Click();
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 LogHelper.WriteLogToFile(ex.ToString(), LogHelper.LogType.Error);
             }
 
@@ -105,8 +110,10 @@ namespace InkCanvasForClass_Remastered {
 
         private DrawingAttributes drawingAttributes;
 
-        private void loadPenCanvas() {
-            try {
+        private void loadPenCanvas()
+        {
+            try
+            {
                 //drawingAttributes = new DrawingAttributes();
                 drawingAttributes = inkCanvas.DefaultDrawingAttributes;
                 drawingAttributes.Color = Ink_DefaultColor;
@@ -126,12 +133,15 @@ namespace InkCanvasForClass_Remastered {
         //ApplicationGesture lastApplicationGesture = ApplicationGesture.AllGestures;
         private DateTime lastGestureTime = DateTime.Now;
 
-        private void InkCanvas_Gesture(object sender, InkCanvasGestureEventArgs e) {
+        private void InkCanvas_Gesture(object sender, InkCanvasGestureEventArgs e)
+        {
             var gestures = e.GetGestureRecognitionResults();
-            try {
+            try
+            {
                 foreach (var gest in gestures)
                     //Trace.WriteLine(string.Format("Gesture: {0}, Confidence: {1}", gest.ApplicationGesture, gest.RecognitionConfidence));
-                    if (StackPanelPPTControls.Visibility == Visibility.Visible) {
+                    if (StackPanelPPTControls.Visibility == Visibility.Visible)
+                    {
                         if (gest.ApplicationGesture == ApplicationGesture.Left)
                             BtnPPTSlidesDown_Click(BtnPPTSlidesDown, null);
                         if (gest.ApplicationGesture == ApplicationGesture.Right)
@@ -141,15 +151,19 @@ namespace InkCanvasForClass_Remastered {
             catch { }
         }
 
-        private void inkCanvas_EditingModeChanged(object sender, RoutedEventArgs e) {
+        private void inkCanvas_EditingModeChanged(object sender, RoutedEventArgs e)
+        {
             var inkCanvas1 = sender as InkCanvas;
             if (inkCanvas1 == null) return;
-            if (Settings.Canvas.IsShowCursor) {
+            if (Settings.Canvas.IsShowCursor)
+            {
                 if (inkCanvas1.EditingMode == InkCanvasEditingMode.Ink || drawingShapeMode != 0)
                     inkCanvas1.ForceCursor = true;
                 else
                     inkCanvas1.ForceCursor = false;
-            } else {
+            }
+            else
+            {
                 inkCanvas1.ForceCursor = false;
             }
 
@@ -164,7 +178,8 @@ namespace InkCanvasForClass_Remastered {
         public static string settingsFileName = "Settings.json";
         private bool isLoaded = false;
 
-        private void Window_Loaded(object sender, RoutedEventArgs e) {
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
             loadPenCanvas();
             //加载设置
             LoadSettings(true);
@@ -192,17 +207,21 @@ namespace InkCanvasForClass_Remastered {
 
         }
 
-        private void SystemEventsOnDisplaySettingsChanged(object sender, EventArgs e) {
+        private void SystemEventsOnDisplaySettingsChanged(object sender, EventArgs e)
+        {
             if (!Settings.Advanced.IsEnableResolutionChangeDetection) return;
             ShowNotification($"检测到显示器信息变化，变为{System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width}x{System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height}");
-            new Thread(() => {
+            new Thread(() =>
+            {
                 var isFloatingBarOutsideScreen = false;
                 var isInPPTPresentationMode = false;
-                Dispatcher.Invoke(() => {
+                Dispatcher.Invoke(() =>
+                {
                     isFloatingBarOutsideScreen = IsOutsideOfScreenHelper.IsOutsideOfScreen(ViewboxFloatingBar);
                     isInPPTPresentationMode = BtnPPTSlideShowEnd.Visibility == Visibility.Visible;
                 });
-                if (isFloatingBarOutsideScreen) dpiChangedDelayAction.DebounceAction(3000, null, () => {
+                if (isFloatingBarOutsideScreen) dpiChangedDelayAction.DebounceAction(3000, null, () =>
+                {
                     if (!isFloatingBarFolded)
                     {
                         if (isInPPTPresentationMode) ViewboxFloatingBarMarginAnimation(60);
@@ -220,14 +239,17 @@ namespace InkCanvasForClass_Remastered {
             {
                 ShowNotification($"系统DPI发生变化，从 {e.OldDpi.DpiScaleX}x{e.OldDpi.DpiScaleY} 变化为 {e.NewDpi.DpiScaleX}x{e.NewDpi.DpiScaleY}");
 
-                new Thread(() => {
+                new Thread(() =>
+                {
                     var isFloatingBarOutsideScreen = false;
                     var isInPPTPresentationMode = false;
-                    Dispatcher.Invoke(() => {
+                    Dispatcher.Invoke(() =>
+                    {
                         isFloatingBarOutsideScreen = IsOutsideOfScreenHelper.IsOutsideOfScreen(ViewboxFloatingBar);
                         isInPPTPresentationMode = BtnPPTSlideShowEnd.Visibility == Visibility.Visible;
                     });
-                    if (isFloatingBarOutsideScreen) dpiChangedDelayAction.DebounceAction(3000,null, () => {
+                    if (isFloatingBarOutsideScreen) dpiChangedDelayAction.DebounceAction(3000, null, () =>
+                    {
                         if (!isFloatingBarFolded)
                         {
                             if (isInPPTPresentationMode) ViewboxFloatingBarMarginAnimation(60);
@@ -238,9 +260,11 @@ namespace InkCanvasForClass_Remastered {
             }
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
             LogHelper.WriteLogToFile("Ink Canvas closing", LogHelper.LogType.Event);
-            if (!CloseIsFromButton && Settings.Advanced.IsSecondConfirmWhenShutdownApp) {
+            if (!CloseIsFromButton && Settings.Advanced.IsSecondConfirmWhenShutdownApp)
+            {
                 e.Cancel = true;
                 if (MessageBox.Show("是否继续关闭 InkCanvasForClass，这将丢失当前未保存的墨迹。", "InkCanvasForClass",
                         MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.OK)
@@ -257,8 +281,10 @@ namespace InkCanvasForClass_Remastered {
         [DllImport("user32.dll", SetLastError = true)]
         public static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
 
-        private void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e) {
-            if (Settings.Advanced.IsEnableForceFullScreen) {
+        private void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (Settings.Advanced.IsEnableForceFullScreen)
+            {
                 if (isLoaded) ShowNotification(
                     $"检测到窗口大小变化，已自动恢复到全屏：{System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width}x{System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height}（缩放比例为{System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width / SystemParameters.PrimaryScreenWidth}x{System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height / SystemParameters.PrimaryScreenHeight}）");
                 WindowState = WindowState.Maximized;
@@ -268,13 +294,14 @@ namespace InkCanvasForClass_Remastered {
             }
         }
 
-        private void Window_Closed(object sender, EventArgs e) {
+        private void Window_Closed(object sender, EventArgs e)
+        {
             SystemEvents.DisplaySettingsChanged -= SystemEventsOnDisplaySettingsChanged;
 
             LogHelper.WriteLogToFile("Ink Canvas closed", LogHelper.LogType.Event);
         }
 
-        
+
 
         #endregion Definations and Loading
     }

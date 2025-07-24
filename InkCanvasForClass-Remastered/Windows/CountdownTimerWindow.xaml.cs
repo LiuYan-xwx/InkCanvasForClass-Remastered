@@ -1,8 +1,5 @@
 ﻿using InkCanvasForClass_Remastered.Helpers;
-using System;
 using System.Media;
-using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
@@ -38,13 +35,13 @@ namespace InkCanvasForClass_Remastered
             TimeSpan leftTimeSpan = totalTimeSpan - timeSpan;
             if (leftTimeSpan.Milliseconds > 0) leftTimeSpan += new TimeSpan(0, 0, 1);
             double spentTimePercent = timeSpan.TotalMilliseconds / (totalSeconds * 1000.0);
-            
+
             ProcessBarTime.CurrentValue = 1 - spentTimePercent;
             TextBlockHour.Text = leftTimeSpan.Hours.ToString("00");
             TextBlockMinute.Text = leftTimeSpan.Minutes.ToString("00");
             TextBlockSecond.Text = leftTimeSpan.Seconds.ToString("00");
             TbCurrentTime.Text = leftTimeSpan.ToString(@"hh\:mm\:ss");
-            
+
             if (spentTimePercent >= 1)
             {
                 ProcessBarTime.CurrentValue = 0;
@@ -57,7 +54,7 @@ namespace InkCanvasForClass_Remastered
                 BtnStartCover.Visibility = Visibility.Visible;
                 TextBlockHour.Foreground = new SolidColorBrush(StringToColor("#FF5B5D5F"));
                 BorderStopTime.Visibility = Visibility.Collapsed;
-                
+
                 //Play sound
                 player.Stream = Properties.Resources.TimerDownNotice;
                 player.Play();

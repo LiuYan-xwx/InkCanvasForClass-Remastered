@@ -2,7 +2,6 @@
 using InkCanvasForClass_Remastered.Helpers;
 using Newtonsoft.Json;
 using OSVersionExtension;
-using System;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,31 +9,40 @@ using System.Windows.Ink;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using File = System.IO.File;
 using OperatingSystem = OSVersionExtension.OperatingSystem;
 
-namespace InkCanvasForClass_Remastered {
-    public partial class MainWindow : System.Windows.Window {
-        private void LoadSettings(bool isStartup = false) {
+namespace InkCanvasForClass_Remastered
+{
+    public partial class MainWindow : System.Windows.Window
+    {
+        private void LoadSettings(bool isStartup = false)
+        {
             AppVersionTextBlock.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            try {
-                if (File.Exists(App.RootPath + settingsFileName)) {
-                    try {
+            try
+            {
+                if (File.Exists(App.RootPath + settingsFileName))
+                {
+                    try
+                    {
                         string text = File.ReadAllText(App.RootPath + settingsFileName);
                         Settings = JsonConvert.DeserializeObject<Settings>(text);
                     }
                     catch { }
-                } else {
+                }
+                else
+                {
                     BtnResetToSuggestion_Click(null, null);
                 }
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 LogHelper.WriteLogToFile(ex.ToString(), LogHelper.LogType.Error);
             }
 
             // Startup
-            if (isStartup) {
+            if (isStartup)
+            {
                 CursorIcon_Click(null, null);
             }
 
@@ -50,41 +58,54 @@ namespace InkCanvasForClass_Remastered {
                 ToggleSwitchRunAtStartup.IsOn = false;
             }
 
-            if (Settings.Startup != null) {
-                if (isStartup) {
-                    if (Settings.Automation.AutoDelSavedFiles) {
+            if (Settings.Startup != null)
+            {
+                if (isStartup)
+                {
+                    if (Settings.Automation.AutoDelSavedFiles)
+                    {
                         DelAutoSavedFiles.DeleteFilesOlder(Settings.Automation.AutoSavedStrokesLocation,
                             Settings.Automation.AutoDelSavedFilesDaysThreshold);
                     }
 
-                    if (Settings.Startup.IsFoldAtStartup) {
+                    if (Settings.Startup.IsFoldAtStartup)
+                    {
                         FoldFloatingBar_MouseUp(Fold_Icon, null);
                     }
                 }
 
-                if (Settings.Startup.IsEnableNibMode) {
+                if (Settings.Startup.IsEnableNibMode)
+                {
                     ToggleSwitchEnableNibMode.IsOn = true;
                     BoardToggleSwitchEnableNibMode.IsOn = true;
                     BoundsWidth = Settings.Advanced.NibModeBoundsWidth;
-                } else {
+                }
+                else
+                {
                     ToggleSwitchEnableNibMode.IsOn = false;
                     BoardToggleSwitchEnableNibMode.IsOn = false;
                     BoundsWidth = Settings.Advanced.FingerModeBoundsWidth;
                 }
 
-                
+
 
                 ToggleSwitchFoldAtStartup.IsOn = Settings.Startup.IsFoldAtStartup;
-            } else {
+            }
+            else
+            {
                 Settings.Startup = new Startup();
             }
 
             // Appearance
-            if (Settings.Appearance != null) {
-                if (!Settings.Appearance.IsEnableDisPlayNibModeToggler) {
+            if (Settings.Appearance != null)
+            {
+                if (!Settings.Appearance.IsEnableDisPlayNibModeToggler)
+                {
                     NibModeSimpleStackPanel.Visibility = Visibility.Collapsed;
                     BoardNibModeSimpleStackPanel.Visibility = Visibility.Collapsed;
-                } else {
+                }
+                else
+                {
                     NibModeSimpleStackPanel.Visibility = Visibility.Visible;
                     BoardNibModeSimpleStackPanel.Visibility = Visibility.Visible;
                 }
@@ -124,7 +145,8 @@ namespace InkCanvasForClass_Remastered {
                 }
 
                 ComboBoxUnFoldBtnImg.SelectedIndex = Settings.Appearance.UnFoldButtonImageType;
-                switch (Settings.Appearance.UnFoldButtonImageType) {
+                switch (Settings.Appearance.UnFoldButtonImageType)
+                {
                     case 0:
                         RightUnFoldBtnImgChevron.Source =
                             new BitmapImage(new Uri("pack://application:,,,/Resources/new-icons/unfold-chevron.png"));
@@ -171,7 +193,9 @@ namespace InkCanvasForClass_Remastered {
                     //ViewboxBlackboardRightSideScaleTransform.ScaleY = 0.8;
 
                     ToggleSwitchEnableViewboxBlackBoardScaleTransform.IsOn = true;
-                } else {
+                }
+                else
+                {
                     //ViewboxBlackboardLeftSideScaleTransform.ScaleX = 1;
                     //ViewboxBlackboardLeftSideScaleTransform.ScaleY = 1;
                     ViewboxBlackboardCenterSideScaleTransform.ScaleX = 1;
@@ -182,9 +206,12 @@ namespace InkCanvasForClass_Remastered {
                     ToggleSwitchEnableViewboxBlackBoardScaleTransform.IsOn = false;
                 }
 
-                if (Settings.Appearance.IsTransparentButtonBackground) {
+                if (Settings.Appearance.IsTransparentButtonBackground)
+                {
                     BtnExit.Background = new SolidColorBrush(StringToColor("#7F909090"));
-                } else {
+                }
+                else
+                {
                     //Light
                     BtnExit.Background = BtnSwitchTheme.Content.ToString() == "深色"
                         ? new SolidColorBrush(StringToColor("#FFCCCCCC"))
@@ -194,36 +221,51 @@ namespace InkCanvasForClass_Remastered {
                 }
 
                 ComboBoxFloatingBarImg.SelectedIndex = Settings.Appearance.FloatingBarImg;
-                if (ComboBoxFloatingBarImg.SelectedIndex == 0) {
+                if (ComboBoxFloatingBarImg.SelectedIndex == 0)
+                {
                     FloatingbarHeadIconImg.Source =
                         new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/icc.png"));
                     FloatingbarHeadIconImg.Margin = new Thickness(0.5);
-                } else if (ComboBoxFloatingBarImg.SelectedIndex == 1) {
+                }
+                else if (ComboBoxFloatingBarImg.SelectedIndex == 1)
+                {
                     FloatingbarHeadIconImg.Source =
                         new BitmapImage(
                             new Uri("pack://application:,,,/Resources/Icons-png/icc-transparent-dark-small.png"));
                     FloatingbarHeadIconImg.Margin = new Thickness(1.2);
-                } else if (ComboBoxFloatingBarImg.SelectedIndex == 2) {
+                }
+                else if (ComboBoxFloatingBarImg.SelectedIndex == 2)
+                {
                     FloatingbarHeadIconImg.Source =
                         new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/kuandoujiyanhuaji.png"));
                     FloatingbarHeadIconImg.Margin = new Thickness(2, 2, 2, 1.5);
-                } else if (ComboBoxFloatingBarImg.SelectedIndex == 3) {
+                }
+                else if (ComboBoxFloatingBarImg.SelectedIndex == 3)
+                {
                     FloatingbarHeadIconImg.Source =
                         new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/kuanshounvhuaji.png"));
                     FloatingbarHeadIconImg.Margin = new Thickness(2, 2, 2, 1.5);
-                } else if (ComboBoxFloatingBarImg.SelectedIndex == 4) {
+                }
+                else if (ComboBoxFloatingBarImg.SelectedIndex == 4)
+                {
                     FloatingbarHeadIconImg.Source =
                         new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/kuanciya.png"));
                     FloatingbarHeadIconImg.Margin = new Thickness(2, 2, 2, 1.5);
-                } else if (ComboBoxFloatingBarImg.SelectedIndex == 5) {
+                }
+                else if (ComboBoxFloatingBarImg.SelectedIndex == 5)
+                {
                     FloatingbarHeadIconImg.Source =
                         new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/kuanneikuhuaji.png"));
                     FloatingbarHeadIconImg.Margin = new Thickness(2, 2, 2, 1.5);
-                } else if (ComboBoxFloatingBarImg.SelectedIndex == 6) {
+                }
+                else if (ComboBoxFloatingBarImg.SelectedIndex == 6)
+                {
                     FloatingbarHeadIconImg.Source =
                         new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/kuandogeyuanliangwo.png"));
                     FloatingbarHeadIconImg.Margin = new Thickness(2, 2, 2, 1.5);
-                } else if (ComboBoxFloatingBarImg.SelectedIndex == 7) {
+                }
+                else if (ComboBoxFloatingBarImg.SelectedIndex == 7)
+                {
                     FloatingbarHeadIconImg.Source =
                         new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/tiebahuaji.png"));
                     FloatingbarHeadIconImg.Margin = new Thickness(2, 2, 2, 1);
@@ -233,18 +275,24 @@ namespace InkCanvasForClass_Remastered {
                     Settings.Appearance.EnableTimeDisplayInWhiteboardMode;
 
                 SystemEvents_UserPreferenceChanged(null, null);
-            } else {
+            }
+            else
+            {
                 Settings.Appearance = new Appearance();
             }
 
             // PowerPointSettings
-            if (Settings.PowerPointSettings != null) {
-                
-                
-                if (Settings.PowerPointSettings.PowerPointSupport) {
+            if (Settings.PowerPointSettings != null)
+            {
+
+
+                if (Settings.PowerPointSettings.PowerPointSupport)
+                {
                     ToggleSwitchSupportPowerPoint.IsOn = true;
                     timerCheckPPT.Start();
-                } else {
+                }
+                else
+                {
                     ToggleSwitchSupportPowerPoint.IsOn = false;
                     timerCheckPPT.Stop();
                 }
@@ -271,12 +319,15 @@ namespace InkCanvasForClass_Remastered {
                 var dops = Settings.PowerPointSettings.PPTButtonsDisplayOption.ToString();
                 var dopsc = dops.ToCharArray();
                 if ((dopsc[0] == '1' || dopsc[0] == '2') && (dopsc[1] == '1' || dopsc[1] == '2') &&
-                    (dopsc[2] == '1' || dopsc[2] == '2') && (dopsc[3] == '1' || dopsc[3] == '2')) {
+                    (dopsc[2] == '1' || dopsc[2] == '2') && (dopsc[3] == '1' || dopsc[3] == '2'))
+                {
                     CheckboxEnableLBPPTButton.IsChecked = dopsc[0] == '2';
                     CheckboxEnableRBPPTButton.IsChecked = dopsc[1] == '2';
                     CheckboxEnableLSPPTButton.IsChecked = dopsc[2] == '2';
                     CheckboxEnableRSPPTButton.IsChecked = dopsc[3] == '2';
-                } else {
+                }
+                else
+                {
                     Settings.PowerPointSettings.PPTButtonsDisplayOption = 2222;
                     CheckboxEnableLBPPTButton.IsChecked = true;
                     CheckboxEnableRBPPTButton.IsChecked = true;
@@ -339,12 +390,15 @@ namespace InkCanvasForClass_Remastered {
 
                 ToggleSwitchAutoSaveScreenShotInPowerPoint.IsOn =
                     Settings.PowerPointSettings.IsAutoSaveScreenShotInPowerPoint;
-            } else {
+            }
+            else
+            {
                 Settings.PowerPointSettings = new PowerPointSettings();
             }
 
             // Gesture
-            if (Settings.Gesture != null) {
+            if (Settings.Gesture != null)
+            {
                 ToggleSwitchEnableMultiTouchMode.IsOn = Settings.Gesture.IsEnableMultiTouchMode;
 
                 ToggleSwitchEnableTwoFingerZoom.IsOn = Settings.Gesture.IsEnableTwoFingerZoom;
@@ -363,13 +417,17 @@ namespace InkCanvasForClass_Remastered {
                 ToggleSwitchEnableTwoFingerRotationOnSelection.IsOn =
                     Settings.Gesture.IsEnableTwoFingerRotationOnSelection;
 
-                if (Settings.Gesture.AutoSwitchTwoFingerGesture) {
-                    if (Topmost) {
+                if (Settings.Gesture.AutoSwitchTwoFingerGesture)
+                {
+                    if (Topmost)
+                    {
                         ToggleSwitchEnableTwoFingerTranslate.IsOn = false;
                         BoardToggleSwitchEnableTwoFingerTranslate.IsOn = false;
                         Settings.Gesture.IsEnableTwoFingerTranslate = false;
                         if (!isInMultiTouchMode) ToggleSwitchEnableMultiTouchMode.IsOn = true;
-                    } else {
+                    }
+                    else
+                    {
                         ToggleSwitchEnableTwoFingerTranslate.IsOn = true;
                         BoardToggleSwitchEnableTwoFingerTranslate.IsOn = true;
                         Settings.Gesture.IsEnableTwoFingerTranslate = true;
@@ -378,12 +436,15 @@ namespace InkCanvasForClass_Remastered {
                 }
 
                 CheckEnableTwoFingerGestureBtnColorPrompt();
-            } else {
+            }
+            else
+            {
                 Settings.Gesture = new Gesture();
             }
 
             // Canvas
-            if (Settings.Canvas != null) {
+            if (Settings.Canvas != null)
+            {
                 drawingAttributes.Height = Settings.Canvas.InkWidth;
                 drawingAttributes.Width = Settings.Canvas.InkWidth;
 
@@ -392,22 +453,28 @@ namespace InkCanvasForClass_Remastered {
 
                 ComboBoxHyperbolaAsymptoteOption.SelectedIndex = (int)Settings.Canvas.HyperbolaAsymptoteOption;
 
-                if (Settings.Canvas.UsingWhiteboard) {
+                if (Settings.Canvas.UsingWhiteboard)
+                {
                     GridBackgroundCover.Background = new SolidColorBrush(Color.FromRgb(234, 235, 237));
                     WaterMarkTime.Foreground = new SolidColorBrush(Color.FromRgb(22, 41, 36));
                     WaterMarkDate.Foreground = new SolidColorBrush(Color.FromRgb(22, 41, 36));
                     isUselightThemeColor = false;
-                } else {
+                }
+                else
+                {
                     GridBackgroundCover.Background = new SolidColorBrush(Color.FromRgb(22, 41, 36));
                     WaterMarkTime.Foreground = new SolidColorBrush(Color.FromRgb(234, 235, 237));
                     WaterMarkDate.Foreground = new SolidColorBrush(Color.FromRgb(234, 235, 237));
                     isUselightThemeColor = true;
                 }
 
-                if (Settings.Canvas.IsShowCursor) {
+                if (Settings.Canvas.IsShowCursor)
+                {
                     ToggleSwitchShowCursor.IsOn = true;
                     inkCanvas.ForceCursor = true;
-                } else {
+                }
+                else
+                {
                     ToggleSwitchShowCursor.IsOn = false;
                     inkCanvas.ForceCursor = false;
                 }
@@ -422,68 +489,79 @@ namespace InkCanvasForClass_Remastered {
                 ToggleSwitchClearCanvasAndClearTimeMachine.IsOn =
                     Settings.Canvas.ClearCanvasAndClearTimeMachine == true;
 
-                switch (Settings.Canvas.EraserShapeType) {
-                    case 0: {
-                        double k = 1;
-                        switch (Settings.Canvas.EraserSize) {
-                            case 0:
-                                k = 0.5;
-                                break;
-                            case 1:
-                                k = 0.8;
-                                break;
-                            case 3:
-                                k = 1.25;
-                                break;
-                            case 4:
-                                k = 1.8;
-                                break;
-                        }
+                switch (Settings.Canvas.EraserShapeType)
+                {
+                    case 0:
+                        {
+                            double k = 1;
+                            switch (Settings.Canvas.EraserSize)
+                            {
+                                case 0:
+                                    k = 0.5;
+                                    break;
+                                case 1:
+                                    k = 0.8;
+                                    break;
+                                case 3:
+                                    k = 1.25;
+                                    break;
+                                case 4:
+                                    k = 1.8;
+                                    break;
+                            }
 
-                        inkCanvas.EraserShape = new EllipseStylusShape(k * 90, k * 90);
-                        inkCanvas.EditingMode = InkCanvasEditingMode.None;
-                        break;
-                    }
-                    case 1: {
-                        double k = 1;
-                        switch (Settings.Canvas.EraserSize) {
-                            case 0:
-                                k = 0.7;
-                                break;
-                            case 1:
-                                k = 0.9;
-                                break;
-                            case 3:
-                                k = 1.2;
-                                break;
-                            case 4:
-                                k = 1.6;
-                                break;
+                            inkCanvas.EraserShape = new EllipseStylusShape(k * 90, k * 90);
+                            inkCanvas.EditingMode = InkCanvasEditingMode.None;
+                            break;
                         }
+                    case 1:
+                        {
+                            double k = 1;
+                            switch (Settings.Canvas.EraserSize)
+                            {
+                                case 0:
+                                    k = 0.7;
+                                    break;
+                                case 1:
+                                    k = 0.9;
+                                    break;
+                                case 3:
+                                    k = 1.2;
+                                    break;
+                                case 4:
+                                    k = 1.6;
+                                    break;
+                            }
 
-                        inkCanvas.EraserShape = new RectangleStylusShape(k * 90 * 0.6, k * 90);
-                        inkCanvas.EditingMode = InkCanvasEditingMode.None;
-                        break;
-                    }
+                            inkCanvas.EraserShape = new RectangleStylusShape(k * 90 * 0.6, k * 90);
+                            inkCanvas.EditingMode = InkCanvasEditingMode.None;
+                            break;
+                        }
                 }
 
                 CheckEraserTypeTab();
 
                 ToggleSwitchHideStrokeWhenSelecting.IsOn = Settings.Canvas.HideStrokeWhenSelecting;
 
-                if (Settings.Canvas.FitToCurve) {
+                if (Settings.Canvas.FitToCurve)
+                {
                     ToggleSwitchFitToCurve.IsOn = true;
                     drawingAttributes.FitToCurve = true;
-                } else {
+                }
+                else
+                {
                     ToggleSwitchFitToCurve.IsOn = false;
                     drawingAttributes.FitToCurve = false;
                 }
-            } else {
+            }
+            else
+            {
                 Settings.Canvas = new Canvas();
             }
 
             // Advanced
-            if (Settings.Advanced != null) {
+            if (Settings.Advanced != null)
+            {
                 TouchMultiplierSlider.Value = Settings.Advanced.TouchMultiplier;
                 FingerModeBoundsWidthSlider.Value = Settings.Advanced.FingerModeBoundsWidth;
                 NibModeBoundsWidthSlider.Value = Settings.Advanced.NibModeBoundsWidth;
@@ -501,12 +579,14 @@ namespace InkCanvasForClass_Remastered {
                 ToggleSwitchIsQuadIR.IsOn = Settings.Advanced.IsQuadIR;
 
                 ToggleSwitchIsEnableFullScreenHelper.IsOn = Settings.Advanced.IsEnableFullScreenHelper;
-                if (Settings.Advanced.IsEnableFullScreenHelper) {
+                if (Settings.Advanced.IsEnableFullScreenHelper)
+                {
                     FullScreenHelper.MarkFullscreenWindowTaskbarList(new WindowInteropHelper(this).Handle, true);
                 }
 
                 ToggleSwitchIsEnableEdgeGestureUtil.IsOn = Settings.Advanced.IsEnableEdgeGestureUtil;
-                if (Settings.Advanced.IsEnableEdgeGestureUtil) {
+                if (Settings.Advanced.IsEnableEdgeGestureUtil)
+                {
                     if (OSVersion.GetOperatingSystem() >= OperatingSystem.Windows10)
                         EdgeGestureUtil.DisableEdgeGestures(new WindowInteropHelper(this).Handle, true);
                 }
@@ -517,12 +597,16 @@ namespace InkCanvasForClass_Remastered {
 
                 ToggleSwitchIsEnableResolutionChangeDetection.IsOn =
                     Settings.Advanced.IsEnableResolutionChangeDetection;
-            } else {
+            }
+            else
+            {
                 Settings.Advanced = new Advanced();
             }
 
             // RandSettings
-            if (Settings.RandSettings != null) { } else {
+            if (Settings.RandSettings != null) { }
+            else
+            {
                 Settings.RandSettings = new RandSettings();
                 ToggleSwitchDisplayRandWindowNamesInputBtn.IsOn = Settings.RandSettings.DisplayRandWindowNamesInputBtn;
                 RandWindowOnceCloseLatencySlider.Value = Settings.RandSettings.RandWindowOnceCloseLatency;
@@ -530,7 +614,8 @@ namespace InkCanvasForClass_Remastered {
             }
 
             // Automation
-            if (Settings.Automation != null) {
+            if (Settings.Automation != null)
+            {
                 StartOrStoptimerCheckAutoFold();
                 ToggleSwitchAutoFoldInEasiNote.IsOn = Settings.Automation.IsAutoFoldInEasiNote;
 
@@ -567,7 +652,8 @@ namespace InkCanvasForClass_Remastered {
                 ToggleSwitchAutoFoldInMaxHubWhiteboard.IsOn = Settings.Automation.IsAutoFoldInMaxHubWhiteboard;
 
                 SettingsPPTInkingAndAutoFoldExplictBorder.Visibility = Visibility.Collapsed;
-                if (Settings.Automation.IsAutoFoldInPPTSlideShow) {
+                if (Settings.Automation.IsAutoFoldInPPTSlideShow)
+                {
                     SettingsPPTInkingAndAutoFoldExplictBorder.Visibility = Visibility.Visible;
                     SettingsShowCanvasAtNewSlideShowStackPanel.Opacity = 0.5;
                     SettingsShowCanvasAtNewSlideShowStackPanel.IsHitTestVisible = false;
@@ -579,9 +665,12 @@ namespace InkCanvasForClass_Remastered {
                     Settings.Automation.IsAutoKillHiteAnnotation || Settings.Automation.IsAutoKillInkCanvas
                     || Settings.Automation.IsAutoKillICA || Settings.Automation.IsAutoKillIDT ||
                     Settings.Automation.IsAutoKillVComYouJiao
-                    || Settings.Automation.IsAutoKillSeewoLauncher2DesktopAnnotation) {
+                    || Settings.Automation.IsAutoKillSeewoLauncher2DesktopAnnotation)
+                {
                     timerKillProcess.Start();
-                } else {
+                }
+                else
+                {
                     timerKillProcess.Stop();
                 }
 
@@ -614,14 +703,19 @@ namespace InkCanvasForClass_Remastered {
                 ToggleSwitchAutoDelSavedFiles.IsOn = Settings.Automation.AutoDelSavedFiles;
                 ComboBoxAutoDelSavedFilesDaysThreshold.Text =
                     Settings.Automation.AutoDelSavedFilesDaysThreshold.ToString();
-            } else {
+            }
+            else
+            {
                 Settings.Automation = new Automation();
             }
 
             // auto align
-            if (BtnPPTSlideShowEnd.Visibility == Visibility.Visible) {
+            if (BtnPPTSlideShowEnd.Visibility == Visibility.Visible)
+            {
                 ViewboxFloatingBarMarginAnimation(60);
-            } else {
+            }
+            else
+            {
                 ViewboxFloatingBarMarginAnimation(100, true);
             }
         }

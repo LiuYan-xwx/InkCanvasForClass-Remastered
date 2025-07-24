@@ -1,20 +1,15 @@
 ﻿using InkCanvasForClass_Remastered.Helpers;
-using System;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media.Animation;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Xml.Linq;
-using System.Windows.Controls;
 
-namespace InkCanvasForClass_Remastered {
-    public partial class MainWindow : Window {
+namespace InkCanvasForClass_Remastered
+{
+    public partial class MainWindow : Window
+    {
         private StrokeCollection[] strokeCollections = new StrokeCollection[101];
         private bool[] whiteboadLastModeIsRedo = new bool[101];
         private StrokeCollection lastTouchDownStrokeCollection = new StrokeCollection();
@@ -23,46 +18,62 @@ namespace InkCanvasForClass_Remastered {
         private int WhiteboardTotalCount = 1;
         private TimeMachineHistory[][] TimeMachineHistories = new TimeMachineHistory[101][]; //最多99页，0用来存储非白板时的墨迹以便还原
 
-        private void SaveStrokes(bool isBackupMain = false) {
-            if (isBackupMain) {
+        private void SaveStrokes(bool isBackupMain = false)
+        {
+            if (isBackupMain)
+            {
                 var timeMachineHistory = timeMachine.ExportTimeMachineHistory();
                 TimeMachineHistories[0] = timeMachineHistory;
                 timeMachine.ClearStrokeHistory();
-            } else {
+            }
+            else
+            {
                 var timeMachineHistory = timeMachine.ExportTimeMachineHistory();
                 TimeMachineHistories[CurrentWhiteboardIndex] = timeMachineHistory;
                 timeMachine.ClearStrokeHistory();
             }
         }
 
-        private void ClearStrokes(bool isErasedByCode) {
+        private void ClearStrokes(bool isErasedByCode)
+        {
             _currentCommitType = CommitReason.ClearingCanvas;
             if (isErasedByCode) _currentCommitType = CommitReason.CodeInput;
             inkCanvas.Strokes.Clear();
             _currentCommitType = CommitReason.UserInput;
         }
 
-        private void RestoreStrokes(bool isBackupMain = false) {
-            try {
+        private void RestoreStrokes(bool isBackupMain = false)
+        {
+            try
+            {
                 if (TimeMachineHistories[CurrentWhiteboardIndex] == null) return; //防止白板打开后不居中
-                if (isBackupMain) {
+                if (isBackupMain)
+                {
                     timeMachine.ImportTimeMachineHistory(TimeMachineHistories[0]);
                     foreach (var item in TimeMachineHistories[0]) ApplyHistoryToCanvas(item);
-                } else {
+                }
+                else
+                {
                     timeMachine.ImportTimeMachineHistory(TimeMachineHistories[CurrentWhiteboardIndex]);
                     foreach (var item in TimeMachineHistories[CurrentWhiteboardIndex]) ApplyHistoryToCanvas(item);
                 }
             }
-            catch {
+            catch
+            {
                 // ignored
             }
         }
 
-        private async void BtnWhiteBoardPageIndex_Click(object sender, EventArgs e) {
-            if (sender == BtnLeftPageListWB) {
-                if (BoardBorderLeftPageListView.Visibility == Visibility.Visible) {
+        private async void BtnWhiteBoardPageIndex_Click(object sender, EventArgs e)
+        {
+            if (sender == BtnLeftPageListWB)
+            {
+                if (BoardBorderLeftPageListView.Visibility == Visibility.Visible)
+                {
                     AnimationsHelper.HideWithSlideAndFade(BoardBorderLeftPageListView);
-                } else {
+                }
+                else
+                {
                     AnimationsHelper.HideWithSlideAndFade(BoardBorderRightPageListView);
                     RefreshBlackBoardSidePageListView();
                     AnimationsHelper.ShowWithSlideFromBottomAndFade(BoardBorderLeftPageListView);
@@ -71,11 +82,15 @@ namespace InkCanvasForClass_Remastered {
                         (ListViewItem)BlackBoardLeftSidePageListView.ItemContainerGenerator.ContainerFromIndex(
                             CurrentWhiteboardIndex - 1), BlackBoardLeftSidePageListScrollViewer);
                 }
-            } else if (sender == BtnRightPageListWB)
+            }
+            else if (sender == BtnRightPageListWB)
             {
-                if (BoardBorderRightPageListView.Visibility == Visibility.Visible) {
+                if (BoardBorderRightPageListView.Visibility == Visibility.Visible)
+                {
                     AnimationsHelper.HideWithSlideAndFade(BoardBorderRightPageListView);
-                } else {
+                }
+                else
+                {
                     AnimationsHelper.HideWithSlideAndFade(BoardBorderLeftPageListView);
                     RefreshBlackBoardSidePageListView();
                     AnimationsHelper.ShowWithSlideFromBottomAndFade(BoardBorderRightPageListView);
@@ -88,7 +103,8 @@ namespace InkCanvasForClass_Remastered {
 
         }
 
-        private void BtnWhiteBoardSwitchPrevious_Click(object sender, EventArgs e) {
+        private void BtnWhiteBoardSwitchPrevious_Click(object sender, EventArgs e)
+        {
             if (CurrentWhiteboardIndex <= 1) return;
 
             SaveStrokes();
@@ -101,12 +117,14 @@ namespace InkCanvasForClass_Remastered {
             UpdateIndexInfoDisplay();
         }
 
-        private void BtnWhiteBoardSwitchNext_Click(object sender, EventArgs e) {
+        private void BtnWhiteBoardSwitchNext_Click(object sender, EventArgs e)
+        {
             Trace.WriteLine("113223234");
 
             if (Settings.Automation.IsAutoSaveStrokesAtClear &&
                 inkCanvas.Strokes.Count > Settings.Automation.MinimumAutomationStrokeNumber) SaveScreenShot(true);
-            if (CurrentWhiteboardIndex >= WhiteboardTotalCount) {
+            if (CurrentWhiteboardIndex >= WhiteboardTotalCount)
+            {
                 BtnWhiteBoardAdd_Click(sender, e);
                 return;
             }
@@ -121,7 +139,8 @@ namespace InkCanvasForClass_Remastered {
             UpdateIndexInfoDisplay();
         }
 
-        private void BtnWhiteBoardAdd_Click(object sender, EventArgs e) {
+        private void BtnWhiteBoardAdd_Click(object sender, EventArgs e)
+        {
             if (WhiteboardTotalCount >= 99) return;
             if (Settings.Automation.IsAutoSaveStrokesAtClear &&
                 inkCanvas.Strokes.Count > Settings.Automation.MinimumAutomationStrokeNumber) SaveScreenShot(true);
@@ -139,12 +158,14 @@ namespace InkCanvasForClass_Remastered {
 
             if (WhiteboardTotalCount >= 99) BtnWhiteBoardAdd.IsEnabled = false;
 
-            if (BlackBoardLeftSidePageListView.Visibility == Visibility.Visible) {
+            if (BlackBoardLeftSidePageListView.Visibility == Visibility.Visible)
+            {
                 RefreshBlackBoardSidePageListView();
             }
         }
 
-        private void BtnWhiteBoardDelete_Click(object sender, RoutedEventArgs e) {
+        private void BtnWhiteBoardDelete_Click(object sender, RoutedEventArgs e)
+        {
             ClearStrokes(true);
 
             if (CurrentWhiteboardIndex != WhiteboardTotalCount)
@@ -162,11 +183,13 @@ namespace InkCanvasForClass_Remastered {
             if (WhiteboardTotalCount < 99) BtnWhiteBoardAdd.IsEnabled = true;
         }
 
-        private void UpdateIndexInfoDisplay() {
+        private void UpdateIndexInfoDisplay()
+        {
             TextBlockWhiteBoardIndexInfo.Text =
                 $"{CurrentWhiteboardIndex}/{WhiteboardTotalCount}";
 
-            if (CurrentWhiteboardIndex == WhiteboardTotalCount) {
+            if (CurrentWhiteboardIndex == WhiteboardTotalCount)
+            {
                 var newImageSource = new BitmapImage();
                 newImageSource.BeginInit();
                 newImageSource.UriSource = new Uri("/Resources/Icons-Fluent/ic_fluent_add_circle_24_regular.png",
@@ -176,7 +199,9 @@ namespace InkCanvasForClass_Remastered {
                 //BoardRightPannelNextPage.Source = newImageSource;
                 //BoardRightPannelNextPageTextBlock.Text = "加页";
                 //BoardLeftPannelNextPageTextBlock.Text = "加页";
-            } else {
+            }
+            else
+            {
                 var newImageSource = new BitmapImage();
                 newImageSource.BeginInit();
                 newImageSource.UriSource =
@@ -192,7 +217,8 @@ namespace InkCanvasForClass_Remastered {
             BtnWhiteBoardSwitchPrevious.IsEnabled = true;
             BtnWhiteBoardSwitchNext.IsEnabled = true;
 
-            if (CurrentWhiteboardIndex == 1) {
+            if (CurrentWhiteboardIndex == 1)
+            {
                 BtnWhiteBoardSwitchPrevious.IsEnabled = false;
                 BtnLeftWhiteBoardSwitchPreviousGeometry.Brush = new SolidColorBrush(Color.FromArgb(127, 24, 24, 27));
                 BtnLeftWhiteBoardSwitchPreviousLabel.Opacity = 0.5;
@@ -203,21 +229,26 @@ namespace InkCanvasForClass_Remastered {
                 BtnRightWhiteBoardSwitchPreviousLabel.Opacity = 0.5;
                 BtnRightWhiteBoardSwitchNextGeometry.Brush = new SolidColorBrush(Color.FromArgb(255, 24, 24, 27));
                 BtnRightWhiteBoardSwitchNextLabel.Opacity = 1;
-            } else {
+            }
+            else
+            {
                 BtnLeftWhiteBoardSwitchPreviousGeometry.Brush = new SolidColorBrush(Color.FromArgb(255, 24, 24, 27));
                 BtnLeftWhiteBoardSwitchPreviousLabel.Opacity = 1;
 
                 BtnRightWhiteBoardSwitchPreviousGeometry.Brush = new SolidColorBrush(Color.FromArgb(255, 24, 24, 27));
                 BtnRightWhiteBoardSwitchPreviousLabel.Opacity = 1;
 
-                if (CurrentWhiteboardIndex == WhiteboardTotalCount) {
+                if (CurrentWhiteboardIndex == WhiteboardTotalCount)
+                {
                     BtnLeftWhiteBoardSwitchNextGeometry.Brush = new SolidColorBrush(Color.FromArgb(127, 24, 24, 27));
                     BtnLeftWhiteBoardSwitchNextLabel.Opacity = 0.5;
 
                     BtnRightWhiteBoardSwitchNextGeometry.Brush = new SolidColorBrush(Color.FromArgb(127, 24, 24, 27));
                     BtnRightWhiteBoardSwitchNextLabel.Opacity = 0.5;
                     BtnWhiteBoardSwitchNext.IsEnabled = false;
-                } else {
+                }
+                else
+                {
                     BtnLeftWhiteBoardSwitchNextGeometry.Brush = new SolidColorBrush(Color.FromArgb(255, 24, 24, 27));
                     BtnLeftWhiteBoardSwitchNextLabel.Opacity = 1;
 

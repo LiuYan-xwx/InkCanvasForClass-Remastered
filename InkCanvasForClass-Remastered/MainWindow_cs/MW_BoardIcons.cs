@@ -5,18 +5,23 @@ using System.Windows.Controls;
 using System.Windows.Ink;
 using System.Windows.Input;
 
-namespace InkCanvasForClass_Remastered {
-    public partial class MainWindow : Window {
-        private void BoardChangeBackgroundColorBtn_MouseUp(object sender, RoutedEventArgs e) {
+namespace InkCanvasForClass_Remastered
+{
+    public partial class MainWindow : Window
+    {
+        private void BoardChangeBackgroundColorBtn_MouseUp(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Canvas.UsingWhiteboard = !Settings.Canvas.UsingWhiteboard;
             SaveSettingsToFile();
-            if (Settings.Canvas.UsingWhiteboard) {
+            if (Settings.Canvas.UsingWhiteboard)
+            {
                 if (inkColor == 5) lastBoardInkColor = 0;
                 ICCWaterMarkDark.Visibility = Visibility.Visible;
                 ICCWaterMarkWhite.Visibility = Visibility.Collapsed;
             }
-            else {
+            else
+            {
                 if (inkColor == 0) lastBoardInkColor = 5;
                 ICCWaterMarkWhite.Visibility = Visibility.Visible;
                 ICCWaterMarkDark.Visibility = Visibility.Collapsed;
@@ -25,19 +30,27 @@ namespace InkCanvasForClass_Remastered {
             CheckColorTheme(true);
         }
 
-        private void BoardEraserIcon_Click(object sender, RoutedEventArgs e) {
+        private void BoardEraserIcon_Click(object sender, RoutedEventArgs e)
+        {
             if (inkCanvas.EditingMode == InkCanvasEditingMode.EraseByPoint ||
-                inkCanvas.EditingMode == InkCanvasEditingMode.EraseByStroke) {
-                if (BoardEraserSizePanel.Visibility == Visibility.Collapsed) {
+                inkCanvas.EditingMode == InkCanvasEditingMode.EraseByStroke)
+            {
+                if (BoardEraserSizePanel.Visibility == Visibility.Collapsed)
+                {
                     AnimationsHelper.ShowWithSlideFromBottomAndFade(BoardEraserSizePanel);
-                } else {
+                }
+                else
+                {
                     AnimationsHelper.HideWithSlideAndFade(BoardEraserSizePanel);
                 }
-            } else {
+            }
+            else
+            {
                 forceEraser = true;
                 forcePointEraser = true;
                 double k = 1;
-                if (Settings.Canvas.EraserShapeType == 0) {
+                if (Settings.Canvas.EraserShapeType == 0)
+                {
                     switch (BoardComboBoxEraserSize.SelectedIndex)
                     {
                         case 0:
@@ -54,7 +67,9 @@ namespace InkCanvasForClass_Remastered {
                             break;
                     }
                     inkCanvas.EraserShape = new EllipseStylusShape(k * 90, k * 90);
-                } else if (Settings.Canvas.EraserShapeType == 1) {
+                }
+                else if (Settings.Canvas.EraserShapeType == 1)
+                {
                     switch (BoardComboBoxEraserSize.SelectedIndex)
                     {
                         case 0:
@@ -82,26 +97,28 @@ namespace InkCanvasForClass_Remastered {
             }
         }
 
-        private void BoardEraserIconByStrokes_Click(object sender, RoutedEventArgs e) {
+        private void BoardEraserIconByStrokes_Click(object sender, RoutedEventArgs e)
+        {
             //if (BoardEraserByStrokes.Background.ToString() == "#FF679CF4") {
             //    AnimationsHelper.ShowWithSlideFromBottomAndFade(BoardDeleteIcon);
             //}
             //else {
-                forceEraser = true;
-                forcePointEraser = false;
+            forceEraser = true;
+            forcePointEraser = false;
 
-                inkCanvas.EraserShape = new EllipseStylusShape(5, 5);
-                inkCanvas.EditingMode = InkCanvasEditingMode.EraseByStroke;
-                drawingShapeMode = 0;
+            inkCanvas.EraserShape = new EllipseStylusShape(5, 5);
+            inkCanvas.EditingMode = InkCanvasEditingMode.EraseByStroke;
+            drawingShapeMode = 0;
 
-                inkCanvas_EditingModeChanged(inkCanvas, null);
-                CancelSingleFingerDragMode();
+            inkCanvas_EditingModeChanged(inkCanvas, null);
+            CancelSingleFingerDragMode();
 
-                HideSubPanels("eraserByStrokes");
+            HideSubPanels("eraserByStrokes");
             //}
         }
 
-        private void BoardSymbolIconDelete_MouseUp(object sender, RoutedEventArgs e) {
+        private void BoardSymbolIconDelete_MouseUp(object sender, RoutedEventArgs e)
+        {
             PenIcon_Click(null, null);
             SymbolIconDelete_MouseUp(null, null);
         }
@@ -112,12 +129,14 @@ namespace InkCanvasForClass_Remastered {
             if (Settings.Canvas.ClearCanvasAndClearTimeMachine == false) timeMachine.ClearStrokeHistory();
         }
 
-        private void BoardLaunchEasiCamera_MouseUp(object sender, MouseButtonEventArgs e) {
+        private void BoardLaunchEasiCamera_MouseUp(object sender, MouseButtonEventArgs e)
+        {
             ImageBlackboard_MouseUp(null, null);
             SoftwareLauncher.LaunchEasiCamera("希沃视频展台");
         }
 
-        private void BoardLaunchDesmos_MouseUp(object sender, MouseButtonEventArgs e) {
+        private void BoardLaunchDesmos_MouseUp(object sender, MouseButtonEventArgs e)
+        {
             HideSubPanelsImmediately();
             ImageBlackboard_MouseUp(null, null);
             Process.Start("https://www.desmos.com/calculator?lang=zh-CN");

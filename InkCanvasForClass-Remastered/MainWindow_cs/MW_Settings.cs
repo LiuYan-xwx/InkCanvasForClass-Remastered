@@ -1,21 +1,21 @@
-﻿using InkCanvasForClass_Remastered.Helpers;
+﻿using Hardcodet.Wpf.TaskbarNotification;
+using InkCanvasForClass_Remastered.Helpers;
 using Newtonsoft.Json;
-using System;
+using OSVersionExtension;
 using System.Diagnostics;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using File = System.IO.File;
-using System.Windows.Media;
 using System.Windows.Ink;
-using System.Windows.Media.Imaging;
+using System.Windows.Input;
 using System.Windows.Interop;
-using Hardcodet.Wpf.TaskbarNotification;
-using OSVersionExtension;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using File = System.IO.File;
 
-namespace InkCanvasForClass_Remastered {
-    public partial class MainWindow : Window {
+namespace InkCanvasForClass_Remastered
+{
+    public partial class MainWindow : Window
+    {
         #region Behavior
 
         private void ToggleSwitchRunAtStartup_Toggled(object sender, RoutedEventArgs e)
@@ -51,13 +51,15 @@ namespace InkCanvasForClass_Remastered {
             }
         }
 
-        private void ToggleSwitchFoldAtStartup_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchFoldAtStartup_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Startup.IsFoldAtStartup = ToggleSwitchFoldAtStartup.IsOn;
             SaveSettingsToFile();
         }
 
-        private void ToggleSwitchSupportPowerPoint_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchSupportPowerPoint_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
 
             Settings.PowerPointSettings.PowerPointSupport = ToggleSwitchSupportPowerPoint.IsOn;
@@ -69,7 +71,8 @@ namespace InkCanvasForClass_Remastered {
                 timerCheckPPT.Stop();
         }
 
-        private void ToggleSwitchShowCanvasAtNewSlideShow_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchShowCanvasAtNewSlideShow_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
 
             Settings.PowerPointSettings.IsShowCanvasAtNewSlideShow = ToggleSwitchShowCanvasAtNewSlideShow.IsOn;
@@ -80,7 +83,8 @@ namespace InkCanvasForClass_Remastered {
 
         #region Startup
 
-        private void ToggleSwitchEnableNibMode_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchEnableNibMode_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             if (sender == ToggleSwitchEnableNibMode)
                 BoardToggleSwitchEnableNibMode.IsOn = ToggleSwitchEnableNibMode.IsOn;
@@ -99,14 +103,18 @@ namespace InkCanvasForClass_Remastered {
 
         #region Appearance
 
-        private void ToggleSwitchEnableDisPlayNibModeToggle_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchEnableDisPlayNibModeToggle_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Appearance.IsEnableDisPlayNibModeToggler = ToggleSwitchEnableDisPlayNibModeToggle.IsOn;
             SaveSettingsToFile();
-            if (!ToggleSwitchEnableDisPlayNibModeToggle.IsOn) {
+            if (!ToggleSwitchEnableDisPlayNibModeToggle.IsOn)
+            {
                 NibModeSimpleStackPanel.Visibility = Visibility.Collapsed;
                 BoardNibModeSimpleStackPanel.Visibility = Visibility.Collapsed;
-            } else {
+            }
+            else
+            {
                 NibModeSimpleStackPanel.Visibility = Visibility.Visible;
                 BoardNibModeSimpleStackPanel.Visibility = Visibility.Visible;
             }
@@ -118,13 +126,15 @@ namespace InkCanvasForClass_Remastered {
         //    SaveSettingsToFile();
         //}
 
-        private void ToggleSwitchEnableQuickPanel_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchEnableQuickPanel_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Appearance.IsShowQuickPanel = ToggleSwitchEnableQuickPanel.IsOn;
             SaveSettingsToFile();
         }
 
-        private void ViewboxFloatingBarScaleTransformValueSlider_ValueChanged(object sender, RoutedEventArgs e) {
+        private void ViewboxFloatingBarScaleTransformValueSlider_ValueChanged(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Appearance.ViewboxFloatingBarScaleTransformValue =
                 ViewboxFloatingBarScaleTransformValueSlider.Value;
@@ -141,33 +151,38 @@ namespace InkCanvasForClass_Remastered {
                 ViewboxFloatingBarMarginAnimation(100, true);
         }
 
-        private void ViewboxFloatingBarOpacityValueSlider_ValueChanged(object sender, RoutedEventArgs e) {
+        private void ViewboxFloatingBarOpacityValueSlider_ValueChanged(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Appearance.ViewboxFloatingBarOpacityValue = ViewboxFloatingBarOpacityValueSlider.Value;
             SaveSettingsToFile();
             ViewboxFloatingBar.Opacity = Settings.Appearance.ViewboxFloatingBarOpacityValue;
         }
 
-        private void ViewboxFloatingBarOpacityInPPTValueSlider_ValueChanged(object sender, RoutedEventArgs e) {
+        private void ViewboxFloatingBarOpacityInPPTValueSlider_ValueChanged(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Appearance.ViewboxFloatingBarOpacityInPPTValue = ViewboxFloatingBarOpacityInPPTValueSlider.Value;
             SaveSettingsToFile();
         }
 
-        private void ToggleSwitchEnableTrayIcon_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchEnableTrayIcon_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Appearance.EnableTrayIcon = ToggleSwitchEnableTrayIcon.IsOn;
             ICCTrayIconExampleImage.Visibility = Settings.Appearance.EnableTrayIcon ? Visibility.Visible : Visibility.Collapsed;
             var _taskbar = (TaskbarIcon)Application.Current.Resources["TaskbarTrayIcon"];
-            _taskbar.Visibility = ToggleSwitchEnableTrayIcon.IsOn? Visibility.Visible : Visibility.Collapsed;
+            _taskbar.Visibility = ToggleSwitchEnableTrayIcon.IsOn ? Visibility.Visible : Visibility.Collapsed;
             SaveSettingsToFile();
         }
 
-        private void ComboBoxUnFoldBtnImg_SelectionChanged(object sender, RoutedEventArgs e) {
+        private void ComboBoxUnFoldBtnImg_SelectionChanged(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Appearance.UnFoldButtonImageType = ComboBoxUnFoldBtnImg.SelectedIndex;
             SaveSettingsToFile();
-            if (ComboBoxUnFoldBtnImg.SelectedIndex == 0) {
+            if (ComboBoxUnFoldBtnImg.SelectedIndex == 0)
+            {
                 RightUnFoldBtnImgChevron.Source =
                     new BitmapImage(new Uri("pack://application:,,,/Resources/new-icons/unfold-chevron.png"));
                 RightUnFoldBtnImgChevron.Width = 14;
@@ -178,7 +193,9 @@ namespace InkCanvasForClass_Remastered {
                 LeftUnFoldBtnImgChevron.Width = 14;
                 LeftUnFoldBtnImgChevron.Height = 14;
                 LeftUnFoldBtnImgChevron.RenderTransform = null;
-            } else if (ComboBoxUnFoldBtnImg.SelectedIndex == 1) {
+            }
+            else if (ComboBoxUnFoldBtnImg.SelectedIndex == 1)
+            {
                 RightUnFoldBtnImgChevron.Source =
                     new BitmapImage(new Uri("pack://application:,,,/Resources/new-icons/pen-white.png"));
                 RightUnFoldBtnImgChevron.Width = 18;
@@ -192,7 +209,8 @@ namespace InkCanvasForClass_Remastered {
             }
         }
 
-        private void ToggleSwitchEnableViewboxBlackBoardScaleTransform_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchEnableViewboxBlackBoardScaleTransform_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Appearance.EnableViewboxBlackBoardScaleTransform =
                 ToggleSwitchEnableViewboxBlackBoardScaleTransform.IsOn;
@@ -200,39 +218,55 @@ namespace InkCanvasForClass_Remastered {
             LoadSettings();
         }
 
-        public void ComboBoxFloatingBarImg_SelectionChanged(object sender, RoutedEventArgs e) {
+        public void ComboBoxFloatingBarImg_SelectionChanged(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Appearance.FloatingBarImg = ComboBoxFloatingBarImg.SelectedIndex;
-            if (ComboBoxFloatingBarImg.SelectedIndex == 0) {
+            if (ComboBoxFloatingBarImg.SelectedIndex == 0)
+            {
                 FloatingbarHeadIconImg.Source =
                     new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/icc.png"));
                 FloatingbarHeadIconImg.Margin = new Thickness(0.5);
-            } else if (ComboBoxFloatingBarImg.SelectedIndex == 1) {
+            }
+            else if (ComboBoxFloatingBarImg.SelectedIndex == 1)
+            {
                 FloatingbarHeadIconImg.Source =
                     new BitmapImage(
                         new Uri("pack://application:,,,/Resources/Icons-png/icc-transparent-dark-small.png"));
                 FloatingbarHeadIconImg.Margin = new Thickness(1.2);
-            } else if (ComboBoxFloatingBarImg.SelectedIndex == 2) {
+            }
+            else if (ComboBoxFloatingBarImg.SelectedIndex == 2)
+            {
                 FloatingbarHeadIconImg.Source =
                     new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/kuandoujiyanhuaji.png"));
                 FloatingbarHeadIconImg.Margin = new Thickness(2, 2, 2, 1.5);
-            } else if (ComboBoxFloatingBarImg.SelectedIndex == 3) {
+            }
+            else if (ComboBoxFloatingBarImg.SelectedIndex == 3)
+            {
                 FloatingbarHeadIconImg.Source =
                     new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/kuanshounvhuaji.png"));
                 FloatingbarHeadIconImg.Margin = new Thickness(2, 2, 2, 1.5);
-            } else if (ComboBoxFloatingBarImg.SelectedIndex == 4) {
+            }
+            else if (ComboBoxFloatingBarImg.SelectedIndex == 4)
+            {
                 FloatingbarHeadIconImg.Source =
                     new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/kuanciya.png"));
                 FloatingbarHeadIconImg.Margin = new Thickness(2, 2, 2, 1.5);
-            } else if (ComboBoxFloatingBarImg.SelectedIndex == 5) {
+            }
+            else if (ComboBoxFloatingBarImg.SelectedIndex == 5)
+            {
                 FloatingbarHeadIconImg.Source =
                     new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/kuanneikuhuaji.png"));
                 FloatingbarHeadIconImg.Margin = new Thickness(2, 2, 2, 1.5);
-            } else if (ComboBoxFloatingBarImg.SelectedIndex == 6) {
+            }
+            else if (ComboBoxFloatingBarImg.SelectedIndex == 6)
+            {
                 FloatingbarHeadIconImg.Source =
                     new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/kuandogeyuanliangwo.png"));
                 FloatingbarHeadIconImg.Margin = new Thickness(2, 2, 2, 1.5);
-            } else if (ComboBoxFloatingBarImg.SelectedIndex == 7) {
+            }
+            else if (ComboBoxFloatingBarImg.SelectedIndex == 7)
+            {
                 FloatingbarHeadIconImg.Source =
                     new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/tiebahuaji.png"));
                 FloatingbarHeadIconImg.Margin = new Thickness(2, 2, 2, 1);
@@ -240,14 +274,19 @@ namespace InkCanvasForClass_Remastered {
             SaveSettingsToFile();
         }
 
-        private void ToggleSwitchEnableTimeDisplayInWhiteboardMode_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchEnableTimeDisplayInWhiteboardMode_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Appearance.EnableTimeDisplayInWhiteboardMode = ToggleSwitchEnableTimeDisplayInWhiteboardMode.IsOn;
-            if (currentMode == 1) {
-                if (ToggleSwitchEnableTimeDisplayInWhiteboardMode.IsOn) {
+            if (currentMode == 1)
+            {
+                if (ToggleSwitchEnableTimeDisplayInWhiteboardMode.IsOn)
+                {
                     WaterMarkTime.Visibility = Visibility.Visible;
                     WaterMarkDate.Visibility = Visibility.Visible;
-                } else {
+                }
+                else
+                {
                     WaterMarkTime.Visibility = Visibility.Collapsed;
                     WaterMarkDate.Visibility = Visibility.Collapsed;
                 }
@@ -296,7 +335,8 @@ namespace InkCanvasForClass_Remastered {
         //    SaveSettingsToFile();
         //}
 
-        private void ToggleSwitchShowPPTButton_OnToggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchShowPPTButton_OnToggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.PowerPointSettings.ShowPPTButton = ToggleSwitchShowPPTButton.IsOn;
             SaveSettingsToFile();
@@ -304,13 +344,15 @@ namespace InkCanvasForClass_Remastered {
             UpdatePPTBtnPreview();
         }
 
-        private void ToggleSwitchEnablePPTButtonPageClickable_OnToggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchEnablePPTButtonPageClickable_OnToggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.PowerPointSettings.EnablePPTButtonPageClickable = ToggleSwitchEnablePPTButtonPageClickable.IsOn;
             SaveSettingsToFile();
         }
 
-        private void CheckboxEnableLBPPTButton_IsCheckChanged(object sender, RoutedEventArgs e) {
+        private void CheckboxEnableLBPPTButton_IsCheckChanged(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             var str = Settings.PowerPointSettings.PPTButtonsDisplayOption.ToString();
             char[] c = str.ToCharArray();
@@ -429,7 +471,8 @@ namespace InkCanvasForClass_Remastered {
             UpdatePPTBtnPreview();
         }
 
-        private void PPTButtonLeftPositionValueSlider_ValueChanged(object sender, RoutedEventArgs e) {
+        private void PPTButtonLeftPositionValueSlider_ValueChanged(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.PowerPointSettings.PPTLSButtonPosition = (int)PPTButtonLeftPositionValueSlider.Value;
             UpdatePPTBtnSlidersStatus();
@@ -438,13 +481,18 @@ namespace InkCanvasForClass_Remastered {
             UpdatePPTBtnPreview();
         }
 
-        private void UpdatePPTBtnSlidersStatus() {
-            if (PPTButtonLeftPositionValueSlider.Value <= -500 || PPTButtonLeftPositionValueSlider.Value >= 500) {
-                if (PPTButtonLeftPositionValueSlider.Value >= 500) {
+        private void UpdatePPTBtnSlidersStatus()
+        {
+            if (PPTButtonLeftPositionValueSlider.Value <= -500 || PPTButtonLeftPositionValueSlider.Value >= 500)
+            {
+                if (PPTButtonLeftPositionValueSlider.Value >= 500)
+                {
                     PPTBtnLSPlusBtn.IsEnabled = false;
                     PPTBtnLSPlusBtn.Opacity = 0.5;
                     PPTButtonLeftPositionValueSlider.Value = 500;
-                } else if (PPTButtonLeftPositionValueSlider.Value <= -500) {
+                }
+                else if (PPTButtonLeftPositionValueSlider.Value <= -500)
+                {
                     PPTBtnLSMinusBtn.IsEnabled = false;
                     PPTBtnLSMinusBtn.Opacity = 0.5;
                     PPTButtonLeftPositionValueSlider.Value = -500;
@@ -482,7 +530,8 @@ namespace InkCanvasForClass_Remastered {
             }
         }
 
-        private void PPTBtnLSPlusBtn_Clicked(object sender, RoutedEventArgs e) {
+        private void PPTBtnLSPlusBtn_Clicked(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             PPTButtonLeftPositionValueSlider.Value++;
             UpdatePPTBtnSlidersStatus();
@@ -511,7 +560,8 @@ namespace InkCanvasForClass_Remastered {
             UpdatePPTBtnPreview();
         }
 
-        private void PPTBtnLSResetBtn_Clicked(object sender, RoutedEventArgs e) {
+        private void PPTBtnLSResetBtn_Clicked(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             PPTButtonLeftPositionValueSlider.Value = 0;
             UpdatePPTBtnSlidersStatus();
@@ -568,29 +618,36 @@ namespace InkCanvasForClass_Remastered {
             Settings.PowerPointSettings.PPTRSButtonPosition = (int)PPTButtonRightPositionValueSlider.Value;
             UpdatePPTBtnSlidersStatus();
             if (BtnPPTSlideShowEnd.Visibility == Visibility.Visible) UpdatePPTBtnDisplaySettingsStatus();
-            SliderDelayAction.DebounceAction(2000,null, SaveSettingsToFile);
+            SliderDelayAction.DebounceAction(2000, null, SaveSettingsToFile);
             UpdatePPTBtnPreview();
         }
 
-        private void UpdatePPTBtnPreview() {
+        private void UpdatePPTBtnPreview()
+        {
             //new BitmapImage(new Uri("pack://application:,,,/Resources/new-icons/unfold-chevron.png"));
             var bopt = Settings.PowerPointSettings.PPTBButtonsOption.ToString();
             char[] boptc = bopt.ToCharArray();
-            if (boptc[1] == '2') {
+            if (boptc[1] == '2')
+            {
                 PPTBtnPreviewLB.Opacity = 0.5;
                 PPTBtnPreviewRB.Opacity = 0.5;
-            } else {
+            }
+            else
+            {
                 PPTBtnPreviewLB.Opacity = 1;
                 PPTBtnPreviewRB.Opacity = 1;
             }
 
-            if (boptc[2] == '2') {
+            if (boptc[2] == '2')
+            {
                 PPTBtnPreviewLB.Source =
                     new BitmapImage(
                         new Uri("pack://application:,,,/Resources/PresentationExample/bottombar-dark.png"));
                 PPTBtnPreviewRB.Source = new BitmapImage(
                     new Uri("pack://application:,,,/Resources/PresentationExample/bottombar-dark.png"));
-            } else {
+            }
+            else
+            {
                 PPTBtnPreviewLB.Source =
                     new BitmapImage(
                         new Uri("pack://application:,,,/Resources/PresentationExample/bottombar-white.png"));
@@ -631,23 +688,27 @@ namespace InkCanvasForClass_Remastered {
             var dopt = Settings.PowerPointSettings.PPTButtonsDisplayOption.ToString();
             char[] doptc = dopt.ToCharArray();
 
-            if (Settings.PowerPointSettings.ShowPPTButton) {
+            if (Settings.PowerPointSettings.ShowPPTButton)
+            {
                 PPTBtnPreviewLB.Visibility = doptc[0] == '2' ? Visibility.Visible : Visibility.Collapsed;
                 PPTBtnPreviewRB.Visibility = doptc[1] == '2' ? Visibility.Visible : Visibility.Collapsed;
                 PPTBtnPreviewLS.Visibility = doptc[2] == '2' ? Visibility.Visible : Visibility.Collapsed;
                 PPTBtnPreviewRS.Visibility = doptc[3] == '2' ? Visibility.Visible : Visibility.Collapsed;
-            } else {
+            }
+            else
+            {
                 PPTBtnPreviewLB.Visibility = Visibility.Collapsed;
                 PPTBtnPreviewRB.Visibility = Visibility.Collapsed;
                 PPTBtnPreviewLS.Visibility = Visibility.Collapsed;
                 PPTBtnPreviewRS.Visibility = Visibility.Collapsed;
             }
-            
+
             PPTBtnPreviewRSTransform.Y = -(Settings.PowerPointSettings.PPTRSButtonPosition * 0.5);
             PPTBtnPreviewLSTransform.Y = -(Settings.PowerPointSettings.PPTLSButtonPosition * 0.5);
         }
 
-        private void ToggleSwitchShowCursor_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchShowCursor_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
 
             Settings.Canvas.IsShowCursor = ToggleSwitchShowCursor.IsOn;
@@ -660,12 +721,16 @@ namespace InkCanvasForClass_Remastered {
 
         #region Canvas
 
-        private void ComboBoxPenStyle_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+        private void ComboBoxPenStyle_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
             if (!isLoaded) return;
-            if (sender == ComboBoxPenStyle) {
+            if (sender == ComboBoxPenStyle)
+            {
                 Settings.Canvas.InkStyle = ComboBoxPenStyle.SelectedIndex;
                 BoardComboBoxPenStyle.SelectedIndex = ComboBoxPenStyle.SelectedIndex;
-            } else {
+            }
+            else
+            {
                 Settings.Canvas.InkStyle = BoardComboBoxPenStyle.SelectedIndex;
                 ComboBoxPenStyle.SelectedIndex = BoardComboBoxPenStyle.SelectedIndex;
             }
@@ -673,27 +738,34 @@ namespace InkCanvasForClass_Remastered {
             SaveSettingsToFile();
         }
 
-        private void ComboBoxEraserSize_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+        private void ComboBoxEraserSize_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Canvas.EraserSize = ComboBoxEraserSize.SelectedIndex;
             SaveSettingsToFile();
         }
 
-        private void ComboBoxEraserSizeFloatingBar_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+        private void ComboBoxEraserSizeFloatingBar_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
             if (!isLoaded) return;
 
             ComboBox s = (ComboBox)sender;
             Settings.Canvas.EraserSize = s.SelectedIndex;
-            if (s == ComboBoxEraserSizeFloatingBar) {
+            if (s == ComboBoxEraserSizeFloatingBar)
+            {
                 BoardComboBoxEraserSize.SelectedIndex = s.SelectedIndex;
                 ComboBoxEraserSize.SelectedIndex = s.SelectedIndex;
-            } else if (s == BoardComboBoxEraserSize) {
+            }
+            else if (s == BoardComboBoxEraserSize)
+            {
                 ComboBoxEraserSizeFloatingBar.SelectedIndex = s.SelectedIndex;
                 ComboBoxEraserSize.SelectedIndex = s.SelectedIndex;
             }
-            if (Settings.Canvas.EraserShapeType == 0) {
+            if (Settings.Canvas.EraserShapeType == 0)
+            {
                 double k = 1;
-                switch (s.SelectedIndex) {
+                switch (s.SelectedIndex)
+                {
                     case 0:
                         k = 0.5;
                         break;
@@ -709,9 +781,12 @@ namespace InkCanvasForClass_Remastered {
                 }
 
                 inkCanvas.EraserShape = new EllipseStylusShape(k * 90, k * 90);
-            } else if (Settings.Canvas.EraserShapeType == 1) {
+            }
+            else if (Settings.Canvas.EraserShapeType == 1)
+            {
                 double k = 1;
-                switch (s.SelectedIndex) {
+                switch (s.SelectedIndex)
+                {
                     case 0:
                         k = 0.7;
                         break;
@@ -734,13 +809,15 @@ namespace InkCanvasForClass_Remastered {
             SaveSettingsToFile();
         }
 
-        private void SwitchToCircleEraser(object sender, MouseButtonEventArgs e) {
+        private void SwitchToCircleEraser(object sender, MouseButtonEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Canvas.EraserShapeType = 0;
             SaveSettingsToFile();
             CheckEraserTypeTab();
             double k = 1;
-            switch (ComboBoxEraserSizeFloatingBar.SelectedIndex) {
+            switch (ComboBoxEraserSizeFloatingBar.SelectedIndex)
+            {
                 case 0:
                     k = 0.5;
                     break;
@@ -760,13 +837,15 @@ namespace InkCanvasForClass_Remastered {
             inkCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
         }
 
-        private void SwitchToRectangleEraser(object sender, MouseButtonEventArgs e) {
+        private void SwitchToRectangleEraser(object sender, MouseButtonEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Canvas.EraserShapeType = 1;
             SaveSettingsToFile();
             CheckEraserTypeTab();
             double k = 1;
-            switch (ComboBoxEraserSizeFloatingBar.SelectedIndex) {
+            switch (ComboBoxEraserSizeFloatingBar.SelectedIndex)
+            {
                 case 0:
                     k = 0.7;
                     break;
@@ -787,7 +866,8 @@ namespace InkCanvasForClass_Remastered {
         }
 
 
-        private void InkWidthSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
+        private void InkWidthSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
             if (!isLoaded) return;
             if (sender == BoardInkWidthSlider) InkWidthSlider.Value = ((Slider)sender).Value;
             if (sender == InkWidthSlider) BoardInkWidthSlider.Value = ((Slider)sender).Value;
@@ -797,7 +877,8 @@ namespace InkCanvasForClass_Remastered {
             SaveSettingsToFile();
         }
 
-        private void HighlighterWidthSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
+        private void HighlighterWidthSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
             if (!isLoaded) return;
             // if (sender == BoardInkWidthSlider) InkWidthSlider.Value = ((Slider)sender).Value;
             // if (sender == InkWidthSlider) BoardInkWidthSlider.Value = ((Slider)sender).Value;
@@ -807,7 +888,8 @@ namespace InkCanvasForClass_Remastered {
             SaveSettingsToFile();
         }
 
-        private void InkAlphaSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
+        private void InkAlphaSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
             if (!isLoaded) return;
             // if (sender == BoardInkWidthSlider) InkWidthSlider.Value = ((Slider)sender).Value;
             // if (sender == InkWidthSlider) BoardInkWidthSlider.Value = ((Slider)sender).Value;
@@ -821,7 +903,8 @@ namespace InkCanvasForClass_Remastered {
             // SaveSettingsToFile();
         }
 
-        private void ComboBoxHyperbolaAsymptoteOption_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+        private void ComboBoxHyperbolaAsymptoteOption_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Canvas.HyperbolaAsymptoteOption =
                 (OptionalOperation)ComboBoxHyperbolaAsymptoteOption.SelectedIndex;
@@ -832,35 +915,40 @@ namespace InkCanvasForClass_Remastered {
 
         #region Automation
 
-        private void StartOrStoptimerCheckAutoFold() {
+        private void StartOrStoptimerCheckAutoFold()
+        {
             if (Settings.Automation.IsEnableAutoFold)
                 timerCheckAutoFold.Start();
             else
                 timerCheckAutoFold.Stop();
         }
 
-        private void ToggleSwitchAutoFoldInEasiNote_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchAutoFoldInEasiNote_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Automation.IsAutoFoldInEasiNote = ToggleSwitchAutoFoldInEasiNote.IsOn;
             SaveSettingsToFile();
             StartOrStoptimerCheckAutoFold();
         }
 
-        private void ToggleSwitchAutoFoldInEasiNoteIgnoreDesktopAnno_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchAutoFoldInEasiNoteIgnoreDesktopAnno_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Automation.IsAutoFoldInEasiNoteIgnoreDesktopAnno =
                 ToggleSwitchAutoFoldInEasiNoteIgnoreDesktopAnno.IsOn;
             SaveSettingsToFile();
         }
 
-        private void ToggleSwitchAutoFoldInEasiCamera_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchAutoFoldInEasiCamera_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Automation.IsAutoFoldInEasiCamera = ToggleSwitchAutoFoldInEasiCamera.IsOn;
             SaveSettingsToFile();
             StartOrStoptimerCheckAutoFold();
         }
 
-        private void ToggleSwitchAutoFoldInEasiNote3_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchAutoFoldInEasiNote3_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Automation.IsAutoFoldInEasiNote3 = ToggleSwitchAutoFoldInEasiNote3.IsOn;
             SaveSettingsToFile();
@@ -875,56 +963,64 @@ namespace InkCanvasForClass_Remastered {
             StartOrStoptimerCheckAutoFold();
         }
 
-        private void ToggleSwitchAutoFoldInEasiNote5C_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchAutoFoldInEasiNote5C_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Automation.IsAutoFoldInEasiNote5C = ToggleSwitchAutoFoldInEasiNote5C.IsOn;
             SaveSettingsToFile();
             StartOrStoptimerCheckAutoFold();
         }
 
-        private void ToggleSwitchAutoFoldInSeewoPincoTeacher_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchAutoFoldInSeewoPincoTeacher_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Automation.IsAutoFoldInSeewoPincoTeacher = ToggleSwitchAutoFoldInSeewoPincoTeacher.IsOn;
             SaveSettingsToFile();
             StartOrStoptimerCheckAutoFold();
         }
 
-        private void ToggleSwitchAutoFoldInHiteTouchPro_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchAutoFoldInHiteTouchPro_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Automation.IsAutoFoldInHiteTouchPro = ToggleSwitchAutoFoldInHiteTouchPro.IsOn;
             SaveSettingsToFile();
             StartOrStoptimerCheckAutoFold();
         }
 
-        private void ToggleSwitchAutoFoldInHiteLightBoard_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchAutoFoldInHiteLightBoard_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Automation.IsAutoFoldInHiteLightBoard = ToggleSwitchAutoFoldInHiteLightBoard.IsOn;
             SaveSettingsToFile();
             StartOrStoptimerCheckAutoFold();
         }
 
-        private void ToggleSwitchAutoFoldInHiteCamera_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchAutoFoldInHiteCamera_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Automation.IsAutoFoldInHiteCamera = ToggleSwitchAutoFoldInHiteCamera.IsOn;
             SaveSettingsToFile();
             StartOrStoptimerCheckAutoFold();
         }
 
-        private void ToggleSwitchAutoFoldInWxBoardMain_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchAutoFoldInWxBoardMain_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Automation.IsAutoFoldInWxBoardMain = ToggleSwitchAutoFoldInWxBoardMain.IsOn;
             SaveSettingsToFile();
             StartOrStoptimerCheckAutoFold();
         }
 
-        private void ToggleSwitchAutoFoldInOldZyBoard_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchAutoFoldInOldZyBoard_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Automation.IsAutoFoldInOldZyBoard = ToggleSwitchAutoFoldInOldZyBoard.IsOn;
             SaveSettingsToFile();
             StartOrStoptimerCheckAutoFold();
         }
 
-        private void ToggleSwitchAutoFoldInMSWhiteboard_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchAutoFoldInMSWhiteboard_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Automation.IsAutoFoldInMSWhiteboard = ToggleSwitchAutoFoldInMSWhiteboard.IsOn;
             SaveSettingsToFile();
@@ -971,7 +1067,8 @@ namespace InkCanvasForClass_Remastered {
             StartOrStoptimerCheckAutoFold();
         }
 
-        private void ToggleSwitchAutoFoldInPPTSlideShow_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchAutoFoldInPPTSlideShow_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Automation.IsAutoFoldInPPTSlideShow = ToggleSwitchAutoFoldInPPTSlideShow.IsOn;
             if (Settings.Automation.IsAutoFoldInPPTSlideShow)
@@ -979,7 +1076,9 @@ namespace InkCanvasForClass_Remastered {
                 SettingsPPTInkingAndAutoFoldExplictBorder.Visibility = Visibility.Visible;
                 SettingsShowCanvasAtNewSlideShowStackPanel.Opacity = 0.5;
                 SettingsShowCanvasAtNewSlideShowStackPanel.IsHitTestVisible = false;
-            } else {
+            }
+            else
+            {
                 SettingsPPTInkingAndAutoFoldExplictBorder.Visibility = Visibility.Collapsed;
                 SettingsShowCanvasAtNewSlideShowStackPanel.Opacity = 1;
                 SettingsShowCanvasAtNewSlideShowStackPanel.IsHitTestVisible = true;
@@ -988,7 +1087,8 @@ namespace InkCanvasForClass_Remastered {
             StartOrStoptimerCheckAutoFold();
         }
 
-        private void ToggleSwitchAutoKillPptService_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchAutoKillPptService_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Automation.IsAutoKillPptService = ToggleSwitchAutoKillPptService.IsOn;
             SaveSettingsToFile();
@@ -1002,7 +1102,8 @@ namespace InkCanvasForClass_Remastered {
                 timerKillProcess.Stop();
         }
 
-        private void ToggleSwitchAutoKillEasiNote_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchAutoKillEasiNote_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Automation.IsAutoKillEasiNote = ToggleSwitchAutoKillEasiNote.IsOn;
             SaveSettingsToFile();
@@ -1015,7 +1116,8 @@ namespace InkCanvasForClass_Remastered {
                 timerKillProcess.Stop();
         }
 
-        private void ToggleSwitchAutoKillHiteAnnotation_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchAutoKillHiteAnnotation_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Automation.IsAutoKillHiteAnnotation = ToggleSwitchAutoKillHiteAnnotation.IsOn;
             SaveSettingsToFile();
@@ -1098,13 +1200,15 @@ namespace InkCanvasForClass_Remastered {
                 timerKillProcess.Stop();
         }
 
-        private void ToggleSwitchSaveScreenshotsInDateFolders_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchSaveScreenshotsInDateFolders_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Automation.IsSaveScreenshotsInDateFolders = ToggleSwitchSaveScreenshotsInDateFolders.IsOn;
             SaveSettingsToFile();
         }
 
-        private void ToggleSwitchAutoSaveStrokesAtScreenshot_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchAutoSaveStrokesAtScreenshot_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Automation.IsAutoSaveStrokesAtScreenshot = ToggleSwitchAutoSaveStrokesAtScreenshot.IsOn;
             ToggleSwitchAutoSaveStrokesAtClear.Header =
@@ -1112,97 +1216,113 @@ namespace InkCanvasForClass_Remastered {
             SaveSettingsToFile();
         }
 
-        private void ToggleSwitchAutoSaveStrokesAtClear_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchAutoSaveStrokesAtClear_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Automation.IsAutoSaveStrokesAtClear = ToggleSwitchAutoSaveStrokesAtClear.IsOn;
             SaveSettingsToFile();
         }
 
-        private void ToggleSwitchHideStrokeWhenSelecting_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchHideStrokeWhenSelecting_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Canvas.HideStrokeWhenSelecting = ToggleSwitchHideStrokeWhenSelecting.IsOn;
             SaveSettingsToFile();
         }
 
-        private void ToggleSwitchClearCanvasAndClearTimeMachine_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchClearCanvasAndClearTimeMachine_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Canvas.ClearCanvasAndClearTimeMachine = ToggleSwitchClearCanvasAndClearTimeMachine.IsOn;
             SaveSettingsToFile();
         }
 
-        private void ToggleSwitchFitToCurve_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchFitToCurve_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             drawingAttributes.FitToCurve = ToggleSwitchFitToCurve.IsOn;
             Settings.Canvas.FitToCurve = ToggleSwitchFitToCurve.IsOn;
             SaveSettingsToFile();
         }
 
-        private void ToggleSwitchAutoSaveStrokesInPowerPoint_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchAutoSaveStrokesInPowerPoint_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.PowerPointSettings.IsAutoSaveStrokesInPowerPoint = ToggleSwitchAutoSaveStrokesInPowerPoint.IsOn;
             SaveSettingsToFile();
         }
 
-        private void ToggleSwitchNotifyPreviousPage_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchNotifyPreviousPage_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.PowerPointSettings.IsNotifyPreviousPage = ToggleSwitchNotifyPreviousPage.IsOn;
             SaveSettingsToFile();
         }
 
-        private void ToggleSwitchNotifyHiddenPage_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchNotifyHiddenPage_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.PowerPointSettings.IsNotifyHiddenPage = ToggleSwitchNotifyHiddenPage.IsOn;
             SaveSettingsToFile();
         }
 
-        private void ToggleSwitchNotifyAutoPlayPresentation_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchNotifyAutoPlayPresentation_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.PowerPointSettings.IsNotifyAutoPlayPresentation = ToggleSwitchNotifyAutoPlayPresentation.IsOn;
             SaveSettingsToFile();
         }
 
-        private void SideControlMinimumAutomationSlider_ValueChanged(object sender, RoutedEventArgs e) {
+        private void SideControlMinimumAutomationSlider_ValueChanged(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Automation.MinimumAutomationStrokeNumber = (int)SideControlMinimumAutomationSlider.Value;
             SaveSettingsToFile();
         }
 
-        private void AutoSavedStrokesLocationTextBox_TextChanged(object sender, RoutedEventArgs e) {
+        private void AutoSavedStrokesLocationTextBox_TextChanged(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Automation.AutoSavedStrokesLocation = AutoSavedStrokesLocation.Text;
             SaveSettingsToFile();
         }
 
-        private void AutoSavedStrokesLocationButton_Click(object sender, RoutedEventArgs e) {
+        private void AutoSavedStrokesLocationButton_Click(object sender, RoutedEventArgs e)
+        {
             var folderBrowser = new System.Windows.Forms.FolderBrowserDialog();
             folderBrowser.ShowDialog();
             if (folderBrowser.SelectedPath.Length > 0) AutoSavedStrokesLocation.Text = folderBrowser.SelectedPath;
         }
 
-        private void SetAutoSavedStrokesLocationToDiskDButton_Click(object sender, RoutedEventArgs e) {
+        private void SetAutoSavedStrokesLocationToDiskDButton_Click(object sender, RoutedEventArgs e)
+        {
             AutoSavedStrokesLocation.Text = @"D:\Ink Canvas";
         }
 
-        private void SetAutoSavedStrokesLocationToDocumentFolderButton_Click(object sender, RoutedEventArgs e) {
+        private void SetAutoSavedStrokesLocationToDocumentFolderButton_Click(object sender, RoutedEventArgs e)
+        {
             AutoSavedStrokesLocation.Text =
                 Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Ink Canvas";
         }
 
-        private void ToggleSwitchAutoDelSavedFiles_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchAutoDelSavedFiles_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Automation.AutoDelSavedFiles = ToggleSwitchAutoDelSavedFiles.IsOn;
             SaveSettingsToFile();
         }
 
         private void
-            ComboBoxAutoDelSavedFilesDaysThreshold_SelectionChanged(object sender, SelectionChangedEventArgs e) {
+            ComboBoxAutoDelSavedFilesDaysThreshold_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Automation.AutoDelSavedFilesDaysThreshold =
                 int.Parse(((ComboBoxItem)ComboBoxAutoDelSavedFilesDaysThreshold.SelectedItem).Content.ToString());
             SaveSettingsToFile();
         }
 
-        private void ToggleSwitchAutoSaveScreenShotInPowerPoint_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchAutoSaveScreenShotInPowerPoint_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.PowerPointSettings.IsAutoSaveScreenShotInPowerPoint =
                 ToggleSwitchAutoSaveScreenShotInPowerPoint.IsOn;
@@ -1213,20 +1333,23 @@ namespace InkCanvasForClass_Remastered {
 
         #region Gesture
 
-        private void ToggleSwitchEnableFingerGestureSlideShowControl_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchEnableFingerGestureSlideShowControl_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.PowerPointSettings.IsEnableFingerGestureSlideShowControl =
                 ToggleSwitchEnableFingerGestureSlideShowControl.IsOn;
             SaveSettingsToFile();
         }
 
-        private void ToggleSwitchAutoSwitchTwoFingerGesture_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchAutoSwitchTwoFingerGesture_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Gesture.AutoSwitchTwoFingerGesture = ToggleSwitchAutoSwitchTwoFingerGesture.IsOn;
             SaveSettingsToFile();
         }
 
-        private void ToggleSwitchEnableTwoFingerZoom_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchEnableTwoFingerZoom_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             if (sender == ToggleSwitchEnableTwoFingerZoom)
                 BoardToggleSwitchEnableTwoFingerZoom.IsOn = ToggleSwitchEnableTwoFingerZoom.IsOn;
@@ -1237,14 +1360,17 @@ namespace InkCanvasForClass_Remastered {
             SaveSettingsToFile();
         }
 
-        private void ToggleSwitchEnableMultiTouchMode_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchEnableMultiTouchMode_Toggled(object sender, RoutedEventArgs e)
+        {
             //if (!isLoaded) return;
             if (sender == ToggleSwitchEnableMultiTouchMode)
                 BoardToggleSwitchEnableMultiTouchMode.IsOn = ToggleSwitchEnableMultiTouchMode.IsOn;
             else
                 ToggleSwitchEnableMultiTouchMode.IsOn = BoardToggleSwitchEnableMultiTouchMode.IsOn;
-            if (ToggleSwitchEnableMultiTouchMode.IsOn) {
-                if (!isInMultiTouchMode) {
+            if (ToggleSwitchEnableMultiTouchMode.IsOn)
+            {
+                if (!isInMultiTouchMode)
+                {
                     inkCanvas.StylusDown += MainWindow_StylusDown;
                     inkCanvas.StylusMove += MainWindow_StylusMove;
                     inkCanvas.StylusUp += MainWindow_StylusUp;
@@ -1255,8 +1381,11 @@ namespace InkCanvasForClass_Remastered {
                     inkCanvas.Children.Clear();
                     isInMultiTouchMode = true;
                 }
-            } else {
-                if (isInMultiTouchMode) {
+            }
+            else
+            {
+                if (isInMultiTouchMode)
+                {
                     inkCanvas.StylusDown -= MainWindow_StylusDown;
                     inkCanvas.StylusMove -= MainWindow_StylusMove;
                     inkCanvas.StylusUp -= MainWindow_StylusUp;
@@ -1274,7 +1403,8 @@ namespace InkCanvasForClass_Remastered {
             SaveSettingsToFile();
         }
 
-        private void ToggleSwitchEnableTwoFingerTranslate_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchEnableTwoFingerTranslate_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             if (sender == ToggleSwitchEnableTwoFingerTranslate)
                 BoardToggleSwitchEnableTwoFingerTranslate.IsOn = ToggleSwitchEnableTwoFingerTranslate.IsOn;
@@ -1285,7 +1415,8 @@ namespace InkCanvasForClass_Remastered {
             SaveSettingsToFile();
         }
 
-        private void ToggleSwitchEnableTwoFingerRotation_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchEnableTwoFingerRotation_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
 
             if (sender == ToggleSwitchEnableTwoFingerRotation)
@@ -1298,7 +1429,8 @@ namespace InkCanvasForClass_Remastered {
             SaveSettingsToFile();
         }
 
-        private void ToggleSwitchEnableTwoFingerGestureInPresentationMode_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchEnableTwoFingerGestureInPresentationMode_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.PowerPointSettings.IsEnableTwoFingerGestureInPresentationMode =
                 ToggleSwitchEnableTwoFingerGestureInPresentationMode.IsOn;
@@ -1309,7 +1441,8 @@ namespace InkCanvasForClass_Remastered {
 
         #region Reset
 
-        public static void SetSettingsToRecommendation() {
+        public static void SetSettingsToRecommendation()
+        {
             var AutoDelSavedFilesDays = Settings.Automation.AutoDelSavedFiles;
             var AutoDelSavedFilesDaysThreshold = Settings.Automation.AutoDelSavedFilesDaysThreshold;
             Settings = new Settings();
@@ -1413,12 +1546,14 @@ namespace InkCanvasForClass_Remastered {
             Settings.Gesture.IsEnableTwoFingerRotationOnSelection = false;
 
             Settings.Startup.IsEnableNibMode = false;
-            
+
             Settings.Startup.IsFoldAtStartup = false;
         }
 
-        private void BtnResetToSuggestion_Click(object sender, RoutedEventArgs e) {
-            try {
+        private void BtnResetToSuggestion_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
                 isLoaded = false;
                 SetSettingsToRecommendation();
                 SaveSettingsToFile();
@@ -1432,9 +1567,11 @@ namespace InkCanvasForClass_Remastered {
             ShowNotification("设置已重置为默认推荐设置~");
         }
 
-        private async void SpecialVersionResetToSuggestion_Click() {
+        private async void SpecialVersionResetToSuggestion_Click()
+        {
             await Task.Delay(1000);
-            try {
+            try
+            {
                 isLoaded = false;
                 SetSettingsToRecommendation();
                 Settings.Automation.AutoDelSavedFiles = true;
@@ -1451,7 +1588,8 @@ namespace InkCanvasForClass_Remastered {
 
         #region Advanced
 
-        private void ToggleSwitchIsSpecialScreen_OnToggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchIsSpecialScreen_OnToggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Advanced.IsSpecialScreen = ToggleSwitchIsSpecialScreen.IsOn;
             TouchMultiplierSlider.Visibility =
@@ -1459,13 +1597,15 @@ namespace InkCanvasForClass_Remastered {
             SaveSettingsToFile();
         }
 
-        private void TouchMultiplierSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
+        private void TouchMultiplierSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
             if (!isLoaded) return;
             Settings.Advanced.TouchMultiplier = e.NewValue;
             SaveSettingsToFile();
         }
 
-        private void BorderCalculateMultiplier_TouchDown(object sender, TouchEventArgs e) {
+        private void BorderCalculateMultiplier_TouchDown(object sender, TouchEventArgs e)
+        {
             var args = e.GetTouchPoint(null).Bounds;
             double value;
             if (!Settings.Advanced.IsQuadIR) value = args.Width;
@@ -1474,20 +1614,23 @@ namespace InkCanvasForClass_Remastered {
             TextBlockShowCalculatedMultiplier.Text = (5 / (value * 1.1)).ToString();
         }
 
-        private void ToggleSwitchIsEnableFullScreenHelper_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchIsEnableFullScreenHelper_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Advanced.IsEnableFullScreenHelper = ToggleSwitchIsEnableFullScreenHelper.IsOn;
             SaveSettingsToFile();
         }
 
-        private void ToggleSwitchIsEnableEdgeGestureUtil_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchIsEnableEdgeGestureUtil_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Advanced.IsEnableEdgeGestureUtil = ToggleSwitchIsEnableEdgeGestureUtil.IsOn;
             if (OSVersion.GetOperatingSystem() >= OSVersionExtension.OperatingSystem.Windows10) EdgeGestureUtil.DisableEdgeGestures(new WindowInteropHelper(this).Handle, ToggleSwitchIsEnableEdgeGestureUtil.IsOn);
             SaveSettingsToFile();
         }
 
-        private void ToggleSwitchIsEnableForceFullScreen_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchIsEnableForceFullScreen_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Advanced.IsEnableForceFullScreen = ToggleSwitchIsEnableForceFullScreen.IsOn;
             SaveSettingsToFile();
@@ -1507,13 +1650,15 @@ namespace InkCanvasForClass_Remastered {
             SaveSettingsToFile();
         }
 
-        private void ToggleSwitchEraserBindTouchMultiplier_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchEraserBindTouchMultiplier_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Advanced.EraserBindTouchMultiplier = ToggleSwitchEraserBindTouchMultiplier.IsOn;
             SaveSettingsToFile();
         }
 
-        private void NibModeBoundsWidthSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
+        private void NibModeBoundsWidthSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
             if (!isLoaded) return;
             Settings.Advanced.NibModeBoundsWidth = (int)e.NewValue;
 
@@ -1525,7 +1670,8 @@ namespace InkCanvasForClass_Remastered {
             SaveSettingsToFile();
         }
 
-        private void FingerModeBoundsWidthSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
+        private void FingerModeBoundsWidthSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
             if (!isLoaded) return;
             Settings.Advanced.FingerModeBoundsWidth = (int)e.NewValue;
 
@@ -1537,19 +1683,22 @@ namespace InkCanvasForClass_Remastered {
             SaveSettingsToFile();
         }
 
-        private void ToggleSwitchIsQuadIR_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchIsQuadIR_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Advanced.IsQuadIR = ToggleSwitchIsQuadIR.IsOn;
             SaveSettingsToFile();
         }
 
-        private void ToggleSwitchIsLogEnabled_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchIsLogEnabled_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Advanced.IsLogEnabled = ToggleSwitchIsLogEnabled.IsOn;
             SaveSettingsToFile();
         }
 
-        private void ToggleSwitchIsSecondConfimeWhenShutdownApp_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchIsSecondConfimeWhenShutdownApp_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.Advanced.IsSecondConfirmWhenShutdownApp = ToggleSwitchIsSecondConfimeWhenShutdownApp.IsOn;
             SaveSettingsToFile();
@@ -1559,7 +1708,8 @@ namespace InkCanvasForClass_Remastered {
 
         #region RandSettings
 
-        private void ToggleSwitchDisplayRandWindowNamesInputBtn_OnToggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchDisplayRandWindowNamesInputBtn_OnToggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
             Settings.RandSettings.DisplayRandWindowNamesInputBtn = ToggleSwitchDisplayRandWindowNamesInputBtn.IsOn;
             SaveSettingsToFile();
@@ -1581,19 +1731,23 @@ namespace InkCanvasForClass_Remastered {
 
         #endregion
 
-        public static void SaveSettingsToFile() {
+        public static void SaveSettingsToFile()
+        {
             var text = JsonConvert.SerializeObject(Settings, Formatting.Indented);
-            try {
+            try
+            {
                 File.WriteAllText(App.RootPath + settingsFileName, text);
             }
             catch { }
         }
 
-        private void SCManipulationBoundaryFeedback(object sender, ManipulationBoundaryFeedbackEventArgs e) {
+        private void SCManipulationBoundaryFeedback(object sender, ManipulationBoundaryFeedbackEventArgs e)
+        {
             e.Handled = true;
         }
 
-        private void HyperlinkSourceToICCReRepository_Click(object sender, RoutedEventArgs e) {
+        private void HyperlinkSourceToICCReRepository_Click(object sender, RoutedEventArgs e)
+        {
             Process.Start("https://github.com/LiuYan-xwx/InkCanvasForClass-Remastered");
             HideSubPanels();
         }

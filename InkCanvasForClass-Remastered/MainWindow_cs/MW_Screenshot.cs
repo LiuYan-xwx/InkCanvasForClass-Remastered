@@ -1,19 +1,23 @@
-﻿using System;
-using System.Drawing.Imaging;
+﻿using System.Drawing.Imaging;
 using System.IO;
 using System.Windows;
 
-namespace InkCanvasForClass_Remastered {
-    public partial class MainWindow : Window {
-        private void SaveScreenShot(bool isHideNotification, string fileName = null) {
+namespace InkCanvasForClass_Remastered
+{
+    public partial class MainWindow : Window
+    {
+        private void SaveScreenShot(bool isHideNotification, string fileName = null)
+        {
             var rc = System.Windows.Forms.SystemInformation.VirtualScreen;
             var bitmap = new System.Drawing.Bitmap(rc.Width, rc.Height, PixelFormat.Format32bppArgb);
 
-            using (var memoryGrahics = System.Drawing.Graphics.FromImage(bitmap)) {
+            using (var memoryGrahics = System.Drawing.Graphics.FromImage(bitmap))
+            {
                 memoryGrahics.CopyFromScreen(rc.X, rc.Y, 0, 0, rc.Size, System.Drawing.CopyPixelOperation.SourceCopy);
             }
 
-            if (Settings.Automation.IsSaveScreenshotsInDateFolders) {
+            if (Settings.Automation.IsSaveScreenshotsInDateFolders)
+            {
                 if (string.IsNullOrWhiteSpace(fileName)) fileName = DateTime.Now.ToString("HH-mm-ss");
                 var savePath = Settings.Automation.AutoSavedStrokesLocation +
                                @"\Auto Saved - Screenshots\{DateTime.Now.Date:yyyyMMdd}\{fileName}.png";
@@ -22,7 +26,8 @@ namespace InkCanvasForClass_Remastered {
                 bitmap.Save(savePath, ImageFormat.Png);
                 if (!isHideNotification) ShowNotification("截图成功保存至 " + savePath);
             }
-            else {
+            else
+            {
                 var savePath = Settings.Automation.AutoSavedStrokesLocation + @"\Auto Saved - Screenshots";
                 if (!Directory.Exists(savePath)) Directory.CreateDirectory(savePath);
                 bitmap.Save(savePath + @"\" + DateTime.Now.ToString("u").Replace(':', '-') + ".png", ImageFormat.Png);
@@ -34,11 +39,13 @@ namespace InkCanvasForClass_Remastered {
             if (Settings.Automation.IsAutoSaveStrokesAtScreenshot) SaveInkCanvasStrokes(false, false);
         }
 
-        private void SaveScreenShotToDesktop() {
+        private void SaveScreenShotToDesktop()
+        {
             var rc = System.Windows.Forms.SystemInformation.VirtualScreen;
             var bitmap = new System.Drawing.Bitmap(rc.Width, rc.Height, PixelFormat.Format32bppArgb);
 
-            using (var memoryGrahics = System.Drawing.Graphics.FromImage(bitmap)) {
+            using (var memoryGrahics = System.Drawing.Graphics.FromImage(bitmap))
+            {
                 memoryGrahics.CopyFromScreen(rc.X, rc.Y, 0, 0, rc.Size, System.Drawing.CopyPixelOperation.SourceCopy);
             }
 

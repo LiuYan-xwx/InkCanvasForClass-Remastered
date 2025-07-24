@@ -36,7 +36,7 @@ namespace InkCanvasForClass_Remastered
         public int InkStyle { get; set; } = 0;
         [JsonProperty("eraserSize")]
         public int EraserSize { get; set; } = 2;
-        [JsonProperty("eraserType")] 
+        [JsonProperty("eraserType")]
         public int EraserType { get; set; } = 0; // 0 - 图标切换模式      1 - 面积擦     2 - 线条擦
         [JsonProperty("eraserShapeType")]
         public int EraserShapeType { get; set; } = 0; // 0 - 圆形擦  1 - 黑板擦
@@ -83,7 +83,7 @@ namespace InkCanvasForClass_Remastered
 
     public class Startup
     {
-        
+
 
         [JsonProperty("isEnableNibMode")]
         public bool IsEnableNibMode { get; set; } = false;
@@ -106,7 +106,7 @@ namespace InkCanvasForClass_Remastered
         // public bool EnableViewboxFloatingBarScaleTransform { get; set; } = false;
         [JsonProperty("viewboxFloatingBarScaleTransformValue")]
         public double ViewboxFloatingBarScaleTransformValue { get; set; } = 1.0;
-        [JsonProperty("floatingBarImg")] 
+        [JsonProperty("floatingBarImg")]
         public int FloatingBarImg { get; set; } = 0;
         [JsonProperty("viewboxFloatingBarOpacityValue")]
         public double ViewboxFloatingBarOpacityValue { get; set; } = 1.0;
@@ -135,7 +135,7 @@ namespace InkCanvasForClass_Remastered
         [JsonProperty("isShowModeFingerToggleSwitch")]
         public bool IsShowModeFingerToggleSwitch { get; set; } = true;
         [JsonProperty("theme")]
-        public int Theme { get; set; } = 0;            
+        public int Theme { get; set; } = 0;
     }
 
     public class PowerPointSettings
@@ -197,7 +197,7 @@ namespace InkCanvasForClass_Remastered
     public class Automation
     {
         [JsonIgnore]
-        public bool IsEnableAutoFold => 
+        public bool IsEnableAutoFold =>
             IsAutoFoldInEasiNote
             || IsAutoFoldInEasiCamera
             || IsAutoFoldInEasiNote3C
@@ -367,7 +367,8 @@ namespace InkCanvasForClass_Remastered
         public bool IsSecondConfirmWhenShutdownApp { get; set; } = false;
     }
 
-    public class RandSettings {
+    public class RandSettings
+    {
         [JsonProperty("displayRandWindowNamesInputBtn")]
         public bool DisplayRandWindowNamesInputBtn { get; set; } = false;
         [JsonProperty("randWindowOnceCloseLatency")]

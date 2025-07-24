@@ -1,6 +1,4 @@
-﻿using System;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System.Windows;
 
 namespace InkCanvasForClass_Remastered
 {
@@ -47,7 +45,8 @@ namespace InkCanvasForClass_Remastered
             Close();
         }
 
-        private void Window_Closed(object sender, EventArgs e) {
+        private void Window_Closed(object sender, EventArgs e)
+        {
             _windowClose.Invoke();
         }
     }

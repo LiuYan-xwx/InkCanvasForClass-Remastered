@@ -1,8 +1,4 @@
 ﻿using InkCanvasForClass_Remastered.Helpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Ink;
@@ -10,14 +6,18 @@ using System.Windows.Input;
 using System.Windows.Media;
 using Point = System.Windows.Point;
 
-namespace InkCanvasForClass_Remastered {
-    public partial class MainWindow : Window {
+namespace InkCanvasForClass_Remastered
+{
+    public partial class MainWindow : Window
+    {
         #region Multi-Touch
 
         private bool isInMultiTouchMode = false;
 
-        private void BorderMultiTouchMode_MouseUp(object sender, MouseButtonEventArgs e) {
-            if (isInMultiTouchMode) {
+        private void BorderMultiTouchMode_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (isInMultiTouchMode)
+            {
                 inkCanvas.StylusDown -= MainWindow_StylusDown;
                 inkCanvas.StylusMove -= MainWindow_StylusMove;
                 inkCanvas.StylusUp -= MainWindow_StylusUp;
@@ -27,7 +27,8 @@ namespace InkCanvasForClass_Remastered {
                 inkCanvas.Children.Clear();
                 isInMultiTouchMode = false;
             }
-            else {
+            else
+            {
                 inkCanvas.StylusDown += MainWindow_StylusDown;
                 inkCanvas.StylusMove += MainWindow_StylusMove;
                 inkCanvas.StylusUp += MainWindow_StylusUp;
@@ -39,12 +40,14 @@ namespace InkCanvasForClass_Remastered {
             }
         }
 
-        private void MainWindow_TouchDown(object sender, TouchEventArgs e) {
+        private void MainWindow_TouchDown(object sender, TouchEventArgs e)
+        {
             if (inkCanvas.EditingMode == InkCanvasEditingMode.EraseByPoint
                 || inkCanvas.EditingMode == InkCanvasEditingMode.EraseByStroke
                 || inkCanvas.EditingMode == InkCanvasEditingMode.Select) return;
 
-            if (!isHidingSubPanelsWhenInking) {
+            if (!isHidingSubPanelsWhenInking)
+            {
                 isHidingSubPanelsWhenInking = true;
                 HideSubPanels(); // 书写时自动隐藏二级菜单
             }
@@ -54,10 +57,12 @@ namespace InkCanvasForClass_Remastered {
                 eraserMultiplier = 1 / Settings.Advanced.TouchMultiplier;
 
             if ((Settings.Advanced.TouchMultiplier != 0 || !Settings.Advanced.IsSpecialScreen) //启用特殊屏幕且触摸倍数为 0 时禁用橡皮
-                && boundWidth > BoundsWidth * 2.5) {
+                && boundWidth > BoundsWidth * 2.5)
+            {
                 if (drawingShapeMode == 0 && forceEraser) return;
                 double k = 1;
-                switch (Settings.Canvas.EraserSize) {
+                switch (Settings.Canvas.EraserSize)
+                {
                     case 0:
                         k = 0.5;
                         break;
@@ -77,13 +82,15 @@ namespace InkCanvasForClass_Remastered {
                 TouchDownPointsList[e.TouchDevice.Id] = InkCanvasEditingMode.EraseByPoint;
                 inkCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
             }
-            else {
+            else
+            {
                 TouchDownPointsList[e.TouchDevice.Id] = InkCanvasEditingMode.None;
                 inkCanvas.EditingMode = InkCanvasEditingMode.None;
             }
         }
 
-        private void MainWindow_StylusDown(object sender, StylusDownEventArgs e) {
+        private void MainWindow_StylusDown(object sender, StylusDownEventArgs e)
+        {
 
             inkCanvas.CaptureStylus();
             ViewboxFloatingBar.IsHitTestVisible = false;
@@ -96,8 +103,10 @@ namespace InkCanvasForClass_Remastered {
             TouchDownPointsList[e.StylusDevice.Id] = InkCanvasEditingMode.None;
         }
 
-        private async void MainWindow_StylusUp(object sender, StylusEventArgs e) {
-            try {
+        private async void MainWindow_StylusUp(object sender, StylusEventArgs e)
+        {
+            try
+            {
                 inkCanvas.Strokes.Add(GetStrokeVisual(e.StylusDevice.Id).Stroke);
                 await Task.Delay(5); // 避免渲染墨迹完成前预览墨迹被删除导致墨迹闪烁
                 inkCanvas.Children.Remove(GetVisualCanvas(e.StylusDevice.Id));
@@ -105,15 +114,18 @@ namespace InkCanvasForClass_Remastered {
                 inkCanvas_StrokeCollected(inkCanvas,
                     new InkCanvasStrokeCollectedEventArgs(GetStrokeVisual(e.StylusDevice.Id).Stroke));
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 Label.Content = ex.ToString();
             }
 
-            try {
+            try
+            {
                 StrokeVisualList.Remove(e.StylusDevice.Id);
                 VisualCanvasList.Remove(e.StylusDevice.Id);
                 TouchDownPointsList.Remove(e.StylusDevice.Id);
-                if (StrokeVisualList.Count == 0 || VisualCanvasList.Count == 0 || TouchDownPointsList.Count == 0) {
+                if (StrokeVisualList.Count == 0 || VisualCanvasList.Count == 0 || TouchDownPointsList.Count == 0)
+                {
                     inkCanvas.Children.Clear();
                     StrokeVisualList.Clear();
                     VisualCanvasList.Clear();
@@ -127,10 +139,13 @@ namespace InkCanvasForClass_Remastered {
             BlackboardUIGridForInkReplay.IsHitTestVisible = true;
         }
 
-        private void MainWindow_StylusMove(object sender, StylusEventArgs e) {
-            try {
+        private void MainWindow_StylusMove(object sender, StylusEventArgs e)
+        {
+            try
+            {
                 if (GetTouchDownPointsList(e.StylusDevice.Id) != InkCanvasEditingMode.None) return;
-                try {
+                try
+                {
                     if (e.StylusDevice.StylusButtons[1].StylusButtonState == StylusButtonState.Down) return;
                 }
                 catch { }
@@ -144,7 +159,8 @@ namespace InkCanvasForClass_Remastered {
             catch { }
         }
 
-        private StrokeVisual GetStrokeVisual(int id) {
+        private StrokeVisual GetStrokeVisual(int id)
+        {
             if (StrokeVisualList.TryGetValue(id, out var visual)) return visual;
 
             var strokeVisual = new StrokeVisual(inkCanvas.DefaultDrawingAttributes.Clone());
@@ -157,11 +173,13 @@ namespace InkCanvasForClass_Remastered {
             return strokeVisual;
         }
 
-        private VisualCanvas GetVisualCanvas(int id) {
+        private VisualCanvas GetVisualCanvas(int id)
+        {
             return VisualCanvasList.TryGetValue(id, out var visualCanvas) ? visualCanvas : null;
         }
 
-        private InkCanvasEditingMode GetTouchDownPointsList(int id) {
+        private InkCanvasEditingMode GetTouchDownPointsList(int id)
+        {
             return TouchDownPointsList.TryGetValue(id, out var inkCanvasEditingMode) ? inkCanvasEditingMode : inkCanvas.EditingMode;
         }
 
@@ -180,13 +198,15 @@ namespace InkCanvasForClass_Remastered {
         private bool isLastTouchEraser = false;
         private bool forcePointEraser = true;
 
-        private void Main_Grid_TouchDown(object sender, TouchEventArgs e) {
+        private void Main_Grid_TouchDown(object sender, TouchEventArgs e)
+        {
 
             inkCanvas.CaptureTouch(e.TouchDevice);
             ViewboxFloatingBar.IsHitTestVisible = false;
             BlackboardUIGridForInkReplay.IsHitTestVisible = false;
 
-            if (!isHidingSubPanelsWhenInking) {
+            if (!isHidingSubPanelsWhenInking)
+            {
                 isHidingSubPanelsWhenInking = true;
                 HideSubPanels(); // 书写时自动隐藏二级菜单
             }
@@ -197,12 +217,15 @@ namespace InkCanvasForClass_Remastered {
             double boundsWidth = GetTouchBoundWidth(e), eraserMultiplier = 1.0;
             if (!Settings.Advanced.EraserBindTouchMultiplier && Settings.Advanced.IsSpecialScreen)
                 eraserMultiplier = 1 / Settings.Advanced.TouchMultiplier;
-            if (boundsWidth > BoundsWidth) {
+            if (boundsWidth > BoundsWidth)
+            {
                 isLastTouchEraser = true;
                 if (drawingShapeMode == 0 && forceEraser) return;
-                if (boundsWidth > BoundsWidth * 2.5) {
+                if (boundsWidth > BoundsWidth * 2.5)
+                {
                     double k = 1;
-                    switch (Settings.Canvas.EraserSize) {
+                    switch (Settings.Canvas.EraserSize)
+                    {
                         case 0:
                             k = 0.5;
                             break;
@@ -221,20 +244,24 @@ namespace InkCanvasForClass_Remastered {
                         boundsWidth * k * eraserMultiplier);
                     inkCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
                 }
-                else {
+                else
+                {
                     if (StackPanelPPTControls.Visibility == Visibility.Visible && inkCanvas.Strokes.Count == 0 &&
-                        Settings.PowerPointSettings.IsEnableFingerGestureSlideShowControl) {
+                        Settings.PowerPointSettings.IsEnableFingerGestureSlideShowControl)
+                    {
                         isLastTouchEraser = false;
                         inkCanvas.EditingMode = InkCanvasEditingMode.GestureOnly;
                         inkCanvas.Opacity = 0.1;
                     }
-                    else {
+                    else
+                    {
                         inkCanvas.EraserShape = new EllipseStylusShape(5, 5);
                         inkCanvas.EditingMode = InkCanvasEditingMode.EraseByStroke;
                     }
                 }
             }
-            else {
+            else
+            {
                 isLastTouchEraser = false;
                 inkCanvas.EraserShape =
                     forcePointEraser ? new EllipseStylusShape(50, 50) : new EllipseStylusShape(5, 5);
@@ -243,7 +270,8 @@ namespace InkCanvasForClass_Remastered {
             }
         }
 
-        private double GetTouchBoundWidth(TouchEventArgs e) {
+        private double GetTouchBoundWidth(TouchEventArgs e)
+        {
             var args = e.GetTouchPoint(null).Bounds;
             double value;
             if (!Settings.Advanced.IsQuadIR) value = args.Width;
@@ -260,7 +288,8 @@ namespace InkCanvasForClass_Remastered {
         private InkCanvasEditingMode lastInkCanvasEditingMode = InkCanvasEditingMode.Ink;
         private bool isSingleFingerDragMode = false;
 
-        private void inkCanvas_PreviewTouchDown(object sender, TouchEventArgs e) {
+        private void inkCanvas_PreviewTouchDown(object sender, TouchEventArgs e)
+        {
 
             inkCanvas.CaptureTouch(e.TouchDevice);
             ViewboxFloatingBar.IsHitTestVisible = false;
@@ -268,7 +297,8 @@ namespace InkCanvasForClass_Remastered {
 
             dec.Add(e.TouchDevice.Id);
             //设备1个的时候，记录中心点
-            if (dec.Count == 1) {
+            if (dec.Count == 1)
+            {
                 var touchPoint = e.GetTouchPoint(inkCanvas);
                 centerPoint = touchPoint.Position;
 
@@ -276,7 +306,8 @@ namespace InkCanvasForClass_Remastered {
                 lastTouchDownStrokeCollection = inkCanvas.Strokes.Clone();
             }
             //设备两个及两个以上，将画笔功能关闭
-            if (dec.Count > 1 || isSingleFingerDragMode || !Settings.Gesture.IsEnableTwoFingerGesture) {
+            if (dec.Count > 1 || isSingleFingerDragMode || !Settings.Gesture.IsEnableTwoFingerGesture)
+            {
                 if (isInMultiTouchMode || !Settings.Gesture.IsEnableTwoFingerGesture) return;
                 if (inkCanvas.EditingMode == InkCanvasEditingMode.None ||
                     inkCanvas.EditingMode == InkCanvasEditingMode.Select) return;
@@ -285,7 +316,8 @@ namespace InkCanvasForClass_Remastered {
             }
         }
 
-        private void inkCanvas_PreviewTouchUp(object sender, TouchEventArgs e) {
+        private void inkCanvas_PreviewTouchUp(object sender, TouchEventArgs e)
+        {
 
             inkCanvas.ReleaseAllTouchCaptures();
             ViewboxFloatingBar.IsHitTestVisible = true;
@@ -299,20 +331,23 @@ namespace InkCanvasForClass_Remastered {
             inkCanvas.Opacity = 1;
             if (dec.Count == 0)
                 if (lastTouchDownStrokeCollection.Count() != inkCanvas.Strokes.Count() &&
-                    !(drawingShapeMode == 9 && !isFirstTouchCuboid)) {
+                    !(drawingShapeMode == 9 && !isFirstTouchCuboid))
+                {
                     var whiteboardIndex = CurrentWhiteboardIndex;
                     if (currentMode == 0) whiteboardIndex = 0;
                     strokeCollections[whiteboardIndex] = lastTouchDownStrokeCollection;
                 }
         }
 
-        private void inkCanvas_ManipulationStarting(object sender, ManipulationStartingEventArgs e) {
+        private void inkCanvas_ManipulationStarting(object sender, ManipulationStartingEventArgs e)
+        {
             e.Mode = ManipulationModes.All;
         }
 
         private void inkCanvas_ManipulationInertiaStarting(object sender, ManipulationInertiaStartingEventArgs e) { }
 
-        private void Main_Grid_ManipulationCompleted(object sender, ManipulationCompletedEventArgs e) {
+        private void Main_Grid_ManipulationCompleted(object sender, ManipulationCompletedEventArgs e)
+        {
             if (e.Manipulators.Count() != 0) return;
             if (forceEraser) return;
             inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
@@ -338,12 +373,14 @@ namespace InkCanvasForClass_Remastered {
         //    _currentCommitType = CommitReason.UserInput;
         //}
 
-        private void Main_Grid_ManipulationDelta(object sender, ManipulationDeltaEventArgs e) {
+        private void Main_Grid_ManipulationDelta(object sender, ManipulationDeltaEventArgs e)
+        {
             if (isInMultiTouchMode || !Settings.Gesture.IsEnableTwoFingerGesture) return;
             if ((dec.Count >= 2 && (Settings.PowerPointSettings.IsEnableTwoFingerGestureInPresentationMode ||
                                     StackPanelPPTControls.Visibility != Visibility.Visible ||
                                     StackPanelPPTButtons.Visibility == Visibility.Collapsed)) ||
-                isSingleFingerDragMode) {
+                isSingleFingerDragMode)
+            {
                 var md = e.DeltaManipulation;
                 var trans = md.Translation; // 获得位移矢量
 
@@ -352,7 +389,8 @@ namespace InkCanvasForClass_Remastered {
                 if (Settings.Gesture.IsEnableTwoFingerTranslate)
                     m.Translate(trans.X, trans.Y); // 移动
 
-                if (Settings.Gesture.IsEnableTwoFingerGestureTranslateOrRotation) {
+                if (Settings.Gesture.IsEnableTwoFingerGestureTranslateOrRotation)
+                {
                     var rotate = md.Rotation; // 获得旋转角度
                     var scale = md.Scale; // 获得缩放倍数
 
@@ -368,12 +406,15 @@ namespace InkCanvasForClass_Remastered {
                 }
 
                 var strokes = inkCanvas.GetSelectedStrokes();
-                if (strokes.Count != 0) {
-                    foreach (var stroke in strokes) {
+                if (strokes.Count != 0)
+                {
+                    foreach (var stroke in strokes)
+                    {
                         stroke.Transform(m, false);
 
                         foreach (var circle in circles)
-                            if (stroke == circle.Stroke) {
+                            if (stroke == circle.Stroke)
+                            {
                                 circle.R = GetDistance(circle.Stroke.StylusPoints[0].ToPoint(),
                                     circle.Stroke.StylusPoints[circle.Stroke.StylusPoints.Count / 2].ToPoint()) / 2;
                                 circle.Centroid = new Point(
@@ -385,18 +426,23 @@ namespace InkCanvasForClass_Remastered {
                             }
 
                         if (!Settings.Gesture.IsEnableTwoFingerZoom) continue;
-                        try {
+                        try
+                        {
                             stroke.DrawingAttributes.Width *= md.Scale.X;
                             stroke.DrawingAttributes.Height *= md.Scale.Y;
                         }
                         catch { }
                     }
                 }
-                else {
-                    if (Settings.Gesture.IsEnableTwoFingerZoom) {
-                        foreach (var stroke in inkCanvas.Strokes) {
+                else
+                {
+                    if (Settings.Gesture.IsEnableTwoFingerZoom)
+                    {
+                        foreach (var stroke in inkCanvas.Strokes)
+                        {
                             stroke.Transform(m, false);
-                            try {
+                            try
+                            {
                                 stroke.DrawingAttributes.Width *= md.Scale.X;
                                 stroke.DrawingAttributes.Height *= md.Scale.Y;
                             }
@@ -405,12 +451,14 @@ namespace InkCanvasForClass_Remastered {
 
                         ;
                     }
-                    else {
+                    else
+                    {
                         foreach (var stroke in inkCanvas.Strokes) stroke.Transform(m, false);
                         ;
                     }
 
-                    foreach (var circle in circles) {
+                    foreach (var circle in circles)
+                    {
                         circle.R = GetDistance(circle.Stroke.StylusPoints[0].ToPoint(),
                             circle.Stroke.StylusPoints[circle.Stroke.StylusPoints.Count / 2].ToPoint()) / 2;
                         circle.Centroid = new Point(
