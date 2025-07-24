@@ -3,12 +3,11 @@ using System;
 using System.Media;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Timers;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
-using Timer = System.Timers.Timer;
+using System.Windows.Threading;
 
 namespace InkCanvasForClass_Remastered
 {
@@ -22,11 +21,11 @@ namespace InkCanvasForClass_Remastered
             InitializeComponent();
             AnimationsHelper.ShowWithSlideFromBottomAndFade(this, 0.25);
 
-            timer.Elapsed += Timer_Elapsed;
-            timer.Interval = 50;
+            timer.Tick += Timer_Tick;
+            timer.Interval = TimeSpan.FromMilliseconds(50);
         }
 
-        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        private void Timer_Tick(object sender, EventArgs e)
         {
             if (!isTimerRunning || isPaused)
             {
@@ -39,35 +38,29 @@ namespace InkCanvasForClass_Remastered
             TimeSpan leftTimeSpan = totalTimeSpan - timeSpan;
             if (leftTimeSpan.Milliseconds > 0) leftTimeSpan += new TimeSpan(0, 0, 1);
             double spentTimePercent = timeSpan.TotalMilliseconds / (totalSeconds * 1000.0);
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                ProcessBarTime.CurrentValue = 1 - spentTimePercent;
-                TextBlockHour.Text = leftTimeSpan.Hours.ToString("00");
-                TextBlockMinute.Text = leftTimeSpan.Minutes.ToString("00");
-                TextBlockSecond.Text = leftTimeSpan.Seconds.ToString("00");
-                TbCurrentTime.Text = leftTimeSpan.ToString(@"hh\:mm\:ss");
-                if (spentTimePercent >= 1)
-                {
-                    ProcessBarTime.CurrentValue = 0;
-                    TextBlockHour.Text = "00";
-                    TextBlockMinute.Text = "00";
-                    TextBlockSecond.Text = "00";
-                    timer.Stop();
-                    isTimerRunning = false;
-                    SymbolIconStart.Symbol = iNKORE.UI.WPF.Modern.Controls.Symbol.Play;
-                    BtnStartCover.Visibility = Visibility.Visible;
-                    TextBlockHour.Foreground = new SolidColorBrush(StringToColor("#FF5B5D5F"));
-                    BorderStopTime.Visibility = Visibility.Collapsed;
-                }
-            });
+            
+            ProcessBarTime.CurrentValue = 1 - spentTimePercent;
+            TextBlockHour.Text = leftTimeSpan.Hours.ToString("00");
+            TextBlockMinute.Text = leftTimeSpan.Minutes.ToString("00");
+            TextBlockSecond.Text = leftTimeSpan.Seconds.ToString("00");
+            TbCurrentTime.Text = leftTimeSpan.ToString(@"hh\:mm\:ss");
+            
             if (spentTimePercent >= 1)
             {
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    //Play sound
-                    player.Stream = Properties.Resources.TimerDownNotice;
-                    player.Play();
-                });
+                ProcessBarTime.CurrentValue = 0;
+                TextBlockHour.Text = "00";
+                TextBlockMinute.Text = "00";
+                TextBlockSecond.Text = "00";
+                timer.Stop();
+                isTimerRunning = false;
+                SymbolIconStart.Symbol = iNKORE.UI.WPF.Modern.Controls.Symbol.Play;
+                BtnStartCover.Visibility = Visibility.Visible;
+                TextBlockHour.Foreground = new SolidColorBrush(StringToColor("#FF5B5D5F"));
+                BorderStopTime.Visibility = Visibility.Collapsed;
+                
+                //Play sound
+                player.Stream = Properties.Resources.TimerDownNotice;
+                player.Play();
             }
         }
 
@@ -84,7 +77,7 @@ namespace InkCanvasForClass_Remastered
         bool isTimerRunning = false;
         bool isPaused = false;
 
-        Timer timer = new Timer();
+        DispatcherTimer timer = new DispatcherTimer();
 
         private void Grid_MouseUp(object sender, MouseButtonEventArgs e)
         {
@@ -247,7 +240,7 @@ namespace InkCanvasForClass_Remastered
             {
                 UpdateStopTime();
                 startTime = DateTime.Now;
-                Timer_Elapsed(timer, null);
+                Timer_Tick(timer, null);
             }
         }
 
@@ -315,19 +308,19 @@ namespace InkCanvasForClass_Remastered
 
                 if (totalSeconds <= 10)
                 {
-                    timer.Interval = 20;
+                    timer.Interval = TimeSpan.FromMilliseconds(20);
                 }
                 else if (totalSeconds <= 60)
                 {
-                    timer.Interval = 30;
+                    timer.Interval = TimeSpan.FromMilliseconds(30);
                 }
                 else if (totalSeconds <= 120)
                 {
-                    timer.Interval = 50;
+                    timer.Interval = TimeSpan.FromMilliseconds(50);
                 }
                 else
                 {
-                    timer.Interval = 100;
+                    timer.Interval = TimeSpan.FromMilliseconds(100);
                 }
 
                 isPaused = false;
