@@ -1,5 +1,9 @@
 # InkCanvasForClass-Remastered
 
+[![.NET 8](https://img.shields.io/badge/.NET-8.0-blue?logo=dotnet)](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-red.svg)](./LICENSE.txt)
+[![Build](https://img.shields.io/github/actions/workflow/status/LiuYan-xwx/InkCanvasForClass-Remastered/build.yml?logo=github&label=Build)](https://github.com/LiuYan-xwx/InkCanvasForClass-Remastered/actions)
+
 ## 项目介绍
 
 本项目基于 `icc-0610fix` 进行二次开发，而 `icc-0610fix` 是 **InkCanvasForClass**（简称 **ICC**）的一个衍生版本。
