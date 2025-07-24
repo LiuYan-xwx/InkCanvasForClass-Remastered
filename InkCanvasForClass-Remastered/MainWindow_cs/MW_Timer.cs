@@ -3,10 +3,9 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using System.Timers;
 using System.Windows;
+using System.Windows.Threading;
 using MessageBox = System.Windows.MessageBox;
-using Timer = System.Timers.Timer;
 
 namespace InkCanvasForClass_Remastered {
     public class TimeViewModel : INotifyPropertyChanged {
@@ -41,48 +40,48 @@ namespace InkCanvasForClass_Remastered {
     }
 
     public partial class MainWindow : Window {
-        private Timer timerCheckPPT = new Timer();
-        private Timer timerKillProcess = new Timer();
-        private Timer timerCheckAutoFold = new Timer();
+        private DispatcherTimer timerCheckPPT = new DispatcherTimer();
+        private DispatcherTimer timerKillProcess = new DispatcherTimer();
+        private DispatcherTimer timerCheckAutoFold = new DispatcherTimer();
         private string AvailableLatestVersion = null;
-        private Timer timerCheckAutoUpdateWithSilence = new Timer();
+        private DispatcherTimer timerCheckAutoUpdateWithSilence = new DispatcherTimer();
         private bool isHidingSubPanelsWhenInking = false; // 避免书写时触发二次关闭二级菜单导致动画不连续
 
-        private Timer timerDisplayTime = new Timer();
-        private Timer timerDisplayDate = new Timer();
+        private DispatcherTimer timerDisplayTime = new DispatcherTimer();
+        private DispatcherTimer timerDisplayDate = new DispatcherTimer();
 
         private TimeViewModel nowTimeVM = new TimeViewModel();
 
         private void InitTimers() {
-            timerCheckPPT.Elapsed += TimerCheckPPT_Elapsed;
-            timerCheckPPT.Interval = 500;
-            timerKillProcess.Elapsed += TimerKillProcess_Elapsed;
-            timerKillProcess.Interval = 2000;
-            timerCheckAutoFold.Elapsed += timerCheckAutoFold_Elapsed;
-            timerCheckAutoFold.Interval = 500;
+            timerCheckPPT.Tick += TimerCheckPPT_Tick;
+            timerCheckPPT.Interval = TimeSpan.FromMilliseconds(500);
+            timerKillProcess.Tick += TimerKillProcess_Tick;
+            timerKillProcess.Interval = TimeSpan.FromMilliseconds(2000);
+            timerCheckAutoFold.Tick += timerCheckAutoFold_Tick;
+            timerCheckAutoFold.Interval = TimeSpan.FromMilliseconds(500);
             
             WaterMarkTime.DataContext = nowTimeVM;
             WaterMarkDate.DataContext = nowTimeVM;
-            timerDisplayTime.Elapsed += TimerDisplayTime_Elapsed;
-            timerDisplayTime.Interval = 1000;
+            timerDisplayTime.Tick += TimerDisplayTime_Tick;
+            timerDisplayTime.Interval = TimeSpan.FromMilliseconds(1000);
             timerDisplayTime.Start();
-            timerDisplayDate.Elapsed += TimerDisplayDate_Elapsed;
-            timerDisplayDate.Interval = 1000 * 60 * 60 * 1;
+            timerDisplayDate.Tick += TimerDisplayDate_Tick;
+            timerDisplayDate.Interval = TimeSpan.FromMilliseconds(1000 * 60 * 60 * 1);
             timerDisplayDate.Start();
             timerKillProcess.Start();
             nowTimeVM.nowDate = DateTime.Now.ToShortDateString().ToString();
             nowTimeVM.nowTime = DateTime.Now.ToShortTimeString().ToString();
         }
 
-        private void TimerDisplayTime_Elapsed(object sender, ElapsedEventArgs e) {
+        private void TimerDisplayTime_Tick(object sender, EventArgs e) {
             nowTimeVM.nowTime = DateTime.Now.ToShortTimeString().ToString();
         }
 
-        private void TimerDisplayDate_Elapsed(object sender, ElapsedEventArgs e) {
+        private void TimerDisplayDate_Tick(object sender, EventArgs e) {
             nowTimeVM.nowDate = DateTime.Now.ToShortDateString().ToString();
         }
 
-        private void TimerKillProcess_Elapsed(object sender, ElapsedEventArgs e) {
+        private void TimerKillProcess_Tick(object sender, EventArgs e) {
             try {
                 // 希沃相关： easinote swenserver RemoteProcess EasiNote.MediaHttpService smartnote.cloud EasiUpdate smartnote EasiUpdate3 EasiUpdate3Protect SeewoP2P CefSharp.BrowserSubprocess SeewoUploadService
                 var arg = "/F";
@@ -139,47 +138,33 @@ namespace InkCanvasForClass_Remastered {
                     p.Start();
 
                     if (arg.Contains("EasiNote")) {
-                        Dispatcher.Invoke(() => {
-                            ShowNotification("“希沃白板 5”已自动关闭");
-                        });
+                        ShowNotification("“希沃白板 5”已自动关闭");
                     }
 
                     if (arg.Contains("HiteAnnotation")) {
-                        Dispatcher.Invoke(() => {
-                            ShowNotification("“鸿合屏幕书写”已自动关闭");
-                        });
+                        ShowNotification("“鸿合屏幕书写”已自动关闭");
                     }
 
                     if (arg.Contains("Ink Canvas Annotation") || arg.Contains("Ink Canvas Artistry")) {
-                        Dispatcher.Invoke(() => {
-                            ShowNewMessage("“ICA”已自动关闭");
-                        });
+                        ShowNewMessage("“ICA”已自动关闭");
                     }
 
                     if (arg.Contains("\"Ink Canvas.exe\"")) {
-                        Dispatcher.Invoke(() => {
-                            ShowNotification("“Ink Canvas”已自动关闭");
-                        });
+                        ShowNotification("“Ink Canvas”已自动关闭");
                     }
 
                     if (arg.Contains("智绘教")) {
-                        Dispatcher.Invoke(() => {
-                            ShowNotification("“智绘教”已自动关闭");
-                        });
+                        ShowNotification("“智绘教”已自动关闭");
                     }
 
                     if (arg.Contains("VcomTeach"))
                     {
-                        Dispatcher.Invoke(() => {
-                            ShowNotification("“优教授课端”已自动关闭");
-                        });
+                        ShowNotification("“优教授课端”已自动关闭");
                     }
 
                     if (arg.Contains("DesktopAnnotation"))
                     {
-                        Dispatcher.Invoke(() => {
-                            ShowNotification("“DesktopAnnotation”已自动关闭");
-                        });
+                        ShowNotification("“DesktopAnnotation”已自动关闭");
                     }
                 }
             }
@@ -190,7 +175,7 @@ namespace InkCanvasForClass_Remastered {
         private bool foldFloatingBarByUser = false, // 保持收纳操作不受自动收纳的控制
             unfoldFloatingBarByUser = false; // 允许用户在希沃软件内进行展开操作
 
-        private void timerCheckAutoFold_Elapsed(object sender, ElapsedEventArgs e) {
+        private void timerCheckAutoFold_Tick(object sender, EventArgs e) {
             if (isFloatingBarChangingHideMode) return;
             try {
                 var windowProcessName = ForegroundWindowInfo.ProcessName();

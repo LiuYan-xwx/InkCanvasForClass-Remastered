@@ -87,7 +87,7 @@ namespace InkCanvasForClass_Remastered {
         private static bool IsShowingAutoplaySlidesWindow = false;
 
 
-        private void TimerCheckPPT_Elapsed(object sender, ElapsedEventArgs e) {
+        private void TimerCheckPPT_Tick(object sender, EventArgs e) {
             if (IsShowingRestoreHiddenSlidesWindow || IsShowingAutoplaySlidesWindow) return;
             try {
                 //var processes = Process.GetProcessesByName("wpp");
