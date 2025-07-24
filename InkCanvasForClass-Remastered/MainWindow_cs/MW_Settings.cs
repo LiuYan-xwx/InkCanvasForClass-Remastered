@@ -18,14 +18,36 @@ namespace InkCanvasForClass_Remastered {
     public partial class MainWindow : Window {
         #region Behavior
 
-        private void ToggleSwitchRunAtStartup_Toggled(object sender, RoutedEventArgs e) {
+        private void ToggleSwitchRunAtStartup_Toggled(object sender, RoutedEventArgs e)
+        {
             if (!isLoaded) return;
-            if (ToggleSwitchRunAtStartup.IsOn) {
-                StartAutomaticallyDel("InkCanvas");
-                StartAutomaticallyCreate("Ink Canvas Annotation");
-            } else {
-                StartAutomaticallyDel("InkCanvas");
-                StartAutomaticallyDel("Ink Canvas Annotation");
+
+            const string shortcutName = "ICC-Re";
+
+            try
+            {
+                if (ToggleSwitchRunAtStartup.IsOn)
+                {
+                    if (!StartAutomaticallyCreate(shortcutName))
+                    {
+                        // 如果创建失败，将开关状态恢复
+                        ToggleSwitchRunAtStartup.IsOn = false;
+                        ShowNotification("创建开机自启动失败，请检查权限设置");
+                    }
+                }
+                else
+                {
+                    StartAutomaticallyDel(shortcutName);
+                }
+            }
+            catch (Exception ex)
+            {
+                // 记录错误日志
+                LogHelper.WriteLogToFile($"设置开机自启动时发生错误: {ex}", LogHelper.LogType.Error);
+
+                // 恢复开关状态
+                ToggleSwitchRunAtStartup.IsOn = false;
+                ShowNotification("设置开机自启动失败");
             }
         }
 

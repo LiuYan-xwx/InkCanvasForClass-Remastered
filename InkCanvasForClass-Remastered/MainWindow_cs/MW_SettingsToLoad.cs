@@ -38,14 +38,16 @@ namespace InkCanvasForClass_Remastered {
                 CursorIcon_Click(null, null);
             }
 
-            try {
-                if (File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.Startup) +
-                                "\\Ink Canvas Annotation.lnk")) {
-                    ToggleSwitchRunAtStartup.IsOn = true;
-                }
+            try
+            {
+                // 检查是否启用了开机自启动
+                var isAutoStartEnabled = IsStartAutomaticallyEnabled("ICC-Re");
+                ToggleSwitchRunAtStartup.IsOn = isAutoStartEnabled;
             }
-            catch (Exception ex) {
-                LogHelper.WriteLogToFile(ex.ToString(), LogHelper.LogType.Error);
+            catch (Exception ex)
+            {
+                LogHelper.WriteLogToFile($"检查开机自启动状态时发生错误: {ex}", LogHelper.LogType.Error);
+                ToggleSwitchRunAtStartup.IsOn = false;
             }
 
             if (Settings.Startup != null) {

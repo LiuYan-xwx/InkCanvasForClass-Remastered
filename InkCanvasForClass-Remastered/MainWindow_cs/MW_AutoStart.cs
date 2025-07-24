@@ -1,42 +1,73 @@
-﻿using IWshRuntimeLibrary;
-using System;
+﻿using System;
+using System.IO;
 using System.Windows;
+using WindowsShortcutFactory;
 
 namespace InkCanvasForClass_Remastered {
     public partial class MainWindow : Window {
-        public static bool StartAutomaticallyCreate(string exeName) {
+        
+        /// <summary>
+        /// 检查是否已启用自启动
+        /// </summary>
+        /// <param name="exeName">快捷方式名称</param>
+        /// <returns>是否启用自启动</returns>
+        public static bool IsStartAutomaticallyEnabled(string exeName) {
             try {
-                var shell = new WshShell();
-                var shortcut = (IWshShortcut)shell.CreateShortcut(
-                    Environment.GetFolderPath(Environment.SpecialFolder.Startup) + "\\" + exeName + ".lnk");
-                //设置快捷方式的目标所在的位置(源程序完整路径)
-                shortcut.TargetPath = System.Windows.Forms.Application.ExecutablePath;
-                //应用程序的工作目录
-                //当用户没有指定一个具体的目录时，快捷方式的目标应用程序将使用该属性所指定的目录来装载或保存文件。
-                shortcut.WorkingDirectory = Environment.CurrentDirectory;
-                //目标应用程序窗口类型(1.Normal window普通窗口,3.Maximized最大化窗口,7.Minimized最小化)
-                shortcut.WindowStyle = 1;
-                //快捷方式的描述
-                shortcut.Description = exeName + "_Ink";
-                //设置快捷键(如果有必要的话.)
-                //shortcut.Hotkey = "CTRL+ALT+D";
-                shortcut.Save();
-                return true;
+                var shortcutPath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.Startup), 
+                    exeName + ".lnk");
+                return File.Exists(shortcutPath);
             }
-            catch (Exception) { }
-
-            return false;
+            catch (Exception) {
+                return false;
+            }
         }
 
-        public static bool StartAutomaticallyDel(string exeName) {
+        /// <summary>
+        /// 创建自启动快捷方式
+        /// </summary>
+        /// <param name="exeName">快捷方式名称</param>
+        /// <returns>是否创建成功</returns>
+        public static bool StartAutomaticallyCreate(string exeName) {
             try {
-                System.IO.File.Delete(Environment.GetFolderPath(Environment.SpecialFolder.Startup) + "\\" + exeName +
-                                      ".lnk");
+                var shortcutPath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.Startup), 
+                    exeName + ".lnk");
+                
+                using var shortcut = new WindowsShortcut {
+                    Path = Environment.ProcessPath ?? System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName,
+                    WorkingDirectory = Environment.CurrentDirectory,
+                    Description = exeName + "_Ink",
+                };
+                
+                shortcut.Save(shortcutPath);
                 return true;
             }
-            catch (Exception) { }
+            catch (Exception) {
+                return false;
+            }
+        }
 
-            return false;
+        /// <summary>
+        /// 删除自启动快捷方式
+        /// </summary>
+        /// <param name="exeName">快捷方式名称</param>
+        /// <returns>是否删除成功</returns>
+        public static bool StartAutomaticallyDel(string exeName) {
+            try {
+                var shortcutPath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.Startup), 
+                    exeName + ".lnk");
+                
+                if (File.Exists(shortcutPath)) {
+                    File.Delete(shortcutPath);
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception) {
+                return false;
+            }
         }
     }
 }
