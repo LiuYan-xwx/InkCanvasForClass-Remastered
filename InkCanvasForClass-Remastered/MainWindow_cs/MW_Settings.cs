@@ -1425,7 +1425,7 @@ namespace InkCanvasForClass_Remastered {
                 LoadSettings();
                 isLoaded = true;
 
-                ToggleSwitchRunAtStartup.IsOn = true;
+                ToggleSwitchRunAtStartup.IsOn = false;
             }
             catch { }
 

@@ -232,7 +232,7 @@
                                         <TextBlock Foreground="#fafafa" Text="开机时运行" VerticalAlignment="Center"
                                                    FontSize="14" Margin="0,0,16,0" />
                                         <ui:ToggleSwitch OnContent="" OffContent="" Name="ToggleSwitchRunAtStartup"
-                                                         IsOn="False" FontFamily="Microsoft YaHei UI" FontWeight="Bold"
+                                                         IsOn="True" FontFamily="Microsoft YaHei UI" FontWeight="Bold"
                                                          Toggled="ToggleSwitchRunAtStartup_Toggled" />
                                     </ikw:SimpleStackPanel>
                                     <ikw:SimpleStackPanel Orientation="Horizontal" HorizontalAlignment="Left">
