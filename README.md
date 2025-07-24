@@ -1,5 +1,9 @@
 # InkCanvasForClass-Remastered
 
+[![.NET 8](https://img.shields.io/badge/.NET-8.0-blue?logo=dotnet)](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-red.svg)](./LICENSE.txt)
+[![Build](https://img.shields.io/github/actions/workflow/status/LiuYan-xwx/InkCanvasForClass-Remastered/build.yml?logo=github&label=Build)](https://github.com/LiuYan-xwx/InkCanvasForClass-Remastered/actions)
+
 ## 项目介绍
 
 本项目基于 `icc-0610fix` 进行二次开发，而 `icc-0610fix` 是 **InkCanvasForClass**（简称 **ICC**）的一个衍生版本。
@@ -59,6 +63,8 @@ https://github.com/3382308510
      - 升级了 Nuget 各种库，以及必要的兼容性修改
    - **其他优化：**
      - 随机点名有些许修改
+
+本项目基于 GPLv3 许可
 
 ---
 
