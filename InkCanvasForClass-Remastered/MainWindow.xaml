@@ -794,22 +794,6 @@
                                             VerticalAlignment="Center"
                                             FontSize="14"
                                             Foreground="#fafafa"
-                                            Text="在收纳模式下启用快速面板" />
-                                        <ui:ToggleSwitch
-                                            Name="ToggleSwitchEnableQuickPanel"
-                                            FontFamily="Microsoft YaHei UI"
-                                            FontWeight="Bold"
-                                            IsOn="True"
-                                            OffContent=""
-                                            OnContent=""
-                                            Toggled="ToggleSwitchEnableQuickPanel_Toggled" />
-                                    </ikw:SimpleStackPanel>
-                                    <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                                        <TextBlock
-                                            Margin="0,0,16,0"
-                                            VerticalAlignment="Center"
-                                            FontSize="14"
-                                            Foreground="#fafafa"
                                             Text="取消收纳按钮图标" />
                                         <ComboBox
                                             Name="ComboBoxUnFoldBtnImg"
@@ -10297,7 +10281,7 @@
             Margin="-60,0,0,-150"
             HorizontalAlignment="Left"
             VerticalAlignment="Center"
-            MouseUp="LeftUnFoldButtonDisplayQuickPanel_MouseUp"
+            MouseUp="SidePanelUnFoldButton_MouseUp"
             Visibility="Visible">
             <ikw:SimpleStackPanel>
                 <Border
@@ -10317,144 +10301,13 @@
             </ikw:SimpleStackPanel>
         </Viewbox>
         <Viewbox
-            Name="LeftUnFoldButtonQuickPanel"
-            Width="50"
-            Margin="-1,0,0,-150"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Center"
-            Visibility="Collapsed">
-            <Border
-                Width="32"
-                Background="#fafafa"
-                BorderBrush="{DynamicResource FloatBarBorderBrush}"
-                BorderThickness="1"
-                ClipToBounds="True"
-                CornerRadius="0,6,6,0"
-                Opacity="1"
-                Visibility="Visible">
-                <ikw:SimpleStackPanel
-                    Margin="0,5"
-                    Orientation="Vertical"
-                    Spacing="0">
-                    <ikw:SimpleStackPanel
-                        Width="32"
-                        Margin="0"
-                        HorizontalAlignment="Center"
-                        Background="Transparent"
-                        MouseUp="SymbolIconRandOne_MouseUp"
-                        Orientation="Vertical">
-                        <Image
-                            Height="17"
-                            Margin="0,3,0,0"
-                            RenderOptions.BitmapScalingMode="HighQuality"
-                            Source="/Resources/Icons-Fluent/ic_fluent_person_money_24_regular.png" />
-                        <TextBlock
-                            Margin="0,2,0,3"
-                            FontSize="8"
-                            Foreground="Black"
-                            Text="单次抽"
-                            TextAlignment="Center" />
-                    </ikw:SimpleStackPanel>
-                    <ikw:SimpleStackPanel
-                        Width="32"
-                        Margin="0"
-                        HorizontalAlignment="Center"
-                        Background="Transparent"
-                        MouseUp="SymbolIconRand_MouseUp"
-                        Orientation="Vertical">
-                        <Image
-                            Height="17"
-                            Margin="0,3,0,0"
-                            RenderOptions.BitmapScalingMode="HighQuality"
-                            Source="/Resources/Icons-Fluent/ic_fluent_people_money_24_regular.png" />
-                        <TextBlock
-                            Margin="0,2,0,3"
-                            FontSize="8"
-                            Foreground="Black"
-                            Text="随机抽"
-                            TextAlignment="Center" />
-                    </ikw:SimpleStackPanel>
-                    <ikw:SimpleStackPanel
-                        Width="32"
-                        Margin="0"
-                        HorizontalAlignment="Center"
-                        Background="Transparent"
-                        MouseUp="ImageCountdownTimer_MouseUp"
-                        Orientation="Vertical">
-                        <Image
-                            Height="17"
-                            Margin="0,3,0,0"
-                            RenderOptions.BitmapScalingMode="HighQuality"
-                            Source="/Resources/Icons-Fluent/ic_fluent_timer_24_regular.png" />
-                        <TextBlock
-                            Margin="0,2,0,3"
-                            FontSize="8"
-                            Foreground="Black"
-                            Text="计时器"
-                            TextAlignment="Center" />
-                    </ikw:SimpleStackPanel>
-                    <ikw:SimpleStackPanel
-                        Width="32"
-                        Margin="0"
-                        HorizontalAlignment="Center"
-                        Background="Transparent"
-                        MouseUp="ImageBlackboard_MouseUp"
-                        Orientation="Vertical">
-                        <Image
-                            Height="17"
-                            Margin="0,3,0,0"
-                            RenderOptions.BitmapScalingMode="HighQuality"
-                            Source="/Resources/new-icons/blackboard.png" />
-                        <TextBlock
-                            Margin="0,2,0,3"
-                            FontSize="8"
-                            Foreground="Black"
-                            Text="白板"
-                            TextAlignment="Center" />
-                    </ikw:SimpleStackPanel>
-                    <ikw:SimpleStackPanel
-                        Width="32"
-                        Margin="0"
-                        HorizontalAlignment="Center"
-                        Background="Transparent"
-                        MouseUp="UnFoldFloatingBar_MouseUp"
-                        Orientation="Vertical">
-                        <Image
-                            Height="17"
-                            Margin="0,3,0,0"
-                            RenderOptions.BitmapScalingMode="HighQuality"
-                            Source="/Resources/new-icons/eye.png" />
-                        <TextBlock
-                            Margin="0,2,0,3"
-                            FontSize="8"
-                            Foreground="Black"
-                            Text="显示"
-                            TextAlignment="Center" />
-                    </ikw:SimpleStackPanel>
-                    <ikw:SimpleStackPanel
-                        Width="32"
-                        Margin="0"
-                        HorizontalAlignment="Center"
-                        Background="Transparent"
-                        MouseUp="HideQuickPanel_MouseUp"
-                        Orientation="Vertical">
-                        <Image
-                            Height="17"
-                            Margin="0,3,0,3"
-                            RenderOptions.BitmapScalingMode="HighQuality"
-                            Source="/Resources/new-icons/chevron-left.png" />
-                    </ikw:SimpleStackPanel>
-                </ikw:SimpleStackPanel>
-            </Border>
-        </Viewbox>
-        <Viewbox
             x:Name="RightSidePanel"
             Width="32"
             Height="50"
             Margin="0,0,-60,-150"
             HorizontalAlignment="Right"
             VerticalAlignment="Center"
-            MouseUp="RightUnFoldButtonDisplayQuickPanel_MouseUp"
+            MouseUp="SidePanelUnFoldButton_MouseUp"
             Visibility="{Binding ElementName=LeftSidePanel, Path=Visibility}">
             <ikw:SimpleStackPanel>
                 <Border
@@ -10479,147 +10332,6 @@
                     </Image>
                 </Border>
             </ikw:SimpleStackPanel>
-        </Viewbox>
-        <Viewbox
-            Name="RightUnFoldButtonQuickPanel"
-            Width="50"
-            Margin="0,0,-1,-150"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Center"
-            Visibility="Collapsed">
-            <Border
-                Width="32"
-                Background="#fafafa"
-                BorderBrush="{DynamicResource FloatBarBorderBrush}"
-                BorderThickness="1"
-                ClipToBounds="True"
-                CornerRadius="6,0,0,6"
-                Opacity="1"
-                Visibility="Visible">
-                <ikw:SimpleStackPanel
-                    Margin="0,5"
-                    Orientation="Vertical"
-                    Spacing="0">
-                    <ikw:SimpleStackPanel
-                        Width="32"
-                        Margin="0"
-                        HorizontalAlignment="Center"
-                        Background="Transparent"
-                        MouseUp="SymbolIconRandOne_MouseUp"
-                        Orientation="Vertical">
-                        <Image
-                            Height="17"
-                            Margin="0,3,0,0"
-                            RenderOptions.BitmapScalingMode="HighQuality"
-                            Source="/Resources/Icons-Fluent/ic_fluent_person_money_24_regular.png" />
-                        <TextBlock
-                            Margin="0,2,0,3"
-                            FontSize="8"
-                            Foreground="Black"
-                            Text="单次抽"
-                            TextAlignment="Center" />
-                    </ikw:SimpleStackPanel>
-                    <ikw:SimpleStackPanel
-                        Width="32"
-                        Margin="0"
-                        HorizontalAlignment="Center"
-                        Background="Transparent"
-                        MouseUp="SymbolIconRand_MouseUp"
-                        Orientation="Vertical">
-                        <Image
-                            Height="17"
-                            Margin="0,3,0,0"
-                            RenderOptions.BitmapScalingMode="HighQuality"
-                            Source="/Resources/Icons-Fluent/ic_fluent_people_money_24_regular.png" />
-                        <TextBlock
-                            Margin="0,2,0,3"
-                            FontSize="8"
-                            Foreground="Black"
-                            Text="随机抽"
-                            TextAlignment="Center" />
-                    </ikw:SimpleStackPanel>
-                    <ikw:SimpleStackPanel
-                        Width="32"
-                        Margin="0"
-                        HorizontalAlignment="Center"
-                        Background="Transparent"
-                        MouseUp="ImageCountdownTimer_MouseUp"
-                        Orientation="Vertical">
-                        <Image
-                            Height="17"
-                            Margin="0,3,0,0"
-                            RenderOptions.BitmapScalingMode="HighQuality"
-                            Source="/Resources/Icons-Fluent/ic_fluent_timer_24_regular.png" />
-                        <TextBlock
-                            Margin="0,2,0,3"
-                            FontSize="8"
-                            Foreground="Black"
-                            Text="计时器"
-                            TextAlignment="Center" />
-                    </ikw:SimpleStackPanel>
-                    <ikw:SimpleStackPanel
-                        Width="32"
-                        Margin="0"
-                        HorizontalAlignment="Center"
-                        Background="Transparent"
-                        MouseUp="ImageBlackboard_MouseUp"
-                        Orientation="Vertical">
-                        <Image
-                            Height="17"
-                            Margin="0,3,0,0"
-                            RenderOptions.BitmapScalingMode="HighQuality"
-                            Source="/Resources/new-icons/blackboard.png" />
-                        <TextBlock
-                            Margin="0,2,0,3"
-                            FontSize="8"
-                            Foreground="Black"
-                            Text="白板"
-                            TextAlignment="Center" />
-                    </ikw:SimpleStackPanel>
-                    <ikw:SimpleStackPanel
-                        Width="32"
-                        Margin="0"
-                        HorizontalAlignment="Center"
-                        Background="Transparent"
-                        MouseUp="UnFoldFloatingBar_MouseUp"
-                        Orientation="Vertical">
-                        <Image
-                            Height="17"
-                            Margin="0,3,0,0"
-                            RenderOptions.BitmapScalingMode="HighQuality"
-                            Source="/Resources/new-icons/eye.png" />
-                        <TextBlock
-                            Margin="0,2,0,3"
-                            FontSize="8"
-                            Foreground="Black"
-                            Text="显示"
-                            TextAlignment="Center" />
-                    </ikw:SimpleStackPanel>
-                    <ikw:SimpleStackPanel
-                        Width="32"
-                        Margin="0"
-                        HorizontalAlignment="Center"
-                        Background="Transparent"
-                        MouseUp="HideQuickPanel_MouseUp"
-                        Orientation="Vertical">
-                        <Image
-                            Height="17"
-                            Margin="0,3,0,3"
-                            RenderOptions.BitmapScalingMode="HighQuality"
-                            RenderTransformOrigin="0.5,0.5"
-                            Source="/Resources/new-icons/chevron-left.png">
-                            <Image.RenderTransform>
-                                <TransformGroup>
-                                    <ScaleTransform />
-                                    <SkewTransform />
-                                    <RotateTransform Angle="180" />
-                                    <TranslateTransform />
-                                </TransformGroup>
-                            </Image.RenderTransform>
-                        </Image>
-                    </ikw:SimpleStackPanel>
-                </ikw:SimpleStackPanel>
-            </Border>
         </Viewbox>
     </Grid>
 </Window>

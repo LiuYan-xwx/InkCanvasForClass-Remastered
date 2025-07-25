@@ -410,121 +410,10 @@ namespace InkCanvasForClass_Remastered
             isFloatingBarChangingHideMode = false;
         }
 
-        private async void LeftUnFoldButtonDisplayQuickPanel_MouseUp(object sender, MouseButtonEventArgs e)
+        private void SidePanelUnFoldButton_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (Settings.Appearance.IsShowQuickPanel == true)
-            {
-                HideRightQuickPanel();
-                LeftUnFoldButtonQuickPanel.Visibility = Visibility.Visible;
-                await Dispatcher.InvokeAsync(() =>
-                {
-                    var marginAnimation = new ThicknessAnimation
-                    {
-                        Duration = TimeSpan.FromSeconds(0.1),
-                        From = new Thickness(-50, 0, 0, -150),
-                        To = new Thickness(-1, 0, 0, -150)
-                    };
-                    marginAnimation.EasingFunction = new CubicEase();
-                    LeftUnFoldButtonQuickPanel.BeginAnimation(MarginProperty, marginAnimation);
-                });
-                await Task.Delay(100);
-
-                await Dispatcher.InvokeAsync(() =>
-                {
-                    LeftUnFoldButtonQuickPanel.Margin = new Thickness(-1, 0, 0, -150);
-                });
-            }
-            else
-            {
                 UnFoldFloatingBar_MouseUp(sender, e);
             }
-        }
-
-        private async void RightUnFoldButtonDisplayQuickPanel_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (Settings.Appearance.IsShowQuickPanel == true)
-            {
-                HideLeftQuickPanel();
-                RightUnFoldButtonQuickPanel.Visibility = Visibility.Visible;
-                await Dispatcher.InvokeAsync(() =>
-                {
-                    var marginAnimation = new ThicknessAnimation
-                    {
-                        Duration = TimeSpan.FromSeconds(0.1),
-                        From = new Thickness(0, 0, -50, -150),
-                        To = new Thickness(0, 0, -1, -150)
-                    };
-                    marginAnimation.EasingFunction = new CubicEase();
-                    RightUnFoldButtonQuickPanel.BeginAnimation(MarginProperty, marginAnimation);
-                });
-                await Task.Delay(100);
-
-                await Dispatcher.InvokeAsync(() =>
-                {
-                    RightUnFoldButtonQuickPanel.Margin = new Thickness(0, 0, -1, -150);
-                });
-            }
-            else
-            {
-                UnFoldFloatingBar_MouseUp(sender, e);
-            }
-        }
-
-        private async void HideLeftQuickPanel()
-        {
-            if (LeftUnFoldButtonQuickPanel.Visibility == Visibility.Visible)
-            {
-                await Dispatcher.InvokeAsync(() =>
-                {
-                    var marginAnimation = new ThicknessAnimation
-                    {
-                        Duration = TimeSpan.FromSeconds(0.1),
-                        From = new Thickness(-1, 0, 0, -150),
-                        To = new Thickness(-50, 0, 0, -150)
-                    };
-                    marginAnimation.EasingFunction = new CubicEase();
-                    LeftUnFoldButtonQuickPanel.BeginAnimation(MarginProperty, marginAnimation);
-                });
-                await Task.Delay(100);
-
-                await Dispatcher.InvokeAsync(() =>
-                {
-                    LeftUnFoldButtonQuickPanel.Margin = new Thickness(0, 0, -50, -150);
-                    LeftUnFoldButtonQuickPanel.Visibility = Visibility.Collapsed;
-                });
-            }
-        }
-
-        private async void HideRightQuickPanel()
-        {
-            if (RightUnFoldButtonQuickPanel.Visibility == Visibility.Visible)
-            {
-                await Dispatcher.InvokeAsync(() =>
-                {
-                    var marginAnimation = new ThicknessAnimation
-                    {
-                        Duration = TimeSpan.FromSeconds(0.1),
-                        From = new Thickness(0, 0, -1, -150),
-                        To = new Thickness(0, 0, -50, -150)
-                    };
-                    marginAnimation.EasingFunction = new CubicEase();
-                    RightUnFoldButtonQuickPanel.BeginAnimation(MarginProperty, marginAnimation);
-                });
-                await Task.Delay(100);
-
-                await Dispatcher.InvokeAsync(() =>
-                {
-                    RightUnFoldButtonQuickPanel.Margin = new Thickness(0, 0, -50, -150);
-                    RightUnFoldButtonQuickPanel.Visibility = Visibility.Collapsed;
-                });
-            }
-        }
-
-        private void HideQuickPanel_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            HideLeftQuickPanel();
-            HideRightQuickPanel();
-        }
 
         public async void UnFoldFloatingBar_MouseUp(object sender, MouseButtonEventArgs e)
         {
@@ -533,11 +422,6 @@ namespace InkCanvasForClass_Remastered
 
         public async Task UnFoldFloatingBar(object sender)
         {
-            await Dispatcher.InvokeAsync(() =>
-            {
-                LeftUnFoldButtonQuickPanel.Visibility = Visibility.Collapsed;
-                RightUnFoldButtonQuickPanel.Visibility = Visibility.Collapsed;
-            });
             if (sender == null || StackPanelPPTControls.Visibility == Visibility.Visible)
                 unfoldFloatingBarByUser = false;
             else
@@ -2373,8 +2257,6 @@ namespace InkCanvasForClass_Remastered
                 ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
             if (sender == WhiteboardFloatingBarBtn && lastBorderMouseDownObject != WhiteboardFloatingBarBtn) return;
 
-            LeftUnFoldButtonQuickPanel.Visibility = Visibility.Collapsed;
-            RightUnFoldButtonQuickPanel.Visibility = Visibility.Collapsed;
             if (isDisplayingOrHidingBlackboard) return;
             isDisplayingOrHidingBlackboard = true;
 
@@ -2603,8 +2485,6 @@ namespace InkCanvasForClass_Remastered
 
         private void ImageCountdownTimer_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            LeftUnFoldButtonQuickPanel.Visibility = Visibility.Collapsed;
-            RightUnFoldButtonQuickPanel.Visibility = Visibility.Collapsed;
             AnimationsHelper.HideWithSlideAndFade(BorderTools);
             AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
 
@@ -2621,8 +2501,6 @@ namespace InkCanvasForClass_Remastered
 
         private void SymbolIconRand_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            LeftUnFoldButtonQuickPanel.Visibility = Visibility.Collapsed;
-            RightUnFoldButtonQuickPanel.Visibility = Visibility.Collapsed;
             if (lastBorderMouseDownObject != sender) return;
 
             AnimationsHelper.HideWithSlideAndFade(BorderTools);
@@ -2693,8 +2571,6 @@ namespace InkCanvasForClass_Remastered
 
         private void SymbolIconRandOne_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            LeftUnFoldButtonQuickPanel.Visibility = Visibility.Collapsed;
-            RightUnFoldButtonQuickPanel.Visibility = Visibility.Collapsed;
             if (lastBorderMouseDownObject != sender) return;
 
             AnimationsHelper.HideWithSlideAndFade(BorderTools);
@@ -5812,13 +5688,6 @@ namespace InkCanvasForClass_Remastered
         //    App.SettingsService.SaveSettings();
         //}
 
-        private void ToggleSwitchEnableQuickPanel_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            Settings.Appearance.IsShowQuickPanel = ToggleSwitchEnableQuickPanel.IsOn;
-            App.SettingsService.SaveSettings();
-        }
-
         private void ViewboxFloatingBarScaleTransformValueSlider_ValueChanged(object sender, RoutedEventArgs e)
         {
             if (!isLoaded) return;
@@ -7120,7 +6989,6 @@ namespace InkCanvasForClass_Remastered
             settings.Appearance.IsShowHideControlButton = false;
             settings.Appearance.IsShowLRSwitchButton = false;
             settings.Appearance.IsShowModeFingerToggleSwitch = true;
-            settings.Appearance.IsShowQuickPanel = true;
             settings.Appearance.Theme = 0;
             settings.Appearance.EnableTimeDisplayInWhiteboardMode = true;
             settings.Appearance.ViewboxFloatingBarOpacityValue = 1.0;
@@ -8217,8 +8085,6 @@ namespace InkCanvasForClass_Remastered
                         LeftUnFoldBtnImgChevron.RenderTransform = null;
                         break;
                 }
-
-                ToggleSwitchEnableQuickPanel.IsOn = Settings.Appearance.IsShowQuickPanel;
 
                 ToggleSwitchEnableTrayIcon.IsOn = Settings.Appearance.EnableTrayIcon;
                 ICCTrayIconExampleImage.Visibility =

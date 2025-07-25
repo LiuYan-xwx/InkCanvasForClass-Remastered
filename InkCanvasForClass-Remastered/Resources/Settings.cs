@@ -130,8 +130,6 @@ namespace InkCanvasForClass_Remastered
         public int UnFoldButtonImageType { get; set; } = 0;
         [JsonProperty("isShowLRSwitchButton")]
         public bool IsShowLRSwitchButton { get; set; } = false;
-        [JsonProperty("isShowQuickPanel")]
-        public bool IsShowQuickPanel { get; set; } = true;
         [JsonProperty("isShowModeFingerToggleSwitch")]
         public bool IsShowModeFingerToggleSwitch { get; set; } = true;
         [JsonProperty("theme")]
