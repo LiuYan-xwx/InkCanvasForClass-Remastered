@@ -9,7 +9,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
     Name="window"
-    Title="ICC-Re"
+    Title="InkCanvasForClass-Remastered"
     Width="1440"
     Height="9000"
     AllowsTransparency="True"
@@ -2961,7 +2961,7 @@
                                             <TextBox
                                                 x:Name="AutoSavedStrokesLocation"
                                                 Width="320"
-                                                Text="D:\Ink Canvas"
+                                                Text="D:\ICC-Re"
                                                 TextChanged="AutoSavedStrokesLocationTextBox_TextChanged"
                                                 TextWrapping="Wrap" />
                                             <Button
@@ -2972,7 +2972,7 @@
                                         <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="12">
                                             <Button
                                                 Name="SetAutoSavedStrokesLocationToDiskDButton"
-                                                Content="设置保存到 D:\Ink Canvas"
+                                                Content="设置保存到 D:\ICC-Re"
                                                 Click="SetAutoSavedStrokesLocationToDiskDButton_Click" />
                                             <Button
                                                 Name="SetAutoSavedStrokesLocationToDocumentFolderButton"
@@ -3201,7 +3201,7 @@
                                                         Margin="0,0,0,-1"
                                                         FontWeight="Bold"
                                                         Foreground="#a1a1aa"
-                                                        Text="本软件和ICA，Ink Canvas均基于许可证开源"
+                                                        Text="本软件和ICC, ICA，Ink Canvas均基于许可证开源"
                                                         TextWrapping="Wrap" />
                                                     <TextBlock
                                                         FontSize="20"

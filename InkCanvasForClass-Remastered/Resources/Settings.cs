@@ -313,7 +313,7 @@ namespace InkCanvasForClass_Remastered
         public int MinimumAutomationStrokeNumber { get; set; } = 0;
 
         [JsonProperty("autoSavedStrokesLocation")]
-        public string AutoSavedStrokesLocation = @"D:\Ink Canvas";
+        public string AutoSavedStrokesLocation = @"D:\ICC-Re";
 
         [JsonProperty("autoDelSavedFiles")]
         public bool AutoDelSavedFiles = false;

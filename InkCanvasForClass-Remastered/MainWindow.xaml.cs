@@ -209,7 +209,7 @@ namespace InkCanvasForClass_Remastered
             SystemEvents_UserPreferenceChanged(null, null);
 
             //TextBlockVersion.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            LogHelper.WriteLogToFile("Ink Canvas Loaded", LogHelper.LogType.Event);
+            LogHelper.WriteLogToFile("ICC-Re Loaded", LogHelper.LogType.Event);
 
             isLoaded = true;
 
@@ -283,20 +283,16 @@ namespace InkCanvasForClass_Remastered
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            LogHelper.WriteLogToFile("Ink Canvas closing", LogHelper.LogType.Event);
+            LogHelper.WriteLogToFile("ICC-Re closing", LogHelper.LogType.Event);
             if (!CloseIsFromButton && Settings.Advanced.IsSecondConfirmWhenShutdownApp)
             {
                 e.Cancel = true;
-                if (MessageBox.Show("是否继续关闭 InkCanvasForClass，这将丢失当前未保存的墨迹。", "InkCanvasForClass",
+                if (MessageBox.Show("是否继续关闭 ICC-Re，这将丢失当前未保存的墨迹。", "InkCanvasForClass-Remastered",
                         MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.OK)
-                    if (MessageBox.Show("真的狠心关闭 InkCanvasForClass吗？", "InkCanvasForClass", MessageBoxButton.OKCancel,
-                            MessageBoxImage.Error) == MessageBoxResult.OK)
-                        if (MessageBox.Show("是否取消关闭 InkCanvasForClass？", "InkCanvasForClass", MessageBoxButton.OKCancel,
-                                MessageBoxImage.Error) != MessageBoxResult.OK)
                     e.Cancel = false;
             }
 
-            if (e.Cancel) LogHelper.WriteLogToFile("Ink Canvas closing cancelled", LogHelper.LogType.Event);
+            if (e.Cancel) LogHelper.WriteLogToFile("ICC-Re closing cancelled", LogHelper.LogType.Event);
         }
 
         [DllImport("user32.dll", SetLastError = true)]
@@ -319,7 +315,7 @@ namespace InkCanvasForClass_Remastered
         {
             SystemEvents.DisplaySettingsChanged -= SystemEventsOnDisplaySettingsChanged;
 
-            LogHelper.WriteLogToFile("Ink Canvas closed", LogHelper.LogType.Event);
+            LogHelper.WriteLogToFile("ICC-Re closed", LogHelper.LogType.Event);
         }
 
         #endregion Definations and Loading
@@ -6949,13 +6945,13 @@ namespace InkCanvasForClass_Remastered
 
         private void SetAutoSavedStrokesLocationToDiskDButton_Click(object sender, RoutedEventArgs e)
         {
-            AutoSavedStrokesLocation.Text = @"D:\Ink Canvas";
+            AutoSavedStrokesLocation.Text = @"D:\ICC-Re";
         }
 
         private void SetAutoSavedStrokesLocationToDocumentFolderButton_Click(object sender, RoutedEventArgs e)
         {
             AutoSavedStrokesLocation.Text =
-                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\Ink Canvas";
+                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\ICC-Re";
         }
 
         private void ToggleSwitchAutoDelSavedFiles_Toggled(object sender, RoutedEventArgs e)
@@ -10440,7 +10436,7 @@ namespace InkCanvasForClass_Remastered
                                 opFlag = false;
                                 break;
                             case OptionalOperation.Ask:
-                                opFlag = MessageBox.Show("是否移除渐近线？", "Ink Canvas", MessageBoxButton.YesNo) !=
+                                opFlag = MessageBox.Show("是否移除渐近线？", "InkCanvasForClass-Remastered", MessageBoxButton.YesNo) !=
                                          MessageBoxResult.Yes;
                                 break;
                         }

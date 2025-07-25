@@ -31,7 +31,7 @@
                                 VerticalAlignment="Center"
                                 FontSize="14"
                                 Foreground="#18181b"
-                                Text="隐藏ICC主窗口" />
+                                Text="隐藏 ICC-Re 主窗口" />
                         </ikw:SimpleStackPanel>
                     </MenuItem.Header>
                     <MenuItem.Icon>
@@ -417,7 +417,7 @@
                 x:Key="TaskbarTrayIcon"
                 ContextMenu="{StaticResource SysTrayMenu}"
                 IconSource="/Resources/ICC-Re.ico"
-                ToolTipText="InkCanvasForClass"
+                ToolTipText="InkCanvasForClass-Remastered"
                 Visibility="Collapsed" />
             <ResourceDictionary.MergedDictionaries>
                 <ui:ThemeResources RequestedTheme="Light" />

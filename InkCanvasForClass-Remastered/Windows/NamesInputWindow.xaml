@@ -6,7 +6,7 @@
     xmlns:local="clr-namespace:InkCanvasForClass_Remastered"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
-    Title="Ink Canvas 抽奖 - 名单导入"
+    Title="InkCanvasForClass-Remastered 抽奖 - 名单导入"
     Width="400"
     Height="500"
     ui:ThemeManager.RequestedTheme="Light"
