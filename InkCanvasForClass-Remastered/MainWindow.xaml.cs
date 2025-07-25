@@ -337,8 +337,6 @@ namespace InkCanvasForClass_Remastered
                 ToggleSwitchEnableTwoFingerTranslate.IsOn = false;
             WaterMarkTime.Visibility = Visibility.Collapsed;
             WaterMarkDate.Visibility = Visibility.Collapsed;
-            ICCWaterMarkDark.Visibility = Visibility.Collapsed;
-            ICCWaterMarkWhite.Visibility = Visibility.Collapsed;
             BtnSwitch_Click(BtnSwitch, null);
             BtnExit.Foreground = Brushes.White;
             ThemeManager.Current.ApplicationTheme = ApplicationTheme.Dark;
@@ -1042,14 +1040,10 @@ namespace InkCanvasForClass_Remastered
             if (Settings.Canvas.UsingWhiteboard)
             {
                 if (inkColor == 5) lastBoardInkColor = 0;
-                ICCWaterMarkDark.Visibility = Visibility.Visible;
-                ICCWaterMarkWhite.Visibility = Visibility.Collapsed;
             }
             else
             {
                 if (inkColor == 0) lastBoardInkColor = 5;
-                ICCWaterMarkWhite.Visibility = Visibility.Visible;
-                ICCWaterMarkDark.Visibility = Visibility.Collapsed;
             }
 
             CheckColorTheme(true);
@@ -2446,17 +2440,6 @@ namespace InkCanvasForClass_Remastered
                     WaterMarkTime.Visibility = Visibility.Collapsed;
                     WaterMarkDate.Visibility = Visibility.Collapsed;
                 }
-
-                if (Settings.Canvas.UsingWhiteboard)
-                {
-                    ICCWaterMarkDark.Visibility = Visibility.Visible;
-                    ICCWaterMarkWhite.Visibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    ICCWaterMarkWhite.Visibility = Visibility.Visible;
-                    ICCWaterMarkDark.Visibility = Visibility.Collapsed;
-                }
             }
             else
             {
@@ -2497,8 +2480,6 @@ namespace InkCanvasForClass_Remastered
                 // if (!isInMultiTouchMode) ToggleSwitchEnableMultiTouchMode.IsOn = true;
                 WaterMarkTime.Visibility = Visibility.Collapsed;
                 WaterMarkDate.Visibility = Visibility.Collapsed;
-                ICCWaterMarkDark.Visibility = Visibility.Collapsed;
-                ICCWaterMarkWhite.Visibility = Visibility.Collapsed;
                 UpdatePPTBtnDisplaySettingsStatus();
                 UpdatePPTBtnStyleSettingsStatus();
             }
@@ -5934,51 +5915,14 @@ namespace InkCanvasForClass_Remastered
             if (ComboBoxFloatingBarImg.SelectedIndex == 0)
             {
                 FloatingbarHeadIconImg.Source =
-                    new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/icc.png"));
+                    new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/ICC-Re.png"));
                 FloatingbarHeadIconImg.Margin = new Thickness(0.5);
             }
             else if (ComboBoxFloatingBarImg.SelectedIndex == 1)
             {
                 FloatingbarHeadIconImg.Source =
-                    new BitmapImage(
-                        new Uri("pack://application:,,,/Resources/Icons-png/icc-transparent-dark-small.png"));
-                FloatingbarHeadIconImg.Margin = new Thickness(1.2);
-            }
-            else if (ComboBoxFloatingBarImg.SelectedIndex == 2)
-            {
-                FloatingbarHeadIconImg.Source =
-                    new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/kuandoujiyanhuaji.png"));
-                FloatingbarHeadIconImg.Margin = new Thickness(2, 2, 2, 1.5);
-            }
-            else if (ComboBoxFloatingBarImg.SelectedIndex == 3)
-            {
-                FloatingbarHeadIconImg.Source =
-                    new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/kuanshounvhuaji.png"));
-                FloatingbarHeadIconImg.Margin = new Thickness(2, 2, 2, 1.5);
-            }
-            else if (ComboBoxFloatingBarImg.SelectedIndex == 4)
-            {
-                FloatingbarHeadIconImg.Source =
-                    new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/kuanciya.png"));
-                FloatingbarHeadIconImg.Margin = new Thickness(2, 2, 2, 1.5);
-            }
-            else if (ComboBoxFloatingBarImg.SelectedIndex == 5)
-            {
-                FloatingbarHeadIconImg.Source =
-                    new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/kuanneikuhuaji.png"));
-                FloatingbarHeadIconImg.Margin = new Thickness(2, 2, 2, 1.5);
-            }
-            else if (ComboBoxFloatingBarImg.SelectedIndex == 6)
-            {
-                FloatingbarHeadIconImg.Source =
-                    new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/kuandogeyuanliangwo.png"));
-                FloatingbarHeadIconImg.Margin = new Thickness(2, 2, 2, 1.5);
-            }
-            else if (ComboBoxFloatingBarImg.SelectedIndex == 7)
-            {
-                FloatingbarHeadIconImg.Source =
-                    new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/tiebahuaji.png"));
-                FloatingbarHeadIconImg.Margin = new Thickness(2, 2, 2, 1);
+                    new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/icc.png"));
+                FloatingbarHeadIconImg.Margin = new Thickness(0.5);
             }
             App.SettingsService.SaveSettings();
         }
@@ -8329,51 +8273,14 @@ namespace InkCanvasForClass_Remastered
                 if (ComboBoxFloatingBarImg.SelectedIndex == 0)
                 {
                     FloatingbarHeadIconImg.Source =
-                        new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/icc.png"));
+                        new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/ICC-Re.png"));
                     FloatingbarHeadIconImg.Margin = new Thickness(0.5);
                 }
                 else if (ComboBoxFloatingBarImg.SelectedIndex == 1)
                 {
                     FloatingbarHeadIconImg.Source =
-                        new BitmapImage(
-                            new Uri("pack://application:,,,/Resources/Icons-png/icc-transparent-dark-small.png"));
-                    FloatingbarHeadIconImg.Margin = new Thickness(1.2);
-                }
-                else if (ComboBoxFloatingBarImg.SelectedIndex == 2)
-                {
-                    FloatingbarHeadIconImg.Source =
-                        new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/kuandoujiyanhuaji.png"));
-                    FloatingbarHeadIconImg.Margin = new Thickness(2, 2, 2, 1.5);
-                }
-                else if (ComboBoxFloatingBarImg.SelectedIndex == 3)
-                {
-                    FloatingbarHeadIconImg.Source =
-                        new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/kuanshounvhuaji.png"));
-                    FloatingbarHeadIconImg.Margin = new Thickness(2, 2, 2, 1.5);
-                }
-                else if (ComboBoxFloatingBarImg.SelectedIndex == 4)
-                {
-                    FloatingbarHeadIconImg.Source =
-                        new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/kuanciya.png"));
-                    FloatingbarHeadIconImg.Margin = new Thickness(2, 2, 2, 1.5);
-                }
-                else if (ComboBoxFloatingBarImg.SelectedIndex == 5)
-                {
-                    FloatingbarHeadIconImg.Source =
-                        new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/kuanneikuhuaji.png"));
-                    FloatingbarHeadIconImg.Margin = new Thickness(2, 2, 2, 1.5);
-                }
-                else if (ComboBoxFloatingBarImg.SelectedIndex == 6)
-                {
-                    FloatingbarHeadIconImg.Source =
-                        new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/kuandogeyuanliangwo.png"));
-                    FloatingbarHeadIconImg.Margin = new Thickness(2, 2, 2, 1.5);
-                }
-                else if (ComboBoxFloatingBarImg.SelectedIndex == 7)
-                {
-                    FloatingbarHeadIconImg.Source =
-                        new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/tiebahuaji.png"));
-                    FloatingbarHeadIconImg.Margin = new Thickness(2, 2, 2, 1);
+                        new BitmapImage(new Uri("pack://application:,,,/Resources/Icons-png/icc.png"));
+                    FloatingbarHeadIconImg.Margin = new Thickness(0.5);
                 }
 
                 ToggleSwitchEnableTimeDisplayInWhiteboardMode.IsOn =

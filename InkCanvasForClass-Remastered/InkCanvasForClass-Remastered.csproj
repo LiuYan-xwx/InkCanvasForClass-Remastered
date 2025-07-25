@@ -7,7 +7,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <ApplicationIcon>Resources\icc.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\ICC-Re.ico</ApplicationIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -25,7 +25,7 @@
 	  <Resource Include="Resources\Icons-png\**" />
 	  <Resource Include="Resources\new-icons\**" />
 	  <Resource Include="Resources\PresentationExample\**" />
-	  <Resource Include="Resources\icc.ico" />
+	  <Resource Include="Resources\ICC-Re.ico" />
 	  <Resource Include="Resources\hatsune-miku1.png" />
   </ItemGroup>
 

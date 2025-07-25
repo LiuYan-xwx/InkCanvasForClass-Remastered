@@ -619,14 +619,8 @@
                                             FontFamily="Microsoft YaHei UI"
                                             SelectedIndex="0"
                                             SelectionChanged="ComboBoxFloatingBarImg_SelectionChanged">
-                                            <ComboBoxItem Content="“icc!”默认蓝色" FontFamily="Microsoft YaHei UI" />
-                                            <ComboBoxItem Content="“icc!”黑色透明版" FontFamily="Microsoft YaHei UI" />
-                                            <ComboBoxItem Content="酷安斗鸡眼滑稽" FontFamily="Microsoft YaHei UI" />
-                                            <ComboBoxItem Content="酷安受虐滑稽" FontFamily="Microsoft YaHei UI" />
-                                            <ComboBoxItem Content="酷安呲牙笑" FontFamily="Microsoft YaHei UI" />
-                                            <ComboBoxItem Content="酷安头戴内裤滑稽" FontFamily="Microsoft YaHei UI" />
-                                            <ComboBoxItem Content="酷安绿帽Doge" FontFamily="Microsoft YaHei UI" />
-                                            <ComboBoxItem Content="贴吧滑稽" FontFamily="Microsoft YaHei UI" />
+                                            <ComboBoxItem Content="ICC-Re" FontFamily="Microsoft YaHei UI" />
+                                            <ComboBoxItem Content="怀旧版蓝色 ICC" FontFamily="Microsoft YaHei UI" />
                                         </ComboBox>
                                     </ikw:SimpleStackPanel>
                                     <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
@@ -875,7 +869,7 @@
                                                     Width="24"
                                                     Height="24"
                                                     Margin="8,0,0,0"
-                                                    Source="Resources/icc.ico" />
+                                                    Source="/Resources/ICC-Re.ico" />
                                             </ikw:SimpleStackPanel>
                                             <TextBlock
                                                 Margin="12,0,0,0"
@@ -3372,18 +3366,6 @@
                 Name="GridBackgroundCover"
                 Background="#1F1F1F"
                 Visibility="Collapsed">
-                <Image
-                    Name="ICCWaterMarkWhite"
-                    Width="648"
-                    Height="648"
-                    Opacity="0.035"
-                    Source="Resources/Icons-png/icc-transparent.png" />
-                <Image
-                    Name="ICCWaterMarkDark"
-                    Width="648"
-                    Height="648"
-                    Opacity="0.055"
-                    Source="Resources/Icons-png/icc-transparent-dark.png" />
             </Grid>
         </Grid>
         <Grid Name="GridTransparencyFakeBackground" Opacity="0" />
@@ -7434,7 +7416,7 @@
                             <Image
                                 Name="FloatingbarHeadIconImg"
                                 Margin="0"
-                                Source="/Resources/Icons-png/icc.png" />
+                                Source="/Resources/Icons-png/ICC-Re.png" />
                         </ikw:SimpleStackPanel>
                     </Border>
                     <Border
