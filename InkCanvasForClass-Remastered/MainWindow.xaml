@@ -6745,7 +6745,7 @@
                         Click="BtnHideInkCanvas_Click"
                         FontFamily="Microsoft YaHei UI"
                         Foreground="{Binding ElementName=BtnExit, Path=Foreground}" />
-                    <Button
+                    <!--<Button
                         x:Name="BtnCheckPPT"
                         Content="检查"
                         Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
@@ -6754,7 +6754,7 @@
                         Click="BtnCheckPPT_Click"
                         FontFamily="Microsoft YaHei UI"
                         Foreground="{Binding ElementName=BtnExit, Path=Foreground}"
-                        Visibility="Collapsed" />
+                        Visibility="Collapsed" />-->
                     <StackPanel Name="StackPanelPPTButtons">
                         <Button
                             x:Name="BtnPPTSlideShow"

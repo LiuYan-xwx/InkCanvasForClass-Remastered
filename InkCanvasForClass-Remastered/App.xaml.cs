@@ -20,6 +20,7 @@ namespace InkCanvasForClass_Remastered
         public static string RootPath = Environment.GetEnvironmentVariable("APPDATA") + "\\Ink Canvas\\";
 
         public static ISettingsService SettingsService { get; private set; }
+        public static IPowerPointService PowerPointService { get; private set; }
 
         public App()
         {
@@ -39,6 +40,8 @@ namespace InkCanvasForClass_Remastered
         void App_Startup(object sender, StartupEventArgs e)
         {
             SettingsService = new SettingsService();
+            PowerPointService = new PowerPointService();
+
             /*if (!StoreHelper.IsStoreApp) */
             RootPath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
 

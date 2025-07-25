@@ -46,6 +46,13 @@ namespace InkCanvasForClass_Remastered
             InitializeComponent();
             DataContext = new MainViewModel();
 
+            // 挂载PPT服务事件
+            App.PowerPointService.PresentationOpen += PptApplication_PresentationOpen;
+            App.PowerPointService.PresentationClose += PptApplication_PresentationClose;
+            App.PowerPointService.SlideShowBegin += PptApplication_SlideShowBegin;
+            App.PowerPointService.SlideShowEnd += PptApplication_SlideShowEnd;
+            App.PowerPointService.SlideShowNextSlide += PptApplication_SlideShowNextSlide;
+
             BlackboardLeftSide.Visibility = Visibility.Collapsed;
             BlackboardCenterSide.Visibility = Visibility.Collapsed;
             BlackboardRightSide.Visibility = Visibility.Collapsed;
@@ -2553,7 +2560,7 @@ namespace InkCanvasForClass_Remastered
                     inkCanvas.Strokes.Count > Settings.Automation.MinimumAutomationStrokeNumber)
                 {
                     if (BtnPPTSlideShowEnd.Visibility == Visibility.Visible)
-                        SaveScreenShot(true, $"{pptName}/{previousSlideID}_{DateTime.Now:HH-mm-ss}");
+                        SaveScreenShot(true, $"{_pptName}/{_previousSlideID}_{DateTime.Now:HH-mm-ss}");
                     else
                         SaveScreenShot(true);
                 }
@@ -3161,7 +3168,7 @@ namespace InkCanvasForClass_Remastered
                 inkCanvas.Strokes.Count > Settings.Automation.MinimumAutomationStrokeNumber)
             {
                 if (BtnPPTSlideShowEnd.Visibility == Visibility.Visible)
-                    SaveScreenShot(true, $"{pptName}/{previousSlideID}_{DateTime.Now:HH-mm-ss}");
+                    SaveScreenShot(true, $"{_pptName}/{_previousSlideID}_{DateTime.Now:HH-mm-ss}");
                 else SaveScreenShot(true);
             }
 
@@ -4183,59 +4190,66 @@ namespace InkCanvasForClass_Remastered
         #endregion
 
         #region PPT
-        public static Microsoft.Office.Interop.PowerPoint.Application pptApplication = null;
-        public static Presentation presentation = null;
-        public static Slides slides = null;
-        public static Slide slide = null;
-        public static int slidescount = 0;
+        //public static Microsoft.Office.Interop.PowerPoint.Application pptApplication = null;
+        //public static Presentation presentation = null;
+        //public static Slides slides = null;
+        //public static Slide slide = null;
+        private int _slidescount = 0;
+        private bool isPresentationHaveBlackSpace = false;
+        private string _pptName = null;
+        public static bool IsShowingRestoreHiddenSlidesWindow = false;
+        private static bool IsShowingAutoplaySlidesWindow = false;
+        private bool isEnteredSlideShowEndEvent = false;
+        private int _previousSlideID = 0;
+        private MemoryStream[] _memoryStreams = new MemoryStream[50];
 
-        private void BtnCheckPPT_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                pptApplication = new Microsoft.Office.Interop.PowerPoint.Application();
-                //pptApplication.SlideShowWindows[1].View.Next();
-                if (pptApplication != null)
-                {
-                    //获得演示文稿对象
-                    presentation = pptApplication.ActivePresentation;
-                    pptApplication.SlideShowBegin += PptApplication_SlideShowBegin;
-                    pptApplication.SlideShowNextSlide += PptApplication_SlideShowNextSlide;
-                    pptApplication.SlideShowEnd += PptApplication_SlideShowEnd;
-                    // 获得幻灯片对象集合
-                    slides = presentation.Slides;
-                    // 获得幻灯片的数量
-                    slidescount = slides.Count;
-                    memoryStreams = new MemoryStream[slidescount + 2];
-                    // 获得当前选中的幻灯片
-                    try
-                    {
-                        // 在普通视图下这种方式可以获得当前选中的幻灯片对象
-                        // 然而在阅读模式下，这种方式会出现异常
-                        slide = slides[pptApplication.ActiveWindow.Selection.SlideRange.SlideNumber];
-                    }
-                    catch
-                    {
-                        // 在阅读模式下出现异常时，通过下面的方式来获得当前选中的幻灯片对象
-                        slide = pptApplication.SlideShowWindows[1].View.Slide;
-                    }
-                }
+        //private void BtnCheckPPT_Click(object sender, RoutedEventArgs e)
+        //{
+        //    try
+        //    {
+        //        pptApplication = new Microsoft.Office.Interop.PowerPoint.Application();
+        //        //pptApplication.SlideShowWindows[1].View.Next();
+        //        if (pptApplication != null)
+        //        {
+        //            //获得演示文稿对象
+        //            presentation = pptApplication.ActivePresentation;
+        //            pptApplication.SlideShowBegin += PptApplication_SlideShowBegin;
+        //            pptApplication.SlideShowNextSlide += PptApplication_SlideShowNextSlide;
+        //            pptApplication.SlideShowEnd += PptApplication_SlideShowEnd;
+        //            // 获得幻灯片对象集合
+        //            slides = presentation.Slides;
+        //            // 获得幻灯片的数量
+        //            _slidescount = slides.Count;
+        //            _memoryStreams = new MemoryStream[_slidescount + 2];
+        //            // 获得当前选中的幻灯片
+        //            try
+        //            {
+        //                // 在普通视图下这种方式可以获得当前选中的幻灯片对象
+        //                // 然而在阅读模式下，这种方式会出现异常
+        //                slide = slides[pptApplication.ActiveWindow.Selection.SlideRange.SlideNumber];
+        //            }
+        //            catch
+        //            {
+        //                // 在阅读模式下出现异常时，通过下面的方式来获得当前选中的幻灯片对象
+        //                slide = pptApplication.SlideShowWindows[1].View.Slide;
+        //            }
+        //        }
 
-                if (pptApplication == null) throw new Exception();
-                //BtnCheckPPT.Visibility = Visibility.Collapsed;
-                StackPanelPPTControls.Visibility = Visibility.Visible;
-            }
-            catch
-            {
-                //BtnCheckPPT.Visibility = Visibility.Visible;
-                StackPanelPPTControls.Visibility = Visibility.Collapsed;
-                LeftBottomPanelForPPTNavigation.Visibility = Visibility.Collapsed;
-                RightBottomPanelForPPTNavigation.Visibility = Visibility.Collapsed;
-                LeftSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
-                RightSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
-                MessageBox.Show("未找到幻灯片");
-            }
-        }
+        //        if (pptApplication == null) throw new Exception();
+        //        //BtnCheckPPT.Visibility = Visibility.Collapsed;
+        //        StackPanelPPTControls.Visibility = Visibility.Visible;
+        //    }
+        //    catch
+        //    {
+        //        //BtnCheckPPT.Visibility = Visibility.Visible;
+        //        StackPanelPPTControls.Visibility = Visibility.Collapsed;
+        //        LeftBottomPanelForPPTNavigation.Visibility = Visibility.Collapsed;
+        //        RightBottomPanelForPPTNavigation.Visibility = Visibility.Collapsed;
+        //        LeftSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
+        //        RightSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
+        //        MessageBox.Show("未找到幻灯片");
+        //    }
+        ////}
 
         private void ToggleSwitchSupportWPS_Toggled(object sender, RoutedEventArgs e)
         {
@@ -4245,86 +4259,39 @@ namespace InkCanvasForClass_Remastered
             App.SettingsService.SaveSettings();
         }
 
-        public static bool IsShowingRestoreHiddenSlidesWindow = false;
-        private static bool IsShowingAutoplaySlidesWindow = false;
-
-
         private void TimerCheckPPT_Tick(object sender, EventArgs e)
         {
             if (IsShowingRestoreHiddenSlidesWindow || IsShowingAutoplaySlidesWindow) return;
-            try
+            if (App.PowerPointService.IsConnected) return; // 如果已经连接，就什么都不做
+
+            if (App.PowerPointService.TryConnectAndMonitor())
             {
-                //var processes = Process.GetProcessesByName("wpp");
-                //if (processes.Length > 0 && !isWPSSupportOn) return;
+                // 连接成功！
+                timerCheckPPT.Stop(); // 停止定时器
 
-                //使用下方提前创建 PowerPoint 实例，将导致 PowerPoint 不再有启动界面
-                //pptApplication = (Microsoft.Office.Interop.PowerPoint.Application)Activator.CreateInstance(Marshal.GetTypeFromCLSID(new Guid("91493441-5A91-11CF-8700-00AA0060263B")));
-                //new ComAwareEventInfo(typeof(EApplication_Event), "SlideShowBegin").AddEventHandler(pptApplication, new EApplication_SlideShowBeginEventHandler(this.PptApplication_SlideShowBegin));
-                //new ComAwareEventInfo(typeof(EApplication_Event), "SlideShowEnd").AddEventHandler(pptApplication, new EApplication_SlideShowEndEventHandler(this.PptApplication_SlideShowEnd));
-                //new ComAwareEventInfo(typeof(EApplication_Event), "SlideShowNextSlide").AddEventHandler(pptApplication, new EApplication_SlideShowNextSlideEventHandler(this.PptApplication_SlideShowNextSlide));
-                //ConfigHelper.Instance.IsInitApplicationSuccessful = true;
-
-                pptApplication = new Microsoft.Office.Interop.PowerPoint.Application();
-
-                if (pptApplication != null)
+                // 手动检查一下是否已经处于放映模式
+                try
                 {
-                    timerCheckPPT.Stop();
-                    //获得演示文稿对象
-                    presentation = pptApplication.ActivePresentation;
-
-                    // 获得幻灯片对象集合
-                    slides = presentation.Slides;
-
-                    // 获得幻灯片的数量
-                    slidescount = slides.Count;
-                    memoryStreams = new MemoryStream[slidescount + 2];
-                    // 获得当前选中的幻灯片
-                    try
+                    var pptApp = (Microsoft.Office.Interop.PowerPoint.Application)Marshal2.GetActiveObject("PowerPoint.Application");
+                    if (pptApp.SlideShowWindows.Count >= 1)
                     {
-                        // 在普通视图下这种方式可以获得当前选中的幻灯片对象
-                        // 然而在阅读模式下，这种方式会出现异常
-                        slide = slides[pptApplication.ActiveWindow.Selection.SlideRange.SlideNumber];
+                        PptApplication_SlideShowBegin(pptApp.SlideShowWindows[1]);
                     }
-                    catch
-                    {
-                        // 在阅读模式下出现异常时，通过下面的方式来获得当前选中的幻灯片对象
-                        slide = pptApplication.SlideShowWindows[1].View.Slide;
-                    }
-
-                    pptApplication.PresentationOpen += PptApplication_PresentationOpen;
-                    pptApplication.PresentationClose += PptApplication_PresentationClose;
-                    pptApplication.SlideShowBegin += PptApplication_SlideShowBegin;
-                    pptApplication.SlideShowNextSlide += PptApplication_SlideShowNextSlide;
-                    pptApplication.SlideShowEnd += PptApplication_SlideShowEnd;
                 }
-
-                if (pptApplication == null) return;
-                //BtnCheckPPT.Visibility = Visibility.Collapsed;
-
-                // 此处是已经开启了
-                PptApplication_PresentationOpen(null);
-
-                //如果检测到已经开始放映，则立即进入画板模式
-                if (pptApplication.SlideShowWindows.Count >= 1)
-                    PptApplication_SlideShowBegin(pptApplication.SlideShowWindows[1]);
-            }
-            catch
-            {
-                //StackPanelPPTControls.Visibility = Visibility.Collapsed;
-                Application.Current.Dispatcher.Invoke(() => { BtnPPTSlideShow.Visibility = Visibility.Collapsed; });
-                timerCheckPPT.Start();
+                catch { }
             }
         }
 
         private void PptApplication_PresentationOpen(Presentation Pres)
         {
+            if (Pres == null) return;
             // 跳转到上次播放页
             if (Settings.PowerPointSettings.IsNotifyPreviousPage)
                 Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                 {
                     var folderPath = Settings.Automation.AutoSavedStrokesLocation +
-                                     @"\Auto Saved - Presentations\" + presentation.Name + "_" +
-                                     presentation.Slides.Count;
+                                     @"\Auto Saved - Presentations\" + Pres.Name + "_" +
+                                     Pres.Slides.Count;
                     try
                     {
                         if (!File.Exists(folderPath + "/Position")) return;
@@ -4332,11 +4299,14 @@ namespace InkCanvasForClass_Remastered
                         if (page <= 0) return;
                         new YesOrNoNotificationWindow($"上次播放到了第 {page} 页, 是否立即跳转", () =>
                         {
-                            if (pptApplication.SlideShowWindows.Count >= 1)
-                                // 如果已经播放了的话, 跳转
-                                presentation.SlideShowWindow.View.GotoSlide(page);
+                            if (App.PowerPointService.IsInSlideShow)
+                            {
+                                App.PowerPointService.ActiveSlideShowWindow?.View.GotoSlide(page);
+                            }
                             else
-                                presentation.Windows[1].View.GotoSlide(page);
+                            {
+                                Pres.Windows[1].View.GotoSlide(page);
+                            }
                         }).ShowDialog();
                     }
                     catch (Exception ex)
@@ -4350,7 +4320,7 @@ namespace InkCanvasForClass_Remastered
             if (Settings.PowerPointSettings.IsNotifyHiddenPage)
             {
                 var isHaveHiddenSlide = false;
-                foreach (Slide slide in slides)
+                foreach (Slide slide in Pres.Slides)
                     if (slide.SlideShowTransition.Hidden == Microsoft.Office.Core.MsoTriState.msoTrue)
                     {
                         isHaveHiddenSlide = true;
@@ -4365,7 +4335,7 @@ namespace InkCanvasForClass_Remastered
                         new YesOrNoNotificationWindow("检测到此演示文档中包含隐藏的幻灯片，是否取消隐藏？",
                             () =>
                             {
-                                foreach (Slide slide in slides)
+                                foreach (Slide slide in Pres.Slides)
                                     if (slide.SlideShowTransition.Hidden ==
                                         Microsoft.Office.Core.MsoTriState.msoTrue)
                                         slide.SlideShowTransition.Hidden =
@@ -4385,7 +4355,7 @@ namespace InkCanvasForClass_Remastered
                 && BtnPPTSlideShowEnd.Visibility != Visibility.Visible)
             {
                 bool hasSlideTimings = false;
-                foreach (Slide slide in presentation.Slides)
+                foreach (Slide slide in Pres.Slides)
                 {
                     if (slide.SlideShowTransition.AdvanceOnTime == MsoTriState.msoTrue &&
                         slide.SlideShowTransition.AdvanceTime > 0)
@@ -4405,26 +4375,21 @@ namespace InkCanvasForClass_Remastered
                             new YesOrNoNotificationWindow("检测到此演示文档中自动播放或排练计时已经启用，可能导致幻灯片自动翻页，是否取消？",
                                 () =>
                                 {
-                                    presentation.SlideShowSettings.AdvanceMode =
+                                    Pres.SlideShowSettings.AdvanceMode =
                                         PpSlideShowAdvanceMode.ppSlideShowManualAdvance;
                                     IsShowingAutoplaySlidesWindow = false;
                                 }, () => { IsShowingAutoplaySlidesWindow = false; },
                                 () => { IsShowingAutoplaySlidesWindow = false; }).ShowDialog();
                         }
                     }));
-                    presentation.SlideShowSettings.AdvanceMode = PpSlideShowAdvanceMode.ppSlideShowManualAdvance;
+                    Pres.SlideShowSettings.AdvanceMode = PpSlideShowAdvanceMode.ppSlideShowManualAdvance;
                 }
             }
         }
 
         private void PptApplication_PresentationClose(Presentation Pres)
         {
-            pptApplication.PresentationOpen -= PptApplication_PresentationOpen;
-            pptApplication.PresentationClose -= PptApplication_PresentationClose;
-            pptApplication.SlideShowBegin -= PptApplication_SlideShowBegin;
-            pptApplication.SlideShowNextSlide -= PptApplication_SlideShowNextSlide;
-            pptApplication.SlideShowEnd -= PptApplication_SlideShowEnd;
-            pptApplication = null;
+            App.PowerPointService.Disconnect();
             timerCheckPPT.Start();
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -4432,11 +4397,6 @@ namespace InkCanvasForClass_Remastered
                 BtnPPTSlideShowEnd.Visibility = Visibility.Collapsed;
             });
         }
-
-        private bool isPresentationHaveBlackSpace = false;
-
-
-        private string pptName = null;
 
         private void UpdatePPTBtnStyleSettingsStatus()
         {
@@ -4635,24 +4595,27 @@ namespace InkCanvasForClass_Remastered
 
                 lastDesktopInkColor = 1;
 
-                slidescount = Wn.Presentation.Slides.Count;
-                previousSlideID = 0;
-                memoryStreams = new MemoryStream[slidescount + 2];
+                var currentPresentation = Wn.Presentation;
+                if (currentPresentation == null) return;
 
-                pptName = Wn.Presentation.Name;
-                LogHelper.NewLog("Name: " + Wn.Presentation.Name);
-                LogHelper.NewLog("Slides Count: " + slidescount.ToString());
+                _slidescount = currentPresentation.Slides.Count;
+                _previousSlideID = 0;
+                _memoryStreams = new MemoryStream[_slidescount + 2];
+
+                _pptName = currentPresentation.Name;
+                LogHelper.NewLog("Name: " + _pptName);
+                LogHelper.NewLog("Slides Count: " + _slidescount.ToString());
 
                 //检查是否有已有墨迹，并加载
                 if (Settings.PowerPointSettings.IsAutoSaveStrokesInPowerPoint)
                     if (Directory.Exists(Settings.Automation.AutoSavedStrokesLocation +
-                                         @"\Auto Saved - Presentations\" + Wn.Presentation.Name + "_" +
-                                         Wn.Presentation.Slides.Count))
+                                         @"\Auto Saved - Presentations\" + _pptName + "_" +
+                                         _slidescount))
                     {
                         LogHelper.WriteLogToFile("Found saved strokes", LogHelper.LogType.Trace);
                         var files = new DirectoryInfo(Settings.Automation.AutoSavedStrokesLocation +
-                                                      @"\Auto Saved - Presentations\" + Wn.Presentation.Name + "_" +
-                                                      Wn.Presentation.Slides.Count).GetFiles();
+                                                      @"\Auto Saved - Presentations\" + currentPresentation.Name + "_" +
+                                                      currentPresentation.Slides.Count).GetFiles();
                         var count = 0;
                         foreach (var file in files)
                             if (file.Name != "Position")
@@ -4661,8 +4624,8 @@ namespace InkCanvasForClass_Remastered
                                 try
                                 {
                                     i = int.Parse(Path.GetFileNameWithoutExtension(file.Name));
-                                    memoryStreams[i] = new MemoryStream(File.ReadAllBytes(file.FullName));
-                                    memoryStreams[i].Position = 0;
+                                    _memoryStreams[i] = new MemoryStream(File.ReadAllBytes(file.FullName));
+                                    _memoryStreams[i].Position = 0;
                                     count++;
                                 }
                                 catch (Exception ex)
@@ -4717,7 +4680,7 @@ namespace InkCanvasForClass_Remastered
 
                 isEnteredSlideShowEndEvent = false;
                 PPTBtnPageNow.Text = $"{Wn.View.CurrentShowPosition}";
-                PPTBtnPageTotal.Text = $"/ {Wn.Presentation.Slides.Count}";
+                PPTBtnPageTotal.Text = $"/ {_slidescount}";
                 if (!isFloatingBarFolded)
                 {
                     UpdatePPTBtnDisplaySettingsStatus();
@@ -4739,8 +4702,6 @@ namespace InkCanvasForClass_Remastered
             });
         }
 
-        private bool isEnteredSlideShowEndEvent = false; //防止重复调用本函数导致墨迹保存失效
-
         private async void PptApplication_SlideShowEnd(Presentation Pres)
         {
             if (isFloatingBarFolded) await UnFoldFloatingBar(new object());
@@ -4760,22 +4721,22 @@ namespace InkCanvasForClass_Remastered
                 if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
                 try
                 {
-                    File.WriteAllText(folderPath + "/Position", previousSlideID.ToString());
+                    File.WriteAllText(folderPath + "/Position", _previousSlideID.ToString());
                 }
                 catch { }
 
                 for (var i = 1; i <= Pres.Slides.Count; i++)
-                    if (memoryStreams[i] != null)
+                    if (_memoryStreams[i] != null)
                         try
                         {
-                            if (memoryStreams[i].Length > 8)
+                            if (_memoryStreams[i].Length > 8)
                             {
-                                var srcBuf = new byte[memoryStreams[i].Length];
-                                var byteLength = memoryStreams[i].Read(srcBuf, 0, srcBuf.Length);
+                                var srcBuf = new byte[_memoryStreams[i].Length];
+                                var byteLength = _memoryStreams[i].Read(srcBuf, 0, srcBuf.Length);
                                 File.WriteAllBytes(folderPath + @"\" + i.ToString("0000") + ".icstk", srcBuf);
                                 LogHelper.WriteLogToFile(string.Format(
                                     "Saved strokes for Slide {0}, size={1}, byteLength={2}", i.ToString(),
-                                    memoryStreams[i].Length, byteLength));
+                                    _memoryStreams[i].Length, byteLength));
                             }
                             else
                             {
@@ -4852,20 +4813,17 @@ namespace InkCanvasForClass_Remastered
 
         }
 
-        private int previousSlideID = 0;
-        private MemoryStream[] memoryStreams = new MemoryStream[50];
-
         private void PptApplication_SlideShowNextSlide(SlideShowWindow Wn)
         {
             LogHelper.WriteLogToFile($"PowerPoint Next Slide (Slide {Wn.View.CurrentShowPosition})",
                 LogHelper.LogType.Event);
-            if (Wn.View.CurrentShowPosition == previousSlideID) return;
+            if (Wn.View.CurrentShowPosition == _previousSlideID) return;
             Application.Current.Dispatcher.Invoke(() =>
             {
                 var ms = new MemoryStream();
                 inkCanvas.Strokes.Save(ms);
                 ms.Position = 0;
-                memoryStreams[previousSlideID] = ms;
+                _memoryStreams[_previousSlideID] = ms;
 
                 if (inkCanvas.Strokes.Count > Settings.Automation.MinimumAutomationStrokeNumber &&
                     Settings.PowerPointSettings.IsAutoSaveScreenShotInPowerPoint && !_isPptClickingBtnTurned)
@@ -4877,9 +4835,9 @@ namespace InkCanvasForClass_Remastered
 
                 try
                 {
-                    if (memoryStreams[Wn.View.CurrentShowPosition] != null &&
-                        memoryStreams[Wn.View.CurrentShowPosition].Length > 0)
-                        inkCanvas.Strokes.Add(new StrokeCollection(memoryStreams[Wn.View.CurrentShowPosition]));
+                    if (_memoryStreams[Wn.View.CurrentShowPosition] != null &&
+                        _memoryStreams[Wn.View.CurrentShowPosition].Length > 0)
+                        inkCanvas.Strokes.Add(new StrokeCollection(_memoryStreams[Wn.View.CurrentShowPosition]));
                 }
                 catch
                 {
@@ -4891,7 +4849,7 @@ namespace InkCanvasForClass_Remastered
 
                 //PptNavigationTextBlock.Text = $"{Wn.View.CurrentShowPosition}/{Wn.Presentation.Slides.Count}";
             });
-            previousSlideID = Wn.View.CurrentShowPosition;
+            _previousSlideID = Wn.View.CurrentShowPosition;
         }
 
         private bool _isPptClickingBtnTurned = false;
@@ -4912,40 +4870,8 @@ namespace InkCanvasForClass_Remastered
             if (inkCanvas.Strokes.Count > Settings.Automation.MinimumAutomationStrokeNumber &&
                 Settings.PowerPointSettings.IsAutoSaveScreenShotInPowerPoint)
                 SaveScreenShot(true,
-                    pptApplication.SlideShowWindows[1].Presentation.Name + "/" +
-                    pptApplication.SlideShowWindows[1].View.CurrentShowPosition);
-
-            try
-            {
-                new Thread(new ThreadStart(() =>
-                {
-                    try
-                    {
-                        pptApplication.SlideShowWindows[1].Activate();
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-
-                    try
-                    {
-                        pptApplication.SlideShowWindows[1].View.Previous();
-                    }
-                    catch
-                    {
-                        // ignored
-                    } // Without this catch{}, app will crash when click the pre-page button in the fir page in some special env.
-                })).Start();
-            }
-            catch
-            {
-                StackPanelPPTControls.Visibility = Visibility.Collapsed;
-                LeftBottomPanelForPPTNavigation.Visibility = Visibility.Collapsed;
-                RightBottomPanelForPPTNavigation.Visibility = Visibility.Collapsed;
-                LeftSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
-                RightSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
-            }
+                    _pptName + "/" + App.PowerPointService.ActiveSlideShowWindow.View.CurrentShowPosition);
+            App.PowerPointService.GoToPreviousSlide();
         }
 
         private void BtnPPTSlidesDown_Click(object sender, RoutedEventArgs e)
@@ -4963,39 +4889,9 @@ namespace InkCanvasForClass_Remastered
             if (inkCanvas.Strokes.Count > Settings.Automation.MinimumAutomationStrokeNumber &&
                 Settings.PowerPointSettings.IsAutoSaveScreenShotInPowerPoint)
                 SaveScreenShot(true,
-                    pptApplication.SlideShowWindows[1].Presentation.Name + "/" +
-                    pptApplication.SlideShowWindows[1].View.CurrentShowPosition);
-            try
-            {
-                new Thread(new ThreadStart(() =>
-                {
-                    try
-                    {
-                        pptApplication.SlideShowWindows[1].Activate();
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
+                    _pptName + "/" + App.PowerPointService.ActiveSlideShowWindow.View.CurrentShowPosition);
 
-                    try
-                    {
-                        pptApplication.SlideShowWindows[1].View.Next();
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-                })).Start();
-            }
-            catch
-            {
-                StackPanelPPTControls.Visibility = Visibility.Collapsed;
-                LeftBottomPanelForPPTNavigation.Visibility = Visibility.Collapsed;
-                RightBottomPanelForPPTNavigation.Visibility = Visibility.Collapsed;
-                LeftSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
-                RightSidePanelForPPTNavigation.Visibility = Visibility.Collapsed;
-            }
+            App.PowerPointService.GoToNextSlide();
         }
 
         private async void PPTNavigationBtn_MouseDown(object sender, MouseButtonEventArgs e)
@@ -5069,7 +4965,8 @@ namespace InkCanvasForClass_Remastered
             CursorIcon_Click(null, null);
             try
             {
-                pptApplication.SlideShowWindows[1].SlideNavigation.Visible = true;
+                //pptApplication.SlideShowWindows[1].SlideNavigation.Visible = true;
+                App.PowerPointService.ActiveSlideShowWindow.SlideNavigation.Visible = true;
             }
             catch { }
 
@@ -5083,14 +4980,7 @@ namespace InkCanvasForClass_Remastered
 
         private void BtnPPTSlideShow_Click(object sender, RoutedEventArgs e)
         {
-            new Thread(new ThreadStart(() =>
-            {
-                try
-                {
-                    presentation.SlideShowSettings.Run();
-                }
-                catch { }
-            })).Start();
+            App.PowerPointService.StartSlideShow();
         }
 
         private async void BtnPPTSlideShowEnd_Click(object sender, RoutedEventArgs e)
@@ -5102,7 +4992,7 @@ namespace InkCanvasForClass_Remastered
                     var ms = new MemoryStream();
                     inkCanvas.Strokes.Save(ms);
                     ms.Position = 0;
-                    memoryStreams[pptApplication.SlideShowWindows[1].View.CurrentShowPosition] = ms;
+                    _memoryStreams[App.PowerPointService.ActiveSlideShowWindow.View.CurrentShowPosition] = ms;
                     timeMachine.ClearStrokeHistory();
                 }
                 catch
@@ -5110,17 +5000,18 @@ namespace InkCanvasForClass_Remastered
                     // ignored
                 }
             });
-            new Thread(new ThreadStart(() =>
-            {
-                try
-                {
-                    pptApplication.SlideShowWindows[1].View.Exit();
-                }
-                catch
-                {
-                    // ignored
-                }
-            })).Start();
+            //new Thread(new ThreadStart(() =>
+            //{
+            //    try
+            //    {
+            //        pptApplication.SlideShowWindows[1].View.Exit();
+            //    }
+            //    catch
+            //    {
+            //        // ignored
+            //    }
+            //})).Start();
+            App.PowerPointService.EndSlideShow();
 
             HideSubPanels("cursor");
             await Task.Delay(150);
