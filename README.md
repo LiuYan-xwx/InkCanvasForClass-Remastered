@@ -76,7 +76,8 @@ https://github.com/3382308510
 - 自动收纳的代码实现重构
 - ISettingsService，可以LoadSettings, SaveSettings, ReplaceSettings。code-behind中相应逻辑删除
 - IPowerPointService，各种方法。code-behind中连接ppt的逻辑全部挪到这
-- MainViewModel（还在写）
+- MainViewModel（还在写）  
+
 常规修改：
 - 使用了新的 ICC-Re 图标，各种名字也改了
 - 开发者栏目修改
