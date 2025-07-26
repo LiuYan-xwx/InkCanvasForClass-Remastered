@@ -64,10 +64,24 @@ https://github.com/3382308510
    - **其他优化：**
      - 随机点名有些许修改
 
-本项目建立后已经做出的修改：
-- 
+**本项目基于 GPLv3 许可**
 
-本项目基于 GPLv3 许可
+## 开发
+目前在 **wtf** 分支开发。~~*别问为什么叫这个()*~~
+
+本项目建立后已经做出的技术性修改：
+- 移除了所有 COM 引用
+- 开机自启创建快捷方式由COM引用方式改用 [WindowsShortcutFactory](https://github.com/gdivis/WindowsShortcutFactory)
+- 各种 System.Timers.Timer 重构为 DispatcherTimer
+- 自动收纳的代码实现重构
+- ISettingsService，可以LoadSettings, SaveSettings, ReplaceSettings。code-behind中相应逻辑删除
+- IPowerPointService，各种方法。code-behind中连接ppt的逻辑全部挪到这
+- MainViewModel（还在写）
+常规修改：
+- 使用了新的 ICC-Re 图标，各种名字也改了
+- 开发者栏目修改
+- 移除了侧边栏的快速面板
+- 不默认开机自启
 
 ---
 
@@ -163,7 +177,7 @@ ICC 可以支持 WPS，但目前無法同時支持 MSOffice 和 WPS。若要啟�
 
 ## 使用
 - 安装 [.NET 8 桌面运行时](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)  
-- 自行构建，或直接从 GitHub Actions 下载构建产物
+- 自行构建，或直接从 GitHub Actions 下载构建产物，大概不会发 Release
 
 ## 问题反馈
 
