@@ -45,11 +45,11 @@ https://github.com/3382308510
 
 ## 项目说明
 
-社区另有维护更积极的衍生版 [InkCanvasForClass Community Edition](https://github.com/InkCanvasForClass/community)（ICC-CE），推荐想要功能更新快的人使用。  
-不过我不太喜欢，所以本项目应运而生。
+社区另有维护更积极的衍生版 [InkCanvasForClass Community Edition](https://github.com/InkCanvasForClass/community)（ICC-CE），推荐各位都去用这个，ICC-Re只是我闲暇之余有兴趣才会开发。  
+不过我不太喜欢 ICC-CE，所以本项目应运而生。
 
 1. 项目以个人兴趣为主开发，**而且用的人肯定是几乎没有**，所以更新随缘，优先保证基本可用性，bug修复。功能的新增较少。
-2. 目前版本已可正常使用，无严重 bug，后续更新会尽量不引入新的屎。
+2. 目前版本应该是可以正常使用，应该是无严重 bug，后续更新会尽量不引入新的屎。
 3. 初始提交相较 `icc-0610fix` 的主要变化：
    - **移除功能：**
      - 墨迹识别（因为我用不到）
@@ -63,6 +63,9 @@ https://github.com/3382308510
      - 升级了 Nuget 各种库，以及必要的兼容性修改
    - **其他优化：**
      - 随机点名有些许修改
+
+本项目建立后已经做出的修改：
+- 
 
 本项目基于 GPLv3 许可
 
