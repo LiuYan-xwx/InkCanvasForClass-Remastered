@@ -8,7 +8,7 @@
 
 本项目基于 `icc-0610fix` 进行二次开发，而 `icc-0610fix` 是 **InkCanvasForClass**（简称 **ICC**）的一个衍生版本。
 
-> `icc-0610fix` 原仓库已删除，目前可参考其拷贝版本 [awesome-iwb/icc-20240610-stable](https://github.com/awesome-iwb/icc-20240610-stable)。  
+> `icc-0610fix` 原仓库: [awesome-iwb/icc-20240610-stable](https://github.com/awesome-iwb/icc-20240610-stable)。  
 > **ICC** 本身源自 [WuChanging/Ink-Canvas](https://github.com/WuChanging/Ink-Canvas)，该项目对原版做了大量改进，包括 UI 美化、新增功能与体验优化。  
 > 进一步追溯， [WuChanging/Ink-Canvas](https://github.com/WuChanging/Ink-Canvas)（又名 *Ink Canvas Artistry*）基于 [WXRIW/Ink-Canvas](https://github.com/WXRIW/Ink-Canvas) 修改，继续完善了功能与界面。
 
@@ -161,13 +161,13 @@ ICC 可以支持 WPS，但目前無法同時支持 MSOffice 和 WPS。若要啟�
 <table>
     <tbody>
         <tr>
-            <td align="center" valign="top" width="14.28%"><a href="https://github.com/ChangSakura"><img
+            <td align="center" valign="top" width="14.28%"><a href="https://bgithub.xyz/ChangSakura"><img
                         src="https://avatars.githubusercontent.com/u/90511645?v=4" width="100px;"
                         alt="HelloWRC" /><br /><sub><b>ChangSakura</b></sub></a></td>
-            <td align="center" valign="top" width="14.28%"><a href="https://github.com/WXRIW"><img
+            <td align="center" valign="top" width="14.28%"><a href="https://bgithub.xyz/WXRIW"><img
                         src="https://avatars.githubusercontent.com/u/62491584?v=4" width="100px;"
                         alt="Doctor-yoi" /><br /><sub><b>WXRIW</b></sub></a></td>
-            <td align="center" valign="top" width="14.28%"><a href="https://github.com/Alan-CRL"><img
+            <td align="center" valign="top" width="14.28%"><a href="https://bgithub.xyz/Alan-CRL"><img
                         src="https://avatars.githubusercontent.com/u/92425617?v=4" width="100px;"
                         alt="姜胤" /><br /><sub><b>Alan-CRL</b></sub></a></td>
         </tr>
