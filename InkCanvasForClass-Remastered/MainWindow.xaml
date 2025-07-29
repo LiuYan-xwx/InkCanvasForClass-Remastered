@@ -36,8 +36,8 @@
     mc:Ignorable="d">
     <!--  资源中添加命令  -->
     <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <converters:IsEnabledToOpacityConverter x:Key="IsEnabledToOpacityConverter" />
-        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <converters:IntNumberToString x:Key="IntNumberToString" />
         <converters:IntNumberToString2 x:Key="IntNumberToString2" />
         <RoutedUICommand x:Key="KeyExit" Text=" " />
