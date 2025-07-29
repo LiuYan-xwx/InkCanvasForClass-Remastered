@@ -89,7 +89,7 @@ namespace InkCanvasForClass_Remastered
                 var isInPPTPresentationMode = false;
                 Dispatcher.Invoke(() =>
                 {
-                    isInPPTPresentationMode = mainWin.BtnPPTSlideShowEnd.Visibility == Visibility.Visible;
+                    isInPPTPresentationMode = mainWin.BorderFloatingBarExitPPTBtn.Visibility == Visibility.Visible;
                 });
                 if (!mainWin.isFloatingBarFolded)
                 {

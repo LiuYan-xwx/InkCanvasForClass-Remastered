@@ -116,8 +116,6 @@ namespace InkCanvasForClass_Remastered
         public double ViewboxFloatingBarOpacityInPPTValue { get; set; } = 0.5;
         [JsonProperty("enableViewboxBlackBoardScaleTransform")]
         public bool EnableViewboxBlackBoardScaleTransform { get; set; } = false;
-        [JsonProperty("isTransparentButtonBackground")]
-        public bool IsTransparentButtonBackground { get; set; } = true;
         [JsonProperty("isShowExitButton")]
         public bool IsShowExitButton { get; set; } = true;
         [JsonProperty("isShowEraserButton")]
