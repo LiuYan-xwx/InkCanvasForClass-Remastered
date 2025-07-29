@@ -216,14 +216,6 @@ namespace InkCanvasForClass_Remastered
             BlackBoardLeftSidePageListView.ItemsSource = blackBoardSidePageListViewObservableCollection;
             BlackBoardRightSidePageListView.ItemsSource = blackBoardSidePageListViewObservableCollection;
 
-            BtnLeftWhiteBoardSwitchPreviousGeometry.Brush =
-                new SolidColorBrush(System.Windows.Media.Color.FromArgb(127, 24, 24, 27));
-            BtnLeftWhiteBoardSwitchPreviousLabel.Opacity = 0.5;
-            BtnRightWhiteBoardSwitchPreviousGeometry.Brush =
-                new SolidColorBrush(System.Windows.Media.Color.FromArgb(127, 24, 24, 27));
-            BtnRightWhiteBoardSwitchPreviousLabel.Opacity = 0.5;
-
-            BtnWhiteBoardSwitchPrevious.IsEnabled = CurrentWhiteboardIndex != 1;
             BorderInkReplayToolBox.Visibility = Visibility.Collapsed;
 
         }
@@ -664,8 +656,6 @@ namespace InkCanvasForClass_Remastered
         private bool[] whiteboadLastModeIsRedo = new bool[101];
         private StrokeCollection lastTouchDownStrokeCollection = new StrokeCollection();
 
-        private int CurrentWhiteboardIndex = 1;
-        private int WhiteboardTotalCount = 1;
         private TimeMachineHistory[][] TimeMachineHistories = new TimeMachineHistory[101][]; //最多99页，0用来存储非白板时的墨迹以便还原
 
         private void SaveStrokes(bool isBackupMain = false)
@@ -679,7 +669,7 @@ namespace InkCanvasForClass_Remastered
             else
             {
                 var timeMachineHistory = timeMachine.ExportTimeMachineHistory();
-                TimeMachineHistories[CurrentWhiteboardIndex] = timeMachineHistory;
+                TimeMachineHistories[ViewModel.WhiteboardCurrentPage] = timeMachineHistory;
                 timeMachine.ClearStrokeHistory();
             }
         }
@@ -696,7 +686,7 @@ namespace InkCanvasForClass_Remastered
         {
             try
             {
-                if (TimeMachineHistories[CurrentWhiteboardIndex] == null) return; //防止白板打开后不居中
+                if (TimeMachineHistories[ViewModel.WhiteboardCurrentPage] == null) return; //防止白板打开后不居中
                 if (isBackupMain)
                 {
                     timeMachine.ImportTimeMachineHistory(TimeMachineHistories[0]);
@@ -704,8 +694,8 @@ namespace InkCanvasForClass_Remastered
                 }
                 else
                 {
-                    timeMachine.ImportTimeMachineHistory(TimeMachineHistories[CurrentWhiteboardIndex]);
-                    foreach (var item in TimeMachineHistories[CurrentWhiteboardIndex]) ApplyHistoryToCanvas(item);
+                    timeMachine.ImportTimeMachineHistory(TimeMachineHistories[ViewModel.WhiteboardCurrentPage]);
+                    foreach (var item in TimeMachineHistories[ViewModel.WhiteboardCurrentPage]) ApplyHistoryToCanvas(item);
                 }
             }
             catch
@@ -730,7 +720,7 @@ namespace InkCanvasForClass_Remastered
                     await Task.Delay(1);
                     ScrollViewToVerticalTop(
                         (ListViewItem)BlackBoardLeftSidePageListView.ItemContainerGenerator.ContainerFromIndex(
-                            CurrentWhiteboardIndex - 1), BlackBoardLeftSidePageListScrollViewer);
+                            ViewModel.WhiteboardCurrentPage - 1), BlackBoardLeftSidePageListScrollViewer);
                 }
             }
             else if (sender == BtnRightPageListWB)
@@ -747,66 +737,27 @@ namespace InkCanvasForClass_Remastered
                     await Task.Delay(1);
                     ScrollViewToVerticalTop(
                         (ListViewItem)BlackBoardRightSidePageListView.ItemContainerGenerator.ContainerFromIndex(
-                            CurrentWhiteboardIndex - 1), BlackBoardRightSidePageListScrollViewer);
+                            ViewModel.WhiteboardCurrentPage - 1), BlackBoardRightSidePageListScrollViewer);
                 }
             }
 
         }
 
-        private void BtnWhiteBoardSwitchPrevious_Click(object sender, EventArgs e)
+        private void WhiteBoardAddPage()
         {
-            if (CurrentWhiteboardIndex <= 1) return;
-
-            SaveStrokes();
-
-            ClearStrokes(true);
-            CurrentWhiteboardIndex--;
-
-            RestoreStrokes();
-
-            UpdateIndexInfoDisplay();
-        }
-
-        private void BtnWhiteBoardSwitchNext_Click(object sender, EventArgs e)
-        {
-            Trace.WriteLine("113223234");
-
+            if (ViewModel.WhiteboardTotalPageCount >= 99) return;
             if (Settings.Automation.IsAutoSaveStrokesAtClear &&
-                inkCanvas.Strokes.Count > Settings.Automation.MinimumAutomationStrokeNumber) SaveScreenShot(true);
-            if (CurrentWhiteboardIndex >= WhiteboardTotalCount)
-            {
-                BtnWhiteBoardAdd_Click(sender, e);
-                return;
-            }
-
-            SaveStrokes();
-
-            ClearStrokes(true);
-            CurrentWhiteboardIndex++;
-
-            RestoreStrokes();
-
-            UpdateIndexInfoDisplay();
-        }
-
-        private void BtnWhiteBoardAdd_Click(object sender, EventArgs e)
-        {
-            if (WhiteboardTotalCount >= 99) return;
-            if (Settings.Automation.IsAutoSaveStrokesAtClear &&
-                inkCanvas.Strokes.Count > Settings.Automation.MinimumAutomationStrokeNumber) SaveScreenShot(true);
+                inkCanvas.Strokes.Count > Settings.Automation.MinimumAutomationStrokeNumber)
+                SaveScreenShot(true);
             SaveStrokes();
             ClearStrokes(true);
 
-            WhiteboardTotalCount++;
-            CurrentWhiteboardIndex++;
+            ViewModel.WhiteboardTotalPageCount++;
+            ViewModel.WhiteboardCurrentPage++;
 
-            if (CurrentWhiteboardIndex != WhiteboardTotalCount)
-                for (var i = WhiteboardTotalCount; i > CurrentWhiteboardIndex; i--)
+            if (ViewModel.WhiteboardCurrentPage != ViewModel.WhiteboardTotalPageCount)
+                for (var i = ViewModel.WhiteboardTotalPageCount; i > ViewModel.WhiteboardCurrentPage; i--)
                     TimeMachineHistories[i] = TimeMachineHistories[i - 1];
-
-            UpdateIndexInfoDisplay();
-
-            if (WhiteboardTotalCount >= 99) BtnWhiteBoardAdd.IsEnabled = false;
 
             if (BlackBoardLeftSidePageListView.Visibility == Visibility.Visible)
             {
@@ -814,100 +765,35 @@ namespace InkCanvasForClass_Remastered
             }
         }
 
-        private void BtnWhiteBoardDelete_Click(object sender, RoutedEventArgs e)
+        private void BtnWhiteBoardSwitchPrevious_Click(object sender, EventArgs e)
         {
+            if (ViewModel.WhiteboardCurrentPage <= 1) return;
+
+            SaveStrokes();
+
             ClearStrokes(true);
-
-            if (CurrentWhiteboardIndex != WhiteboardTotalCount)
-                for (var i = CurrentWhiteboardIndex; i <= WhiteboardTotalCount; i++)
-                    TimeMachineHistories[i] = TimeMachineHistories[i + 1];
-            else
-                CurrentWhiteboardIndex--;
-
-            WhiteboardTotalCount--;
+            ViewModel.WhiteboardCurrentPage--;
 
             RestoreStrokes();
-
-            UpdateIndexInfoDisplay();
-
-            if (WhiteboardTotalCount < 99) BtnWhiteBoardAdd.IsEnabled = true;
         }
 
-        private void UpdateIndexInfoDisplay()
+        private void BtnWhiteBoardSwitchNext_Click(object sender, EventArgs e)
         {
-            TextBlockWhiteBoardIndexInfo.Text =
-                $"{CurrentWhiteboardIndex}/{WhiteboardTotalCount}";
+            Trace.WriteLine("113223234");
 
-            if (CurrentWhiteboardIndex == WhiteboardTotalCount)
+            if (Settings.Automation.IsAutoSaveStrokesAtClear &&
+                inkCanvas.Strokes.Count > Settings.Automation.MinimumAutomationStrokeNumber)
+                SaveScreenShot(true);
+            if (ViewModel.WhiteboardCurrentPage == ViewModel.WhiteboardTotalPageCount)
             {
-                var newImageSource = new BitmapImage();
-                newImageSource.BeginInit();
-                newImageSource.UriSource = new Uri("/Resources/Icons-Fluent/ic_fluent_add_circle_24_regular.png",
-                    UriKind.RelativeOrAbsolute);
-                newImageSource.EndInit();
-                //BoardLeftPannelNextPage.Source = newImageSource;
-                //BoardRightPannelNextPage.Source = newImageSource;
-                //BoardRightPannelNextPageTextBlock.Text = "加页";
-                //BoardLeftPannelNextPageTextBlock.Text = "加页";
-            }
-            else
-            {
-                var newImageSource = new BitmapImage();
-                newImageSource.BeginInit();
-                newImageSource.UriSource =
-                    new Uri("/Resources/Icons-Fluent/ic_fluent_arrow_circle_right_24_regular.png",
-                        UriKind.RelativeOrAbsolute);
-                newImageSource.EndInit();
-                //BoardLeftPannelNextPage.Source = newImageSource;
-                //BoardRightPannelNextPage.Source = newImageSource;
-                //BoardRightPannelNextPageTextBlock.Text = "下一页";
-                //BoardLeftPannelNextPageTextBlock.Text = "下一页";
+                WhiteBoardAddPage();
+                return;
             }
 
-            BtnWhiteBoardSwitchPrevious.IsEnabled = true;
-            BtnWhiteBoardSwitchNext.IsEnabled = true;
-
-            if (CurrentWhiteboardIndex == 1)
-            {
-                BtnWhiteBoardSwitchPrevious.IsEnabled = false;
-                BtnLeftWhiteBoardSwitchPreviousGeometry.Brush = new SolidColorBrush(Color.FromArgb(127, 24, 24, 27));
-                BtnLeftWhiteBoardSwitchPreviousLabel.Opacity = 0.5;
-                BtnLeftWhiteBoardSwitchNextGeometry.Brush = new SolidColorBrush(Color.FromArgb(255, 24, 24, 27));
-                BtnLeftWhiteBoardSwitchNextLabel.Opacity = 1;
-
-                BtnRightWhiteBoardSwitchPreviousGeometry.Brush = new SolidColorBrush(Color.FromArgb(127, 24, 24, 27));
-                BtnRightWhiteBoardSwitchPreviousLabel.Opacity = 0.5;
-                BtnRightWhiteBoardSwitchNextGeometry.Brush = new SolidColorBrush(Color.FromArgb(255, 24, 24, 27));
-                BtnRightWhiteBoardSwitchNextLabel.Opacity = 1;
-            }
-            else
-            {
-                BtnLeftWhiteBoardSwitchPreviousGeometry.Brush = new SolidColorBrush(Color.FromArgb(255, 24, 24, 27));
-                BtnLeftWhiteBoardSwitchPreviousLabel.Opacity = 1;
-
-                BtnRightWhiteBoardSwitchPreviousGeometry.Brush = new SolidColorBrush(Color.FromArgb(255, 24, 24, 27));
-                BtnRightWhiteBoardSwitchPreviousLabel.Opacity = 1;
-
-                if (CurrentWhiteboardIndex == WhiteboardTotalCount)
-                {
-                    BtnLeftWhiteBoardSwitchNextGeometry.Brush = new SolidColorBrush(Color.FromArgb(127, 24, 24, 27));
-                    BtnLeftWhiteBoardSwitchNextLabel.Opacity = 0.5;
-
-                    BtnRightWhiteBoardSwitchNextGeometry.Brush = new SolidColorBrush(Color.FromArgb(127, 24, 24, 27));
-                    BtnRightWhiteBoardSwitchNextLabel.Opacity = 0.5;
-                    BtnWhiteBoardSwitchNext.IsEnabled = false;
-                }
-                else
-                {
-                    BtnLeftWhiteBoardSwitchNextGeometry.Brush = new SolidColorBrush(Color.FromArgb(255, 24, 24, 27));
-                    BtnLeftWhiteBoardSwitchNextLabel.Opacity = 1;
-
-                    BtnRightWhiteBoardSwitchNextGeometry.Brush = new SolidColorBrush(Color.FromArgb(255, 24, 24, 27));
-                    BtnRightWhiteBoardSwitchNextLabel.Opacity = 1;
-                }
-            }
-
-            BtnWhiteBoardDelete.IsEnabled = WhiteboardTotalCount != 1;
+            SaveStrokes();
+            ClearStrokes(true);
+            ViewModel.WhiteboardCurrentPage++;
+            RestoreStrokes();
         }
         #endregion
 
@@ -3506,7 +3392,7 @@ namespace InkCanvasForClass_Remastered
 
             if (inkCanvas.Strokes.Count != 0)
             {
-                var whiteboardIndex = CurrentWhiteboardIndex;
+                var whiteboardIndex = ViewModel.WhiteboardCurrentPage;
                 if (currentMode == 0) whiteboardIndex = 0;
                 strokeCollections[whiteboardIndex] = inkCanvas.Strokes.Clone();
             }
@@ -3955,9 +3841,9 @@ namespace InkCanvasForClass_Remastered
         /// </summary>
         private void RefreshBlackBoardSidePageListView()
         {
-            if (blackBoardSidePageListViewObservableCollection.Count == WhiteboardTotalCount)
+            if (blackBoardSidePageListViewObservableCollection.Count == ViewModel.WhiteboardTotalPageCount)
             {
-                foreach (int index in Enumerable.Range(1, WhiteboardTotalCount))
+                foreach (int index in Enumerable.Range(1, ViewModel.WhiteboardTotalPageCount))
                 {
                     var st = ApplyHistoriesToNewStrokeCollection(TimeMachineHistories[index]);
                     st.Clip(new Rect(0, 0, (int)inkCanvas.ActualWidth, (int)inkCanvas.ActualHeight));
@@ -3972,7 +3858,7 @@ namespace InkCanvasForClass_Remastered
             else
             {
                 blackBoardSidePageListViewObservableCollection.Clear();
-                foreach (int index in Enumerable.Range(1, WhiteboardTotalCount))
+                foreach (int index in Enumerable.Range(1, ViewModel.WhiteboardTotalPageCount))
                 {
                     var st = ApplyHistoriesToNewStrokeCollection(TimeMachineHistories[index]);
                     st.Clip(new Rect(0, 0, (int)inkCanvas.ActualWidth, (int)inkCanvas.ActualHeight));
@@ -3989,13 +3875,13 @@ namespace InkCanvasForClass_Remastered
             _st.Clip(new Rect(0, 0, (int)inkCanvas.ActualWidth, (int)inkCanvas.ActualHeight));
             var _pitem = new PageListViewItem()
             {
-                Index = CurrentWhiteboardIndex,
+                Index = ViewModel.WhiteboardCurrentPage,
                 Strokes = _st,
             };
-            blackBoardSidePageListViewObservableCollection[CurrentWhiteboardIndex - 1] = _pitem;
+            blackBoardSidePageListViewObservableCollection[ViewModel.WhiteboardCurrentPage - 1] = _pitem;
 
-            BlackBoardLeftSidePageListView.SelectedIndex = CurrentWhiteboardIndex - 1;
-            BlackBoardRightSidePageListView.SelectedIndex = CurrentWhiteboardIndex - 1;
+            BlackBoardLeftSidePageListView.SelectedIndex = ViewModel.WhiteboardCurrentPage - 1;
+            BlackBoardRightSidePageListView.SelectedIndex = ViewModel.WhiteboardCurrentPage - 1;
         }
 
         public static void ScrollViewToVerticalTop(FrameworkElement element, ScrollViewer scrollViewer)
@@ -4017,9 +3903,8 @@ namespace InkCanvasForClass_Remastered
             {
                 SaveStrokes();
                 ClearStrokes(true);
-                CurrentWhiteboardIndex = index + 1;
+                ViewModel.WhiteboardCurrentPage = index + 1;
                 RestoreStrokes();
-                UpdateIndexInfoDisplay();
                 BlackBoardLeftSidePageListView.SelectedIndex = index;
             }
         }
@@ -4034,9 +3919,8 @@ namespace InkCanvasForClass_Remastered
             {
                 SaveStrokes();
                 ClearStrokes(true);
-                CurrentWhiteboardIndex = index + 1;
+                ViewModel.WhiteboardCurrentPage = index + 1;
                 RestoreStrokes();
-                UpdateIndexInfoDisplay();
                 BlackBoardRightSidePageListView.SelectedIndex = index;
             }
         }
@@ -5026,7 +4910,7 @@ namespace InkCanvasForClass_Remastered
                 string savePathWithName;
                 if (currentMode != 0) // 黑板模式下
                     savePathWithName = savePath + @"\" + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff") + " Page-" +
-                                       CurrentWhiteboardIndex + " StrokesCount-" + inkCanvas.Strokes.Count + ".icstk";
+                                       ViewModel.WhiteboardCurrentPage + " StrokesCount-" + inkCanvas.Strokes.Count + ".icstk";
                 else
                     //savePathWithName = savePath + @"\" + DateTime.Now.ToString("u").Replace(':', '-') + ".icstk";
                     savePathWithName = savePath + @"\" + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff") + ".icstk";
@@ -5178,7 +5062,7 @@ namespace InkCanvasForClass_Remastered
             var strokes = inkCanvas.GetSelectedStrokes();
             inkCanvas.Select(new StrokeCollection());
             strokes = strokes.Clone();
-            BtnWhiteBoardAdd_Click(null, null);
+            WhiteBoardAddPage();
             inkCanvas.Strokes.Add(strokes);
         }
 
@@ -10501,7 +10385,7 @@ namespace InkCanvasForClass_Remastered
         private void SetNewBackupOfStroke()
         {
             lastTouchDownStrokeCollection = inkCanvas.Strokes.Clone();
-            var whiteboardIndex = CurrentWhiteboardIndex;
+            var whiteboardIndex = ViewModel.WhiteboardCurrentPage;
             if (currentMode == 0) whiteboardIndex = 0;
 
             strokeCollections[whiteboardIndex] = lastTouchDownStrokeCollection;
@@ -11516,7 +11400,7 @@ namespace InkCanvasForClass_Remastered
                 if (lastTouchDownStrokeCollection.Count() != inkCanvas.Strokes.Count() &&
                     !(drawingShapeMode == 9 && !isFirstTouchCuboid))
                 {
-                    var whiteboardIndex = CurrentWhiteboardIndex;
+                    var whiteboardIndex = ViewModel.WhiteboardCurrentPage;
                     if (currentMode == 0) whiteboardIndex = 0;
                     strokeCollections[whiteboardIndex] = lastTouchDownStrokeCollection;
                 }

@@ -15,5 +15,27 @@ namespace InkCanvasForClass_Remastered.ViewModels
         {
         
         }
+
+        [ObservableProperty]
+        private int _whiteboardCurrentPage = 1;
+        [ObservableProperty]
+        private int _whiteboardTotalPageCount = 1;
+        [ObservableProperty]
+        private bool _isWhiteboardPreviousPageButtonEnabled = false;
+
+        partial void OnWhiteboardCurrentPageChanged(int value)
+        {
+            UpdateWhiteboardButtonStates();
+        }
+
+        partial void OnWhiteboardTotalPageCountChanged(int value)
+        {
+            UpdateWhiteboardButtonStates();
+        }
+
+        private void UpdateWhiteboardButtonStates()
+        {
+            IsWhiteboardPreviousPageButtonEnabled = WhiteboardCurrentPage > 1;
+        }
     }
 }
