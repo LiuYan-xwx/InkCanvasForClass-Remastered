@@ -51,6 +51,7 @@ https://github.com/3382308510
 1. 项目以个人兴趣为主开发，**而且用的人肯定是几乎没有**，所以更新随缘，优先保证基本可用性，bug修复。功能的新增较少。
 2. 目前版本应该是可以正常使用，应该是无严重 bug，后续更新会尽量不引入新的屎。
 3. 初始提交相较 `icc-0610fix` 的主要变化：
+> commit可以去看我的fork仓库 https://github.com/LiuYan-xwx/icc-0610fix/commits/master/
    - **移除功能：**
      - 墨迹识别（因为我用不到）
      - 白板鸡汤提示
@@ -69,20 +70,22 @@ https://github.com/3382308510
 ## 开发
 目前在 **wtf** 分支开发。~~*别问为什么叫这个()*~~
 
-本项目建立后已经做出的技术性修改：
+本项目建立后已经做出的常规修改：
+- 使用了新的 ICC-Re 图标，各种名字也改了
+- 开发者栏目修改
+- 移除了侧边栏的快速面板
+- 不默认开机自启
+- 移除白板的新页面按钮，下一页不够会自动加
+
+技术性修改：
 - 移除了所有 COM 引用
 - 开机自启创建快捷方式由COM引用方式改用 [WindowsShortcutFactory](https://github.com/gdivis/WindowsShortcutFactory)
 - 各种 System.Timers.Timer 重构为 DispatcherTimer
 - 自动收纳的代码实现重构
 - ISettingsService，可以LoadSettings, SaveSettings, ReplaceSettings。code-behind中相应逻辑删除
 - IPowerPointService，各种方法。code-behind中连接ppt的逻辑全部挪到这
-- MainViewModel（还在写）  
-
-常规修改：
-- 使用了新的 ICC-Re 图标，各种名字也改了
-- 开发者栏目修改
-- 移除了侧边栏的快速面板
-- 不默认开机自启
+- MainViewModel ~~（还在写）~~（暂缓，慢慢写）
+- 移除无用的白板ui xaml，使用视图模型和转换器自动处理翻页按钮的样式
 
 ---
 
