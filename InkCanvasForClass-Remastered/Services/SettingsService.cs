@@ -1,5 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using InkCanvasForClass_Remastered.Models;
+using Newtonsoft.Json;
 using System.IO;
+using System.Reflection;
 
 namespace InkCanvasForClass_Remastered.Services
 {
@@ -10,6 +12,11 @@ namespace InkCanvasForClass_Remastered.Services
 
         public Settings Settings => _settings;
 
+        public SettingsService()
+        {
+            //_settings = new Settings();
+        }
+
         public void LoadSettings()
         {
             try
@@ -18,7 +25,11 @@ namespace InkCanvasForClass_Remastered.Services
                 if (File.Exists(settingsPath))
                 {
                     string text = File.ReadAllText(settingsPath);
-                    _settings = JsonConvert.DeserializeObject<Settings>(text) ?? new Settings();
+                    var loadedSettings = JsonConvert.DeserializeObject<Settings>(text);
+                    if (loadedSettings != null)
+                    {
+                        _settings = loadedSettings;
+                    }
                 }
                 else
                 {
@@ -48,9 +59,29 @@ namespace InkCanvasForClass_Remastered.Services
             }
         }
 
-        public void ReplaceSettings(Settings newSettings)
+        /// <summary>
+        /// 将当前设置重置为默认值，而无需替换实例。
+        /// 这确保了所有现有的数据绑定保持活动状态。
+        /// </summary>
+        public void ResetToDefaults()
         {
-            _settings = newSettings ?? new Settings();
+            // 创建一个临时的默认设置实例
+            var defaultSettings = new Settings();
+            var type = typeof(Settings);
+
+            // 使用反射获取所有可写的公共属性
+            var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                                 .Where(p => p.CanWrite);
+
+            // 遍历每个属性，将默认值复制到当前的设置实例中
+            foreach (var prop in properties)
+            {
+                var defaultValue = prop.GetValue(defaultSettings);
+                prop.SetValue(Settings, defaultValue);
+            }
+
+            // 保存重置后的设置
+            SaveSettings();
         }
     }
 }

@@ -8,6 +8,7 @@
     xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern">
     <Application.Resources>
         <ResourceDictionary>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <Style TargetType="ui:ScrollViewerEx">
                 <EventSetter Event="PreviewMouseWheel" Handler="ScrollViewer_PreviewMouseWheel" />
             </Style>
@@ -417,7 +418,7 @@
                 ContextMenu="{StaticResource SysTrayMenu}"
                 IconSource="/Resources/ICC-Re.ico"
                 ToolTipText="InkCanvasForClass-Remastered"
-                Visibility="Collapsed" />
+                Visibility="{Binding Settings.EnableTrayIcon,Converter={StaticResource BooleanToVisibilityConverter}}"/>
             <ResourceDictionary.MergedDictionaries>
                 <ui:ThemeResources RequestedTheme="Light" />
                 <ui:XamlControlsResources />

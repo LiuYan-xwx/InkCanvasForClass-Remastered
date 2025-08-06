@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using InkCanvasForClass_Remastered.Models;
+using InkCanvasForClass_Remastered.Services;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,11 +13,17 @@ namespace InkCanvasForClass_Remastered.ViewModels
 {
     public partial class MainViewModel : ObservableObject
     {
-        public MainViewModel()
+        private readonly ISettingsService _settingsService;
+        public MainViewModel(ISettingsService settingsService)
         {
-        
+            _settingsService = settingsService;
         }
+        public Settings Settings => _settingsService.Settings;
 
+        [ObservableProperty]
+        private string _nowTime;
+        [ObservableProperty]
+        private string _nowDate;
         [ObservableProperty]
         private int _whiteboardCurrentPage = 1;
         [ObservableProperty]

@@ -1,4 +1,6 @@
-﻿namespace InkCanvasForClass_Remastered.Services
+﻿using InkCanvasForClass_Remastered.Models;
+
+namespace InkCanvasForClass_Remastered.Services
 {
     public interface ISettingsService
     {
@@ -16,6 +18,10 @@
         /// 将当前设置保存到文件。
         /// </summary>
         void SaveSettings();
-        void ReplaceSettings(Settings newSettings);
+
+        /// <summary>
+        /// 将当前的设置实例重置为默认值，同时保持实例不变以维持数据绑定。
+        /// </summary>
+        void ResetToDefaults();
     }
 }

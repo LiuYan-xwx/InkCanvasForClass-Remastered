@@ -1,7 +1,6 @@
 ﻿using Hardcodet.Wpf.TaskbarNotification;
 using InkCanvasForClass_Remastered.Helpers;
 using InkCanvasForClass_Remastered.Services;
-using InkCanvasForClass_Remastered.Services.InkCanvasForClass_Remastered.Services;
 using InkCanvasForClass_Remastered.ViewModels;
 using iNKORE.UI.WPF.Modern.Controls;
 using Microsoft.Extensions.DependencyInjection;
@@ -58,8 +57,11 @@ namespace InkCanvasForClass_Remastered
 
             await _host.StartAsync();
 
+            var settingsService = _host.Services.GetRequiredService<ISettingsService>();
+            settingsService.LoadSettings();
+
             var mainWindow = _host.Services.GetRequiredService<MainWindow>();
-            this.MainWindow = mainWindow;
+            MainWindow = mainWindow;
             mainWindow.Show();
 
             var taskbar = (TaskbarIcon)FindResource("TaskbarTrayIcon");
@@ -75,7 +77,6 @@ namespace InkCanvasForClass_Remastered
 
             // 注册视图模型
             services.AddTransient<MainViewModel>();
-            services.AddTransient<TimeViewModel>();
 
             // 注册主窗口
             services.AddSingleton<MainWindow>();
@@ -83,6 +84,10 @@ namespace InkCanvasForClass_Remastered
 
         protected override async void OnExit(ExitEventArgs e)
         {
+            // 保存设置
+            var settingsService = _host?.Services?.GetService<ISettingsService>();
+            settingsService?.SaveSettings();
+
             if (_host != null)
             {
                 await _host.StopAsync();

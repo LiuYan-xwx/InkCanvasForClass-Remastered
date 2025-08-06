@@ -1,4 +1,5 @@
 ﻿using InkCanvasForClass_Remastered.Helpers;
+using InkCanvasForClass_Remastered.Models;
 using iNKORE.UI.WPF.Modern.Controls;
 using Microsoft.VisualBasic;
 using System.IO;
@@ -21,9 +22,9 @@ namespace InkCanvasForClass_Remastered
         {
             InitializeComponent();
             AnimationsHelper.ShowWithSlideFromBottomAndFade(this, 0.25);
-            BorderBtnHelp.Visibility = settings.RandSettings.DisplayRandWindowNamesInputBtn == false ? Visibility.Collapsed : Visibility.Visible;
-            RandMaxPeopleOneTime = settings.RandSettings.RandWindowOnceMaxStudents;
-            RandDoneAutoCloseWaitTime = (int)settings.RandSettings.RandWindowOnceCloseLatency * 1000;
+            BorderBtnHelp.Visibility = settings.DisplayRandWindowNamesInputBtn == false ? Visibility.Collapsed : Visibility.Visible;
+            RandMaxPeopleOneTime = settings.RandWindowOnceMaxStudents;
+            RandDoneAutoCloseWaitTime = (int)settings.RandWindowOnceCloseLatency * 1000;
         }
 
         public RandWindow(Settings settings, bool IsAutoClose)
@@ -32,9 +33,9 @@ namespace InkCanvasForClass_Remastered
             isAutoClose = IsAutoClose;
             PeopleControlPane.Opacity = 0.4;
             PeopleControlPane.IsHitTestVisible = false;
-            BorderBtnHelp.Visibility = settings.RandSettings.DisplayRandWindowNamesInputBtn == false ? Visibility.Collapsed : Visibility.Visible;
-            RandMaxPeopleOneTime = settings.RandSettings.RandWindowOnceMaxStudents;
-            RandDoneAutoCloseWaitTime = (int)settings.RandSettings.RandWindowOnceCloseLatency * 1000;
+            BorderBtnHelp.Visibility = settings.DisplayRandWindowNamesInputBtn == false ? Visibility.Collapsed : Visibility.Visible;
+            RandMaxPeopleOneTime = settings.RandWindowOnceMaxStudents;
+            RandDoneAutoCloseWaitTime = (int)settings.RandWindowOnceCloseLatency * 1000;
 
             new Thread(new ThreadStart(() =>
             {
