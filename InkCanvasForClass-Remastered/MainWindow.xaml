@@ -370,7 +370,7 @@
                                             Name="ToggleSwitchRunAtStartup"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="{Binding Settings.RunAtStartup,Mode=TwoWay}"
+                                            IsOn="{Binding Settings.RunAtStartup, Mode=TwoWay}"
                                             OffContent=""
                                             OnContent=""
                                             Toggled="ToggleSwitchRunAtStartup_Toggled" />
@@ -386,7 +386,7 @@
                                             Name="ToggleSwitchFoldAtStartup"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="{Binding Settings.IsFoldAtStartup,Mode=TwoWay}"
+                                            IsOn="{Binding Settings.IsFoldAtStartup, Mode=TwoWay}"
                                             OffContent=""
                                             OnContent="" />
                                     </ikw:SimpleStackPanel>
@@ -417,7 +417,7 @@
                                             Name="ToggleSwitchShowCursor"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="{Binding Settings.IsShowCursor,Mode=TwoWay}"
+                                            IsOn="{Binding Settings.IsShowCursor, Mode=TwoWay}"
                                             OffContent=""
                                             OnContent=""
                                             Toggled="ToggleSwitchShowCursor_Toggled" />
@@ -465,7 +465,7 @@
                                             Name="ToggleSwitchHideStrokeWhenSelecting"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="{Binding Settings.HideStrokeWhenSelecting,Mode=TwoWay}"
+                                            IsOn="{Binding Settings.HideStrokeWhenSelecting, Mode=TwoWay}"
                                             OffContent=""
                                             OnContent="" />
                                     </ikw:SimpleStackPanel>
@@ -530,7 +530,7 @@
                                             Name="ToggleSwitchFitToCurve"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="{Binding Settings.FitToCurve,Mode=TwoWay}"
+                                            IsOn="{Binding Settings.FitToCurve, Mode=TwoWay}"
                                             OffContent=""
                                             OnContent=""
                                             Toggled="ToggleSwitchFitToCurve_Toggled" />
@@ -643,7 +643,7 @@
                                             TickFrequency="0.05"
                                             TickPlacement="None"
                                             ValueChanged="ViewboxFloatingBarScaleTransformValueSlider_ValueChanged"
-                                            Value="{Binding Settings.ViewboxFloatingBarScaleTransformValue,Mode=TwoWay}" />
+                                            Value="{Binding Settings.ViewboxFloatingBarScaleTransformValue, Mode=TwoWay}" />
                                         <TextBlock
                                             Margin="12,0,16,0"
                                             VerticalAlignment="Center"
@@ -669,7 +669,7 @@
                                             Minimum="0.3"
                                             TickFrequency="0.05"
                                             TickPlacement="None"
-                                            Value="{Binding Settings.ViewboxFloatingBarOpacityValue,Mode=TwoWay}" />
+                                            Value="{Binding Settings.ViewboxFloatingBarOpacityValue, Mode=TwoWay}" />
                                         <TextBlock
                                             Margin="12,0,16,0"
                                             VerticalAlignment="Center"
@@ -695,7 +695,7 @@
                                             Minimum="0.3"
                                             TickFrequency="0.05"
                                             TickPlacement="None"
-                                            Value="{Binding Settings.ViewboxFloatingBarOpacityInPPTValue,Mode=TwoWay}" />
+                                            Value="{Binding Settings.ViewboxFloatingBarOpacityInPPTValue, Mode=TwoWay}" />
                                         <TextBlock
                                             Margin="12,0,16,0"
                                             VerticalAlignment="Center"
@@ -727,7 +727,7 @@
                                             Name="ToggleSwitchEnableDisPlayNibModeToggle"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="{Binding Settings.IsEnableDisPlayNibModeToggler,Mode=TwoWay}"
+                                            IsOn="{Binding Settings.IsEnableDisPlayNibModeToggler, Mode=TwoWay}"
                                             OffContent=""
                                             OnContent="" />
                                     </ikw:SimpleStackPanel>
@@ -756,7 +756,7 @@
                                             Name="ToggleSwitchEnableViewboxBlackBoardScaleTransform"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="{Binding Settings.EnableViewboxBlackBoardScaleTransform,Mode=TwoWay}"
+                                            IsOn="{Binding Settings.EnableViewboxBlackBoardScaleTransform, Mode=TwoWay}"
                                             OffContent=""
                                             OnContent="" />
                                     </ikw:SimpleStackPanel>
@@ -771,7 +771,7 @@
                                             Name="ToggleSwitchEnableTimeDisplayInWhiteboardMode"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="{Binding Settings.EnableTimeDisplayInWhiteboardMode,Mode=TwoWay}"
+                                            IsOn="{Binding Settings.EnableTimeDisplayInWhiteboardMode, Mode=TwoWay}"
                                             OffContent=""
                                             OnContent="" />
                                     </ikw:SimpleStackPanel>
@@ -794,7 +794,7 @@
                                         <ComboBox
                                             Name="ComboBoxUnFoldBtnImg"
                                             FontFamily="Microsoft YaHei UI"
-                                            SelectedIndex="{Binding Settings.UnFoldButtonImageType,Mode=TwoWay}">
+                                            SelectedIndex="{Binding Settings.UnFoldButtonImageType, Mode=TwoWay}">
                                             <ComboBoxItem Content="箭头" FontFamily="Microsoft YaHei UI" />
                                             <ComboBoxItem Content="笔" FontFamily="Microsoft YaHei UI" />
                                         </ComboBox>
@@ -849,7 +849,7 @@
                                                     Height="24"
                                                     Margin="8,0,0,0"
                                                     Source="/Resources/ICC-Re.ico"
-                                                    Visibility="{Binding Settings.EnableTrayIcon,Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                                    Visibility="{Binding Settings.EnableTrayIcon, Converter={StaticResource BooleanToVisibilityConverter}}" />
                                             </ikw:SimpleStackPanel>
                                             <TextBlock
                                                 Margin="12,0,0,0"
@@ -905,7 +905,7 @@
                                             Name="ToggleSwitchSupportPowerPoint"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="{Binding Settings.PowerPointSupport,Mode=TwoWay}"
+                                            IsOn="{Binding Settings.PowerPointSupport, Mode=TwoWay}"
                                             OffContent=""
                                             OnContent=""
                                             Toggled="ToggleSwitchSupportPowerPoint_Toggled" />
@@ -991,7 +991,7 @@
                                             Name="ToggleSwitchShowPPTButton"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="{Binding Settings.ShowPPTButton,Mode=TwoWay}"
+                                            IsOn="{Binding Settings.ShowPPTButton, Mode=TwoWay}"
                                             OffContent=""
                                             OnContent=""
                                             Toggled="ToggleSwitchShowPPTButton_OnToggled" />
@@ -1057,7 +1057,7 @@
                                                 TickFrequency="1"
                                                 TickPlacement="None"
                                                 ValueChanged="PPTButtonLeftPositionValueSlider_ValueChanged"
-                                                Value="{Binding Settings.PPTLSButtonPosition,Mode=TwoWay}" />
+                                                Value="{Binding Settings.PPTLSButtonPosition, Mode=TwoWay}" />
                                             <Button
                                                 Name="PPTBtnLSPlusBtn"
                                                 Margin="8,0,0,0"
@@ -1151,7 +1151,7 @@
                                                 TickFrequency="1"
                                                 TickPlacement="None"
                                                 ValueChanged="PPTButtonRightPositionValueSlider_ValueChanged"
-                                                Value="{Binding Settings.PPTRSButtonPosition,Mode=TwoWay}" />
+                                                Value="{Binding Settings.PPTRSButtonPosition, Mode=TwoWay}" />
                                             <Button
                                                 Name="PPTBtnRSPlusBtn"
                                                 Margin="8,0,0,0"
@@ -1224,7 +1224,7 @@
                                                 Margin="8,0,16,0"
                                                 VerticalAlignment="Center"
                                                 FontSize="13"
-                                                Text="{Binding Settings.PPTRSButtonPosition,Mode=TwoWay}" />
+                                                Text="{Binding Settings.PPTRSButtonPosition, Mode=TwoWay}" />
                                         </ikw:SimpleStackPanel>
                                         <TextBlock
                                             Foreground="#a1a1aa"
@@ -1311,7 +1311,7 @@
                                                 Name="ToggleSwitchEnablePPTButtonPageClickable"
                                                 FontFamily="Microsoft YaHei UI"
                                                 FontWeight="Bold"
-                                                IsOn="{Binding Settings.EnablePPTButtonPageClickable,Mode=TwoWay}"
+                                                IsOn="{Binding Settings.EnablePPTButtonPageClickable, Mode=TwoWay}"
                                                 OffContent=""
                                                 OnContent="" />
                                         </ikw:SimpleStackPanel>
@@ -1343,7 +1343,7 @@
                                             Name="ToggleSwitchShowCanvasAtNewSlideShow"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="{Binding Settings.IsShowCanvasAtNewSlideShow,Mode=TwoWay}"
+                                            IsOn="{Binding Settings.IsShowCanvasAtNewSlideShow, Mode=TwoWay}"
                                             OffContent=""
                                             OnContent="" />
                                     </ikw:SimpleStackPanel>
@@ -1384,7 +1384,7 @@
                                             Name="ToggleSwitchEnableTwoFingerGestureInPresentationMode"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="{Binding Settings.IsEnableTwoFingerGestureInPresentationMode,Mode=TwoWay}"
+                                            IsOn="{Binding Settings.IsEnableTwoFingerGestureInPresentationMode, Mode=TwoWay}"
                                             OffContent=""
                                             OnContent="" />
                                     </ikw:SimpleStackPanel>
@@ -1399,7 +1399,7 @@
                                             Name="ToggleSwitchEnableFingerGestureSlideShowControl"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="{Binding Settings.IsEnableFingerGestureSlideShowControl,Mode=TwoWay}"
+                                            IsOn="{Binding Settings.IsEnableFingerGestureSlideShowControl, Mode=TwoWay}"
                                             OffContent=""
                                             OnContent="" />
                                     </ikw:SimpleStackPanel>
@@ -1427,7 +1427,7 @@
                                             Name="ToggleSwitchAutoSaveScreenShotInPowerPoint"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="{Binding Settings.IsAutoSaveScreenShotInPowerPoint,Mode=TwoWay}"
+                                            IsOn="{Binding Settings.IsAutoSaveScreenShotInPowerPoint, Mode=TwoWay}"
                                             OffContent=""
                                             OnContent="" />
                                     </ikw:SimpleStackPanel>
@@ -1474,7 +1474,7 @@
                                             Name="ToggleSwitchNotifyPreviousPage"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="{Binding Settings.IsNotifyPreviousPage,Mode=TwoWay}"
+                                            IsOn="{Binding Settings.IsNotifyPreviousPage, Mode=TwoWay}"
                                             OffContent=""
                                             OnContent="" />
                                     </ikw:SimpleStackPanel>
@@ -1489,7 +1489,7 @@
                                             Name="ToggleSwitchNotifyHiddenPage"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="{Binding Settings.IsNotifyHiddenPage,Mode=TwoWay}"
+                                            IsOn="{Binding Settings.IsNotifyHiddenPage, Mode=TwoWay}"
                                             OffContent=""
                                             OnContent="" />
                                     </ikw:SimpleStackPanel>
@@ -1504,7 +1504,7 @@
                                             Name="ToggleSwitchNotifyAutoPlayPresentation"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="{Binding Settings.IsNotifyAutoPlayPresentation,Mode=TwoWay}"
+                                            IsOn="{Binding Settings.IsNotifyAutoPlayPresentation, Mode=TwoWay}"
                                             OffContent=""
                                             OnContent="" />
                                     </ikw:SimpleStackPanel>
@@ -3268,8 +3268,7 @@
             <Grid
                 Name="GridBackgroundCover"
                 Background="#1F1F1F"
-                Visibility="Collapsed">
-            </Grid>
+                Visibility="Collapsed" />
         </Grid>
         <Grid Name="GridTransparencyFakeBackground" Opacity="0" />
         <Label
@@ -3618,131 +3617,129 @@
                         VerticalAlignment="Bottom"
                         Visibility="Visible">
                         <Border
-                                Margin="0,0,0,0"
-                                Background="#f4f4f5"
-                                CornerRadius="5,5,5,5">
+                            Margin="0,0,0,0"
+                            Background="#f4f4f5"
+                            CornerRadius="5,5,5,5">
                             <ikw:SimpleStackPanel Orientation="Horizontal">
                                 <Border
-                                        Width="60"
-                                        Height="50"
-                                        Background="#f4f4f5"
-                                        BorderBrush="#a1a1aa"
-                                        BorderThickness="1,1,0,1"
-                                        CornerRadius="5,0,0,5"
-                                        IsEnabled="{Binding IsWhiteboardPreviousPageButtonEnabled}"
-                                        MouseUp="BtnWhiteBoardSwitchPrevious_Click"
-                                        Opacity="0.95">
+                                    Width="60"
+                                    Height="50"
+                                    Background="#f4f4f5"
+                                    BorderBrush="#a1a1aa"
+                                    BorderThickness="1,1,0,1"
+                                    CornerRadius="5,0,0,5"
+                                    IsEnabled="{Binding IsWhiteboardPreviousPageButtonEnabled}"
+                                    MouseUp="BtnWhiteBoardSwitchPrevious_Click"
+                                    Opacity="0.95">
                                     <Grid Margin="6,6,6,4">
                                         <Image
-                                                Width="20"
-                                                Height="20"
-                                                VerticalAlignment="Top"
-                                                RenderOptions.BitmapScalingMode="HighQuality">
+                                            Width="20"
+                                            Height="20"
+                                            VerticalAlignment="Top"
+                                            RenderOptions.BitmapScalingMode="HighQuality">
                                             <Image.Source>
                                                 <DrawingImage>
                                                     <DrawingImage.Drawing>
                                                         <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
-                                                            <GeometryDrawing
-                                                                    Brush="{Binding IsWhiteboardPreviousPageButtonEnabled, Converter={StaticResource BoolToBrushConverter}}"
-                                                                    Geometry="F1 M24,24z M0,0z M7.40091,10.456L14.5033,3.35357 12.3198,1.17001 1.48978,12 12.3198,22.83 14.5033,20.6465 7.40089,13.544 22.5102,13.544 22.5102,10.456 7.40091,10.456z" />
+                                                            <GeometryDrawing Brush="{Binding IsWhiteboardPreviousPageButtonEnabled, Converter={StaticResource BoolToBrushConverter}}" Geometry="F1 M24,24z M0,0z M7.40091,10.456L14.5033,3.35357 12.3198,1.17001 1.48978,12 12.3198,22.83 14.5033,20.6465 7.40089,13.544 22.5102,13.544 22.5102,10.456 7.40091,10.456z" />
                                                         </DrawingGroup>
                                                     </DrawingImage.Drawing>
                                                 </DrawingImage>
                                             </Image.Source>
                                         </Image>
                                         <TextBlock
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Bottom"
-                                                FontSize="12"
-                                                Foreground="#18181b"
-                                                Opacity="{Binding IsWhiteboardPreviousPageButtonEnabled, Converter={StaticResource BoolToOpacityConverter}}"
-                                                Text="上一页" />
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Bottom"
+                                            FontSize="12"
+                                            Foreground="#18181b"
+                                            Opacity="{Binding IsWhiteboardPreviousPageButtonEnabled, Converter={StaticResource BoolToOpacityConverter}}"
+                                            Text="上一页" />
                                     </Grid>
                                 </Border>
                                 <Border
-                                        Name="BtnLeftPageListWB"
-                                        Width="75"
-                                        Height="50"
-                                        Background="#f4f4f5"
-                                        BorderBrush="#a1a1aa"
-                                        BorderThickness="1,1,1,1"
-                                        MouseUp="BtnWhiteBoardPageIndex_Click"
-                                        Opacity="0.95">
+                                    Name="BtnLeftPageListWB"
+                                    Width="75"
+                                    Height="50"
+                                    Background="#f4f4f5"
+                                    BorderBrush="#a1a1aa"
+                                    BorderThickness="1,1,1,1"
+                                    MouseUp="BtnWhiteBoardPageIndex_Click"
+                                    Opacity="0.95">
                                     <Grid Margin="6,6,6,4">
                                         <TextBlock
-                                                Margin="0,-1,0,0"
-                                                HorizontalAlignment="Center"
-                                                FontSize="17"
-                                                FontWeight="Bold"
-                                                TextAlignment="Center">
+                                            Margin="0,-1,0,0"
+                                            HorizontalAlignment="Center"
+                                            FontSize="17"
+                                            FontWeight="Bold"
+                                            TextAlignment="Center">
                                             <TextBlock.Text>
                                                 <MultiBinding StringFormat="{}{0}/{1}">
-                                                    <Binding Path="WhiteboardCurrentPage"/>
-                                                    <Binding Path="WhiteboardTotalPageCount"/>
+                                                    <Binding Path="WhiteboardCurrentPage" />
+                                                    <Binding Path="WhiteboardTotalPageCount" />
                                                 </MultiBinding>
                                             </TextBlock.Text>
                                         </TextBlock>
                                         <TextBlock
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Bottom"
-                                                FontSize="12"
-                                                Foreground="#18181b"
-                                                Text="页面" />
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Bottom"
+                                            FontSize="12"
+                                            Foreground="#18181b"
+                                            Text="页面" />
                                     </Grid>
                                 </Border>
                                 <Grid Width="0" Margin="0,0,0,5">
                                     <Border
-                                            Name="BoardBorderLeftPageListView"
-                                            Margin="-134,-465,-60,50"
-                                            Background="#fafafa"
-                                            BorderBrush="#a1a1aa"
-                                            BorderThickness="1"
-                                            ClipToBounds="True"
-                                            CornerRadius="8"
-                                            Opacity="1">
+                                        Name="BoardBorderLeftPageListView"
+                                        Margin="-134,-465,-60,50"
+                                        Background="#fafafa"
+                                        BorderBrush="#a1a1aa"
+                                        BorderThickness="1"
+                                        ClipToBounds="True"
+                                        CornerRadius="8"
+                                        Opacity="1">
                                         <ui:ScrollViewerEx
-                                                Name="BlackBoardLeftSidePageListScrollViewer"
-                                                Height="460"
-                                                ForceUseSmoothScroll="True"
-                                                VerticalScrollBarVisibility="Hidden">
+                                            Name="BlackBoardLeftSidePageListScrollViewer"
+                                            Height="460"
+                                            ForceUseSmoothScroll="True"
+                                            VerticalScrollBarVisibility="Hidden">
                                             <ListView
-                                                    Name="BlackBoardLeftSidePageListView"
-                                                    ScrollViewer.CanContentScroll="False"
-                                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                                    ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                                                    SelectionMode="Single">
+                                                Name="BlackBoardLeftSidePageListView"
+                                                ScrollViewer.CanContentScroll="False"
+                                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                                SelectionMode="Single">
                                                 <ListView.ItemTemplate>
                                                     <DataTemplate>
                                                         <ikw:SimpleStackPanel MouseUp="BlackBoardLeftSidePageListView_OnMouseUp" Orientation="Vertical">
                                                             <Border
-                                                                    Width="160"
-                                                                    Margin="0,4"
-                                                                    BorderBrush="#a1a1aa"
-                                                                    BorderThickness="1">
+                                                                Width="160"
+                                                                Margin="0,4"
+                                                                BorderBrush="#a1a1aa"
+                                                                BorderThickness="1">
                                                                 <Grid>
                                                                     <Viewbox Width="160">
                                                                         <InkCanvas
-                                                                                Width="{Binding ElementName=inkCanvas, Path=ActualWidth}"
-                                                                                Height="{Binding ElementName=inkCanvas, Path=ActualHeight}"
-                                                                                Background="{Binding ElementName=GridBackgroundCover, Path=Background}"
-                                                                                EditingMode="None"
-                                                                                Strokes="{Binding Strokes}" />
+                                                                            Width="{Binding ElementName=inkCanvas, Path=ActualWidth}"
+                                                                            Height="{Binding ElementName=inkCanvas, Path=ActualHeight}"
+                                                                            Background="{Binding ElementName=GridBackgroundCover, Path=Background}"
+                                                                            EditingMode="None"
+                                                                            Strokes="{Binding Strokes}" />
                                                                     </Viewbox>
                                                                     <Border
-                                                                            Width="36"
-                                                                            Height="20"
-                                                                            Margin="4"
-                                                                            HorizontalAlignment="Left"
-                                                                            VerticalAlignment="Top"
-                                                                            Background="#cc09090b"
-                                                                            CornerRadius="3">
+                                                                        Width="36"
+                                                                        Height="20"
+                                                                        Margin="4"
+                                                                        HorizontalAlignment="Left"
+                                                                        VerticalAlignment="Top"
+                                                                        Background="#cc09090b"
+                                                                        CornerRadius="3">
                                                                         <TextBlock
-                                                                                HorizontalAlignment="Center"
-                                                                                VerticalAlignment="Center"
-                                                                                FontFamily="Consolas"
-                                                                                FontSize="14"
-                                                                                Foreground="White"
-                                                                                Text="{Binding Index}" />
+                                                                            HorizontalAlignment="Center"
+                                                                            VerticalAlignment="Center"
+                                                                            FontFamily="Consolas"
+                                                                            FontSize="14"
+                                                                            Foreground="White"
+                                                                            Text="{Binding Index}" />
                                                                     </Border>
                                                                 </Grid>
                                                             </Border>
@@ -3754,38 +3751,36 @@
                                     </Border>
                                 </Grid>
                                 <Border
-                                        Width="60"
-                                        Height="50"
-                                        Background="#f4f4f5"
-                                        BorderBrush="#a1a1aa"
-                                        BorderThickness="0,1,1,1"
-                                        CornerRadius="0,5,5,0"
-                                        MouseUp="BtnWhiteBoardSwitchNext_Click"
-                                        Opacity="0.95">
+                                    Width="60"
+                                    Height="50"
+                                    Background="#f4f4f5"
+                                    BorderBrush="#a1a1aa"
+                                    BorderThickness="0,1,1,1"
+                                    CornerRadius="0,5,5,0"
+                                    MouseUp="BtnWhiteBoardSwitchNext_Click"
+                                    Opacity="0.95">
                                     <Grid Margin="6,6,6,4">
                                         <Image
-                                                Width="20"
-                                                Height="20"
-                                                VerticalAlignment="Top"
-                                                RenderOptions.BitmapScalingMode="HighQuality">
+                                            Width="20"
+                                            Height="20"
+                                            VerticalAlignment="Top"
+                                            RenderOptions.BitmapScalingMode="HighQuality">
                                             <Image.Source>
                                                 <DrawingImage>
                                                     <DrawingImage.Drawing>
                                                         <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
-                                                            <GeometryDrawing
-                                                                    Brush="#18181b"
-                                                                    Geometry="F1 M24,24z M0,0z M16.5991,10.456L9.49667,3.35357 11.6802,1.17001 22.5102,12 11.6802,22.83 9.49667,20.6465 16.5991,13.544 1.48978,13.544 1.48978,10.456 16.5991,10.456z" />
+                                                            <GeometryDrawing Brush="#18181b" Geometry="F1 M24,24z M0,0z M16.5991,10.456L9.49667,3.35357 11.6802,1.17001 22.5102,12 11.6802,22.83 9.49667,20.6465 16.5991,13.544 1.48978,13.544 1.48978,10.456 16.5991,10.456z" />
                                                         </DrawingGroup>
                                                     </DrawingImage.Drawing>
                                                 </DrawingImage>
                                             </Image.Source>
                                         </Image>
                                         <TextBlock
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Bottom"
-                                                FontSize="12"
-                                                Foreground="Black"
-                                                Text="下一页" />
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Bottom"
+                                            FontSize="12"
+                                            Foreground="Black"
+                                            Text="下一页" />
                                     </Grid>
                                 </Border>
                             </ikw:SimpleStackPanel>
@@ -3799,8 +3794,7 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Bottom">
                     <Viewbox.LayoutTransform>
-                        <ScaleTransform ScaleX="{Binding Settings.EnableViewboxBlackBoardScaleTransform, Converter={StaticResource BoolToScaleConverter}}"
-                                        ScaleY="{Binding Settings.EnableViewboxBlackBoardScaleTransform, Converter={StaticResource BoolToScaleConverter}}" />
+                        <ScaleTransform ScaleX="{Binding Settings.EnableViewboxBlackBoardScaleTransform, Converter={StaticResource BoolToScaleConverter}}" ScaleY="{Binding Settings.EnableViewboxBlackBoardScaleTransform, Converter={StaticResource BoolToScaleConverter}}" />
                     </Viewbox.LayoutTransform>
                     <Grid
                         x:Name="BlackboardCenterSide"
@@ -4354,7 +4348,7 @@
                                                                             x:Name="BoardNibModeSimpleStackPanel"
                                                                             Width="140"
                                                                             Orientation="Horizontal"
-                                                                            Visibility="{Binding Settings.IsEnableDisPlayNibModeToggler,Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                                            Visibility="{Binding Settings.IsEnableDisPlayNibModeToggler, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                                             <Label
                                                                                 Content="笔尖模式"
                                                                                 VerticalAlignment="Center"
@@ -4365,7 +4359,7 @@
                                                                                 MinWidth="0"
                                                                                 Margin="10,0,0,0"
                                                                                 FontFamily="Microsoft YaHei UI"
-                                                                                IsOn="{Binding Settings.IsEnableNibMode,Mode=TwoWay}"
+                                                                                IsOn="{Binding Settings.IsEnableNibMode, Mode=TwoWay}"
                                                                                 Toggled="ToggleSwitchEnableNibMode_Toggled" />
                                                                         </ikw:SimpleStackPanel>
                                                                     </ikw:SimpleStackPanel>
@@ -6193,131 +6187,129 @@
                         VerticalAlignment="Bottom"
                         Visibility="Visible">
                         <Border
-                                Margin="0,0,0,0"
-                                Background="#f4f4f5"
-                                CornerRadius="5,5,5,5">
+                            Margin="0,0,0,0"
+                            Background="#f4f4f5"
+                            CornerRadius="5,5,5,5">
                             <ikw:SimpleStackPanel Orientation="Horizontal">
                                 <Border
-                                        Width="60"
-                                        Height="50"
-                                        Background="#f4f4f5"
-                                        BorderBrush="#a1a1aa"
-                                        BorderThickness="1,1,0,1"
-                                        CornerRadius="5,0,0,5"
-                                        IsEnabled="{Binding IsWhiteboardPreviousPageButtonEnabled}"
-                                        MouseUp="BtnWhiteBoardSwitchPrevious_Click"
-                                        Opacity="0.95">
+                                    Width="60"
+                                    Height="50"
+                                    Background="#f4f4f5"
+                                    BorderBrush="#a1a1aa"
+                                    BorderThickness="1,1,0,1"
+                                    CornerRadius="5,0,0,5"
+                                    IsEnabled="{Binding IsWhiteboardPreviousPageButtonEnabled}"
+                                    MouseUp="BtnWhiteBoardSwitchPrevious_Click"
+                                    Opacity="0.95">
                                     <Grid Margin="6,6,6,4">
                                         <Image
-                                                Width="20"
-                                                Height="20"
-                                                VerticalAlignment="Top"
-                                                RenderOptions.BitmapScalingMode="HighQuality">
+                                            Width="20"
+                                            Height="20"
+                                            VerticalAlignment="Top"
+                                            RenderOptions.BitmapScalingMode="HighQuality">
                                             <Image.Source>
                                                 <DrawingImage>
                                                     <DrawingImage.Drawing>
                                                         <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
-                                                            <GeometryDrawing
-                                                                    Brush="{Binding IsWhiteboardPreviousPageButtonEnabled, Converter={StaticResource BoolToBrushConverter}}"
-                                                                    Geometry="F1 M24,24z M0,0z M7.40091,10.456L14.5033,3.35357 12.3198,1.17001 1.48978,12 12.3198,22.83 14.5033,20.6465 7.40089,13.544 22.5102,13.544 22.5102,10.456 7.40091,10.456z" />
+                                                            <GeometryDrawing Brush="{Binding IsWhiteboardPreviousPageButtonEnabled, Converter={StaticResource BoolToBrushConverter}}" Geometry="F1 M24,24z M0,0z M7.40091,10.456L14.5033,3.35357 12.3198,1.17001 1.48978,12 12.3198,22.83 14.5033,20.6465 7.40089,13.544 22.5102,13.544 22.5102,10.456 7.40091,10.456z" />
                                                         </DrawingGroup>
                                                     </DrawingImage.Drawing>
                                                 </DrawingImage>
                                             </Image.Source>
                                         </Image>
                                         <TextBlock
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Bottom"
-                                                FontSize="12"
-                                                Foreground="#18181b"
-                                                Opacity="{Binding IsWhiteboardPreviousPageButtonEnabled, Converter={StaticResource BoolToOpacityConverter}}"
-                                                Text="上一页" />
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Bottom"
+                                            FontSize="12"
+                                            Foreground="#18181b"
+                                            Opacity="{Binding IsWhiteboardPreviousPageButtonEnabled, Converter={StaticResource BoolToOpacityConverter}}"
+                                            Text="上一页" />
                                     </Grid>
                                 </Border>
                                 <Border
-                                        Name="BtnRightPageListWB"
-                                        Width="75"
-                                        Height="50"
-                                        Background="#f4f4f5"
-                                        BorderBrush="#a1a1aa"
-                                        BorderThickness="1,1,1,1"
-                                        MouseUp="BtnWhiteBoardPageIndex_Click"
-                                        Opacity="0.95">
+                                    Name="BtnRightPageListWB"
+                                    Width="75"
+                                    Height="50"
+                                    Background="#f4f4f5"
+                                    BorderBrush="#a1a1aa"
+                                    BorderThickness="1,1,1,1"
+                                    MouseUp="BtnWhiteBoardPageIndex_Click"
+                                    Opacity="0.95">
                                     <Grid Margin="6,6,6,4">
                                         <TextBlock
-                                                Margin="0,-1,0,0"
-                                                HorizontalAlignment="Center"
-                                                FontSize="17"
-                                                FontWeight="Bold"
-                                                TextAlignment="Center">
+                                            Margin="0,-1,0,0"
+                                            HorizontalAlignment="Center"
+                                            FontSize="17"
+                                            FontWeight="Bold"
+                                            TextAlignment="Center">
                                             <TextBlock.Text>
                                                 <MultiBinding StringFormat="{}{0}/{1}">
-                                                    <Binding Path="WhiteboardCurrentPage"/>
-                                                    <Binding Path="WhiteboardTotalPageCount"/>
+                                                    <Binding Path="WhiteboardCurrentPage" />
+                                                    <Binding Path="WhiteboardTotalPageCount" />
                                                 </MultiBinding>
                                             </TextBlock.Text>
                                         </TextBlock>
                                         <TextBlock
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Bottom"
-                                                FontSize="12"
-                                                Foreground="#18181b"
-                                                Text="页面" />
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Bottom"
+                                            FontSize="12"
+                                            Foreground="#18181b"
+                                            Text="页面" />
                                     </Grid>
                                 </Border>
                                 <Grid Width="0" Margin="0,0,0,5">
                                     <Border
-                                            Name="BoardBorderRightPageListView"
-                                            Margin="-138,-465,-56,50"
-                                            Background="#fafafa"
-                                            BorderBrush="#a1a1aa"
-                                            BorderThickness="1"
-                                            ClipToBounds="True"
-                                            CornerRadius="8"
-                                            Opacity="1">
+                                        Name="BoardBorderRightPageListView"
+                                        Margin="-138,-465,-56,50"
+                                        Background="#fafafa"
+                                        BorderBrush="#a1a1aa"
+                                        BorderThickness="1"
+                                        ClipToBounds="True"
+                                        CornerRadius="8"
+                                        Opacity="1">
                                         <ui:ScrollViewerEx
-                                                Name="BlackBoardRightSidePageListScrollViewer"
-                                                Height="460"
-                                                ForceUseSmoothScroll="True"
-                                                VerticalScrollBarVisibility="Hidden">
+                                            Name="BlackBoardRightSidePageListScrollViewer"
+                                            Height="460"
+                                            ForceUseSmoothScroll="True"
+                                            VerticalScrollBarVisibility="Hidden">
                                             <ListView
-                                                    Name="BlackBoardRightSidePageListView"
-                                                    ScrollViewer.CanContentScroll="False"
-                                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                                    ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                                                    SelectionMode="Single">
+                                                Name="BlackBoardRightSidePageListView"
+                                                ScrollViewer.CanContentScroll="False"
+                                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                                SelectionMode="Single">
                                                 <ListView.ItemTemplate>
                                                     <DataTemplate>
                                                         <ikw:SimpleStackPanel MouseUp="BlackBoardRightSidePageListView_OnMouseUp" Orientation="Vertical">
                                                             <Border
-                                                                    Width="160"
-                                                                    Margin="0,4"
-                                                                    BorderBrush="#a1a1aa"
-                                                                    BorderThickness="1">
+                                                                Width="160"
+                                                                Margin="0,4"
+                                                                BorderBrush="#a1a1aa"
+                                                                BorderThickness="1">
                                                                 <Grid>
                                                                     <Viewbox Width="160">
                                                                         <InkCanvas
-                                                                                Width="{Binding ElementName=inkCanvas, Path=ActualWidth}"
-                                                                                Height="{Binding ElementName=inkCanvas, Path=ActualHeight}"
-                                                                                Background="{Binding ElementName=GridBackgroundCover, Path=Background}"
-                                                                                EditingMode="None"
-                                                                                Strokes="{Binding Strokes}" />
+                                                                            Width="{Binding ElementName=inkCanvas, Path=ActualWidth}"
+                                                                            Height="{Binding ElementName=inkCanvas, Path=ActualHeight}"
+                                                                            Background="{Binding ElementName=GridBackgroundCover, Path=Background}"
+                                                                            EditingMode="None"
+                                                                            Strokes="{Binding Strokes}" />
                                                                     </Viewbox>
                                                                     <Border
-                                                                            Width="36"
-                                                                            Height="20"
-                                                                            Margin="4"
-                                                                            HorizontalAlignment="Left"
-                                                                            VerticalAlignment="Top"
-                                                                            Background="#cc09090b"
-                                                                            CornerRadius="3">
+                                                                        Width="36"
+                                                                        Height="20"
+                                                                        Margin="4"
+                                                                        HorizontalAlignment="Left"
+                                                                        VerticalAlignment="Top"
+                                                                        Background="#cc09090b"
+                                                                        CornerRadius="3">
                                                                         <TextBlock
-                                                                                HorizontalAlignment="Center"
-                                                                                VerticalAlignment="Center"
-                                                                                FontFamily="Consolas"
-                                                                                FontSize="14"
-                                                                                Foreground="White"
-                                                                                Text="{Binding Index}" />
+                                                                            HorizontalAlignment="Center"
+                                                                            VerticalAlignment="Center"
+                                                                            FontFamily="Consolas"
+                                                                            FontSize="14"
+                                                                            Foreground="White"
+                                                                            Text="{Binding Index}" />
                                                                     </Border>
                                                                 </Grid>
                                                             </Border>
@@ -6329,38 +6321,36 @@
                                     </Border>
                                 </Grid>
                                 <Border
-                                        Width="60"
-                                        Height="50"
-                                        Background="#f4f4f5"
-                                        BorderBrush="#a1a1aa"
-                                        BorderThickness="0,1,1,1"
-                                        CornerRadius="0,5,5,0"
-                                        MouseUp="BtnWhiteBoardSwitchNext_Click"
-                                        Opacity="0.95">
+                                    Width="60"
+                                    Height="50"
+                                    Background="#f4f4f5"
+                                    BorderBrush="#a1a1aa"
+                                    BorderThickness="0,1,1,1"
+                                    CornerRadius="0,5,5,0"
+                                    MouseUp="BtnWhiteBoardSwitchNext_Click"
+                                    Opacity="0.95">
                                     <Grid Margin="6,6,6,4">
                                         <Image
-                                                Width="20"
-                                                Height="20"
-                                                VerticalAlignment="Top"
-                                                RenderOptions.BitmapScalingMode="HighQuality">
+                                            Width="20"
+                                            Height="20"
+                                            VerticalAlignment="Top"
+                                            RenderOptions.BitmapScalingMode="HighQuality">
                                             <Image.Source>
                                                 <DrawingImage>
                                                     <DrawingImage.Drawing>
                                                         <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
-                                                            <GeometryDrawing
-                                                                    Brush="#18181b"
-                                                                    Geometry="F1 M24,24z M0,0z M16.5991,10.456L9.49667,3.35357 11.6802,1.17001 22.5102,12 11.6802,22.83 9.49667,20.6465 16.5991,13.544 1.48978,13.544 1.48978,10.456 16.5991,10.456z" />
+                                                            <GeometryDrawing Brush="#18181b" Geometry="F1 M24,24z M0,0z M16.5991,10.456L9.49667,3.35357 11.6802,1.17001 22.5102,12 11.6802,22.83 9.49667,20.6465 16.5991,13.544 1.48978,13.544 1.48978,10.456 16.5991,10.456z" />
                                                         </DrawingGroup>
                                                     </DrawingImage.Drawing>
                                                 </DrawingImage>
                                             </Image.Source>
                                         </Image>
                                         <TextBlock
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Bottom"
-                                                FontSize="12"
-                                                Foreground="Black"
-                                                Text="下一页" />
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Bottom"
+                                            FontSize="12"
+                                            Foreground="Black"
+                                            Text="下一页" />
                                     </Grid>
                                 </Border>
                             </ikw:SimpleStackPanel>
@@ -7410,7 +7400,7 @@
                                                                         x:Name="NibModeSimpleStackPanel"
                                                                         Width="140"
                                                                         Orientation="Horizontal"
-                                                                        Visibility="{Binding Settings.IsEnableDisPlayNibModeToggler,Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                                        Visibility="{Binding Settings.IsEnableDisPlayNibModeToggler, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                                         <Label
                                                                             Content="笔尖模式"
                                                                             VerticalAlignment="Center"
@@ -7421,7 +7411,7 @@
                                                                             MinWidth="0"
                                                                             Margin="10,0,0,0"
                                                                             FontFamily="Microsoft YaHei UI"
-                                                                            IsOn="{Binding Settings.IsEnableNibMode,Mode=TwoWay}"
+                                                                            IsOn="{Binding Settings.IsEnableNibMode, Mode=TwoWay}"
                                                                             Toggled="ToggleSwitchEnableNibMode_Toggled" />
                                                                     </ikw:SimpleStackPanel>
                                                                 </ikw:SimpleStackPanel>
@@ -9991,20 +9981,20 @@
                                     <DataTrigger Binding="{Binding Settings.UnFoldButtonImageType}" Value="0">
                                         <Setter Property="Source">
                                             <Setter.Value>
-                                                <BitmapImage UriSource="pack://application:,,,/Resources/new-icons/unfold-chevron.png"/>
+                                                <BitmapImage UriSource="pack://application:,,,/Resources/new-icons/unfold-chevron.png" />
                                             </Setter.Value>
                                         </Setter>
-                                        <Setter Property="Width" Value="14"/>
-                                        <Setter Property="Height" Value="14"/>
+                                        <Setter Property="Width" Value="14" />
+                                        <Setter Property="Height" Value="14" />
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding Settings.UnFoldButtonImageType}" Value="1">
                                         <Setter Property="Source">
                                             <Setter.Value>
-                                                <BitmapImage UriSource="pack://application:,,,/Resources/new-icons/pen-white.png"/>
+                                                <BitmapImage UriSource="pack://application:,,,/Resources/new-icons/pen-white.png" />
                                             </Setter.Value>
                                         </Setter>
-                                        <Setter Property="Width" Value="18"/>
-                                        <Setter Property="Height" Value="18"/>
+                                        <Setter Property="Width" Value="18" />
+                                        <Setter Property="Height" Value="18" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -10033,33 +10023,33 @@
                         x:Name="RightUnFoldBtnImgChevron"
                         Margin="0,0,10,0"
                         RenderOptions.BitmapScalingMode="HighQuality"
-                        RenderTransformOrigin="0.5,0.5" >
+                        RenderTransformOrigin="0.5,0.5">
                         <Image.Style>
                             <Style TargetType="Image">
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding Settings.UnFoldButtonImageType}" Value="0">
                                         <Setter Property="Source">
                                             <Setter.Value>
-                                                <BitmapImage UriSource="pack://application:,,,/Resources/new-icons/unfold-chevron.png"/>
+                                                <BitmapImage UriSource="pack://application:,,,/Resources/new-icons/unfold-chevron.png" />
                                             </Setter.Value>
                                         </Setter>
-                                        <Setter Property="Width" Value="14"/>
-                                        <Setter Property="Height" Value="14"/>
+                                        <Setter Property="Width" Value="14" />
+                                        <Setter Property="Height" Value="14" />
                                         <Setter Property="RenderTransform">
                                             <Setter.Value>
-                                                <RotateTransform Angle="180"/>
+                                                <RotateTransform Angle="180" />
                                             </Setter.Value>
                                         </Setter>
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding Settings.UnFoldButtonImageType}" Value="1">
                                         <Setter Property="Source">
                                             <Setter.Value>
-                                                <BitmapImage UriSource="pack://application:,,,/Resources/new-icons/pen-white.png"/>
+                                                <BitmapImage UriSource="pack://application:,,,/Resources/new-icons/pen-white.png" />
                                             </Setter.Value>
                                         </Setter>
-                                        <Setter Property="Width" Value="18"/>
-                                        <Setter Property="Height" Value="18"/>
-                                        <Setter Property="RenderTransform" Value="{x:Null}"/>
+                                        <Setter Property="Width" Value="18" />
+                                        <Setter Property="Height" Value="18" />
+                                        <Setter Property="RenderTransform" Value="{x:Null}" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>

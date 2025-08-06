@@ -6,7 +6,6 @@ using iNKORE.UI.WPF.Modern.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Reflection;
-using System.Threading;
 using System.Windows;
 using MessageBox = System.Windows.MessageBox;
 

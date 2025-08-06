@@ -1,11 +1,6 @@
-﻿// InkCanvasForClass-Remastered/Services/PowerPointService.cs
-
-using InkCanvasForClass_Remastered.Helpers;
+﻿using InkCanvasForClass_Remastered.Helpers;
 using Microsoft.Office.Interop.PowerPoint;
-using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Threading;
 using Application = Microsoft.Office.Interop.PowerPoint.Application;
 
 namespace InkCanvasForClass_Remastered.Services

@@ -1,11 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using InkCanvasForClass_Remastered.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace InkCanvasForClass_Remastered.Models
 {
@@ -68,7 +63,7 @@ namespace InkCanvasForClass_Remastered.Models
         [ObservableProperty]
         private double _viewboxFloatingBarOpacityValue = 1;
         [ObservableProperty]
-        private bool _enableTrayIcon= true;
+        private bool _enableTrayIcon = true;
         [ObservableProperty]
         private double _viewboxFloatingBarOpacityInPPTValue = 1;
         [ObservableProperty]
