@@ -5,8 +5,7 @@
     xmlns:ikw="http://schemas.inkore.net/lib/ui/wpf"
     xmlns:local="clr-namespace:InkCanvasForClass_Remastered"
     xmlns:tb="http://www.hardcodet.net/taskbar"
-    xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
-    StartupUri="MainWindow.xaml">
+    xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern">
     <Application.Resources>
         <ResourceDictionary>
             <Style TargetType="ui:ScrollViewerEx">

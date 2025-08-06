@@ -1,5 +1,4 @@
-﻿using InkCanvasForClass_Remastered.Services.InkCanvasForClass_Remastered.Services;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.IO;
 
 namespace InkCanvasForClass_Remastered.Services
@@ -7,9 +6,9 @@ namespace InkCanvasForClass_Remastered.Services
     public class SettingsService : ISettingsService
     {
         private const string settingsFileName = "Settings.json";
-        private Settings _settings = new Settings();
+        private Settings _settings = new();
 
-        public Settings Current => _settings;
+        public Settings Settings => _settings;
 
         public void LoadSettings()
         {

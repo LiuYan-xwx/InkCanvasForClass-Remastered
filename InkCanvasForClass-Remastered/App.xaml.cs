@@ -2,8 +2,12 @@
 using InkCanvasForClass_Remastered.Helpers;
 using InkCanvasForClass_Remastered.Services;
 using InkCanvasForClass_Remastered.Services.InkCanvasForClass_Remastered.Services;
+using InkCanvasForClass_Remastered.ViewModels;
 using iNKORE.UI.WPF.Modern.Controls;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System.Reflection;
+using System.Threading;
 using System.Windows;
 using MessageBox = System.Windows.MessageBox;
 
@@ -14,17 +18,13 @@ namespace InkCanvasForClass_Remastered
     /// </summary>
     public partial class App : Application
     {
-        System.Threading.Mutex mutex;
+        private IHost _host;
+        private Mutex mutex;
 
-        public static string[] StartArgs = null;
         public static string RootPath = Environment.GetEnvironmentVariable("APPDATA") + "\\InkCanvasForClass-Remastered\\";
-
-        public static ISettingsService SettingsService { get; private set; }
-        public static IPowerPointService PowerPointService { get; private set; }
 
         public App()
         {
-            this.Startup += new StartupEventHandler(App_Startup);
             this.DispatcherUnhandledException += App_DispatcherUnhandledException;
         }
 
@@ -35,32 +35,60 @@ namespace InkCanvasForClass_Remastered
             e.Handled = true;
         }
 
-        private TaskbarIcon _taskbar;
-
-        void App_Startup(object sender, StartupEventArgs e)
+        protected override async void OnStartup(StartupEventArgs e)
         {
-            SettingsService = new SettingsService();
-            PowerPointService = new PowerPointService();
-
-            /*if (!StoreHelper.IsStoreApp) */
-            RootPath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
-
-            LogHelper.NewLog(string.Format("ICC-Re Starting (Version: {0})", Assembly.GetExecutingAssembly().GetName().Version.ToString()));
-
-            bool ret;
-            mutex = new System.Threading.Mutex(true, "InkCanvasForClass-Remastered", out ret);
-
-            if (!ret && !e.Args.Contains("-m")) //-m multiple
+            mutex = new Mutex(true, "InkCanvasForClass-Remastered", out bool ret);
+            if (!ret && !e.Args.Contains("-m"))
             {
-                LogHelper.NewLog("Detected existing instance");
                 MessageBox.Show("已有一个程序实例正在运行");
-                LogHelper.NewLog("ICC-Re automatically closed");
                 Environment.Exit(0);
+                return;
             }
 
-            _taskbar = (TaskbarIcon)FindResource("TaskbarTrayIcon");
+            RootPath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
+            LogHelper.NewLog($"ICC-Re Starting (Version: {Assembly.GetExecutingAssembly().GetName().Version})");
 
-            StartArgs = e.Args;
+            _host = Host.CreateDefaultBuilder()
+                .ConfigureServices((context, services) =>
+                {
+                    // 在这里注册所有的服务、视图模型和窗口
+                    ConfigureServices(services);
+                })
+                .Build();
+
+            await _host.StartAsync();
+
+            var mainWindow = _host.Services.GetRequiredService<MainWindow>();
+            this.MainWindow = mainWindow;
+            mainWindow.Show();
+
+            var taskbar = (TaskbarIcon)FindResource("TaskbarTrayIcon");
+
+            base.OnStartup(e);
+        }
+
+        private void ConfigureServices(IServiceCollection services)
+        {
+            // 注册服务
+            services.AddSingleton<ISettingsService, SettingsService>();
+            services.AddSingleton<IPowerPointService, PowerPointService>();
+
+            // 注册视图模型
+            services.AddTransient<MainViewModel>();
+            services.AddTransient<TimeViewModel>();
+
+            // 注册主窗口
+            services.AddSingleton<MainWindow>();
+        }
+
+        protected override async void OnExit(ExitEventArgs e)
+        {
+            if (_host != null)
+            {
+                await _host.StopAsync();
+                _host.Dispose();
+            }
+            base.OnExit(e);
         }
 
         private void ScrollViewer_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)

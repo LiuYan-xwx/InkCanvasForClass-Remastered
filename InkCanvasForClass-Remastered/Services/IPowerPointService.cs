@@ -1,7 +1,4 @@
-﻿// InkCanvasForClass-Remastered/Services/IPowerPointService.cs
-
-using Microsoft.Office.Interop.PowerPoint;
-using System;
+﻿using Microsoft.Office.Interop.PowerPoint;
 
 namespace InkCanvasForClass_Remastered.Services
 {
