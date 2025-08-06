@@ -871,7 +871,7 @@
                                             Name="ToggleSwitchEnableTrayIcon"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="True"
+                                            IsOn="{Binding Settings.EnableTrayIcon, Mode=TwoWay}"
                                             OffContent=""
                                             OnContent="" />
                                     </ikw:SimpleStackPanel>
