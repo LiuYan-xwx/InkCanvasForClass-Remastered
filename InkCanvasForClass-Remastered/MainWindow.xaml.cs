@@ -324,8 +324,6 @@ namespace InkCanvasForClass_Remastered
             HideSubPanelsImmediately();
             if (Settings.AutoSwitchTwoFingerGesture) // 自动启用多指书写
                 ToggleSwitchEnableTwoFingerTranslate.IsOn = false;
-            WaterMarkTime.Visibility = Visibility.Collapsed;
-            WaterMarkDate.Visibility = Visibility.Collapsed;
             BtnSwitch_Click(BtnSwitch, null);
             ThemeManager.Current.ApplicationTheme = ApplicationTheme.Dark;
             new Thread(new ThreadStart(() =>
@@ -2231,8 +2229,6 @@ namespace InkCanvasForClass_Remastered
                     ToggleSwitchEnableTwoFingerTranslate.IsOn = false;
                 // 2024.5.2 need to be tested
                 // if (!isInMultiTouchMode) ToggleSwitchEnableMultiTouchMode.IsOn = true;
-                WaterMarkTime.Visibility = Visibility.Collapsed;
-                WaterMarkDate.Visibility = Visibility.Collapsed;
                 UpdatePPTBtnDisplaySettingsStatus();
                 UpdatePPTBtnStyleSettingsStatus();
             }

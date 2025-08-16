@@ -3269,6 +3269,29 @@
                 Name="GridBackgroundCover"
                 Background="#1F1F1F"
                 Visibility="Collapsed" />
+            <Canvas IsHitTestVisible="False">
+                <ikw:SimpleStackPanel
+                    Canvas.Left="25"
+                    Canvas.Top="15"
+                    Orientation="Vertical">
+                    <TextBlock
+                        Name="WaterMarkTime"
+                        FontSize="30"
+                        FontWeight="Bold"
+                        Foreground="White"
+                        Opacity="0.6"
+                        Text="{Binding NowTime}"
+                        Visibility="{Binding EnableTimeDisplayInWhiteboardMode, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <TextBlock
+                        Name="WaterMarkDate"
+                        Margin="2,0,0,0"
+                        FontSize="16"
+                        Foreground="White"
+                        Opacity="0.45"
+                        Text="{Binding NowDate}"
+                        Visibility="{Binding EnableTimeDisplayInWhiteboardMode, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                </ikw:SimpleStackPanel>
+            </Canvas>
         </Grid>
         <Grid Name="GridTransparencyFakeBackground" Opacity="0" />
         <Label
@@ -3300,29 +3323,6 @@
                 TouchUp="Main_Grid_TouchUp" />
         </Grid>
 
-        <Canvas IsHitTestVisible="False">
-            <ikw:SimpleStackPanel
-                Canvas.Left="25"
-                Canvas.Top="15"
-                Orientation="Vertical">
-                <TextBlock
-                    Name="WaterMarkTime"
-                    FontSize="30"
-                    FontWeight="Bold"
-                    Foreground="White"
-                    Opacity="0.6"
-                    Text="{Binding NowTime}"
-                    Visibility="Collapsed" />
-                <TextBlock
-                    Name="WaterMarkDate"
-                    Margin="2,0,0,0"
-                    FontSize="16"
-                    Foreground="White"
-                    Opacity="0.45"
-                    Text="{Binding NowDate}"
-                    Visibility="Collapsed" />
-            </ikw:SimpleStackPanel>
-        </Canvas>
         <Grid Visibility="{Binding ElementName=inkCanvas, Path=Visibility}">
             <Grid
                 Name="GridInkCanvasSelectionCover"
