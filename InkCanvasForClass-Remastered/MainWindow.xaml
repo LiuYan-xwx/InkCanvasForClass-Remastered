@@ -8,6 +8,7 @@
     xmlns:ikw="http://schemas.inkore.net/lib/ui/wpf"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
+    xmlns:Settings="clr-namespace:InkCanvasForClass_Remastered.Models"
     Name="window"
     Title="InkCanvasForClass-Remastered"
     Width="1440"
@@ -3267,8 +3268,18 @@
         <Grid Name="GridBackgroundCoverHolder">
             <Grid
                 Name="GridBackgroundCover"
-                Background="#1F1F1F"
-                Visibility="Collapsed" />
+                Visibility="Collapsed" >
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Background" Value="#162924"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Settings.UsingWhiteboard}" Value="True">
+                                <Setter Property="Background" Value="#EAEBED"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+            </Grid>
             <Canvas IsHitTestVisible="False">
                 <ikw:SimpleStackPanel
                     Canvas.Left="25"
@@ -3278,18 +3289,38 @@
                         Name="WaterMarkTime"
                         FontSize="30"
                         FontWeight="Bold"
-                        Foreground="White"
                         Opacity="0.6"
                         Text="{Binding NowTime}"
-                        Visibility="{Binding EnableTimeDisplayInWhiteboardMode, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        Visibility="{Binding EnableTimeDisplayInWhiteboardMode, Converter={StaticResource BooleanToVisibilityConverter}}" >
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="#EAEBED" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Settings.UsingWhiteboard}" Value="True">
+                                        <Setter Property="Foreground" Value="#162924"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
                     <TextBlock
                         Name="WaterMarkDate"
                         Margin="2,0,0,0"
                         FontSize="16"
-                        Foreground="White"
                         Opacity="0.45"
                         Text="{Binding NowDate}"
-                        Visibility="{Binding EnableTimeDisplayInWhiteboardMode, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        Visibility="{Binding EnableTimeDisplayInWhiteboardMode, Converter={StaticResource BooleanToVisibilityConverter}}" >
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="#EAEBED" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Settings.UsingWhiteboard}" Value="True">
+                                        <Setter Property="Foreground" Value="#162924"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
                 </ikw:SimpleStackPanel>
             </Canvas>
         </Grid>
