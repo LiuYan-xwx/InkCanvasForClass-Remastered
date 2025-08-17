@@ -650,7 +650,7 @@
                                             VerticalAlignment="Center"
                                             FontFamily="Consolas"
                                             FontSize="14"
-                                            Text="{Binding Settings.ViewboxFloatingBarScaleTransformValue}" />
+                                            Text="{Binding Settings.ViewboxFloatingBarScaleTransformValue,StringFormat={}{0:F2}}" />
                                     </ikw:SimpleStackPanel>
                                     <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                         <TextBlock
@@ -676,7 +676,7 @@
                                             VerticalAlignment="Center"
                                             FontFamily="Consolas"
                                             FontSize="14"
-                                            Text="{Binding Settings.ViewboxFloatingBarOpacityValue}" />
+                                            Text="{Binding Settings.ViewboxFloatingBarOpacityValue,StringFormat={}{0:F2}}" />
                                     </ikw:SimpleStackPanel>
                                     <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                         <TextBlock
@@ -702,7 +702,7 @@
                                             VerticalAlignment="Center"
                                             FontFamily="Consolas"
                                             FontSize="14"
-                                            Text="{Binding Settings.ViewboxFloatingBarOpacityInPPTValue}" />
+                                            Text="{Binding Settings.ViewboxFloatingBarOpacityInPPTValue,StringFormat={}{0:F2}}" />
                                     </ikw:SimpleStackPanel>
                                     <TextBlock
                                         Foreground="#a1a1aa"
@@ -1447,7 +1447,7 @@
                                             Name="ToggleSwitchAutoSaveStrokesInPowerPoint"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="{Binding ToggleSwitchAutoSaveStrokesInPowerPoint}"
+                                            IsOn="{Binding Settings.ToggleSwitchAutoSaveStrokesInPowerPoint,Mode=TwoWay}"
                                             OffContent=""
                                             OnContent="" />
                                     </ikw:SimpleStackPanel>
@@ -3191,7 +3191,7 @@
                                         FontSize="18"
                                         FontWeight="Bold"
                                         Text="感谢下列贡献者：" />
-                                    <TextBlock Text="..." />
+                                    <TextBlock Text="...暂无" />
                                 </ikw:SimpleStackPanel>
                             </GroupBox>
                         </StackPanel>
@@ -7474,7 +7474,7 @@
                                                                     VerticalAlignment="Bottom"
                                                                     FontFamily="Consolas"
                                                                     FontSize="15"
-                                                                    Text="{Binding Value, ElementName=InkWidthSlider, Mode=OneWay}" />
+                                                                    Text="{Binding Value, ElementName=InkWidthSlider, StringFormat={}{0:F1}}" />
                                                             </StackPanel>
                                                             <StackPanel Height="30" Orientation="Horizontal">
                                                                 <Label
