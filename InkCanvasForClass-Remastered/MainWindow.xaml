@@ -643,7 +643,6 @@
                                             Minimum="0.5"
                                             TickFrequency="0.05"
                                             TickPlacement="None"
-                                            ValueChanged="ViewboxFloatingBarScaleTransformValueSlider_ValueChanged"
                                             Value="{Binding Settings.ViewboxFloatingBarScaleTransformValue, Mode=TwoWay}" />
                                         <TextBlock
                                             Margin="12,0,16,0"

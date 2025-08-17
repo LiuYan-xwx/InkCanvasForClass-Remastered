@@ -62,6 +62,8 @@ namespace InkCanvasForClass_Remastered
             _powerPointService.SlideShowEnd += PptApplication_SlideShowEnd;
             _powerPointService.SlideShowNextSlide += PptApplication_SlideShowNextSlide;
 
+            Settings.PropertyChanged += Settings_PropertyChanged;
+
             BlackboardLeftSide.Visibility = Visibility.Collapsed;
             BlackboardCenterSide.Visibility = Visibility.Collapsed;
             BlackboardRightSide.Visibility = Visibility.Collapsed;
@@ -123,6 +125,19 @@ namespace InkCanvasForClass_Remastered
 
             CheckColorTheme(true);
             CheckPenTypeUIState();
+        }
+
+        private void Settings_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(Settings.ViewboxFloatingBarScaleTransformValue):
+                    if (_powerPointService.IsInSlideShow == true)
+                        ViewboxFloatingBarMarginAnimation(60);
+                    else
+                        ViewboxFloatingBarMarginAnimation(100, true);
+                    break;
+            }
         }
 
         #endregion
@@ -5222,16 +5237,6 @@ namespace InkCanvasForClass_Remastered
         #endregion
 
         #region Appearance
-
-        private void ViewboxFloatingBarScaleTransformValueSlider_ValueChanged(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            // auto align
-            if (BorderFloatingBarExitPPTBtn.Visibility == Visibility.Visible)
-                ViewboxFloatingBarMarginAnimation(60);
-            else
-                ViewboxFloatingBarMarginAnimation(100, true);
-        }
 
         public void ComboBoxFloatingBarImg_SelectionChanged(object sender, RoutedEventArgs e)
         {
