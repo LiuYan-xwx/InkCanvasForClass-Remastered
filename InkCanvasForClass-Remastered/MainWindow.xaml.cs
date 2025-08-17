@@ -137,6 +137,9 @@ namespace InkCanvasForClass_Remastered
                     else
                         ViewboxFloatingBarMarginAnimation(100, true);
                     break;
+                case nameof(Settings.FitToCurve):
+                    drawingAttributes.FitToCurve = Settings.FitToCurve;
+                    break;
             }
         }
 
@@ -6088,12 +6091,6 @@ namespace InkCanvasForClass_Remastered
             if (!isLoaded) return;
             Settings.ClearCanvasAndClearTimeMachine = ToggleSwitchClearCanvasAndClearTimeMachine.IsOn;
             _settingsService.SaveSettings();
-        }
-
-        private void ToggleSwitchFitToCurve_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            drawingAttributes.FitToCurve = Settings.FitToCurve;
         }
 
         private void SideControlMinimumAutomationSlider_ValueChanged(object sender, RoutedEventArgs e)

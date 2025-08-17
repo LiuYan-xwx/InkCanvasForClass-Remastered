@@ -533,8 +533,7 @@
                                             FontWeight="Bold"
                                             IsOn="{Binding Settings.FitToCurve, Mode=TwoWay}"
                                             OffContent=""
-                                            OnContent=""
-                                            Toggled="ToggleSwitchFitToCurve_Toggled" />
+                                            OnContent="" />
                                     </ikw:SimpleStackPanel>
                                 </ikw:SimpleStackPanel>
                             </GroupBox>
