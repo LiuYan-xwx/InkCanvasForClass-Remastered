@@ -12,7 +12,7 @@
 > **ICC** 本身源自 [WuChanging/Ink-Canvas](https://github.com/WuChanging/Ink-Canvas)，该项目对原版做了大量改进，包括 UI 美化、新增功能与体验优化。  
 > 进一步追溯， [WuChanging/Ink-Canvas](https://github.com/WuChanging/Ink-Canvas)（又名 *Ink Canvas Artistry*）基于 [WXRIW/Ink-Canvas](https://github.com/WXRIW/Ink-Canvas) 修改，继续完善了功能与界面。
 
-由于 **ICC** 原开发者已停止维护，最新分支不可用，加之多个项目层层叠加导致代码质量下降，本项目选择在一个较受欢迎且可用的 **ICC** 版本基础上，开展**代码重构与现代化**工作。
+由于 **ICC** 原开发者已停止维护，最新分支不可用，加之多个项目层层叠加导致代码质量下降，本项目选择在一个较受欢迎且可用的 **ICC** 版本基础上，开展**代码重构与现代化**工作。对此，开发重心不在新功能的增加上，而是底层重构上，甚至会移除功能。
 
 ### 为什么叫 Remastered
 
@@ -50,7 +50,7 @@ https://github.com/3382308510
 
 1. 项目以个人兴趣为主开发，**而且用的人肯定是几乎没有**，所以更新随缘，优先保证基本可用性，bug修复。功能的新增较少。
 2. 目前版本应该是可以正常使用，应该是无严重 bug，后续更新会尽量不引入新的屎。
-3. 初始提交相较 `icc-0610fix` 的主要变化：
+3. **本项目的初始提交**相较 `icc-0610fix` 的主要变化：
 > commit可以去看我的fork仓库 https://github.com/LiuYan-xwx/icc-0610fix/commits/master/
    - **移除功能：**
      - 墨迹识别（因为我用不到）
@@ -70,7 +70,7 @@ https://github.com/3382308510
 ## 开发
 目前在 **wtf** 分支开发。~~*别问为什么叫这个()*~~
 
-本项目建立后已经做出的常规修改：
+**本项目建立后**已经做出的常规修改：
 - 使用了新的 ICC-Re 图标，各种名字也改了
 - 开发者栏目修改
 - 移除了侧边栏的快速面板
@@ -183,7 +183,8 @@ ICC 可以支持 WPS，但目前無法同時支持 MSOffice 和 WPS。若要啟�
 
 ## 使用
 - 安装 [.NET 8 桌面运行时](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)  
-- 自行构建，或直接从 GitHub Actions 下载构建产物，大概不会发 Release
+- 自行构建软件后使用
+- 或直接从 GitHub Actions 下载构建产物，大概不会发 Release
 
 ## 问题反馈
 
