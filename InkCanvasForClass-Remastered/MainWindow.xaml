@@ -3277,7 +3277,6 @@
                         </Style.Triggers>
                     </Style>
                 </Grid.Style>
-            </Grid>
             <Canvas IsHitTestVisible="False">
                 <ikw:SimpleStackPanel
                     Canvas.Left="25"
@@ -3321,6 +3320,7 @@
                     </TextBlock>
                 </ikw:SimpleStackPanel>
             </Canvas>
+        </Grid>
         </Grid>
         <Grid Name="GridTransparencyFakeBackground" Opacity="0" />
         <Label
