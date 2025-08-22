@@ -1445,7 +1445,7 @@
                                             Name="ToggleSwitchAutoSaveStrokesInPowerPoint"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="{Binding Settings.ToggleSwitchAutoSaveStrokesInPowerPoint,Mode=TwoWay}"
+                                            IsOn="{Binding Settings.IsAutoSaveStrokesInPowerPoint,Mode=TwoWay}"
                                             OffContent=""
                                             OnContent="" />
                                     </ikw:SimpleStackPanel>
