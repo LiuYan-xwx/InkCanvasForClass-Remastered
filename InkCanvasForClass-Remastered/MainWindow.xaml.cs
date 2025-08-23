@@ -505,83 +505,6 @@ namespace InkCanvasForClass_Remastered
         }
         #endregion
 
-        #region AutoStart
-        /// <summary>
-        /// 检查是否已启用自启动
-        /// </summary>
-        /// <param name="exeName">快捷方式名称</param>
-        /// <returns>是否启用自启动</returns>
-        public static bool IsStartAutomaticallyEnabled(string exeName)
-        {
-            try
-            {
-                var shortcutPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.Startup),
-                    exeName + ".lnk");
-                return File.Exists(shortcutPath);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// 创建自启动快捷方式
-        /// </summary>
-        /// <param name="exeName">快捷方式名称</param>
-        /// <returns>是否创建成功</returns>
-        public static bool StartAutomaticallyCreate(string exeName)
-        {
-            try
-            {
-                var shortcutPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.Startup),
-                    exeName + ".lnk");
-
-                using var shortcut = new WindowsShortcut
-                {
-                    Path = Environment.ProcessPath ?? System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName,
-                    WorkingDirectory = Environment.CurrentDirectory,
-                    Description = exeName + "_Ink",
-                };
-
-                shortcut.Save(shortcutPath);
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// 删除自启动快捷方式
-        /// </summary>
-        /// <param name="exeName">快捷方式名称</param>
-        /// <returns>是否删除成功</returns>
-        public static bool StartAutomaticallyDel(string exeName)
-        {
-            try
-            {
-                var shortcutPath = Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.Startup),
-                    exeName + ".lnk");
-
-                if (File.Exists(shortcutPath))
-                {
-                    File.Delete(shortcutPath);
-                    return true;
-                }
-                return false;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-        }
-        #endregion
-
         #region AutoTheme
         private Color FloatBarForegroundColor = Color.FromRgb(102, 102, 102);
 
@@ -5188,38 +5111,6 @@ namespace InkCanvasForClass_Remastered
         #region Settings
         #region Behavior
 
-        private void ToggleSwitchRunAtStartup_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            const string shortcutName = "ICC-Re";
-
-            try
-            {
-                if (Settings.RunAtStartup)
-                {
-                    if (!StartAutomaticallyCreate(shortcutName))
-                    {
-                        // 如果创建失败，将开关状态恢复
-                        Settings.RunAtStartup = false;
-                        ShowNotification("创建开机自启动失败，请检查权限设置");
-                    }
-                }
-                else
-                {
-                    StartAutomaticallyDel(shortcutName);
-                }
-            }
-            catch (Exception ex)
-            {
-                // 记录错误日志
-                LogHelper.WriteLogToFile($"设置开机自启动时发生错误: {ex}", LogHelper.LogType.Error);
-
-                // 恢复开关状态
-                Settings.RunAtStartup = false;
-                ShowNotification("设置开机自启动失败");
-            }
-        }
-
         private void ToggleSwitchSupportPowerPoint_Toggled(object sender, RoutedEventArgs e)
         {
             if (Settings.PowerPointSupport)
@@ -6415,21 +6306,7 @@ namespace InkCanvasForClass_Remastered
             if (isStartup)
             {
                 CursorIcon_Click(null, null);
-            }
 
-            try
-            {
-                // 检查是否启用了开机自启动
-                var isAutoStartEnabled = IsStartAutomaticallyEnabled("ICC-Re");
-                Settings.RunAtStartup = isAutoStartEnabled;
-            }
-            catch (Exception ex)
-            {
-                LogHelper.WriteLogToFile($"检查开机自启动状态时发生错误: {ex}", LogHelper.LogType.Error);
-                Settings.RunAtStartup = false;
-            }
-            if (isStartup)
-            {
                 if (Settings.AutoDelSavedFiles)
                 {
                     DelAutoSavedFiles.DeleteFilesOlder(Settings.AutoSaveStrokesPath,

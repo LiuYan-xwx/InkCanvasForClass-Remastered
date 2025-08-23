@@ -371,10 +371,9 @@
                                             Name="ToggleSwitchRunAtStartup"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="{Binding Settings.RunAtStartup, Mode=TwoWay}"
+                                            IsOn="{Binding Settings.IsAutoStartEnabled, Mode=TwoWay}"
                                             OffContent=""
-                                            OnContent=""
-                                            Toggled="ToggleSwitchRunAtStartup_Toggled" />
+                                            OnContent="" />
                                     </ikw:SimpleStackPanel>
                                     <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                         <TextBlock
