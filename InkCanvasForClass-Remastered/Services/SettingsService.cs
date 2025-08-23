@@ -21,7 +21,7 @@ namespace InkCanvasForClass_Remastered.Services
         {
             try
             {
-                var settingsPath = Path.Combine(App.RootPath, settingsFileName);
+                var settingsPath = Path.Combine(App.AppRootFolderPath, settingsFileName);
                 if (File.Exists(settingsPath))
                 {
                     string text = File.ReadAllText(settingsPath);
@@ -50,7 +50,7 @@ namespace InkCanvasForClass_Remastered.Services
             try
             {
                 var text = JsonConvert.SerializeObject(_settings, Formatting.Indented);
-                var settingsPath = Path.Combine(App.RootPath, settingsFileName);
+                var settingsPath = Path.Combine(App.AppRootFolderPath, settingsFileName);
                 File.WriteAllText(settingsPath, text);
             }
             catch

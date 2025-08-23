@@ -5,6 +5,7 @@ using InkCanvasForClass_Remastered.ViewModels;
 using iNKORE.UI.WPF.Modern.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.IO;
 using System.Reflection;
 using System.Windows;
 using MessageBox = System.Windows.MessageBox;
@@ -19,7 +20,8 @@ namespace InkCanvasForClass_Remastered
         private IHost _host;
         private Mutex mutex;
 
-        public static string RootPath = Environment.GetEnvironmentVariable("APPDATA") + "\\InkCanvasForClass-Remastered\\";
+        public static readonly string AppRootFolderPath = "./";
+        public static readonly string AppLogFolderPath = Path.Combine(AppRootFolderPath, "Logs");
 
         public App()
         {
@@ -35,6 +37,7 @@ namespace InkCanvasForClass_Remastered
 
         protected override async void OnStartup(StartupEventArgs e)
         {
+            FileFolderService.CreateFolders();
             mutex = new Mutex(true, "InkCanvasForClass-Remastered", out bool ret);
             if (!ret && !e.Args.Contains("-m"))
             {
@@ -43,7 +46,6 @@ namespace InkCanvasForClass_Remastered
                 return;
             }
 
-            RootPath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
             LogHelper.NewLog($"ICC-Re Starting (Version: {Assembly.GetExecutingAssembly().GetName().Version})");
 
             _host = Host.CreateDefaultBuilder()
@@ -73,7 +75,7 @@ namespace InkCanvasForClass_Remastered
             // 注册服务
             services.AddSingleton<ISettingsService, SettingsService>();
             services.AddSingleton<IPowerPointService, PowerPointService>();
-
+            services.AddSingleton<FileFolderService>();
             // 注册视图模型
             services.AddTransient<MainViewModel>();
 

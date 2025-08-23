@@ -33,10 +33,10 @@ namespace InkCanvasForClass_Remastered.Helpers
             }
             try
             {
-                var file = App.RootPath + LogFile;
-                if (!Directory.Exists(App.RootPath))
+                var file = App.AppRootFolderPath + LogFile;
+                if (!Directory.Exists(App.AppRootFolderPath))
                 {
-                    Directory.CreateDirectory(App.RootPath);
+                    Directory.CreateDirectory(App.AppRootFolderPath);
                 }
                 StreamWriter sw = new StreamWriter(file, true);
                 sw.WriteLine(string.Format("{0} [{1}] {2}", DateTime.Now.ToString("O"), strLogType, str));
