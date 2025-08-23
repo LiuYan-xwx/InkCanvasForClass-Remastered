@@ -1,10 +1,13 @@
 ﻿using Hardcodet.Wpf.TaskbarNotification;
 using InkCanvasForClass_Remastered.Helpers;
 using InkCanvasForClass_Remastered.Services;
+using InkCanvasForClass_Remastered.Services.Logging;
 using InkCanvasForClass_Remastered.ViewModels;
 using iNKORE.UI.WPF.Modern.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 using System.IO;
 using System.Reflection;
 using System.Windows;
@@ -81,6 +84,19 @@ namespace InkCanvasForClass_Remastered
 
             // 注册主窗口
             services.AddSingleton<MainWindow>();
+
+            services.AddLogging(builder =>
+            {
+                builder.ClearProviders();
+                builder.AddProvider(new FileLoggerProvider());
+
+                builder.AddConsoleFormatter<MyConsoleFormatter, ConsoleFormatterOptions>();
+                builder.AddConsole(console =>
+                {
+                    console.FormatterName = "myformatter";
+                });
+                builder.SetMinimumLevel(LogLevel.Trace);
+            });
         }
 
         protected override async void OnExit(ExitEventArgs e)
