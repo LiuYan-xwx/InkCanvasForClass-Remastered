@@ -6307,12 +6307,6 @@ namespace InkCanvasForClass_Remastered
             {
                 CursorIcon_Click(null, null);
 
-                if (Settings.AutoDelSavedFiles)
-                {
-                    DelAutoSavedFiles.DeleteFilesOlder(Settings.AutoSaveStrokesPath,
-                        Settings.AutoDelSavedFilesDays);
-                }
-
                 if (Settings.IsFoldAtStartup)
                 {
                     FoldFloatingBar_MouseUp(Fold_Icon, null);

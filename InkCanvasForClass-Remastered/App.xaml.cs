@@ -70,6 +70,8 @@ namespace InkCanvasForClass_Remastered
 
             var taskbar = (TaskbarIcon)FindResource("TaskbarTrayIcon");
 
+            await _host.Services.GetRequiredService<FileFolderService>().ProcessOldFilesAsync();
+
             base.OnStartup(e);
         }
 
