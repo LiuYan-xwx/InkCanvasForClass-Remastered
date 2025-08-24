@@ -18,10 +18,13 @@ namespace InkCanvasForClass_Remastered
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App : Application, IAppHost
     {
         private IHost _host;
         private Mutex mutex;
+        private ILogger<App> Logger;
+
+        public static T GetService<T>() => IAppHost.GetService<T>();
 
         public static readonly string AppRootFolderPath = "./";
         public static readonly string AppLogFolderPath = Path.Combine(AppRootFolderPath, "Logs");
@@ -34,13 +37,12 @@ namespace InkCanvasForClass_Remastered
         private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
             InkCanvasForClass_Remastered.MainWindow.ShowNewMessage("抱歉，出现未预期的异常，可能导致 ICC-Re 运行不稳定。\n建议保存墨迹后重启应用。", true);
-            LogHelper.NewLog(e.Exception.ToString());
+            Logger.LogCritical(e.Exception, "应用程序发生未处理的异常");
             e.Handled = true;
         }
 
         protected override async void OnStartup(StartupEventArgs e)
         {
-            FileFolderService.CreateFolders();
             mutex = new Mutex(true, "InkCanvasForClass-Remastered", out bool ret);
             if (!ret && !e.Args.Contains("-m"))
             {
@@ -48,10 +50,10 @@ namespace InkCanvasForClass_Remastered
                 Environment.Exit(0);
                 return;
             }
+            
+            FileFolderService.CreateFolders();
 
-            LogHelper.NewLog($"ICC-Re Starting (Version: {Assembly.GetExecutingAssembly().GetName().Version})");
-
-            _host = Host.CreateDefaultBuilder()
+            IAppHost.Host = Host.CreateDefaultBuilder()
                 .ConfigureServices((context, services) =>
                 {
                     // 在这里注册所有的服务、视图模型和窗口
@@ -59,18 +61,22 @@ namespace InkCanvasForClass_Remastered
                 })
                 .Build();
 
-            await _host.StartAsync();
+            Logger = GetService<ILogger<App>>();
+            Logger.LogInformation("ICC-Re 启动，Version: {Version})", Assembly.GetExecutingAssembly().GetName().Version);
 
-            var settingsService = _host.Services.GetRequiredService<ISettingsService>();
-            settingsService.LoadSettings();
+            Logger.LogInformation("加载设置");
+            GetService<SettingsService>().LoadSettings();
 
-            var mainWindow = _host.Services.GetRequiredService<MainWindow>();
+            await IAppHost.Host.StartAsync();
+
+            var mainWindow = GetService<MainWindow>();
             MainWindow = mainWindow;
             mainWindow.Show();
 
             var taskbar = (TaskbarIcon)FindResource("TaskbarTrayIcon");
 
-            await _host.Services.GetRequiredService<FileFolderService>().ProcessOldFilesAsync();
+            await GetService<FileFolderService>().ProcessOldFilesAsync();
+
 
             base.OnStartup(e);
         }
@@ -104,14 +110,11 @@ namespace InkCanvasForClass_Remastered
         protected override async void OnExit(ExitEventArgs e)
         {
             // 保存设置
-            var settingsService = _host?.Services?.GetService<ISettingsService>();
+            var settingsService = GetService<SettingsService>();
             settingsService?.SaveSettings();
 
-            if (_host != null)
-            {
-                await _host.StopAsync();
-                _host.Dispose();
-            }
+            IAppHost.Host?.StopAsync();
+
             base.OnExit(e);
         }
 

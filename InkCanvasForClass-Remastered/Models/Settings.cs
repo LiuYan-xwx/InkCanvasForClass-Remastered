@@ -78,7 +78,7 @@ namespace InkCanvasForClass_Remastered.Models
                 }
                 catch (Exception ex)
                 {
-                    LogHelper.WriteLogToFile($"设置开机自启动时发生错误: {ex}", LogHelper.LogType.Error);
+                    App.GetService<ILogger<Settings>>().LogError(ex, "无法创建开机自启动快捷方式。");
                 }
             }
         }
