@@ -3718,38 +3718,6 @@ namespace InkCanvasForClass_Remastered
         {
             if (Pres == null) return;
 
-            //检查是否有隐藏幻灯片
-            if (Settings.IsNotifyHiddenPage)
-            {
-                var isHaveHiddenSlide = false;
-                foreach (Slide slide in Pres.Slides)
-                    if (slide.SlideShowTransition.Hidden == Microsoft.Office.Core.MsoTriState.msoTrue)
-                    {
-                        isHaveHiddenSlide = true;
-                        break;
-                    }
-
-                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    if (isHaveHiddenSlide && !IsShowingRestoreHiddenSlidesWindow)
-                    {
-                        IsShowingRestoreHiddenSlidesWindow = true;
-                        new YesOrNoNotificationWindow("检测到此演示文档中包含隐藏的幻灯片，是否取消隐藏？",
-                            () =>
-                            {
-                                foreach (Slide slide in Pres.Slides)
-                                    if (slide.SlideShowTransition.Hidden ==
-                                        Microsoft.Office.Core.MsoTriState.msoTrue)
-                                        slide.SlideShowTransition.Hidden =
-                                            Microsoft.Office.Core.MsoTriState.msoFalse;
-                                IsShowingRestoreHiddenSlidesWindow = false;
-                            }, () => { IsShowingRestoreHiddenSlidesWindow = false; },
-                            () => { IsShowingRestoreHiddenSlidesWindow = false; }).ShowDialog();
-                    }
-
-                }), DispatcherPriority.Normal);
-            }
-
             //检测是否有自动播放
             if (Settings.IsNotifyAutoPlayPresentation
                 // && presentation.SlideShowSettings.AdvanceMode == PpSlideShowAdvanceMode.ppSlideShowUseSlideTimings
