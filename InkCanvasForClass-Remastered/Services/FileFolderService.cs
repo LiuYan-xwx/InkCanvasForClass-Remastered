@@ -35,8 +35,6 @@ namespace InkCanvasForClass_Remastered.Services
                 _logger.LogInformation("开始清理旧文件，路径: {DirectoryPath}, 天数阈值: {DaysThreshold}", directoryPath, daysThreshold);
 
                 await Task.Run(() => DeleteFilesOlder(directoryPath, daysThreshold));
-
-                _logger.LogInformation("旧文件清理完成");
             }
             catch (Exception ex)
             {

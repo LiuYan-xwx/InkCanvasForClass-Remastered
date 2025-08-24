@@ -80,41 +80,6 @@ namespace InkCanvasForClass_Remastered
             ViewboxFloatingBar.Margin = new Thickness((SystemParameters.WorkArea.Width - 284) / 2,
                 SystemParameters.WorkArea.Height - 60, -2000, -200);
             ViewboxFloatingBarMarginAnimation(100, true);
-            try
-            {
-                if (File.Exists("debug.ini")) Label.Visibility = Visibility.Visible;
-            }
-            catch (Exception ex)
-            {
-                LogHelper.WriteLogToFile(ex.ToString(), LogHelper.LogType.Error);
-            }
-
-            try
-            {
-                if (File.Exists("Log.txt"))
-                {
-                    var fileInfo = new FileInfo("Log.txt");
-                    var fileSizeInKB = fileInfo.Length / 1024;
-                    if (fileSizeInKB > 512)
-                        try
-                        {
-                            File.Delete("Log.txt");
-                            LogHelper.WriteLogToFile(
-                                "The Log.txt file has been successfully deleted. Original file size: " + fileSizeInKB +
-                                " KB", LogHelper.LogType.Info);
-                        }
-                        catch (Exception ex)
-                        {
-                            LogHelper.WriteLogToFile(
-                                ex + " | Can not delete the Log.txt file. File size: " + fileSizeInKB + " KB",
-                                LogHelper.LogType.Error);
-                        }
-                }
-            }
-            catch (Exception ex)
-            {
-                LogHelper.WriteLogToFile(ex.ToString(), LogHelper.LogType.Error);
-            }
 
             InitTimers();
             timeMachine.OnRedoStateChanged += TimeMachine_OnRedoStateChanged;
