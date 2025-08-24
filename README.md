@@ -193,10 +193,14 @@ ICC 可以支持 WPS，但目前無法同時支持 MSOffice 和 WPS。若要啟�
 
 常见问题可参考原 README FAQ 部分，懒得写了；遇到新问题可开 Issue 反馈。
 
+## License
+本项目基于 GPLv3 许可。
+
 ## 致谢
 本项目使用了以下第三方库：
-- ...
-- ...
+- [WindowsShortcutFactory](https://github.com/gdivis/WindowsShortcutFactory)
+- [Pastel](https://github.com/silkfire/Pastel)
 
+部分代码片段参考自 [ClassIsland](https://github.com/ClassIsland/ClassIsland)，原项目同样使用 GPLv3
 ## 贡献者
 还没有
