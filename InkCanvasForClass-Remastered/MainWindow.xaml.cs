@@ -4,6 +4,7 @@ using InkCanvasForClass_Remastered.Models;
 using InkCanvasForClass_Remastered.Services;
 using InkCanvasForClass_Remastered.ViewModels;
 using iNKORE.UI.WPF.Modern;
+using Microsoft.Extensions.Logging;
 using Microsoft.Office.Core;
 using Microsoft.Office.Interop.PowerPoint;
 using Microsoft.Win32;
@@ -23,7 +24,6 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using WindowsShortcutFactory;
 using Application = System.Windows.Application;
 using File = System.IO.File;
 using MessageBox = System.Windows.MessageBox;
@@ -34,14 +34,15 @@ namespace InkCanvasForClass_Remastered
     public partial class MainWindow : Window
     {
         private readonly MainViewModel _viewModel;
-        private readonly ISettingsService _settingsService;
+        private readonly SettingsService _settingsService;
         private readonly IPowerPointService _powerPointService;
+        private readonly ILogger<MainWindow> Logger;
         public Settings Settings => _settingsService.Settings;
 
 
         #region Window Initialization
 
-        public MainWindow(MainViewModel viewModel, ISettingsService settingsService, IPowerPointService powerPointService)
+        public MainWindow(MainViewModel viewModel, SettingsService settingsService, IPowerPointService powerPointService, ILogger<MainWindow> logger)
         {
             /*
                 处于画板模式内：Topmost == false / currentMode != 0
@@ -52,6 +53,7 @@ namespace InkCanvasForClass_Remastered
             _viewModel = viewModel;
             _settingsService = settingsService;
             _powerPointService = powerPointService;
+            Logger = logger;
 
             DataContext = _viewModel;
 

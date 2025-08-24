@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace InkCanvasForClass_Remastered.Services
 {
-    public class SettingsService : ISettingsService
+    public class SettingsService
     {
         private const string settingsFileName = "Settings.json";
         private Settings _settings = new();
@@ -14,7 +14,7 @@ namespace InkCanvasForClass_Remastered.Services
 
         public SettingsService()
         {
-            //_settings = new Settings();
+            _settings = new Settings();
         }
 
         public void LoadSettings()

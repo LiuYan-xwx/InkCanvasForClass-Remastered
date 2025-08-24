@@ -78,7 +78,7 @@ namespace InkCanvasForClass_Remastered
         private void ConfigureServices(IServiceCollection services)
         {
             // 注册服务
-            services.AddSingleton<ISettingsService, SettingsService>();
+            services.AddSingleton<SettingsService>();
             services.AddSingleton<IPowerPointService, PowerPointService>();
             services.AddSingleton<FileFolderService>();
             // 注册视图模型

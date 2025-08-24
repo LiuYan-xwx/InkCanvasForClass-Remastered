@@ -6,8 +6,8 @@ namespace InkCanvasForClass_Remastered.ViewModels
 {
     public partial class MainViewModel : ObservableObject
     {
-        private readonly ISettingsService _settingsService;
-        public MainViewModel(ISettingsService settingsService)
+        private readonly SettingsService _settingsService;
+        public MainViewModel(SettingsService settingsService)
         {
             _settingsService = settingsService;
         }
