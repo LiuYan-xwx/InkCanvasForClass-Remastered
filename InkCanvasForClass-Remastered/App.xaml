@@ -5,10 +5,10 @@
     xmlns:ikw="http://schemas.inkore.net/lib/ui/wpf"
     xmlns:local="clr-namespace:InkCanvasForClass_Remastered"
     xmlns:tb="http://www.hardcodet.net/taskbar"
-    xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
-    StartupUri="MainWindow.xaml">
+    xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern">
     <Application.Resources>
         <ResourceDictionary>
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <Style TargetType="ui:ScrollViewerEx">
                 <EventSetter Event="PreviewMouseWheel" Handler="ScrollViewer_PreviewMouseWheel" />
             </Style>
@@ -31,7 +31,7 @@
                                 VerticalAlignment="Center"
                                 FontSize="14"
                                 Foreground="#18181b"
-                                Text="隐藏ICC主窗口" />
+                                Text="隐藏 ICC-Re 主窗口" />
                         </ikw:SimpleStackPanel>
                     </MenuItem.Header>
                     <MenuItem.Icon>
@@ -416,9 +416,9 @@
             <tb:TaskbarIcon
                 x:Key="TaskbarTrayIcon"
                 ContextMenu="{StaticResource SysTrayMenu}"
-                IconSource="/Resources/icc.ico"
-                ToolTipText="InkCanvasForClass"
-                Visibility="Collapsed" />
+                IconSource="/Resources/ICC-Re.ico"
+                ToolTipText="InkCanvasForClass-Remastered"
+                Visibility="{Binding Settings.EnableTrayIcon, Converter={StaticResource BooleanToVisibilityConverter}}" />
             <ResourceDictionary.MergedDictionaries>
                 <ui:ThemeResources RequestedTheme="Light" />
                 <ui:XamlControlsResources />

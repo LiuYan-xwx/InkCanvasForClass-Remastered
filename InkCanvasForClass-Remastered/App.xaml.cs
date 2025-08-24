@@ -1,6 +1,14 @@
 ﻿using Hardcodet.Wpf.TaskbarNotification;
 using InkCanvasForClass_Remastered.Helpers;
+using InkCanvasForClass_Remastered.Services;
+using InkCanvasForClass_Remastered.Services.Logging;
+using InkCanvasForClass_Remastered.ViewModels;
 using iNKORE.UI.WPF.Modern.Controls;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
+using System.IO;
 using System.Reflection;
 using System.Windows;
 using MessageBox = System.Windows.MessageBox;
@@ -10,49 +18,104 @@ namespace InkCanvasForClass_Remastered
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : Application
+    public partial class App : Application, IAppHost
     {
-        System.Threading.Mutex mutex;
+        private IHost _host;
+        private Mutex mutex;
+        private ILogger<App> Logger;
 
-        public static string[] StartArgs = null;
-        public static string RootPath = Environment.GetEnvironmentVariable("APPDATA") + "\\Ink Canvas\\";
+        public static T GetService<T>() => IAppHost.GetService<T>();
+
+        public static readonly string AppRootFolderPath = "./";
+        public static readonly string AppLogFolderPath = Path.Combine(AppRootFolderPath, "Logs");
 
         public App()
         {
-            this.Startup += new StartupEventHandler(App_Startup);
             this.DispatcherUnhandledException += App_DispatcherUnhandledException;
         }
 
         private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
-            InkCanvasForClass_Remastered.MainWindow.ShowNewMessage("抱歉，出现未预期的异常，可能导致 InkCanvasForClass 运行不稳定。\n建议保存墨迹后重启应用。", true);
-            LogHelper.NewLog(e.Exception.ToString());
+            InkCanvasForClass_Remastered.MainWindow.ShowNewMessage("抱歉，出现未预期的异常，可能导致 ICC-Re 运行不稳定。\n建议保存墨迹后重启应用。", true);
+            Logger.LogCritical(e.Exception, "应用程序发生未处理的异常");
             e.Handled = true;
         }
 
-        private TaskbarIcon _taskbar;
-
-        void App_Startup(object sender, StartupEventArgs e)
+        protected override async void OnStartup(StartupEventArgs e)
         {
-            /*if (!StoreHelper.IsStoreApp) */
-            RootPath = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
-
-            LogHelper.NewLog(string.Format("Ink Canvas Starting (Version: {0})", Assembly.GetExecutingAssembly().GetName().Version.ToString()));
-
-            bool ret;
-            mutex = new System.Threading.Mutex(true, "InkCanvasForClass", out ret);
-
-            if (!ret && !e.Args.Contains("-m")) //-m multiple
+            mutex = new Mutex(true, "InkCanvasForClass-Remastered", out bool ret);
+            if (!ret && !e.Args.Contains("-m"))
             {
-                LogHelper.NewLog("Detected existing instance");
                 MessageBox.Show("已有一个程序实例正在运行");
-                LogHelper.NewLog("Ink Canvas automatically closed");
                 Environment.Exit(0);
+                return;
             }
+            
+            FileFolderService.CreateFolders();
 
-            _taskbar = (TaskbarIcon)FindResource("TaskbarTrayIcon");
+            IAppHost.Host = Host.CreateDefaultBuilder()
+                .ConfigureServices((context, services) =>
+                {
+                    // 在这里注册所有的服务、视图模型和窗口
+                    ConfigureServices(services);
+                })
+                .Build();
 
-            StartArgs = e.Args;
+            Logger = GetService<ILogger<App>>();
+            Logger.LogInformation("ICC-Re 启动，Version: {Version})", Assembly.GetExecutingAssembly().GetName().Version);
+
+            Logger.LogInformation("加载设置");
+            GetService<SettingsService>().LoadSettings();
+
+            await IAppHost.Host.StartAsync();
+
+            var mainWindow = GetService<MainWindow>();
+            MainWindow = mainWindow;
+            mainWindow.Show();
+
+            var taskbar = (TaskbarIcon)FindResource("TaskbarTrayIcon");
+
+            await GetService<FileFolderService>().ProcessOldFilesAsync();
+
+
+            base.OnStartup(e);
+        }
+
+        private void ConfigureServices(IServiceCollection services)
+        {
+            // 注册服务
+            services.AddSingleton<SettingsService>();
+            services.AddSingleton<IPowerPointService, PowerPointService>();
+            services.AddSingleton<FileFolderService>();
+            // 注册视图模型
+            services.AddTransient<MainViewModel>();
+
+            // 注册主窗口
+            services.AddSingleton<MainWindow>();
+
+            services.AddLogging(builder =>
+            {
+                builder.ClearProviders();
+                builder.AddProvider(new FileLoggerProvider());
+
+                builder.AddConsoleFormatter<MyConsoleFormatter, ConsoleFormatterOptions>();
+                builder.AddConsole(console =>
+                {
+                    console.FormatterName = "myformatter";
+                });
+                builder.SetMinimumLevel(LogLevel.Trace);
+            });
+        }
+
+        protected override async void OnExit(ExitEventArgs e)
+        {
+            // 保存设置
+            var settingsService = GetService<SettingsService>();
+            settingsService?.SaveSettings();
+
+            IAppHost.Host?.StopAsync();
+
+            base.OnExit(e);
         }
 
         private void ScrollViewer_PreviewMouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)

@@ -8,8 +8,9 @@
     xmlns:ikw="http://schemas.inkore.net/lib/ui/wpf"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
+    xmlns:Settings="clr-namespace:InkCanvasForClass_Remastered.Models"
     Name="window"
-    Title="ICC-Re"
+    Title="InkCanvasForClass-Remastered"
     Width="1440"
     Height="9000"
     AllowsTransparency="True"
@@ -36,10 +37,13 @@
     mc:Ignorable="d">
     <!--  资源中添加命令  -->
     <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <converters:IsEnabledToOpacityConverter x:Key="IsEnabledToOpacityConverter" />
-        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <converters:IntNumberToString x:Key="IntNumberToString" />
         <converters:IntNumberToString2 x:Key="IntNumberToString2" />
+        <converters:BoolToBrushConverter x:Key="BoolToBrushConverter" />
+        <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter" />
+        <converters:BoolToScaleConverter x:Key="BoolToScaleConverter" />
         <RoutedUICommand x:Key="KeyExit" Text=" " />
         <RoutedUICommand x:Key="HotKey_Command_Undo" Text=" " />
         <RoutedUICommand x:Key="HotKey_Command_Redo" Text=" " />
@@ -367,10 +371,9 @@
                                             Name="ToggleSwitchRunAtStartup"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="True"
+                                            IsOn="{Binding Settings.IsAutoStartEnabled, Mode=TwoWay}"
                                             OffContent=""
-                                            OnContent=""
-                                            Toggled="ToggleSwitchRunAtStartup_Toggled" />
+                                            OnContent="" />
                                     </ikw:SimpleStackPanel>
                                     <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                         <TextBlock
@@ -383,10 +386,9 @@
                                             Name="ToggleSwitchFoldAtStartup"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="True"
+                                            IsOn="{Binding Settings.IsFoldAtStartup, Mode=TwoWay}"
                                             OffContent=""
-                                            OnContent=""
-                                            Toggled="ToggleSwitchFoldAtStartup_Toggled" />
+                                            OnContent="" />
                                     </ikw:SimpleStackPanel>
                                     <!--
                 <ui:ToggleSwitch OnContent="" OffContent="" Name="ToggleSwitchAutoHideCanvas" Header="自动隐藏画板" FontFamily="Microsoft YaHei UI" Toggled="ToggleSwitchAutoHideCanvas_Toggled"/>
@@ -415,7 +417,7 @@
                                             Name="ToggleSwitchShowCursor"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="True"
+                                            IsOn="{Binding Settings.IsShowCursor, Mode=TwoWay}"
                                             OffContent=""
                                             OnContent=""
                                             Toggled="ToggleSwitchShowCursor_Toggled" />
@@ -463,10 +465,9 @@
                                             Name="ToggleSwitchHideStrokeWhenSelecting"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="True"
+                                            IsOn="{Binding Settings.HideStrokeWhenSelecting, Mode=TwoWay}"
                                             OffContent=""
-                                            OnContent=""
-                                            Toggled="ToggleSwitchHideStrokeWhenSelecting_Toggled" />
+                                            OnContent="" />
                                     </ikw:SimpleStackPanel>
                                     <TextBlock
                                         Foreground="#a1a1aa"
@@ -529,10 +530,9 @@
                                             Name="ToggleSwitchFitToCurve"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="True"
+                                            IsOn="{Binding Settings.FitToCurve, Mode=TwoWay}"
                                             OffContent=""
-                                            OnContent=""
-                                            Toggled="ToggleSwitchFitToCurve_Toggled" />
+                                            OnContent="" />
                                     </ikw:SimpleStackPanel>
                                 </ikw:SimpleStackPanel>
                             </GroupBox>
@@ -619,14 +619,8 @@
                                             FontFamily="Microsoft YaHei UI"
                                             SelectedIndex="0"
                                             SelectionChanged="ComboBoxFloatingBarImg_SelectionChanged">
-                                            <ComboBoxItem Content="“icc!”默认蓝色" FontFamily="Microsoft YaHei UI" />
-                                            <ComboBoxItem Content="“icc!”黑色透明版" FontFamily="Microsoft YaHei UI" />
-                                            <ComboBoxItem Content="酷安斗鸡眼滑稽" FontFamily="Microsoft YaHei UI" />
-                                            <ComboBoxItem Content="酷安受虐滑稽" FontFamily="Microsoft YaHei UI" />
-                                            <ComboBoxItem Content="酷安呲牙笑" FontFamily="Microsoft YaHei UI" />
-                                            <ComboBoxItem Content="酷安头戴内裤滑稽" FontFamily="Microsoft YaHei UI" />
-                                            <ComboBoxItem Content="酷安绿帽Doge" FontFamily="Microsoft YaHei UI" />
-                                            <ComboBoxItem Content="贴吧滑稽" FontFamily="Microsoft YaHei UI" />
+                                            <ComboBoxItem Content="ICC-Re" FontFamily="Microsoft YaHei UI" />
+                                            <ComboBoxItem Content="怀旧版蓝色 ICC" FontFamily="Microsoft YaHei UI" />
                                         </ComboBox>
                                     </ikw:SimpleStackPanel>
                                     <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
@@ -647,14 +641,13 @@
                                             Minimum="0.5"
                                             TickFrequency="0.05"
                                             TickPlacement="None"
-                                            ValueChanged="ViewboxFloatingBarScaleTransformValueSlider_ValueChanged"
-                                            Value="1" />
+                                            Value="{Binding Settings.ViewboxFloatingBarScaleTransformValue, Mode=TwoWay}" />
                                         <TextBlock
                                             Margin="12,0,16,0"
                                             VerticalAlignment="Center"
                                             FontFamily="Consolas"
                                             FontSize="14"
-                                            Text="{Binding ElementName=ViewboxFloatingBarScaleTransformValueSlider, Path=Value}" />
+                                            Text="{Binding Settings.ViewboxFloatingBarScaleTransformValue,StringFormat={}{0:F2}}" />
                                     </ikw:SimpleStackPanel>
                                     <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                         <TextBlock
@@ -674,14 +667,13 @@
                                             Minimum="0.3"
                                             TickFrequency="0.05"
                                             TickPlacement="None"
-                                            ValueChanged="ViewboxFloatingBarOpacityValueSlider_ValueChanged"
-                                            Value="1" />
+                                            Value="{Binding Settings.ViewboxFloatingBarOpacityValue, Mode=TwoWay}" />
                                         <TextBlock
                                             Margin="12,0,16,0"
                                             VerticalAlignment="Center"
                                             FontFamily="Consolas"
                                             FontSize="14"
-                                            Text="{Binding ElementName=ViewboxFloatingBarOpacityValueSlider, Path=Value}" />
+                                            Text="{Binding Settings.ViewboxFloatingBarOpacityValue,StringFormat={}{0:F2}}" />
                                     </ikw:SimpleStackPanel>
                                     <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                         <TextBlock
@@ -701,14 +693,13 @@
                                             Minimum="0.3"
                                             TickFrequency="0.05"
                                             TickPlacement="None"
-                                            ValueChanged="ViewboxFloatingBarOpacityInPPTValueSlider_ValueChanged"
-                                            Value="1" />
+                                            Value="{Binding Settings.ViewboxFloatingBarOpacityInPPTValue, Mode=TwoWay}" />
                                         <TextBlock
                                             Margin="12,0,16,0"
                                             VerticalAlignment="Center"
                                             FontFamily="Consolas"
                                             FontSize="14"
-                                            Text="{Binding ElementName=ViewboxFloatingBarOpacityInPPTValueSlider, Path=Value}" />
+                                            Text="{Binding Settings.ViewboxFloatingBarOpacityInPPTValue,StringFormat={}{0:F2}}" />
                                     </ikw:SimpleStackPanel>
                                     <TextBlock
                                         Foreground="#a1a1aa"
@@ -734,10 +725,9 @@
                                             Name="ToggleSwitchEnableDisPlayNibModeToggle"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="True"
+                                            IsOn="{Binding Settings.IsEnableDisPlayNibModeToggler, Mode=TwoWay}"
                                             OffContent=""
-                                            OnContent=""
-                                            Toggled="ToggleSwitchEnableDisPlayNibModeToggle_Toggled" />
+                                            OnContent="" />
                                     </ikw:SimpleStackPanel>
                                     <Line
                                         Margin="0,4,0,4"
@@ -764,10 +754,9 @@
                                             Name="ToggleSwitchEnableViewboxBlackBoardScaleTransform"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="True"
+                                            IsOn="{Binding Settings.EnableViewboxBlackBoardScaleTransform, Mode=TwoWay}"
                                             OffContent=""
-                                            OnContent=""
-                                            Toggled="ToggleSwitchEnableViewboxBlackBoardScaleTransform_Toggled" />
+                                            OnContent="" />
                                     </ikw:SimpleStackPanel>
                                     <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                         <TextBlock
@@ -780,10 +769,9 @@
                                             Name="ToggleSwitchEnableTimeDisplayInWhiteboardMode"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="True"
+                                            IsOn="{Binding Settings.EnableTimeDisplayInWhiteboardMode, Mode=TwoWay}"
                                             OffContent=""
-                                            OnContent=""
-                                            Toggled="ToggleSwitchEnableTimeDisplayInWhiteboardMode_Toggled" />
+                                            OnContent="" />
                                     </ikw:SimpleStackPanel>
                                     <Line
                                         Margin="0,4,0,4"
@@ -800,28 +788,11 @@
                                             VerticalAlignment="Center"
                                             FontSize="14"
                                             Foreground="#fafafa"
-                                            Text="在收纳模式下启用快速面板" />
-                                        <ui:ToggleSwitch
-                                            Name="ToggleSwitchEnableQuickPanel"
-                                            FontFamily="Microsoft YaHei UI"
-                                            FontWeight="Bold"
-                                            IsOn="True"
-                                            OffContent=""
-                                            OnContent=""
-                                            Toggled="ToggleSwitchEnableQuickPanel_Toggled" />
-                                    </ikw:SimpleStackPanel>
-                                    <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                                        <TextBlock
-                                            Margin="0,0,16,0"
-                                            VerticalAlignment="Center"
-                                            FontSize="14"
-                                            Foreground="#fafafa"
                                             Text="取消收纳按钮图标" />
                                         <ComboBox
                                             Name="ComboBoxUnFoldBtnImg"
                                             FontFamily="Microsoft YaHei UI"
-                                            SelectedIndex="0"
-                                            SelectionChanged="ComboBoxUnFoldBtnImg_SelectionChanged">
+                                            SelectedIndex="{Binding Settings.UnFoldButtonImageType, Mode=TwoWay}">
                                             <ComboBoxItem Content="箭头" FontFamily="Microsoft YaHei UI" />
                                             <ComboBoxItem Content="笔" FontFamily="Microsoft YaHei UI" />
                                         </ComboBox>
@@ -875,7 +846,8 @@
                                                     Width="24"
                                                     Height="24"
                                                     Margin="8,0,0,0"
-                                                    Source="Resources/icc.ico" />
+                                                    Source="/Resources/ICC-Re.ico"
+                                                    Visibility="{Binding Settings.EnableTrayIcon, Converter={StaticResource BooleanToVisibilityConverter}}" />
                                             </ikw:SimpleStackPanel>
                                             <TextBlock
                                                 Margin="12,0,0,0"
@@ -897,10 +869,9 @@
                                             Name="ToggleSwitchEnableTrayIcon"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="True"
+                                            IsOn="{Binding Settings.EnableTrayIcon, Mode=TwoWay}"
                                             OffContent=""
-                                            OnContent=""
-                                            Toggled="ToggleSwitchEnableTrayIcon_Toggled" />
+                                            OnContent="" />
                                     </ikw:SimpleStackPanel>
                                 </ikw:SimpleStackPanel>
                             </GroupBox>
@@ -932,58 +903,11 @@
                                             Name="ToggleSwitchSupportPowerPoint"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="True"
+                                            IsOn="{Binding Settings.PowerPointSupport, Mode=TwoWay}"
                                             OffContent=""
                                             OnContent=""
                                             Toggled="ToggleSwitchSupportPowerPoint_Toggled" />
                                     </ikw:SimpleStackPanel>
-                                    <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                                        <Image
-                                            Width="28"
-                                            Height="28"
-                                            Margin="0,0,6,0"
-                                            VerticalAlignment="Center"
-                                            Source="/Resources/Icons-png/WPS.png" />
-                                        <TextBlock
-                                            Margin="0,0,16,0"
-                                            VerticalAlignment="Center"
-                                            FontSize="14"
-                                            Foreground="#fafafa"
-                                            Text="WPS 支持" />
-                                        <ui:ToggleSwitch
-                                            Name="ToggleSwitchSupportWPS"
-                                            FontFamily="Microsoft YaHei UI"
-                                            FontWeight="Bold"
-                                            IsOn="True"
-                                            OffContent=""
-                                            OnContent=""
-                                            Toggled="ToggleSwitchSupportWPS_Toggled" />
-                                    </ikw:SimpleStackPanel>
-                                    <Border
-                                        Padding="8"
-                                        Background="#991b1b"
-                                        BorderBrush="#ef4444"
-                                        BorderThickness="2"
-                                        CornerRadius="6">
-                                        <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="4">
-                                            <Image Width="20" Height="20">
-                                                <Image.Source>
-                                                    <DrawingImage>
-                                                        <DrawingImage.Drawing>
-                                                            <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
-                                                                <GeometryDrawing Brush="White" Geometry="F0 M24,24z M0,0z M10.478,6.91759C10.478,6.07778 11.1588,5.39697 11.9986,5.39697 12.8385,5.39697 13.5193,6.07778 13.5193,6.91759L13.5193,12.0001C13.5193,12.8399 12.8385,13.5207 11.9986,13.5207 11.1588,13.5207 10.478,12.8399 10.478,12.0001L10.478,6.91759z M10.478,17.0826C10.478,16.2427,11.1588,15.5619,11.9986,15.5619L12.0114,15.5619C12.8512,15.5619 13.532,16.2427 13.532,17.0826 13.532,17.9224 12.8512,18.6032 12.0114,18.6032L11.9986,18.6032C11.1588,18.6032,10.478,17.9224,10.478,17.0826z M12,0.75C5.7868,0.75 0.75,5.7868 0.75,12 0.75,18.2132 5.7868,23.25 12,23.25 18.2132,23.25 23.25,18.2132 23.25,12 23.25,5.7868 18.2132,0.75 12,0.75z M3.25,12C3.25,7.16751 7.16751,3.25 12,3.25 16.8325,3.25 20.75,7.16751 20.75,12 20.75,16.8325 16.8325,20.75 12,20.75 7.16751,20.75 3.25,16.8325 3.25,12z" />
-                                                            </DrawingGroup>
-                                                        </DrawingImage.Drawing>
-                                                    </DrawingImage>
-                                                </Image.Source>
-                                            </Image>
-                                            <TextBlock
-                                                Margin="2,0,0,0"
-                                                VerticalAlignment="Center"
-                                                FontSize="13"
-                                                Text="开启WPS支持后会导致WPS关闭时卡顿！" />
-                                        </ikw:SimpleStackPanel>
-                                    </Border>
                                     <TextBlock
                                         Foreground="#a1a1aa"
                                         Text="# 可支持 WPS，但目前无法同时支持 MSOffice 和 WPS。若要启用WPS支持，请确保 WPS 是否在 “配置工具” 中开启了 “WPS Office 兼容第三方系统和软件” 选项，否则将无法识别到WPS！"
@@ -1065,7 +989,7 @@
                                             Name="ToggleSwitchShowPPTButton"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="True"
+                                            IsOn="{Binding Settings.ShowPPTButton, Mode=TwoWay}"
                                             OffContent=""
                                             OnContent=""
                                             Toggled="ToggleSwitchShowPPTButton_OnToggled" />
@@ -1131,7 +1055,7 @@
                                                 TickFrequency="1"
                                                 TickPlacement="None"
                                                 ValueChanged="PPTButtonLeftPositionValueSlider_ValueChanged"
-                                                Value="0" />
+                                                Value="{Binding Settings.PPTLSButtonPosition, Mode=TwoWay}" />
                                             <Button
                                                 Name="PPTBtnLSPlusBtn"
                                                 Margin="8,0,0,0"
@@ -1204,7 +1128,7 @@
                                                 Margin="8,0,8,0"
                                                 VerticalAlignment="Center"
                                                 FontSize="13"
-                                                Text="{Binding ElementName=PPTButtonLeftPositionValueSlider, Path=Value}" />
+                                                Text="{Binding Settings.PPTLSButtonPosition}" />
                                         </ikw:SimpleStackPanel>
                                         <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                             <TextBlock
@@ -1225,7 +1149,7 @@
                                                 TickFrequency="1"
                                                 TickPlacement="None"
                                                 ValueChanged="PPTButtonRightPositionValueSlider_ValueChanged"
-                                                Value="0" />
+                                                Value="{Binding Settings.PPTRSButtonPosition, Mode=TwoWay}" />
                                             <Button
                                                 Name="PPTBtnRSPlusBtn"
                                                 Margin="8,0,0,0"
@@ -1298,7 +1222,7 @@
                                                 Margin="8,0,16,0"
                                                 VerticalAlignment="Center"
                                                 FontSize="13"
-                                                Text="{Binding ElementName=PPTButtonRightPositionValueSlider, Path=Value}" />
+                                                Text="{Binding Settings.PPTRSButtonPosition, Mode=TwoWay}" />
                                         </ikw:SimpleStackPanel>
                                         <TextBlock
                                             Foreground="#a1a1aa"
@@ -1385,10 +1309,9 @@
                                                 Name="ToggleSwitchEnablePPTButtonPageClickable"
                                                 FontFamily="Microsoft YaHei UI"
                                                 FontWeight="Bold"
-                                                IsOn="True"
+                                                IsOn="{Binding Settings.EnablePPTButtonPageClickable, Mode=TwoWay}"
                                                 OffContent=""
-                                                OnContent=""
-                                                Toggled="ToggleSwitchEnablePPTButtonPageClickable_OnToggled" />
+                                                OnContent="" />
                                         </ikw:SimpleStackPanel>
                                         <TextBlock
                                             Foreground="#a1a1aa"
@@ -1418,10 +1341,9 @@
                                             Name="ToggleSwitchShowCanvasAtNewSlideShow"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="True"
+                                            IsOn="{Binding Settings.IsShowCanvasAtNewSlideShow, Mode=TwoWay}"
                                             OffContent=""
-                                            OnContent=""
-                                            Toggled="ToggleSwitchShowCanvasAtNewSlideShow_Toggled" />
+                                            OnContent="" />
                                     </ikw:SimpleStackPanel>
                                     <Border
                                         Name="SettingsPPTInkingAndAutoFoldExplictBorder"
@@ -1460,10 +1382,9 @@
                                             Name="ToggleSwitchEnableTwoFingerGestureInPresentationMode"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="True"
+                                            IsOn="{Binding Settings.IsEnableTwoFingerGestureInPresentationMode, Mode=TwoWay}"
                                             OffContent=""
-                                            OnContent=""
-                                            Toggled="ToggleSwitchEnableTwoFingerGestureInPresentationMode_Toggled" />
+                                            OnContent="" />
                                     </ikw:SimpleStackPanel>
                                     <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                         <TextBlock
@@ -1476,10 +1397,9 @@
                                             Name="ToggleSwitchEnableFingerGestureSlideShowControl"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="True"
+                                            IsOn="{Binding Settings.IsEnableFingerGestureSlideShowControl, Mode=TwoWay}"
                                             OffContent=""
-                                            OnContent=""
-                                            Toggled="ToggleSwitchEnableFingerGestureSlideShowControl_Toggled" />
+                                            OnContent="" />
                                     </ikw:SimpleStackPanel>
                                     <TextBlock
                                         Foreground="#a1a1aa"
@@ -1505,10 +1425,9 @@
                                             Name="ToggleSwitchAutoSaveScreenShotInPowerPoint"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="True"
+                                            IsOn="{Binding Settings.IsAutoSaveScreenShotInPowerPoint, Mode=TwoWay}"
                                             OffContent=""
-                                            OnContent=""
-                                            Toggled="ToggleSwitchAutoSaveScreenShotInPowerPoint_Toggled" />
+                                            OnContent="" />
                                     </ikw:SimpleStackPanel>
                                     <TextBlock
                                         Foreground="#a1a1aa"
@@ -1525,10 +1444,9 @@
                                             Name="ToggleSwitchAutoSaveStrokesInPowerPoint"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="True"
+                                            IsOn="{Binding Settings.IsAutoSaveStrokesInPowerPoint,Mode=TwoWay}"
                                             OffContent=""
-                                            OnContent=""
-                                            Toggled="ToggleSwitchAutoSaveStrokesInPowerPoint_Toggled" />
+                                            OnContent="" />
                                     </ikw:SimpleStackPanel>
                                     <TextBlock
                                         Foreground="#a1a1aa"
@@ -1554,10 +1472,9 @@
                                             Name="ToggleSwitchNotifyPreviousPage"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="True"
+                                            IsOn="{Binding Settings.IsNotifyPreviousPage, Mode=TwoWay}"
                                             OffContent=""
-                                            OnContent=""
-                                            Toggled="ToggleSwitchNotifyPreviousPage_Toggled" />
+                                            OnContent="" />
                                     </ikw:SimpleStackPanel>
                                     <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                         <TextBlock
@@ -1570,10 +1487,9 @@
                                             Name="ToggleSwitchNotifyHiddenPage"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="True"
+                                            IsOn="{Binding Settings.IsNotifyHiddenPage, Mode=TwoWay}"
                                             OffContent=""
-                                            OnContent=""
-                                            Toggled="ToggleSwitchNotifyHiddenPage_Toggled" />
+                                            OnContent="" />
                                     </ikw:SimpleStackPanel>
                                     <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                         <TextBlock
@@ -1586,10 +1502,9 @@
                                             Name="ToggleSwitchNotifyAutoPlayPresentation"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="True"
+                                            IsOn="{Binding Settings.IsNotifyAutoPlayPresentation, Mode=TwoWay}"
                                             OffContent=""
-                                            OnContent=""
-                                            Toggled="ToggleSwitchNotifyAutoPlayPresentation_Toggled" />
+                                            OnContent="" />
                                     </ikw:SimpleStackPanel>
                                 </ikw:SimpleStackPanel>
 
@@ -1771,26 +1686,6 @@
                                         X2="400"
                                         Y1="0"
                                         Y2="0" />
-                                    <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                                        <TextBlock
-                                            Margin="0,0,16,0"
-                                            VerticalAlignment="Center"
-                                            FontSize="14"
-                                            Foreground="#fafafa"
-                                            Text="记录日志" />
-                                        <ui:ToggleSwitch
-                                            Name="ToggleSwitchIsLogEnabled"
-                                            FontFamily="Microsoft YaHei UI"
-                                            FontWeight="Bold"
-                                            IsOn="True"
-                                            OffContent=""
-                                            OnContent=""
-                                            Toggled="ToggleSwitchIsLogEnabled_Toggled" />
-                                    </ikw:SimpleStackPanel>
-                                    <TextBlock
-                                        Foreground="#a1a1aa"
-                                        Text="# 日志文件超过 512 KB 时会自动删除。"
-                                        TextWrapping="Wrap" />
                                     <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                         <TextBlock
                                             Margin="0,0,16,0"
@@ -2967,7 +2862,7 @@
                                             <TextBox
                                                 x:Name="AutoSavedStrokesLocation"
                                                 Width="320"
-                                                Text="D:\Ink Canvas"
+                                                Text="D:\ICC-Re"
                                                 TextChanged="AutoSavedStrokesLocationTextBox_TextChanged"
                                                 TextWrapping="Wrap" />
                                             <Button
@@ -2978,7 +2873,7 @@
                                         <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="12">
                                             <Button
                                                 Name="SetAutoSavedStrokesLocationToDiskDButton"
-                                                Content="设置保存到 D:\Ink Canvas"
+                                                Content="设置保存到 D:\ICC-Re"
                                                 Click="SetAutoSavedStrokesLocationToDiskDButton_Click" />
                                             <Button
                                                 Name="SetAutoSavedStrokesLocationToDocumentFolderButton"
@@ -3207,7 +3102,7 @@
                                                         Margin="0,0,0,-1"
                                                         FontWeight="Bold"
                                                         Foreground="#a1a1aa"
-                                                        Text="本软件和ICA，Ink Canvas均基于许可证开源"
+                                                        Text="本软件和ICC, ICA，Ink Canvas均基于许可证开源"
                                                         TextWrapping="Wrap" />
                                                     <TextBlock
                                                         FontSize="20"
@@ -3293,7 +3188,7 @@
                                         FontSize="18"
                                         FontWeight="Bold"
                                         Text="感谢下列贡献者：" />
-                                    <TextBlock Text="..." />
+                                    <TextBlock Text="...暂无" />
                                 </ikw:SimpleStackPanel>
                             </GroupBox>
                         </StackPanel>
@@ -3370,21 +3265,61 @@
         <Grid Name="GridBackgroundCoverHolder">
             <Grid
                 Name="GridBackgroundCover"
-                Background="#1F1F1F"
-                Visibility="Collapsed">
-                <Image
-                    Name="ICCWaterMarkWhite"
-                    Width="648"
-                    Height="648"
-                    Opacity="0.035"
-                    Source="Resources/Icons-png/icc-transparent.png" />
-                <Image
-                    Name="ICCWaterMarkDark"
-                    Width="648"
-                    Height="648"
-                    Opacity="0.055"
-                    Source="Resources/Icons-png/icc-transparent-dark.png" />
-            </Grid>
+                Visibility="Collapsed" >
+                <Grid.Style>
+                    <Style TargetType="Grid">
+                        <Setter Property="Background" Value="#162924"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Settings.UsingWhiteboard}" Value="True">
+                                <Setter Property="Background" Value="#EAEBED"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Style>
+            <Canvas IsHitTestVisible="False">
+                <ikw:SimpleStackPanel
+                    Canvas.Left="25"
+                    Canvas.Top="15"
+                    Orientation="Vertical">
+                    <TextBlock
+                        Name="WaterMarkTime"
+                        FontSize="30"
+                        FontWeight="Bold"
+                        Opacity="0.6"
+                        Text="{Binding NowTime}"
+                        Visibility="{Binding EnableTimeDisplayInWhiteboardMode, Converter={StaticResource BooleanToVisibilityConverter}}" >
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="#EAEBED" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Settings.UsingWhiteboard}" Value="True">
+                                        <Setter Property="Foreground" Value="#162924"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <TextBlock
+                        Name="WaterMarkDate"
+                        Margin="2,0,0,0"
+                        FontSize="16"
+                        Opacity="0.45"
+                        Text="{Binding NowDate}"
+                        Visibility="{Binding EnableTimeDisplayInWhiteboardMode, Converter={StaticResource BooleanToVisibilityConverter}}" >
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="#EAEBED" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Settings.UsingWhiteboard}" Value="True">
+                                        <Setter Property="Foreground" Value="#162924"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </ikw:SimpleStackPanel>
+            </Canvas>
+        </Grid>
         </Grid>
         <Grid Name="GridTransparencyFakeBackground" Opacity="0" />
         <Label
@@ -3416,29 +3351,6 @@
                 TouchUp="Main_Grid_TouchUp" />
         </Grid>
 
-        <Canvas IsHitTestVisible="False">
-            <ikw:SimpleStackPanel
-                Canvas.Left="25"
-                Canvas.Top="15"
-                Orientation="Vertical">
-                <TextBlock
-                    Name="WaterMarkTime"
-                    FontSize="30"
-                    FontWeight="Bold"
-                    Foreground="White"
-                    Opacity="0.6"
-                    Text="{Binding nowTime}"
-                    Visibility="Collapsed" />
-                <TextBlock
-                    Name="WaterMarkDate"
-                    Margin="2,0,0,0"
-                    FontSize="16"
-                    Foreground="White"
-                    Opacity="0.45"
-                    Text="{Binding nowDate}"
-                    Visibility="Collapsed" />
-            </ikw:SimpleStackPanel>
-        </Canvas>
         <Grid Visibility="{Binding ElementName=inkCanvas, Path=Visibility}">
             <Grid
                 Name="GridInkCanvasSelectionCover"
@@ -3732,212 +3644,175 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Bottom"
                         Visibility="Visible">
-                        <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="5">
-                            <Border
-                                Margin="0,0,0,0"
-                                Background="#f4f4f5"
-                                CornerRadius="5,5,5,5">
-                                <ikw:SimpleStackPanel Orientation="Horizontal">
-                                    <Border
-                                        Width="60"
-                                        Height="50"
-                                        Background="#f4f4f5"
-                                        BorderBrush="#a1a1aa"
-                                        BorderThickness="1,1,0,1"
-                                        CornerRadius="5,0,0,5"
-                                        IsEnabled="{Binding ElementName=BtnWhiteBoardSwitchPrevious, Path=IsEnabled}"
-                                        MouseUp="BtnWhiteBoardSwitchPrevious_Click"
-                                        Opacity="0.95">
-                                        <Grid Margin="6,6,6,4">
-                                            <Image
-                                                Width="20"
-                                                Height="20"
-                                                VerticalAlignment="Top"
-                                                RenderOptions.BitmapScalingMode="HighQuality">
-                                                <Image.Source>
-                                                    <DrawingImage>
-                                                        <DrawingImage.Drawing>
-                                                            <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
-                                                                <GeometryDrawing
-                                                                    x:Name="BtnLeftWhiteBoardSwitchPreviousGeometry"
-                                                                    Brush="#18181b"
-                                                                    Geometry="F1 M24,24z M0,0z M7.40091,10.456L14.5033,3.35357 12.3198,1.17001 1.48978,12 12.3198,22.83 14.5033,20.6465 7.40089,13.544 22.5102,13.544 22.5102,10.456 7.40091,10.456z" />
-                                                            </DrawingGroup>
-                                                        </DrawingImage.Drawing>
-                                                    </DrawingImage>
-                                                </Image.Source>
-                                            </Image>
-                                            <TextBlock
-                                                x:Name="BtnLeftWhiteBoardSwitchPreviousLabel"
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Bottom"
-                                                FontSize="12"
-                                                Foreground="#18181b"
-                                                Text="上一页" />
-                                        </Grid>
-                                    </Border>
-                                    <Border
-                                        Name="BtnLeftPageListWB"
-                                        Width="75"
-                                        Height="50"
-                                        Background="#f4f4f5"
-                                        BorderBrush="#a1a1aa"
-                                        BorderThickness="1,1,1,1"
-                                        MouseUp="BtnWhiteBoardPageIndex_Click"
-                                        Opacity="0.95">
-                                        <Grid Margin="6,6,6,4">
-                                            <TextBlock
-                                                Margin="0,-1,0,0"
-                                                HorizontalAlignment="Center"
-                                                FontSize="17"
-                                                FontWeight="Bold"
-                                                Text="{Binding ElementName=TextBlockWhiteBoardIndexInfo, Path=Text}"
-                                                TextAlignment="Center" />
-                                            <TextBlock
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Bottom"
-                                                FontSize="12"
-                                                Foreground="#18181b"
-                                                Text="页面" />
-                                        </Grid>
-                                    </Border>
-                                    <Grid Width="0" Margin="0,0,0,5">
-                                        <Border
-                                            Name="BoardBorderLeftPageListView"
-                                            Margin="-134,-465,-60,50"
-                                            Background="#fafafa"
-                                            BorderBrush="#a1a1aa"
-                                            BorderThickness="1"
-                                            ClipToBounds="True"
-                                            CornerRadius="8"
-                                            Opacity="1">
-                                            <ui:ScrollViewerEx
-                                                Name="BlackBoardLeftSidePageListScrollViewer"
-                                                Height="460"
-                                                ForceUseSmoothScroll="True"
-                                                VerticalScrollBarVisibility="Hidden">
-                                                <ListView
-                                                    Name="BlackBoardLeftSidePageListView"
-                                                    ScrollViewer.CanContentScroll="False"
-                                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                                    ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                                                    SelectionMode="Single">
-                                                    <ListView.ItemTemplate>
-                                                        <DataTemplate>
-                                                            <ikw:SimpleStackPanel MouseUp="BlackBoardLeftSidePageListView_OnMouseUp" Orientation="Vertical">
-                                                                <Border
-                                                                    Width="160"
-                                                                    Margin="0,4"
-                                                                    BorderBrush="#a1a1aa"
-                                                                    BorderThickness="1">
-                                                                    <Grid>
-                                                                        <Viewbox Width="160">
-                                                                            <InkCanvas
-                                                                                Width="{Binding ElementName=inkCanvas, Path=ActualWidth}"
-                                                                                Height="{Binding ElementName=inkCanvas, Path=ActualHeight}"
-                                                                                Background="{Binding ElementName=GridBackgroundCover, Path=Background}"
-                                                                                EditingMode="None"
-                                                                                Strokes="{Binding Strokes}" />
-                                                                        </Viewbox>
-                                                                        <Border
-                                                                            Width="36"
-                                                                            Height="20"
-                                                                            Margin="4"
-                                                                            HorizontalAlignment="Left"
-                                                                            VerticalAlignment="Top"
-                                                                            Background="#cc09090b"
-                                                                            CornerRadius="3">
-                                                                            <TextBlock
-                                                                                HorizontalAlignment="Center"
-                                                                                VerticalAlignment="Center"
-                                                                                FontFamily="Consolas"
-                                                                                FontSize="14"
-                                                                                Foreground="White"
-                                                                                Text="{Binding Index}" />
-                                                                        </Border>
-                                                                    </Grid>
-                                                                </Border>
-                                                            </ikw:SimpleStackPanel>
-                                                        </DataTemplate>
-                                                    </ListView.ItemTemplate>
-                                                </ListView>
-                                            </ui:ScrollViewerEx>
-                                        </Border>
+                        <Border
+                            Margin="0,0,0,0"
+                            Background="#f4f4f5"
+                            CornerRadius="5,5,5,5">
+                            <ikw:SimpleStackPanel Orientation="Horizontal">
+                                <Border
+                                    Width="60"
+                                    Height="50"
+                                    Background="#f4f4f5"
+                                    BorderBrush="#a1a1aa"
+                                    BorderThickness="1,1,0,1"
+                                    CornerRadius="5,0,0,5"
+                                    IsEnabled="{Binding IsWhiteboardPreviousPageButtonEnabled}"
+                                    MouseUp="BtnWhiteBoardSwitchPrevious_Click"
+                                    Opacity="0.95">
+                                    <Grid Margin="6,6,6,4">
+                                        <Image
+                                            Width="20"
+                                            Height="20"
+                                            VerticalAlignment="Top"
+                                            RenderOptions.BitmapScalingMode="HighQuality">
+                                            <Image.Source>
+                                                <DrawingImage>
+                                                    <DrawingImage.Drawing>
+                                                        <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                                                            <GeometryDrawing Brush="{Binding IsWhiteboardPreviousPageButtonEnabled, Converter={StaticResource BoolToBrushConverter}}" Geometry="F1 M24,24z M0,0z M7.40091,10.456L14.5033,3.35357 12.3198,1.17001 1.48978,12 12.3198,22.83 14.5033,20.6465 7.40089,13.544 22.5102,13.544 22.5102,10.456 7.40091,10.456z" />
+                                                        </DrawingGroup>
+                                                    </DrawingImage.Drawing>
+                                                </DrawingImage>
+                                            </Image.Source>
+                                        </Image>
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Bottom"
+                                            FontSize="12"
+                                            Foreground="#18181b"
+                                            Opacity="{Binding IsWhiteboardPreviousPageButtonEnabled, Converter={StaticResource BoolToOpacityConverter}}"
+                                            Text="上一页" />
                                     </Grid>
+                                </Border>
+                                <Border
+                                    Name="BtnLeftPageListWB"
+                                    Width="75"
+                                    Height="50"
+                                    Background="#f4f4f5"
+                                    BorderBrush="#a1a1aa"
+                                    BorderThickness="1,1,1,1"
+                                    MouseUp="BtnWhiteBoardPageIndex_Click"
+                                    Opacity="0.95">
+                                    <Grid Margin="6,6,6,4">
+                                        <TextBlock
+                                            Margin="0,-1,0,0"
+                                            HorizontalAlignment="Center"
+                                            FontSize="17"
+                                            FontWeight="Bold"
+                                            TextAlignment="Center">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0}/{1}">
+                                                    <Binding Path="WhiteboardCurrentPage" />
+                                                    <Binding Path="WhiteboardTotalPageCount" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Bottom"
+                                            FontSize="12"
+                                            Foreground="#18181b"
+                                            Text="页面" />
+                                    </Grid>
+                                </Border>
+                                <Grid Width="0" Margin="0,0,0,5">
                                     <Border
-                                        Width="60"
-                                        Height="50"
-                                        Background="#f4f4f5"
+                                        Name="BoardBorderLeftPageListView"
+                                        Margin="-134,-465,-60,50"
+                                        Background="#fafafa"
                                         BorderBrush="#a1a1aa"
-                                        BorderThickness="0,1,1,1"
-                                        CornerRadius="0,5,5,0"
-                                        IsEnabled="{Binding ElementName=BtnWhiteBoardSwitchNext, Path=IsEnabled}"
-                                        MouseUp="BtnWhiteBoardSwitchNext_Click"
-                                        Opacity="0.95">
-                                        <Grid Margin="6,6,6,4">
-                                            <Image
-                                                Width="20"
-                                                Height="20"
-                                                VerticalAlignment="Top"
-                                                RenderOptions.BitmapScalingMode="HighQuality">
-                                                <Image.Source>
-                                                    <DrawingImage>
-                                                        <DrawingImage.Drawing>
-                                                            <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
-                                                                <GeometryDrawing
-                                                                    x:Name="BtnLeftWhiteBoardSwitchNextGeometry"
-                                                                    Brush="#18181b"
-                                                                    Geometry="F1 M24,24z M0,0z M16.5991,10.456L9.49667,3.35357 11.6802,1.17001 22.5102,12 11.6802,22.83 9.49667,20.6465 16.5991,13.544 1.48978,13.544 1.48978,10.456 16.5991,10.456z" />
-                                                            </DrawingGroup>
-                                                        </DrawingImage.Drawing>
-                                                    </DrawingImage>
-                                                </Image.Source>
-                                            </Image>
-                                            <TextBlock
-                                                x:Name="BtnLeftWhiteBoardSwitchNextLabel"
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Bottom"
-                                                FontSize="12"
-                                                Foreground="Black"
-                                                Text="下一页" />
-                                        </Grid>
+                                        BorderThickness="1"
+                                        ClipToBounds="True"
+                                        CornerRadius="8"
+                                        Opacity="1">
+                                        <ui:ScrollViewerEx
+                                            Name="BlackBoardLeftSidePageListScrollViewer"
+                                            Height="460"
+                                            ForceUseSmoothScroll="True"
+                                            VerticalScrollBarVisibility="Hidden">
+                                            <ListView
+                                                Name="BlackBoardLeftSidePageListView"
+                                                ScrollViewer.CanContentScroll="False"
+                                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                                SelectionMode="Single">
+                                                <ListView.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <ikw:SimpleStackPanel MouseUp="BlackBoardLeftSidePageListView_OnMouseUp" Orientation="Vertical">
+                                                            <Border
+                                                                Width="160"
+                                                                Margin="0,4"
+                                                                BorderBrush="#a1a1aa"
+                                                                BorderThickness="1">
+                                                                <Grid>
+                                                                    <Viewbox Width="160">
+                                                                        <InkCanvas
+                                                                            Width="{Binding ElementName=inkCanvas, Path=ActualWidth}"
+                                                                            Height="{Binding ElementName=inkCanvas, Path=ActualHeight}"
+                                                                            Background="{Binding ElementName=GridBackgroundCover, Path=Background}"
+                                                                            EditingMode="None"
+                                                                            Strokes="{Binding Strokes}" />
+                                                                    </Viewbox>
+                                                                    <Border
+                                                                        Width="36"
+                                                                        Height="20"
+                                                                        Margin="4"
+                                                                        HorizontalAlignment="Left"
+                                                                        VerticalAlignment="Top"
+                                                                        Background="#cc09090b"
+                                                                        CornerRadius="3">
+                                                                        <TextBlock
+                                                                            HorizontalAlignment="Center"
+                                                                            VerticalAlignment="Center"
+                                                                            FontFamily="Consolas"
+                                                                            FontSize="14"
+                                                                            Foreground="White"
+                                                                            Text="{Binding Index}" />
+                                                                    </Border>
+                                                                </Grid>
+                                                            </Border>
+                                                        </ikw:SimpleStackPanel>
+                                                    </DataTemplate>
+                                                </ListView.ItemTemplate>
+                                            </ListView>
+                                        </ui:ScrollViewerEx>
                                     </Border>
-                                </ikw:SimpleStackPanel>
-                            </Border>
-                            <Border
-                                Width="60"
-                                Height="50"
-                                Background="#f4f4f5"
-                                BorderBrush="#a1a1aa"
-                                BorderThickness="1"
-                                CornerRadius="5"
-                                MouseUp="BtnWhiteBoardAdd_Click"
-                                Opacity="0.95">
-                                <Grid Margin="6,6,6,4">
-                                    <Image
-                                        Width="20"
-                                        Height="20"
-                                        VerticalAlignment="Top"
-                                        RenderOptions.BitmapScalingMode="HighQuality">
-                                        <Image.Source>
-                                            <DrawingImage>
-                                                <DrawingImage.Drawing>
-                                                    <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
-                                                        <GeometryDrawing Brush="#18181b" Geometry="F0 M24,24z M0,0z M7.39778,13.723L10.7693,13.723 10.7693,10.3514 13.2307,10.3514 13.2307,13.723 16.6022,13.723 16.6022,16.1843 13.2307,16.1843 13.2307,19.5559 10.7693,19.5559 10.7693,16.1843 7.39778,16.1843 7.39778,13.723z M3.1391,1.17001L3.1391,22.83 20.8609,22.83 20.8609,6.66948 15.3614,1.17002 3.1391,1.17001z M12.9846,3.13911L5.10819,3.1391 5.10819,20.8609 18.8918,20.8609 18.8918,9.04638 12.9846,9.04638 12.9846,3.13911z M18.484,7.07729L14.9536,3.54692 14.9536,7.07729 18.484,7.07729z" />
-                                                    </DrawingGroup>
-                                                </DrawingImage.Drawing>
-                                            </DrawingImage>
-                                        </Image.Source>
-                                    </Image>
-                                    <TextBlock
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Bottom"
-                                        FontSize="12"
-                                        Foreground="#18181b"
-                                        Text="新页面" />
                                 </Grid>
-                            </Border>
-                        </ikw:SimpleStackPanel>
+                                <Border
+                                    Width="60"
+                                    Height="50"
+                                    Background="#f4f4f5"
+                                    BorderBrush="#a1a1aa"
+                                    BorderThickness="0,1,1,1"
+                                    CornerRadius="0,5,5,0"
+                                    MouseUp="BtnWhiteBoardSwitchNext_Click"
+                                    Opacity="0.95">
+                                    <Grid Margin="6,6,6,4">
+                                        <Image
+                                            Width="20"
+                                            Height="20"
+                                            VerticalAlignment="Top"
+                                            RenderOptions.BitmapScalingMode="HighQuality">
+                                            <Image.Source>
+                                                <DrawingImage>
+                                                    <DrawingImage.Drawing>
+                                                        <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                                                            <GeometryDrawing Brush="#18181b" Geometry="F1 M24,24z M0,0z M16.5991,10.456L9.49667,3.35357 11.6802,1.17001 22.5102,12 11.6802,22.83 9.49667,20.6465 16.5991,13.544 1.48978,13.544 1.48978,10.456 16.5991,10.456z" />
+                                                        </DrawingGroup>
+                                                    </DrawingImage.Drawing>
+                                                </DrawingImage>
+                                            </Image.Source>
+                                        </Image>
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Bottom"
+                                            FontSize="12"
+                                            Foreground="Black"
+                                            Text="下一页" />
+                                    </Grid>
+                                </Border>
+                            </ikw:SimpleStackPanel>
+                        </Border>
                     </Grid>
                 </Viewbox>
                 <!--  中间  -->
@@ -3947,7 +3822,7 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Bottom">
                     <Viewbox.LayoutTransform>
-                        <ScaleTransform x:Name="ViewboxBlackboardCenterSideScaleTransform" ScaleX="1" ScaleY="1" />
+                        <ScaleTransform ScaleX="{Binding Settings.EnableViewboxBlackBoardScaleTransform, Converter={StaticResource BoolToScaleConverter}}" ScaleY="{Binding Settings.EnableViewboxBlackBoardScaleTransform, Converter={StaticResource BoolToScaleConverter}}" />
                     </Viewbox.LayoutTransform>
                     <Grid
                         x:Name="BlackboardCenterSide"
@@ -4500,7 +4375,8 @@
                                                                         <ikw:SimpleStackPanel
                                                                             x:Name="BoardNibModeSimpleStackPanel"
                                                                             Width="140"
-                                                                            Orientation="Horizontal">
+                                                                            Orientation="Horizontal"
+                                                                            Visibility="{Binding Settings.IsEnableDisPlayNibModeToggler, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                                             <Label
                                                                                 Content="笔尖模式"
                                                                                 VerticalAlignment="Center"
@@ -4511,7 +4387,7 @@
                                                                                 MinWidth="0"
                                                                                 Margin="10,0,0,0"
                                                                                 FontFamily="Microsoft YaHei UI"
-                                                                                IsOn="True"
+                                                                                IsOn="{Binding Settings.IsEnableNibMode, Mode=TwoWay}"
                                                                                 Toggled="ToggleSwitchEnableNibMode_Toggled" />
                                                                         </ikw:SimpleStackPanel>
                                                                     </ikw:SimpleStackPanel>
@@ -6338,328 +6214,177 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Bottom"
                         Visibility="Visible">
-                        <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="5">
-                            <Border
-                                Width="60"
-                                Height="50"
-                                Background="#f4f4f5"
-                                BorderBrush="#a1a1aa"
-                                BorderThickness="1"
-                                CornerRadius="5"
-                                MouseUp="BtnWhiteBoardAdd_Click"
-                                Opacity="0.95">
-                                <Grid Margin="6,6,6,4">
-                                    <Image
-                                        Width="20"
-                                        Height="20"
-                                        VerticalAlignment="Top"
-                                        RenderOptions.BitmapScalingMode="HighQuality">
-                                        <Image.Source>
-                                            <DrawingImage>
-                                                <DrawingImage.Drawing>
-                                                    <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
-                                                        <GeometryDrawing Brush="#18181b" Geometry="F0 M24,24z M0,0z M7.39778,13.723L10.7693,13.723 10.7693,10.3514 13.2307,10.3514 13.2307,13.723 16.6022,13.723 16.6022,16.1843 13.2307,16.1843 13.2307,19.5559 10.7693,19.5559 10.7693,16.1843 7.39778,16.1843 7.39778,13.723z M3.1391,1.17001L3.1391,22.83 20.8609,22.83 20.8609,6.66948 15.3614,1.17002 3.1391,1.17001z M12.9846,3.13911L5.10819,3.1391 5.10819,20.8609 18.8918,20.8609 18.8918,9.04638 12.9846,9.04638 12.9846,3.13911z M18.484,7.07729L14.9536,3.54692 14.9536,7.07729 18.484,7.07729z" />
-                                                    </DrawingGroup>
-                                                </DrawingImage.Drawing>
-                                            </DrawingImage>
-                                        </Image.Source>
-                                    </Image>
-                                    <TextBlock
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Bottom"
-                                        FontSize="12"
-                                        Foreground="#18181b"
-                                        Text="新页面" />
-                                </Grid>
-                            </Border>
-                            <Border
-                                Margin="0,0,0,0"
-                                Background="#f4f4f5"
-                                CornerRadius="5,5,5,5">
-                                <ikw:SimpleStackPanel Orientation="Horizontal">
-                                    <Border
-                                        Width="60"
-                                        Height="50"
-                                        Background="#f4f4f5"
-                                        BorderBrush="#a1a1aa"
-                                        BorderThickness="1,1,0,1"
-                                        CornerRadius="5,0,0,5"
-                                        IsEnabled="{Binding ElementName=BtnWhiteBoardSwitchPrevious, Path=IsEnabled}"
-                                        MouseUp="BtnWhiteBoardSwitchPrevious_Click"
-                                        Opacity="0.95">
-                                        <Grid Margin="6,6,6,4">
-                                            <Image
-                                                Width="20"
-                                                Height="20"
-                                                VerticalAlignment="Top"
-                                                RenderOptions.BitmapScalingMode="HighQuality">
-                                                <Image.Source>
-                                                    <DrawingImage>
-                                                        <DrawingImage.Drawing>
-                                                            <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
-                                                                <GeometryDrawing
-                                                                    x:Name="BtnRightWhiteBoardSwitchPreviousGeometry"
-                                                                    Brush="#18181b"
-                                                                    Geometry="F1 M24,24z M0,0z M7.40091,10.456L14.5033,3.35357 12.3198,1.17001 1.48978,12 12.3198,22.83 14.5033,20.6465 7.40089,13.544 22.5102,13.544 22.5102,10.456 7.40091,10.456z" />
-                                                            </DrawingGroup>
-                                                        </DrawingImage.Drawing>
-                                                    </DrawingImage>
-                                                </Image.Source>
-                                            </Image>
-                                            <TextBlock
-                                                Name="BtnRightWhiteBoardSwitchPreviousLabel"
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Bottom"
-                                                FontSize="12"
-                                                Foreground="#18181b"
-                                                Text="上一页" />
-                                        </Grid>
-                                    </Border>
-                                    <Border
-                                        Name="BtnRightPageListWB"
-                                        Width="75"
-                                        Height="50"
-                                        Background="#f4f4f5"
-                                        BorderBrush="#a1a1aa"
-                                        BorderThickness="1,1,1,1"
-                                        MouseUp="BtnWhiteBoardPageIndex_Click"
-                                        Opacity="0.95">
-                                        <Grid Margin="6,6,6,4">
-                                            <TextBlock
-                                                Margin="0,-1,0,0"
-                                                HorizontalAlignment="Center"
-                                                FontSize="17"
-                                                FontWeight="Bold"
-                                                Text="{Binding ElementName=TextBlockWhiteBoardIndexInfo, Path=Text}"
-                                                TextAlignment="Center" />
-                                            <TextBlock
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Bottom"
-                                                FontSize="12"
-                                                Foreground="#18181b"
-                                                Text="页面" />
-                                        </Grid>
-                                    </Border>
-                                    <Grid Width="0" Margin="0,0,0,5">
-                                        <Border
-                                            Name="BoardBorderRightPageListView"
-                                            Margin="-138,-465,-56,50"
-                                            Background="#fafafa"
-                                            BorderBrush="#a1a1aa"
-                                            BorderThickness="1"
-                                            ClipToBounds="True"
-                                            CornerRadius="8"
-                                            Opacity="1">
-                                            <ui:ScrollViewerEx
-                                                Name="BlackBoardRightSidePageListScrollViewer"
-                                                Height="460"
-                                                ForceUseSmoothScroll="True"
-                                                VerticalScrollBarVisibility="Hidden">
-                                                <ListView
-                                                    Name="BlackBoardRightSidePageListView"
-                                                    ScrollViewer.CanContentScroll="False"
-                                                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                                    ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                                                    SelectionMode="Single">
-                                                    <ListView.ItemTemplate>
-                                                        <DataTemplate>
-                                                            <ikw:SimpleStackPanel MouseUp="BlackBoardRightSidePageListView_OnMouseUp" Orientation="Vertical">
-                                                                <Border
-                                                                    Width="160"
-                                                                    Margin="0,4"
-                                                                    BorderBrush="#a1a1aa"
-                                                                    BorderThickness="1">
-                                                                    <Grid>
-                                                                        <Viewbox Width="160">
-                                                                            <InkCanvas
-                                                                                Width="{Binding ElementName=inkCanvas, Path=ActualWidth}"
-                                                                                Height="{Binding ElementName=inkCanvas, Path=ActualHeight}"
-                                                                                Background="{Binding ElementName=GridBackgroundCover, Path=Background}"
-                                                                                EditingMode="None"
-                                                                                Strokes="{Binding Strokes}" />
-                                                                        </Viewbox>
-                                                                        <Border
-                                                                            Width="36"
-                                                                            Height="20"
-                                                                            Margin="4"
-                                                                            HorizontalAlignment="Left"
-                                                                            VerticalAlignment="Top"
-                                                                            Background="#cc09090b"
-                                                                            CornerRadius="3">
-                                                                            <TextBlock
-                                                                                HorizontalAlignment="Center"
-                                                                                VerticalAlignment="Center"
-                                                                                FontFamily="Consolas"
-                                                                                FontSize="14"
-                                                                                Foreground="White"
-                                                                                Text="{Binding Index}" />
-                                                                        </Border>
-                                                                    </Grid>
-                                                                </Border>
-                                                            </ikw:SimpleStackPanel>
-                                                        </DataTemplate>
-                                                    </ListView.ItemTemplate>
-                                                </ListView>
-                                            </ui:ScrollViewerEx>
-                                        </Border>
+                        <Border
+                            Margin="0,0,0,0"
+                            Background="#f4f4f5"
+                            CornerRadius="5,5,5,5">
+                            <ikw:SimpleStackPanel Orientation="Horizontal">
+                                <Border
+                                    Width="60"
+                                    Height="50"
+                                    Background="#f4f4f5"
+                                    BorderBrush="#a1a1aa"
+                                    BorderThickness="1,1,0,1"
+                                    CornerRadius="5,0,0,5"
+                                    IsEnabled="{Binding IsWhiteboardPreviousPageButtonEnabled}"
+                                    MouseUp="BtnWhiteBoardSwitchPrevious_Click"
+                                    Opacity="0.95">
+                                    <Grid Margin="6,6,6,4">
+                                        <Image
+                                            Width="20"
+                                            Height="20"
+                                            VerticalAlignment="Top"
+                                            RenderOptions.BitmapScalingMode="HighQuality">
+                                            <Image.Source>
+                                                <DrawingImage>
+                                                    <DrawingImage.Drawing>
+                                                        <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                                                            <GeometryDrawing Brush="{Binding IsWhiteboardPreviousPageButtonEnabled, Converter={StaticResource BoolToBrushConverter}}" Geometry="F1 M24,24z M0,0z M7.40091,10.456L14.5033,3.35357 12.3198,1.17001 1.48978,12 12.3198,22.83 14.5033,20.6465 7.40089,13.544 22.5102,13.544 22.5102,10.456 7.40091,10.456z" />
+                                                        </DrawingGroup>
+                                                    </DrawingImage.Drawing>
+                                                </DrawingImage>
+                                            </Image.Source>
+                                        </Image>
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Bottom"
+                                            FontSize="12"
+                                            Foreground="#18181b"
+                                            Opacity="{Binding IsWhiteboardPreviousPageButtonEnabled, Converter={StaticResource BoolToOpacityConverter}}"
+                                            Text="上一页" />
                                     </Grid>
+                                </Border>
+                                <Border
+                                    Name="BtnRightPageListWB"
+                                    Width="75"
+                                    Height="50"
+                                    Background="#f4f4f5"
+                                    BorderBrush="#a1a1aa"
+                                    BorderThickness="1,1,1,1"
+                                    MouseUp="BtnWhiteBoardPageIndex_Click"
+                                    Opacity="0.95">
+                                    <Grid Margin="6,6,6,4">
+                                        <TextBlock
+                                            Margin="0,-1,0,0"
+                                            HorizontalAlignment="Center"
+                                            FontSize="17"
+                                            FontWeight="Bold"
+                                            TextAlignment="Center">
+                                            <TextBlock.Text>
+                                                <MultiBinding StringFormat="{}{0}/{1}">
+                                                    <Binding Path="WhiteboardCurrentPage" />
+                                                    <Binding Path="WhiteboardTotalPageCount" />
+                                                </MultiBinding>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Bottom"
+                                            FontSize="12"
+                                            Foreground="#18181b"
+                                            Text="页面" />
+                                    </Grid>
+                                </Border>
+                                <Grid Width="0" Margin="0,0,0,5">
                                     <Border
-                                        Width="60"
-                                        Height="50"
-                                        Background="#f4f4f5"
+                                        Name="BoardBorderRightPageListView"
+                                        Margin="-138,-465,-56,50"
+                                        Background="#fafafa"
                                         BorderBrush="#a1a1aa"
-                                        BorderThickness="0,1,1,1"
-                                        CornerRadius="0,5,5,0"
-                                        IsEnabled="{Binding ElementName=BtnWhiteBoardSwitchNext, Path=IsEnabled}"
-                                        MouseUp="BtnWhiteBoardSwitchNext_Click"
-                                        Opacity="0.95">
-                                        <Grid Margin="6,6,6,4">
-                                            <Image
-                                                Width="20"
-                                                Height="20"
-                                                VerticalAlignment="Top"
-                                                RenderOptions.BitmapScalingMode="HighQuality">
-                                                <Image.Source>
-                                                    <DrawingImage>
-                                                        <DrawingImage.Drawing>
-                                                            <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
-                                                                <GeometryDrawing
-                                                                    x:Name="BtnRightWhiteBoardSwitchNextGeometry"
-                                                                    Brush="#18181b"
-                                                                    Geometry="F1 M24,24z M0,0z M16.5991,10.456L9.49667,3.35357 11.6802,1.17001 22.5102,12 11.6802,22.83 9.49667,20.6465 16.5991,13.544 1.48978,13.544 1.48978,10.456 16.5991,10.456z" />
-                                                            </DrawingGroup>
-                                                        </DrawingImage.Drawing>
-                                                    </DrawingImage>
-                                                </Image.Source>
-                                            </Image>
-                                            <TextBlock
-                                                Name="BtnRightWhiteBoardSwitchNextLabel"
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Bottom"
-                                                FontSize="12"
-                                                Foreground="Black"
-                                                Text="下一页" />
-                                        </Grid>
+                                        BorderThickness="1"
+                                        ClipToBounds="True"
+                                        CornerRadius="8"
+                                        Opacity="1">
+                                        <ui:ScrollViewerEx
+                                            Name="BlackBoardRightSidePageListScrollViewer"
+                                            Height="460"
+                                            ForceUseSmoothScroll="True"
+                                            VerticalScrollBarVisibility="Hidden">
+                                            <ListView
+                                                Name="BlackBoardRightSidePageListView"
+                                                ScrollViewer.CanContentScroll="False"
+                                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                                SelectionMode="Single">
+                                                <ListView.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <ikw:SimpleStackPanel MouseUp="BlackBoardRightSidePageListView_OnMouseUp" Orientation="Vertical">
+                                                            <Border
+                                                                Width="160"
+                                                                Margin="0,4"
+                                                                BorderBrush="#a1a1aa"
+                                                                BorderThickness="1">
+                                                                <Grid>
+                                                                    <Viewbox Width="160">
+                                                                        <InkCanvas
+                                                                            Width="{Binding ElementName=inkCanvas, Path=ActualWidth}"
+                                                                            Height="{Binding ElementName=inkCanvas, Path=ActualHeight}"
+                                                                            Background="{Binding ElementName=GridBackgroundCover, Path=Background}"
+                                                                            EditingMode="None"
+                                                                            Strokes="{Binding Strokes}" />
+                                                                    </Viewbox>
+                                                                    <Border
+                                                                        Width="36"
+                                                                        Height="20"
+                                                                        Margin="4"
+                                                                        HorizontalAlignment="Left"
+                                                                        VerticalAlignment="Top"
+                                                                        Background="#cc09090b"
+                                                                        CornerRadius="3">
+                                                                        <TextBlock
+                                                                            HorizontalAlignment="Center"
+                                                                            VerticalAlignment="Center"
+                                                                            FontFamily="Consolas"
+                                                                            FontSize="14"
+                                                                            Foreground="White"
+                                                                            Text="{Binding Index}" />
+                                                                    </Border>
+                                                                </Grid>
+                                                            </Border>
+                                                        </ikw:SimpleStackPanel>
+                                                    </DataTemplate>
+                                                </ListView.ItemTemplate>
+                                            </ListView>
+                                        </ui:ScrollViewerEx>
                                     </Border>
-                                </ikw:SimpleStackPanel>
-                            </Border>
-                        </ikw:SimpleStackPanel>
+                                </Grid>
+                                <Border
+                                    Width="60"
+                                    Height="50"
+                                    Background="#f4f4f5"
+                                    BorderBrush="#a1a1aa"
+                                    BorderThickness="0,1,1,1"
+                                    CornerRadius="0,5,5,0"
+                                    MouseUp="BtnWhiteBoardSwitchNext_Click"
+                                    Opacity="0.95">
+                                    <Grid Margin="6,6,6,4">
+                                        <Image
+                                            Width="20"
+                                            Height="20"
+                                            VerticalAlignment="Top"
+                                            RenderOptions.BitmapScalingMode="HighQuality">
+                                            <Image.Source>
+                                                <DrawingImage>
+                                                    <DrawingImage.Drawing>
+                                                        <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                                                            <GeometryDrawing Brush="#18181b" Geometry="F1 M24,24z M0,0z M16.5991,10.456L9.49667,3.35357 11.6802,1.17001 22.5102,12 11.6802,22.83 9.49667,20.6465 16.5991,13.544 1.48978,13.544 1.48978,10.456 16.5991,10.456z" />
+                                                        </DrawingGroup>
+                                                    </DrawingImage.Drawing>
+                                                </DrawingImage>
+                                            </Image.Source>
+                                        </Image>
+                                        <TextBlock
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Bottom"
+                                            FontSize="12"
+                                            Foreground="Black"
+                                            Text="下一页" />
+                                    </Grid>
+                                </Border>
+                            </ikw:SimpleStackPanel>
+                        </Border>
                     </Grid>
                 </Viewbox>
-
-                <ikw:SimpleStackPanel
-                    Height="50"
-                    Margin="10"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Bottom"
-                    Orientation="Horizontal"
-                    Spacing="10"
-                    Visibility="Collapsed">
-                    <Button
-                        Name="BtnWhiteBoardAdd"
-                        Width="50"
-                        Height="48"
-                        Background="{Binding ElementName=BtnExit, Path=Background}"
-                        Click="BtnWhiteBoardAdd_Click"
-                        FontFamily="Microsoft YaHei UI"
-                        FontSize="26"
-                        Foreground="{Binding ElementName=BtnExit, Path=Foreground}">
-                        <ui:SymbolIcon Symbol="Add" />
-                    </Button>
-                    <Button
-                        Name="BtnWhiteBoardSwitchPrevious"
-                        Width="50"
-                        Height="48"
-                        VerticalContentAlignment="Center"
-                        Background="{Binding ElementName=BtnExit, Path=Background}"
-                        Click="BtnWhiteBoardSwitchPrevious_Click"
-                        FontFamily="Symbol"
-                        FontSize="25"
-                        Foreground="{Binding ElementName=BtnExit, Path=Foreground}"
-                        IsEnabled="False"
-                        IsEnabledChanged="Btn_IsEnabledChanged">
-                        <Image Opacity="0.25" RenderTransformOrigin="0.5,0.5">
-                            <Image.RenderTransform>
-                                <TransformGroup>
-                                    <ScaleTransform />
-                                    <SkewTransform />
-                                    <RotateTransform Angle="-90" />
-                                    <TranslateTransform />
-                                </TransformGroup>
-                            </Image.RenderTransform>
-                            <Image.Source>
-                                <DrawingImage>
-                                    <DrawingImage.Drawing>
-                                        <DrawingGroup ClipGeometry="M0,0 V64 H64 V0 H0 Z">
-                                            <DrawingGroup Opacity="1">
-                                                <GeometryDrawing Brush="{Binding ElementName=BtnExit, Path=Foreground}" Geometry="F1 M64,64z M0,0z M32,26.41L16.566,41.844 14.439,39.717 32,22.156 49.561,39.717 47.434,41.844 32,26.41z" />
-                                            </DrawingGroup>
-                                        </DrawingGroup>
-                                    </DrawingImage.Drawing>
-                                </DrawingImage>
-                            </Image.Source>
-                        </Image>
-                    </Button>
-                    <Border
-                        Height="48"
-                        Margin="3,0"
-                        CornerRadius="2">
-                        <TextBlock
-                            Name="TextBlockWhiteBoardIndexInfo"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            FontFamily="Microsoft YaHei UI"
-                            FontSize="18"
-                            Foreground="{Binding ElementName=BtnExit, Path=Foreground}"
-                            Text="1/1" />
-                    </Border>
-                    <Button
-                        Name="BtnWhiteBoardSwitchNext"
-                        Width="50"
-                        Height="48"
-                        VerticalContentAlignment="Center"
-                        Background="{Binding ElementName=BtnExit, Path=Background}"
-                        Click="BtnWhiteBoardSwitchNext_Click"
-                        FontFamily="Symbol"
-                        FontSize="25"
-                        Foreground="{Binding ElementName=BtnExit, Path=Foreground}"
-                        IsEnabled="True"
-                        IsEnabledChanged="Btn_IsEnabledChanged">
-                        <Image Opacity="0.25" RenderTransformOrigin="0.5,0.5">
-                            <Image.RenderTransform>
-                                <TransformGroup>
-                                    <ScaleTransform />
-                                    <SkewTransform />
-                                    <RotateTransform Angle="90" />
-                                    <TranslateTransform />
-                                </TransformGroup>
-                            </Image.RenderTransform>
-                            <Image.Source>
-                                <DrawingImage>
-                                    <DrawingImage.Drawing>
-                                        <DrawingGroup ClipGeometry="M0,0 V64 H64 V0 H0 Z">
-                                            <DrawingGroup Opacity="1">
-                                                <GeometryDrawing Brush="{Binding ElementName=BtnExit, Path=Foreground}" Geometry="F1 M64,64z M0,0z M32,26.41L16.566,41.844 14.439,39.717 32,22.156 49.561,39.717 47.434,41.844 32,26.41z" />
-                                            </DrawingGroup>
-                                        </DrawingGroup>
-                                    </DrawingImage.Drawing>
-                                </DrawingImage>
-                            </Image.Source>
-                        </Image>
-                    </Button>
-                    <Button
-                        Name="BtnWhiteBoardDelete"
-                        Width="50"
-                        Height="48"
-                        Background="{Binding ElementName=BtnExit, Path=Background}"
-                        Click="BtnWhiteBoardDelete_Click"
-                        FontFamily="Microsoft YaHei UI"
-                        FontSize="26"
-                        Foreground="{Binding ElementName=BtnExit, Path=Foreground}"
-                        IsEnabled="False">
-                        <ui:SymbolIcon Symbol="Delete" />
-                    </Button>
-                </ikw:SimpleStackPanel>
             </Grid>
         </Grid>
 
@@ -6716,17 +6441,6 @@
                         FontFamily="Microsoft YaHei UI"
                         Foreground="{Binding ElementName=BtnExit, Path=Foreground}"
                         Visibility="Collapsed" />
-
-                    <Button
-                        Name="BtnSwitchTheme"
-                        Content="深色"
-                        Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
-                        Margin="0,10,0,0"
-                        Background="{Binding ElementName=BtnExit, Path=Background}"
-                        FontFamily="Microsoft YaHei UI"
-                        Foreground="{Binding ElementName=BtnExit, Path=Foreground}" />
-                    <!--  Click="BtnSwitchTheme_Click"  -->
-
                     <Button
                         Name="BtnSwitch"
                         Content="背景"
@@ -6745,37 +6459,7 @@
                         Click="BtnHideInkCanvas_Click"
                         FontFamily="Microsoft YaHei UI"
                         Foreground="{Binding ElementName=BtnExit, Path=Foreground}" />
-                    <Button
-                        x:Name="BtnCheckPPT"
-                        Content="检查"
-                        Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
-                        Margin="0,10,0,0"
-                        Background="{Binding ElementName=BtnExit, Path=Background}"
-                        Click="BtnCheckPPT_Click"
-                        FontFamily="Microsoft YaHei UI"
-                        Foreground="{Binding ElementName=BtnExit, Path=Foreground}"
-                        Visibility="Collapsed" />
                     <StackPanel Name="StackPanelPPTButtons">
-                        <Button
-                            x:Name="BtnPPTSlideShow"
-                            Content="从头&#x000A;放映"
-                            Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
-                            Margin="0,10,0,0"
-                            Background="{Binding ElementName=BtnExit, Path=Background}"
-                            Click="BtnPPTSlideShow_Click"
-                            FontFamily="Microsoft YaHei UI"
-                            Foreground="{Binding ElementName=BtnExit, Path=Foreground}"
-                            Visibility="Collapsed" />
-                        <Button
-                            x:Name="BtnPPTSlideShowEnd"
-                            Content="结束&#x000A;放映"
-                            Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
-                            Margin="0,10,0,0"
-                            Background="{Binding ElementName=BtnExit, Path=Background}"
-                            Click="BtnPPTSlideShowEnd_Click"
-                            FontFamily="Microsoft YaHei UI"
-                            Foreground="{Binding ElementName=BtnExit, Path=Foreground}"
-                            Visibility="Collapsed" />
                         <StackPanel Name="StackPanelPPTControls" Visibility="Collapsed">
                             <Button
                                 x:Name="BtnPPTSlidesUp"
@@ -6797,15 +6481,6 @@
                                 Foreground="{Binding ElementName=BtnExit, Path=Foreground}" />
                         </StackPanel>
                     </StackPanel>
-                    <Button
-                        x:Name="BtnSwitchSide"
-                        Content="⇆"
-                        Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
-                        Margin="0,10,0,0"
-                        Background="{Binding ElementName=BtnExit, Path=Background}"
-                        Click="BtnSwitchSide_Click"
-                        FontFamily="Microsoft YaHei UI"
-                        Foreground="{Binding ElementName=BtnExit, Path=Foreground}" />
                 </StackPanel>
                 <Button
                     x:Name="BtnHideControl"
@@ -6888,17 +6563,6 @@
                         <TextBlock Margin="0,4,0,0" Text="恢复" />
                     </StackPanel>
                 </Button>
-                <Button
-                    Name="BtnClearAndHideCanvas"
-                    Content="清屏&#x000A;&amp;&#x000A;隐藏"
-                    Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
-                    Margin="0,10,0,0"
-                    Background="{Binding ElementName=BtnExit, Path=Background}"
-                    Block.TextAlignment="Center"
-                    Click="BtnSelect_Click"
-                    FontFamily="Microsoft YaHei UI"
-                    Foreground="{Binding ElementName=BtnExit, Path=Foreground}"
-                    Visibility="Collapsed" />
                 <Grid Name="GridForLeftSideReservedSpace" Height="{Binding ElementName=StackPanelInfo, Path=ActualHeight}" />
             </StackPanel>
         </Viewbox>
@@ -7414,8 +7078,18 @@
                 VerticalAlignment="Top"
                 RenderTransformOrigin="0.5,0.5">
                 <Viewbox.LayoutTransform>
-                    <ScaleTransform x:Name="ViewboxFloatingBarScaleTransform" ScaleX="1" ScaleY="1" />
+                    <ScaleTransform x:Name="ViewboxFloatingBarScaleTransform" ScaleX="{Binding Settings.ViewboxFloatingBarScaleTransformValue}" ScaleY="{Binding Settings.ViewboxFloatingBarScaleTransformValue}" />
                 </Viewbox.LayoutTransform>
+                <Viewbox.Style>
+                    <Style TargetType="Viewbox">
+                        <Setter Property="Opacity" Value="{Binding Settings.ViewboxFloatingBarOpacityValue}" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding PowerPointService.IsInSlideShow}" Value="True">
+                                <Setter Property="Opacity" Value="{Binding Settings.ViewboxFloatingBarOpacityInPPTValue}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Viewbox.Style>
                 <ikw:SimpleStackPanel Orientation="Horizontal">
                     <Border
                         x:Name="BorderFloatingBarMoveControls"
@@ -7434,7 +7108,7 @@
                             <Image
                                 Name="FloatingbarHeadIconImg"
                                 Margin="0"
-                                Source="/Resources/Icons-png/icc.png" />
+                                Source="/Resources/Icons-png/ICC-Re.png" />
                         </ikw:SimpleStackPanel>
                     </Border>
                     <Border
@@ -7753,7 +7427,8 @@
                                                                     <ikw:SimpleStackPanel
                                                                         x:Name="NibModeSimpleStackPanel"
                                                                         Width="140"
-                                                                        Orientation="Horizontal">
+                                                                        Orientation="Horizontal"
+                                                                        Visibility="{Binding Settings.IsEnableDisPlayNibModeToggler, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                                         <Label
                                                                             Content="笔尖模式"
                                                                             VerticalAlignment="Center"
@@ -7764,7 +7439,7 @@
                                                                             MinWidth="0"
                                                                             Margin="10,0,0,0"
                                                                             FontFamily="Microsoft YaHei UI"
-                                                                            IsOn="True"
+                                                                            IsOn="{Binding Settings.IsEnableNibMode, Mode=TwoWay}"
                                                                             Toggled="ToggleSwitchEnableNibMode_Toggled" />
                                                                     </ikw:SimpleStackPanel>
                                                                 </ikw:SimpleStackPanel>
@@ -7796,7 +7471,7 @@
                                                                     VerticalAlignment="Bottom"
                                                                     FontFamily="Consolas"
                                                                     FontSize="15"
-                                                                    Text="{Binding Value, ElementName=InkWidthSlider, Mode=OneWay}" />
+                                                                    Text="{Binding Value, ElementName=InkWidthSlider, StringFormat={}{0:F1}}" />
                                                             </StackPanel>
                                                             <StackPanel Height="30" Orientation="Horizontal">
                                                                 <Label
@@ -10036,7 +9711,7 @@
                         CornerRadius="4"
                         MouseDown="Border_MouseDown"
                         MouseUp="ImagePPTControlEnd_MouseUp"
-                        Visibility="{Binding ElementName=BtnPPTSlideShowEnd, Path=Visibility}">
+                        Visibility="Collapsed">
                         <ikw:SimpleStackPanel
                             Width="28"
                             Margin="0,0"
@@ -10315,7 +9990,7 @@
             Margin="-60,0,0,-150"
             HorizontalAlignment="Left"
             VerticalAlignment="Center"
-            MouseUp="LeftUnFoldButtonDisplayQuickPanel_MouseUp"
+            MouseUp="SidePanelUnFoldButton_MouseUp"
             Visibility="Visible">
             <ikw:SimpleStackPanel>
                 <Border
@@ -10326,144 +10001,35 @@
                     Opacity="1">
                     <Image
                         x:Name="LeftUnFoldBtnImgChevron"
-                        Width="14"
-                        Height="14"
                         Margin="10,0,0,0"
-                        RenderOptions.BitmapScalingMode="HighQuality"
-                        Source="/Resources/new-icons/unfold-chevron.png" />
+                        RenderOptions.BitmapScalingMode="HighQuality">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Settings.UnFoldButtonImageType}" Value="0">
+                                        <Setter Property="Source">
+                                            <Setter.Value>
+                                                <BitmapImage UriSource="pack://application:,,,/Resources/new-icons/unfold-chevron.png" />
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="Width" Value="14" />
+                                        <Setter Property="Height" Value="14" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Settings.UnFoldButtonImageType}" Value="1">
+                                        <Setter Property="Source">
+                                            <Setter.Value>
+                                                <BitmapImage UriSource="pack://application:,,,/Resources/new-icons/pen-white.png" />
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="Width" Value="18" />
+                                        <Setter Property="Height" Value="18" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
                 </Border>
             </ikw:SimpleStackPanel>
-        </Viewbox>
-        <Viewbox
-            Name="LeftUnFoldButtonQuickPanel"
-            Width="50"
-            Margin="-1,0,0,-150"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Center"
-            Visibility="Collapsed">
-            <Border
-                Width="32"
-                Background="#fafafa"
-                BorderBrush="{DynamicResource FloatBarBorderBrush}"
-                BorderThickness="1"
-                ClipToBounds="True"
-                CornerRadius="0,6,6,0"
-                Opacity="1"
-                Visibility="Visible">
-                <ikw:SimpleStackPanel
-                    Margin="0,5"
-                    Orientation="Vertical"
-                    Spacing="0">
-                    <ikw:SimpleStackPanel
-                        Width="32"
-                        Margin="0"
-                        HorizontalAlignment="Center"
-                        Background="Transparent"
-                        MouseUp="SymbolIconRandOne_MouseUp"
-                        Orientation="Vertical">
-                        <Image
-                            Height="17"
-                            Margin="0,3,0,0"
-                            RenderOptions.BitmapScalingMode="HighQuality"
-                            Source="/Resources/Icons-Fluent/ic_fluent_person_money_24_regular.png" />
-                        <TextBlock
-                            Margin="0,2,0,3"
-                            FontSize="8"
-                            Foreground="Black"
-                            Text="单次抽"
-                            TextAlignment="Center" />
-                    </ikw:SimpleStackPanel>
-                    <ikw:SimpleStackPanel
-                        Width="32"
-                        Margin="0"
-                        HorizontalAlignment="Center"
-                        Background="Transparent"
-                        MouseUp="SymbolIconRand_MouseUp"
-                        Orientation="Vertical">
-                        <Image
-                            Height="17"
-                            Margin="0,3,0,0"
-                            RenderOptions.BitmapScalingMode="HighQuality"
-                            Source="/Resources/Icons-Fluent/ic_fluent_people_money_24_regular.png" />
-                        <TextBlock
-                            Margin="0,2,0,3"
-                            FontSize="8"
-                            Foreground="Black"
-                            Text="随机抽"
-                            TextAlignment="Center" />
-                    </ikw:SimpleStackPanel>
-                    <ikw:SimpleStackPanel
-                        Width="32"
-                        Margin="0"
-                        HorizontalAlignment="Center"
-                        Background="Transparent"
-                        MouseUp="ImageCountdownTimer_MouseUp"
-                        Orientation="Vertical">
-                        <Image
-                            Height="17"
-                            Margin="0,3,0,0"
-                            RenderOptions.BitmapScalingMode="HighQuality"
-                            Source="/Resources/Icons-Fluent/ic_fluent_timer_24_regular.png" />
-                        <TextBlock
-                            Margin="0,2,0,3"
-                            FontSize="8"
-                            Foreground="Black"
-                            Text="计时器"
-                            TextAlignment="Center" />
-                    </ikw:SimpleStackPanel>
-                    <ikw:SimpleStackPanel
-                        Width="32"
-                        Margin="0"
-                        HorizontalAlignment="Center"
-                        Background="Transparent"
-                        MouseUp="ImageBlackboard_MouseUp"
-                        Orientation="Vertical">
-                        <Image
-                            Height="17"
-                            Margin="0,3,0,0"
-                            RenderOptions.BitmapScalingMode="HighQuality"
-                            Source="/Resources/new-icons/blackboard.png" />
-                        <TextBlock
-                            Margin="0,2,0,3"
-                            FontSize="8"
-                            Foreground="Black"
-                            Text="白板"
-                            TextAlignment="Center" />
-                    </ikw:SimpleStackPanel>
-                    <ikw:SimpleStackPanel
-                        Width="32"
-                        Margin="0"
-                        HorizontalAlignment="Center"
-                        Background="Transparent"
-                        MouseUp="UnFoldFloatingBar_MouseUp"
-                        Orientation="Vertical">
-                        <Image
-                            Height="17"
-                            Margin="0,3,0,0"
-                            RenderOptions.BitmapScalingMode="HighQuality"
-                            Source="/Resources/new-icons/eye.png" />
-                        <TextBlock
-                            Margin="0,2,0,3"
-                            FontSize="8"
-                            Foreground="Black"
-                            Text="显示"
-                            TextAlignment="Center" />
-                    </ikw:SimpleStackPanel>
-                    <ikw:SimpleStackPanel
-                        Width="32"
-                        Margin="0"
-                        HorizontalAlignment="Center"
-                        Background="Transparent"
-                        MouseUp="HideQuickPanel_MouseUp"
-                        Orientation="Vertical">
-                        <Image
-                            Height="17"
-                            Margin="0,3,0,3"
-                            RenderOptions.BitmapScalingMode="HighQuality"
-                            Source="/Resources/new-icons/chevron-left.png" />
-                    </ikw:SimpleStackPanel>
-                </ikw:SimpleStackPanel>
-            </Border>
         </Viewbox>
         <Viewbox
             x:Name="RightSidePanel"
@@ -10472,7 +10038,7 @@
             Margin="0,0,-60,-150"
             HorizontalAlignment="Right"
             VerticalAlignment="Center"
-            MouseUp="RightUnFoldButtonDisplayQuickPanel_MouseUp"
+            MouseUp="SidePanelUnFoldButton_MouseUp"
             Visibility="{Binding ElementName=LeftSidePanel, Path=Visibility}">
             <ikw:SimpleStackPanel>
                 <Border
@@ -10483,161 +10049,42 @@
                     Opacity="1">
                     <Image
                         x:Name="RightUnFoldBtnImgChevron"
-                        Width="14"
-                        Height="14"
                         Margin="0,0,10,0"
                         RenderOptions.BitmapScalingMode="HighQuality"
-                        RenderTransformOrigin="0.5,0.5"
-                        Source="/Resources/new-icons/unfold-chevron.png">
-                        <Image.RenderTransform>
-                            <TransformGroup>
-                                <RotateTransform Angle="180" />
-                            </TransformGroup>
-                        </Image.RenderTransform>
+                        RenderTransformOrigin="0.5,0.5">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Settings.UnFoldButtonImageType}" Value="0">
+                                        <Setter Property="Source">
+                                            <Setter.Value>
+                                                <BitmapImage UriSource="pack://application:,,,/Resources/new-icons/unfold-chevron.png" />
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="Width" Value="14" />
+                                        <Setter Property="Height" Value="14" />
+                                        <Setter Property="RenderTransform">
+                                            <Setter.Value>
+                                                <RotateTransform Angle="180" />
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding Settings.UnFoldButtonImageType}" Value="1">
+                                        <Setter Property="Source">
+                                            <Setter.Value>
+                                                <BitmapImage UriSource="pack://application:,,,/Resources/new-icons/pen-white.png" />
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="Width" Value="18" />
+                                        <Setter Property="Height" Value="18" />
+                                        <Setter Property="RenderTransform" Value="{x:Null}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
                     </Image>
                 </Border>
             </ikw:SimpleStackPanel>
-        </Viewbox>
-        <Viewbox
-            Name="RightUnFoldButtonQuickPanel"
-            Width="50"
-            Margin="0,0,-1,-150"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Center"
-            Visibility="Collapsed">
-            <Border
-                Width="32"
-                Background="#fafafa"
-                BorderBrush="{DynamicResource FloatBarBorderBrush}"
-                BorderThickness="1"
-                ClipToBounds="True"
-                CornerRadius="6,0,0,6"
-                Opacity="1"
-                Visibility="Visible">
-                <ikw:SimpleStackPanel
-                    Margin="0,5"
-                    Orientation="Vertical"
-                    Spacing="0">
-                    <ikw:SimpleStackPanel
-                        Width="32"
-                        Margin="0"
-                        HorizontalAlignment="Center"
-                        Background="Transparent"
-                        MouseUp="SymbolIconRandOne_MouseUp"
-                        Orientation="Vertical">
-                        <Image
-                            Height="17"
-                            Margin="0,3,0,0"
-                            RenderOptions.BitmapScalingMode="HighQuality"
-                            Source="/Resources/Icons-Fluent/ic_fluent_person_money_24_regular.png" />
-                        <TextBlock
-                            Margin="0,2,0,3"
-                            FontSize="8"
-                            Foreground="Black"
-                            Text="单次抽"
-                            TextAlignment="Center" />
-                    </ikw:SimpleStackPanel>
-                    <ikw:SimpleStackPanel
-                        Width="32"
-                        Margin="0"
-                        HorizontalAlignment="Center"
-                        Background="Transparent"
-                        MouseUp="SymbolIconRand_MouseUp"
-                        Orientation="Vertical">
-                        <Image
-                            Height="17"
-                            Margin="0,3,0,0"
-                            RenderOptions.BitmapScalingMode="HighQuality"
-                            Source="/Resources/Icons-Fluent/ic_fluent_people_money_24_regular.png" />
-                        <TextBlock
-                            Margin="0,2,0,3"
-                            FontSize="8"
-                            Foreground="Black"
-                            Text="随机抽"
-                            TextAlignment="Center" />
-                    </ikw:SimpleStackPanel>
-                    <ikw:SimpleStackPanel
-                        Width="32"
-                        Margin="0"
-                        HorizontalAlignment="Center"
-                        Background="Transparent"
-                        MouseUp="ImageCountdownTimer_MouseUp"
-                        Orientation="Vertical">
-                        <Image
-                            Height="17"
-                            Margin="0,3,0,0"
-                            RenderOptions.BitmapScalingMode="HighQuality"
-                            Source="/Resources/Icons-Fluent/ic_fluent_timer_24_regular.png" />
-                        <TextBlock
-                            Margin="0,2,0,3"
-                            FontSize="8"
-                            Foreground="Black"
-                            Text="计时器"
-                            TextAlignment="Center" />
-                    </ikw:SimpleStackPanel>
-                    <ikw:SimpleStackPanel
-                        Width="32"
-                        Margin="0"
-                        HorizontalAlignment="Center"
-                        Background="Transparent"
-                        MouseUp="ImageBlackboard_MouseUp"
-                        Orientation="Vertical">
-                        <Image
-                            Height="17"
-                            Margin="0,3,0,0"
-                            RenderOptions.BitmapScalingMode="HighQuality"
-                            Source="/Resources/new-icons/blackboard.png" />
-                        <TextBlock
-                            Margin="0,2,0,3"
-                            FontSize="8"
-                            Foreground="Black"
-                            Text="白板"
-                            TextAlignment="Center" />
-                    </ikw:SimpleStackPanel>
-                    <ikw:SimpleStackPanel
-                        Width="32"
-                        Margin="0"
-                        HorizontalAlignment="Center"
-                        Background="Transparent"
-                        MouseUp="UnFoldFloatingBar_MouseUp"
-                        Orientation="Vertical">
-                        <Image
-                            Height="17"
-                            Margin="0,3,0,0"
-                            RenderOptions.BitmapScalingMode="HighQuality"
-                            Source="/Resources/new-icons/eye.png" />
-                        <TextBlock
-                            Margin="0,2,0,3"
-                            FontSize="8"
-                            Foreground="Black"
-                            Text="显示"
-                            TextAlignment="Center" />
-                    </ikw:SimpleStackPanel>
-                    <ikw:SimpleStackPanel
-                        Width="32"
-                        Margin="0"
-                        HorizontalAlignment="Center"
-                        Background="Transparent"
-                        MouseUp="HideQuickPanel_MouseUp"
-                        Orientation="Vertical">
-                        <Image
-                            Height="17"
-                            Margin="0,3,0,3"
-                            RenderOptions.BitmapScalingMode="HighQuality"
-                            RenderTransformOrigin="0.5,0.5"
-                            Source="/Resources/new-icons/chevron-left.png">
-                            <Image.RenderTransform>
-                                <TransformGroup>
-                                    <ScaleTransform />
-                                    <SkewTransform />
-                                    <RotateTransform Angle="180" />
-                                    <TranslateTransform />
-                                </TransformGroup>
-                            </Image.RenderTransform>
-                        </Image>
-                    </ikw:SimpleStackPanel>
-                </ikw:SimpleStackPanel>
-            </Border>
         </Viewbox>
     </Grid>
 </Window>

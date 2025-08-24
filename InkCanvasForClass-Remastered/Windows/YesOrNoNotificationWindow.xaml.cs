@@ -47,6 +47,10 @@ namespace InkCanvasForClass_Remastered
 
         private void Window_Closed(object sender, EventArgs e)
         {
+            if (_windowClose == null)
+            {
+                return;
+            }
             _windowClose.Invoke();
         }
     }

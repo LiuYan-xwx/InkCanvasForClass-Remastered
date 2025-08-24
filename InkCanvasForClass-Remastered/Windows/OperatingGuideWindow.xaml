@@ -7,7 +7,7 @@
     xmlns:local="clr-namespace:InkCanvasForClass_Remastered"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
-    Title="Ink Canvas Annotation 使用指南"
+    Title="InkCanvasForClass-Remastered 使用指南"
     Width="500"
     Height="600"
     ui:ThemeManager.RequestedTheme="Light"

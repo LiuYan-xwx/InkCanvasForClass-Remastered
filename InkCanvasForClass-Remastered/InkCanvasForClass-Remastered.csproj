@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
     <RootNamespace>InkCanvasForClass_Remastered</RootNamespace>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <ApplicationIcon>Resources\icc.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\ICC-Re.ico</ApplicationIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -25,7 +25,7 @@
 	  <Resource Include="Resources\Icons-png\**" />
 	  <Resource Include="Resources\new-icons\**" />
 	  <Resource Include="Resources\PresentationExample\**" />
-	  <Resource Include="Resources\icc.ico" />
+	  <Resource Include="Resources\ICC-Re.ico" />
 	  <Resource Include="Resources\hatsune-miku1.png" />
   </ItemGroup>
 
@@ -38,6 +38,7 @@
     <PackageReference Include="MicrosoftOfficeCore" Version="15.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="OSVersionExt" Version="3.0.0" />
+    <PackageReference Include="Pastel" Version="7.0.0" />
     <PackageReference Include="WindowsShortcutFactory" Version="1.2.0" />
   </ItemGroup>
 
