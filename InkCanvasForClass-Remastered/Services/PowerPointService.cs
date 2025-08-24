@@ -163,7 +163,11 @@ namespace InkCanvasForClass_Remastered.Services
 
         // 私有的事件转发器
         private void OnPresentationOpen(Presentation Pres) => PresentationOpen?.Invoke(Pres);
-        private void OnPresentationClose(Presentation Pres) => PresentationClose?.Invoke(Pres);
+        private void OnPresentationClose(Presentation Pres)
+        {
+            Disconnect();
+            PresentationClose?.Invoke(Pres);
+        }
         private void OnSlideShowBegin(SlideShowWindow Wn) => SlideShowBegin?.Invoke(Wn);
         private void OnSlideShowEnd(Presentation Pres) => SlideShowEnd?.Invoke(Pres);
         private void OnSlideShowNextSlide(SlideShowWindow Wn) => SlideShowNextSlide?.Invoke(Wn);

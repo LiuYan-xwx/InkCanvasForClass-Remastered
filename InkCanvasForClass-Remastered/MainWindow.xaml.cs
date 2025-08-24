@@ -3820,7 +3820,6 @@ namespace InkCanvasForClass_Remastered
 
         private void PptApplication_PresentationClose(Presentation Pres)
         {
-            _powerPointService.Disconnect();
             timerCheckPPT.Start();
             Application.Current.Dispatcher.Invoke(() =>
             {
