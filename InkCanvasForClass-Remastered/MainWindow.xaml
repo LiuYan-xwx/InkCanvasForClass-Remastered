@@ -1461,21 +1461,6 @@
                                         X2="400"
                                         Y1="0"
                                         Y2="0" />
-                                    <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                                        <TextBlock
-                                            Margin="0,0,16,0"
-                                            VerticalAlignment="Center"
-                                            FontSize="14"
-                                            Foreground="#fafafa"
-                                            Text="提示是否已启用自动播放" />
-                                        <ui:ToggleSwitch
-                                            Name="ToggleSwitchNotifyAutoPlayPresentation"
-                                            FontFamily="Microsoft YaHei UI"
-                                            FontWeight="Bold"
-                                            IsOn="{Binding Settings.IsNotifyAutoPlayPresentation, Mode=TwoWay}"
-                                            OffContent=""
-                                            OnContent="" />
-                                    </ikw:SimpleStackPanel>
                                 </ikw:SimpleStackPanel>
 
                             </GroupBox>

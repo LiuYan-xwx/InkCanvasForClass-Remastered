@@ -58,7 +58,6 @@ namespace InkCanvasForClass_Remastered
             DataContext = _viewModel;
 
             // 挂载PPT服务事件
-            _powerPointService.PresentationOpen += PptApplication_PresentationOpen;
             _powerPointService.PresentationClose += PptApplication_PresentationClose;
             _powerPointService.SlideShowBegin += PptApplication_SlideShowBegin;
             _powerPointService.SlideShowEnd += PptApplication_SlideShowEnd;
@@ -3685,74 +3684,18 @@ namespace InkCanvasForClass_Remastered
         private int _slidescount = 0;
         private bool isPresentationHaveBlackSpace = false;
         private string _pptName = null;
-        public static bool IsShowingRestoreHiddenSlidesWindow = false;
-        private static bool IsShowingAutoplaySlidesWindow = false;
         private bool isEnteredSlideShowEndEvent = false;
         private int _previousSlideID = 0;
         private MemoryStream[] _memoryStreams = new MemoryStream[50];
 
         private void TimerCheckPPT_Tick(object sender, EventArgs e)
         {
-            if (IsShowingRestoreHiddenSlidesWindow || IsShowingAutoplaySlidesWindow) return;
             if (_powerPointService.IsConnected) return; // 如果已经连接，就什么都不做
 
             if (_powerPointService.TryConnectAndMonitor())
             {
                 // 连接成功！
                 timerCheckPPT.Stop(); // 停止定时器
-
-                // 手动检查一下是否已经处于放映模式
-                try
-                {
-                    var pptApp = (Microsoft.Office.Interop.PowerPoint.Application)Marshal2.GetActiveObject("PowerPoint.Application");
-                    if (pptApp.SlideShowWindows.Count >= 1)
-                    {
-                        PptApplication_SlideShowBegin(pptApp.SlideShowWindows[1]);
-                    }
-                }
-                catch { }
-            }
-        }
-
-        private void PptApplication_PresentationOpen(Presentation Pres)
-        {
-            if (Pres == null) return;
-
-            //检测是否有自动播放
-            if (Settings.IsNotifyAutoPlayPresentation
-                // && presentation.SlideShowSettings.AdvanceMode == PpSlideShowAdvanceMode.ppSlideShowUseSlideTimings
-                && BorderFloatingBarExitPPTBtn.Visibility != Visibility.Visible)
-            {
-                bool hasSlideTimings = false;
-                foreach (Slide slide in Pres.Slides)
-                {
-                    if (slide.SlideShowTransition.AdvanceOnTime == MsoTriState.msoTrue &&
-                        slide.SlideShowTransition.AdvanceTime > 0)
-                    {
-                        hasSlideTimings = true;
-                        break;
-                    }
-                }
-
-                if (hasSlideTimings)
-                {
-                    Application.Current.Dispatcher.BeginInvoke((Action)(() =>
-                    {
-                        if (hasSlideTimings && !IsShowingAutoplaySlidesWindow)
-                        {
-                            IsShowingAutoplaySlidesWindow = true;
-                            new YesOrNoNotificationWindow("检测到此演示文档中自动播放或排练计时已经启用，可能导致幻灯片自动翻页，是否取消？",
-                                () =>
-                                {
-                                    Pres.SlideShowSettings.AdvanceMode =
-                                        PpSlideShowAdvanceMode.ppSlideShowManualAdvance;
-                                    IsShowingAutoplaySlidesWindow = false;
-                                }, () => { IsShowingAutoplaySlidesWindow = false; },
-                                () => { IsShowingAutoplaySlidesWindow = false; }).ShowDialog();
-                        }
-                    }));
-                    Pres.SlideShowSettings.AdvanceMode = PpSlideShowAdvanceMode.ppSlideShowManualAdvance;
-                }
             }
         }
 
