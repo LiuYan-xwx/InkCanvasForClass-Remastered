@@ -134,12 +134,6 @@ namespace InkCanvasForClass_Remastered.Models
         [ObservableProperty]
         private bool _isAutoSaveScreenShotInPowerPoint = true;
         [ObservableProperty]
-        private bool _isNotifyPreviousPage = false;
-        [ObservableProperty]
-        private bool _isNotifyHiddenPage = false;
-        [ObservableProperty]
-        private bool _isNotifyAutoPlayPresentation = false;
-        [ObservableProperty]
         private bool _isEnableTwoFingerGestureInPresentationMode = false;
         [ObservableProperty]
         private bool _isEnableFingerGestureSlideShowControl = false;

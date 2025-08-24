@@ -1461,51 +1461,6 @@
                                         X2="400"
                                         Y1="0"
                                         Y2="0" />
-                                    <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                                        <TextBlock
-                                            Margin="0,0,16,0"
-                                            VerticalAlignment="Center"
-                                            FontSize="14"
-                                            Foreground="#fafafa"
-                                            Text="记忆并提示上次播放位置" />
-                                        <ui:ToggleSwitch
-                                            Name="ToggleSwitchNotifyPreviousPage"
-                                            FontFamily="Microsoft YaHei UI"
-                                            FontWeight="Bold"
-                                            IsOn="{Binding Settings.IsNotifyPreviousPage, Mode=TwoWay}"
-                                            OffContent=""
-                                            OnContent="" />
-                                    </ikw:SimpleStackPanel>
-                                    <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                                        <TextBlock
-                                            Margin="0,0,16,0"
-                                            VerticalAlignment="Center"
-                                            FontSize="14"
-                                            Foreground="#fafafa"
-                                            Text="提示隐藏幻灯片" />
-                                        <ui:ToggleSwitch
-                                            Name="ToggleSwitchNotifyHiddenPage"
-                                            FontFamily="Microsoft YaHei UI"
-                                            FontWeight="Bold"
-                                            IsOn="{Binding Settings.IsNotifyHiddenPage, Mode=TwoWay}"
-                                            OffContent=""
-                                            OnContent="" />
-                                    </ikw:SimpleStackPanel>
-                                    <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                                        <TextBlock
-                                            Margin="0,0,16,0"
-                                            VerticalAlignment="Center"
-                                            FontSize="14"
-                                            Foreground="#fafafa"
-                                            Text="提示是否已启用自动播放" />
-                                        <ui:ToggleSwitch
-                                            Name="ToggleSwitchNotifyAutoPlayPresentation"
-                                            FontFamily="Microsoft YaHei UI"
-                                            FontWeight="Bold"
-                                            IsOn="{Binding Settings.IsNotifyAutoPlayPresentation, Mode=TwoWay}"
-                                            OffContent=""
-                                            OnContent="" />
-                                    </ikw:SimpleStackPanel>
                                 </ikw:SimpleStackPanel>
 
                             </GroupBox>

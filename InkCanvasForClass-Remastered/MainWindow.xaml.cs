@@ -58,7 +58,6 @@ namespace InkCanvasForClass_Remastered
             DataContext = _viewModel;
 
             // 挂载PPT服务事件
-            _powerPointService.PresentationOpen += PptApplication_PresentationOpen;
             _powerPointService.PresentationClose += PptApplication_PresentationClose;
             _powerPointService.SlideShowBegin += PptApplication_SlideShowBegin;
             _powerPointService.SlideShowEnd += PptApplication_SlideShowEnd;
@@ -3685,142 +3684,23 @@ namespace InkCanvasForClass_Remastered
         private int _slidescount = 0;
         private bool isPresentationHaveBlackSpace = false;
         private string _pptName = null;
-        public static bool IsShowingRestoreHiddenSlidesWindow = false;
-        private static bool IsShowingAutoplaySlidesWindow = false;
         private bool isEnteredSlideShowEndEvent = false;
         private int _previousSlideID = 0;
         private MemoryStream[] _memoryStreams = new MemoryStream[50];
 
         private void TimerCheckPPT_Tick(object sender, EventArgs e)
         {
-            if (IsShowingRestoreHiddenSlidesWindow || IsShowingAutoplaySlidesWindow) return;
             if (_powerPointService.IsConnected) return; // 如果已经连接，就什么都不做
 
             if (_powerPointService.TryConnectAndMonitor())
             {
                 // 连接成功！
                 timerCheckPPT.Stop(); // 停止定时器
-
-                // 手动检查一下是否已经处于放映模式
-                try
-                {
-                    var pptApp = (Microsoft.Office.Interop.PowerPoint.Application)Marshal2.GetActiveObject("PowerPoint.Application");
-                    if (pptApp.SlideShowWindows.Count >= 1)
-                    {
-                        PptApplication_SlideShowBegin(pptApp.SlideShowWindows[1]);
-                    }
-                }
-                catch { }
-            }
-        }
-
-        private void PptApplication_PresentationOpen(Presentation Pres)
-        {
-            if (Pres == null) return;
-            // 跳转到上次播放页
-            if (Settings.IsNotifyPreviousPage)
-                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    var folderPath = Settings.AutoSaveStrokesPath +
-                                     @"\Auto Saved - Presentations\" + Pres.Name + "_" +
-                                     Pres.Slides.Count;
-                    try
-                    {
-                        if (!File.Exists(folderPath + "/Position")) return;
-                        if (!int.TryParse(File.ReadAllText(folderPath + "/Position"), out var page)) return;
-                        if (page <= 0) return;
-                        new YesOrNoNotificationWindow($"上次播放到了第 {page} 页, 是否立即跳转", () =>
-                        {
-                            if (_powerPointService.IsInSlideShow)
-                            {
-                                _powerPointService.ActiveSlideShowWindow?.View.GotoSlide(page);
-                            }
-                            else
-                            {
-                                Pres.Windows[1].View.GotoSlide(page);
-                            }
-                        }).ShowDialog();
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.LogError(ex,"跳转到上次播放页失败");
-                    }
-                }), DispatcherPriority.Normal);
-
-
-            //检查是否有隐藏幻灯片
-            if (Settings.IsNotifyHiddenPage)
-            {
-                var isHaveHiddenSlide = false;
-                foreach (Slide slide in Pres.Slides)
-                    if (slide.SlideShowTransition.Hidden == Microsoft.Office.Core.MsoTriState.msoTrue)
-                    {
-                        isHaveHiddenSlide = true;
-                        break;
-                    }
-
-                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    if (isHaveHiddenSlide && !IsShowingRestoreHiddenSlidesWindow)
-                    {
-                        IsShowingRestoreHiddenSlidesWindow = true;
-                        new YesOrNoNotificationWindow("检测到此演示文档中包含隐藏的幻灯片，是否取消隐藏？",
-                            () =>
-                            {
-                                foreach (Slide slide in Pres.Slides)
-                                    if (slide.SlideShowTransition.Hidden ==
-                                        Microsoft.Office.Core.MsoTriState.msoTrue)
-                                        slide.SlideShowTransition.Hidden =
-                                            Microsoft.Office.Core.MsoTriState.msoFalse;
-                                IsShowingRestoreHiddenSlidesWindow = false;
-                            }, () => { IsShowingRestoreHiddenSlidesWindow = false; },
-                            () => { IsShowingRestoreHiddenSlidesWindow = false; }).ShowDialog();
-                    }
-
-                }), DispatcherPriority.Normal);
-            }
-
-            //检测是否有自动播放
-            if (Settings.IsNotifyAutoPlayPresentation
-                // && presentation.SlideShowSettings.AdvanceMode == PpSlideShowAdvanceMode.ppSlideShowUseSlideTimings
-                && BorderFloatingBarExitPPTBtn.Visibility != Visibility.Visible)
-            {
-                bool hasSlideTimings = false;
-                foreach (Slide slide in Pres.Slides)
-                {
-                    if (slide.SlideShowTransition.AdvanceOnTime == MsoTriState.msoTrue &&
-                        slide.SlideShowTransition.AdvanceTime > 0)
-                    {
-                        hasSlideTimings = true;
-                        break;
-                    }
-                }
-
-                if (hasSlideTimings)
-                {
-                    Application.Current.Dispatcher.BeginInvoke((Action)(() =>
-                    {
-                        if (hasSlideTimings && !IsShowingAutoplaySlidesWindow)
-                        {
-                            IsShowingAutoplaySlidesWindow = true;
-                            new YesOrNoNotificationWindow("检测到此演示文档中自动播放或排练计时已经启用，可能导致幻灯片自动翻页，是否取消？",
-                                () =>
-                                {
-                                    Pres.SlideShowSettings.AdvanceMode =
-                                        PpSlideShowAdvanceMode.ppSlideShowManualAdvance;
-                                    IsShowingAutoplaySlidesWindow = false;
-                                }, () => { IsShowingAutoplaySlidesWindow = false; },
-                                () => { IsShowingAutoplaySlidesWindow = false; }).ShowDialog();
-                        }
-                    }));
-                    Pres.SlideShowSettings.AdvanceMode = PpSlideShowAdvanceMode.ppSlideShowManualAdvance;
-                }
             }
         }
 
         private void PptApplication_PresentationClose(Presentation Pres)
         {
-            _powerPointService.Disconnect();
             timerCheckPPT.Start();
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -4033,22 +3913,20 @@ namespace InkCanvasForClass_Remastered
                                                       currentPresentation.Slides.Count).GetFiles();
                         var count = 0;
                         foreach (var file in files)
-                            if (file.Name != "Position")
+                        {
+                            var i = -1;
+                            try
                             {
-                                var i = -1;
-                                try
-                                {
-                                    i = int.Parse(Path.GetFileNameWithoutExtension(file.Name));
-                                    _memoryStreams[i] = new MemoryStream(File.ReadAllBytes(file.FullName));
-                                    _memoryStreams[i].Position = 0;
-                                    count++;
-                                }
-                                catch (Exception ex)
-                                {
-                                    Logger.LogInformation(ex, $"加载第 {i} 页墨迹失败");
-                                }
+                                i = int.Parse(Path.GetFileNameWithoutExtension(file.Name));
+                                _memoryStreams[i] = new MemoryStream(File.ReadAllBytes(file.FullName));
+                                _memoryStreams[i].Position = 0;
+                                count++;
                             }
-
+                            catch (Exception ex)
+                            {
+                                Logger.LogInformation(ex, $"加载第 {i} 页墨迹失败");
+                            }
+                        }
                         Logger.LogInformation($"加载完成，共 {count} 页");
                     }
 
@@ -4129,11 +4007,6 @@ namespace InkCanvasForClass_Remastered
                 var folderPath = Settings.AutoSaveStrokesPath + @"\Auto Saved - Presentations\" +
                                  Pres.Name + "_" + Pres.Slides.Count;
                 if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
-                try
-                {
-                    File.WriteAllText(folderPath + "/Position", _previousSlideID.ToString());
-                }
-                catch { }
 
                 for (var i = 1; i <= Pres.Slides.Count; i++)
                     if (_memoryStreams[i] != null)
