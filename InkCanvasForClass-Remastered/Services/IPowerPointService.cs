@@ -42,12 +42,12 @@ namespace InkCanvasForClass_Remastered.Services
         /// <summary>
         /// 获取当前活动的演示文稿对象。如果不存在则为 null。
         /// </summary>
-        Presentation ActivePresentation { get; }
+        Presentation? ActivePresentation { get; }
 
         /// <summary>
         /// 获取当前活动的放映窗口对象。如果不存在则为 null。
         /// </summary>
-        SlideShowWindow ActiveSlideShowWindow { get; }
+        SlideShowWindow? ActiveSlideShowWindow { get; }
 
         /// <summary>
         /// 尝试连接到正在运行的PowerPoint实例并开始监视事件。
@@ -69,11 +69,6 @@ namespace InkCanvasForClass_Remastered.Services
         /// 切换到下一张幻灯片。
         /// </summary>
         void GoToNextSlide();
-
-        /// <summary>
-        /// 开始幻灯片放映。
-        /// </summary>
-        void StartSlideShow();
 
         /// <summary>
         /// 结束幻灯片放映。

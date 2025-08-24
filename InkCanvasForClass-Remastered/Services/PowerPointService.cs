@@ -1,4 +1,5 @@
 ﻿using InkCanvasForClass_Remastered.Helpers;
+using Microsoft.Extensions.Logging;
 using Microsoft.Office.Interop.PowerPoint;
 using System.Runtime.InteropServices;
 using Application = Microsoft.Office.Interop.PowerPoint.Application;
@@ -7,7 +8,14 @@ namespace InkCanvasForClass_Remastered.Services
 {
     public class PowerPointService : IPowerPointService
     {
-        private Application _pptApplication;
+        private readonly ILogger<PowerPointService> Logger;
+
+        public PowerPointService(ILogger<PowerPointService> logger)
+        {
+            Logger = logger;
+        }
+
+        private Application? _pptApplication;
 
         public event Action<SlideShowWindow> SlideShowBegin;
         public event Action<Presentation> SlideShowEnd;
@@ -19,7 +27,7 @@ namespace InkCanvasForClass_Remastered.Services
 
         public bool IsInSlideShow => _pptApplication?.SlideShowWindows.Count > 0;
 
-        public Presentation ActivePresentation
+        public Presentation? ActivePresentation
         {
             get
             {
@@ -31,7 +39,7 @@ namespace InkCanvasForClass_Remastered.Services
             }
         }
 
-        public SlideShowWindow ActiveSlideShowWindow
+        public SlideShowWindow? ActiveSlideShowWindow
         {
             get
             {
@@ -57,10 +65,11 @@ namespace InkCanvasForClass_Remastered.Services
             try
             {
                 // 尝试获取正在运行的PowerPoint实例
-                _pptApplication = (Application)Marshal2.GetActiveObject("PowerPoint.Application");
+                _pptApplication = Marshal2.GetActiveObject("PowerPoint.Application") as Application;
 
                 if (_pptApplication != null)
                 {
+                    Logger.LogInformation("成功连接到 PowerPoint 应用");
                     // 挂载事件处理器
                     _pptApplication.PresentationOpen += OnPresentationOpen;
                     _pptApplication.PresentationClose += OnPresentationClose;
@@ -72,7 +81,7 @@ namespace InkCanvasForClass_Remastered.Services
                     if (_pptApplication.Presentations.Count > 0)
                     {
                         // 延迟一小段时间再触发，确保MainWindow已经加载完毕
-                        new Timer(_ => OnPresentationOpen(_pptApplication.ActivePresentation), null, 500, Timeout.Infinite);
+                        _ = new Timer(_ => OnPresentationOpen(_pptApplication.ActivePresentation), null, 500, Timeout.Infinite);
                     }
 
                     return true;
@@ -84,10 +93,11 @@ namespace InkCanvasForClass_Remastered.Services
                 _pptApplication = null;
                 return false;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // 其他未知错误
                 _pptApplication = null;
+                Logger.LogWarning(ex, "连接 PowerPoint 时发生未知错误");
                 return false;
             }
             return false;
@@ -106,44 +116,49 @@ namespace InkCanvasForClass_Remastered.Services
 
                 // 释放COM对象
                 Marshal.ReleaseComObject(_pptApplication);
+                Logger.LogInformation("已断开与 PowerPoint 应用的连接");
                 _pptApplication = null;
             }
         }
 
         public void GoToPreviousSlide()
         {
-            if (!IsConnected || _pptApplication.SlideShowWindows.Count < 1) return;
-            new Thread(() =>
+            if (!IsConnected || _pptApplication.SlideShowWindows.Count < 1)
+                return;
+            try
             {
-                try { _pptApplication.SlideShowWindows[1].View.Previous(); } catch { }
-            }).Start();
+                _pptApplication.SlideShowWindows[1].View.Previous();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning(ex, "切换到上一张幻灯片失败");
+            }
         }
 
         public void GoToNextSlide()
         {
             if (!IsConnected || _pptApplication.SlideShowWindows.Count < 1) return;
-            new Thread(() =>
+            try
             {
-                try { _pptApplication.SlideShowWindows[1].View.Next(); } catch { }
-            }).Start();
-        }
-
-        public void StartSlideShow()
-        {
-            if (!IsConnected || _pptApplication.Presentations.Count < 1) return;
-            new Thread(() =>
+                _pptApplication.SlideShowWindows[1].View.Next();
+            }
+            catch (Exception ex)
             {
-                try { _pptApplication.ActivePresentation.SlideShowSettings.Run(); } catch { }
-            }).Start();
+                Logger.LogWarning(ex, "切换到下一张幻灯片失败");
+            }
         }
 
         public void EndSlideShow()
         {
             if (!IsConnected || _pptApplication.SlideShowWindows.Count < 1) return;
-            new Thread(() =>
+            try
             {
-                try { _pptApplication.SlideShowWindows[1].View.Exit(); } catch { }
-            }).Start();
+                _pptApplication.SlideShowWindows[1].View.Exit();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning(ex, "结束幻灯片放映失败");
+            }
         }
 
         // 私有的事件转发器
