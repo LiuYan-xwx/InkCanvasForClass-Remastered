@@ -192,8 +192,7 @@ namespace InkCanvasForClass_Remastered
             ThemeManager.Current.ApplicationTheme = ApplicationTheme.Light;
             SystemEvents_UserPreferenceChanged(null, null);
 
-            //TextBlockVersion.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            LogHelper.WriteLogToFile("ICC-Re Loaded", LogHelper.LogType.Event);
+            Logger.LogInformation("MainWindow Loaded");
 
             isLoaded = true;
 
@@ -259,7 +258,7 @@ namespace InkCanvasForClass_Remastered
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            LogHelper.WriteLogToFile("ICC-Re closing", LogHelper.LogType.Event);
+            Logger.LogInformation("MainWindow closing");
             if (!CloseIsFromButton && Settings.IsSecondConfirmWhenShutdownApp)
             {
                 e.Cancel = true;
@@ -269,7 +268,7 @@ namespace InkCanvasForClass_Remastered
 
             if (e.Cancel)
             {
-                LogHelper.WriteLogToFile("ICC-Re closing cancelled", LogHelper.LogType.Event);
+                Logger.LogInformation("MainWindow closing cancelled");
             }
         }
 
@@ -292,8 +291,7 @@ namespace InkCanvasForClass_Remastered
         private void Window_Closed(object sender, EventArgs e)
         {
             SystemEvents.DisplaySettingsChanged -= SystemEventsOnDisplaySettingsChanged;
-
-            LogHelper.WriteLogToFile("ICC-Re closed", LogHelper.LogType.Event);
+            Logger.LogInformation("MainWindow closed");
         }
 
         #endregion Definations and Loading
@@ -3745,7 +3743,7 @@ namespace InkCanvasForClass_Remastered
                     }
                     catch (Exception ex)
                     {
-                        LogHelper.WriteLogToFile(ex.ToString(), LogHelper.LogType.Error);
+                        Logger.LogError(ex,"跳转到上次播放页失败");
                     }
                 }), DispatcherPriority.Normal);
 
@@ -3994,7 +3992,7 @@ namespace InkCanvasForClass_Remastered
 
             isStopInkReplay = true;
 
-            LogHelper.WriteLogToFile("PowerPoint Application Slide Show Begin", LogHelper.LogType.Event);
+            Logger.LogInformation("幻灯片放映开始");
 
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
@@ -4021,8 +4019,7 @@ namespace InkCanvasForClass_Remastered
                 _memoryStreams = new MemoryStream[_slidescount + 2];
 
                 _pptName = currentPresentation.Name;
-                LogHelper.NewLog("Name: " + _pptName);
-                LogHelper.NewLog("Slides Count: " + _slidescount.ToString());
+                Logger.LogInformation($"当前幻灯片：{_pptName}，总数：{_slidescount}");
 
                 //检查是否有已有墨迹，并加载
                 if (Settings.IsAutoSaveStrokesInPowerPoint)
@@ -4030,7 +4027,7 @@ namespace InkCanvasForClass_Remastered
                                          @"\Auto Saved - Presentations\" + _pptName + "_" +
                                          _slidescount))
                     {
-                        LogHelper.WriteLogToFile("Found saved strokes", LogHelper.LogType.Trace);
+                        Logger.LogInformation("检测到已有保存的墨迹，正在加载...");
                         var files = new DirectoryInfo(Settings.AutoSaveStrokesPath +
                                                       @"\Auto Saved - Presentations\" + currentPresentation.Name + "_" +
                                                       currentPresentation.Slides.Count).GetFiles();
@@ -4048,13 +4045,11 @@ namespace InkCanvasForClass_Remastered
                                 }
                                 catch (Exception ex)
                                 {
-                                    LogHelper.WriteLogToFile(
-                                        $"Failed to load strokes on Slide {i}\n{ex.ToString()}",
-                                        LogHelper.LogType.Error);
+                                    Logger.LogInformation(ex, $"加载第 {i} 页墨迹失败");
                                 }
                             }
 
-                        LogHelper.WriteLogToFile($"Loaded {count.ToString()} saved strokes");
+                        Logger.LogInformation($"加载完成，共 {count} 页");
                     }
 
                 StackPanelPPTControls.Visibility = Visibility.Visible;
@@ -4101,7 +4096,7 @@ namespace InkCanvasForClass_Remastered
                     UpdatePPTBtnDisplaySettingsStatus();
                     UpdatePPTBtnStyleSettingsStatus();
                 }
-                LogHelper.NewLog("PowerPoint Slide Show Loading process complete");
+                Logger.LogInformation("幻灯片放映时处理加载完成");
 
                 if (!isFloatingBarFolded)
                 {
@@ -4121,10 +4116,10 @@ namespace InkCanvasForClass_Remastered
         {
             if (isFloatingBarFolded) await UnFoldFloatingBar(new object());
 
-            LogHelper.WriteLogToFile(string.Format("PowerPoint Slide Show End"), LogHelper.LogType.Event);
+            Logger.LogInformation("幻灯片放映结束");
             if (isEnteredSlideShowEndEvent)
             {
-                LogHelper.WriteLogToFile("Detected previous entrance, returning");
+                Logger.LogInformation("检测到之前已经进入过退出事件，返回");
                 return;
             }
 
@@ -4149,9 +4144,8 @@ namespace InkCanvasForClass_Remastered
                                 var srcBuf = new byte[_memoryStreams[i].Length];
                                 var byteLength = _memoryStreams[i].Read(srcBuf, 0, srcBuf.Length);
                                 File.WriteAllBytes(folderPath + @"\" + i.ToString("0000") + ".icstk", srcBuf);
-                                LogHelper.WriteLogToFile(string.Format(
-                                    "Saved strokes for Slide {0}, size={1}, byteLength={2}", i.ToString(),
-                                    _memoryStreams[i].Length, byteLength));
+                                Logger.LogInformation(
+                                    $"已为第 {i} 页保存墨迹, 大小{_memoryStreams[i].Length}, 字节数{byteLength}");
                             }
                             else
                             {
@@ -4160,9 +4154,7 @@ namespace InkCanvasForClass_Remastered
                         }
                         catch (Exception ex)
                         {
-                            LogHelper.WriteLogToFile(
-                                $"Failed to save strokes for Slide {i}\n{ex.ToString()}",
-                                LogHelper.LogType.Error);
+                            Logger.LogError(ex, $"为第 {i} 页保存墨迹失败");
                             File.Delete(folderPath + @"\" + i.ToString("0000") + ".icstk");
                         }
             }
@@ -4214,8 +4206,7 @@ namespace InkCanvasForClass_Remastered
 
         private void PptApplication_SlideShowNextSlide(SlideShowWindow Wn)
         {
-            LogHelper.WriteLogToFile($"PowerPoint Next Slide (Slide {Wn.View.CurrentShowPosition})",
-                LogHelper.LogType.Event);
+            Logger.LogInformation($"幻灯片跳转到第 {Wn.View.CurrentShowPosition} 页");
             if (Wn.View.CurrentShowPosition == _previousSlideID) return;
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -4562,7 +4553,7 @@ namespace InkCanvasForClass_Remastered
             catch (Exception ex)
             {
                 ShowNotification("墨迹保存失败");
-                LogHelper.WriteLogToFile("墨迹保存失败 | " + ex.ToString(), LogHelper.LogType.Error);
+                Logger.LogError(ex, "墨迹保存失败");
             }
         }
 
@@ -4577,8 +4568,7 @@ namespace InkCanvasForClass_Remastered
             openFileDialog.Title = "打开墨迹文件";
             openFileDialog.Filter = "Ink Canvas Strokes File (*.icstk)|*.icstk";
             if (openFileDialog.ShowDialog() != true) return;
-            LogHelper.WriteLogToFile($"Strokes Insert: Name: {openFileDialog.FileName}",
-                LogHelper.LogType.Event);
+            Logger.LogInformation($"用户选择打开墨迹文件 {openFileDialog.FileName}");
             try
             {
                 var fileStreamHasNoStroke = false;
@@ -4591,7 +4581,7 @@ namespace InkCanvasForClass_Remastered
                         ClearStrokes(true);
                         timeMachine.ClearStrokeHistory();
                         inkCanvas.Strokes.Add(strokes);
-                        LogHelper.NewLog($"Strokes Insert: Strokes Count: {inkCanvas.Strokes.Count.ToString()}");
+                        Logger.LogInformation($"墨迹文件打开成功，墨迹数 {strokes.Count}");
                     }
                 }
 
@@ -4603,7 +4593,7 @@ namespace InkCanvasForClass_Remastered
                         ClearStrokes(true);
                         timeMachine.ClearStrokeHistory();
                         inkCanvas.Strokes.Add(strokes);
-                        LogHelper.NewLog($"Strokes Insert (2): Strokes Count: {strokes.Count.ToString()}");
+                        Logger.LogInformation($"墨迹文件打开成功，墨迹数 {strokes.Count}");
                     }
 
                 if (inkCanvas.Visibility != Visibility.Visible) SymbolIconCursor_Click(sender, null);
