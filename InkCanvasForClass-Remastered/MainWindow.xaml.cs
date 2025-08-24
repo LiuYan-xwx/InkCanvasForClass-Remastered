@@ -3717,36 +3717,6 @@ namespace InkCanvasForClass_Remastered
         private void PptApplication_PresentationOpen(Presentation Pres)
         {
             if (Pres == null) return;
-            // 跳转到上次播放页
-            if (Settings.IsNotifyPreviousPage)
-                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    var folderPath = Settings.AutoSaveStrokesPath +
-                                     @"\Auto Saved - Presentations\" + Pres.Name + "_" +
-                                     Pres.Slides.Count;
-                    try
-                    {
-                        if (!File.Exists(folderPath + "/Position")) return;
-                        if (!int.TryParse(File.ReadAllText(folderPath + "/Position"), out var page)) return;
-                        if (page <= 0) return;
-                        new YesOrNoNotificationWindow($"上次播放到了第 {page} 页, 是否立即跳转", () =>
-                        {
-                            if (_powerPointService.IsInSlideShow)
-                            {
-                                _powerPointService.ActiveSlideShowWindow?.View.GotoSlide(page);
-                            }
-                            else
-                            {
-                                Pres.Windows[1].View.GotoSlide(page);
-                            }
-                        }).ShowDialog();
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.LogError(ex,"跳转到上次播放页失败");
-                    }
-                }), DispatcherPriority.Normal);
-
 
             //检查是否有隐藏幻灯片
             if (Settings.IsNotifyHiddenPage)
@@ -4032,22 +4002,20 @@ namespace InkCanvasForClass_Remastered
                                                       currentPresentation.Slides.Count).GetFiles();
                         var count = 0;
                         foreach (var file in files)
-                            if (file.Name != "Position")
+                        {
+                            var i = -1;
+                            try
                             {
-                                var i = -1;
-                                try
-                                {
-                                    i = int.Parse(Path.GetFileNameWithoutExtension(file.Name));
-                                    _memoryStreams[i] = new MemoryStream(File.ReadAllBytes(file.FullName));
-                                    _memoryStreams[i].Position = 0;
-                                    count++;
-                                }
-                                catch (Exception ex)
-                                {
-                                    Logger.LogInformation(ex, $"加载第 {i} 页墨迹失败");
-                                }
+                                i = int.Parse(Path.GetFileNameWithoutExtension(file.Name));
+                                _memoryStreams[i] = new MemoryStream(File.ReadAllBytes(file.FullName));
+                                _memoryStreams[i].Position = 0;
+                                count++;
                             }
-
+                            catch (Exception ex)
+                            {
+                                Logger.LogInformation(ex, $"加载第 {i} 页墨迹失败");
+                            }
+                        }
                         Logger.LogInformation($"加载完成，共 {count} 页");
                     }
 
@@ -4128,11 +4096,6 @@ namespace InkCanvasForClass_Remastered
                 var folderPath = Settings.AutoSaveStrokesPath + @"\Auto Saved - Presentations\" +
                                  Pres.Name + "_" + Pres.Slides.Count;
                 if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
-                try
-                {
-                    File.WriteAllText(folderPath + "/Position", _previousSlideID.ToString());
-                }
-                catch { }
 
                 for (var i = 1; i <= Pres.Slides.Count; i++)
                     if (_memoryStreams[i] != null)
