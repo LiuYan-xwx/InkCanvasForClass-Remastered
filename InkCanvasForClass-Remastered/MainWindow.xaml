@@ -9,6 +9,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
     xmlns:Settings="clr-namespace:InkCanvasForClass_Remastered.Models"
+    xmlns:local="clr-namespace:InkCanvasForClass_Remastered.Controls"
     Name="window"
     Title="InkCanvasForClass-Remastered"
     Width="1440"

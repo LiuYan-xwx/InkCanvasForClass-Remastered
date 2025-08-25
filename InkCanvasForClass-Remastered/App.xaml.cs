@@ -62,7 +62,7 @@ namespace InkCanvasForClass_Remastered
                 .Build();
 
             Logger = GetService<ILogger<App>>();
-            Logger.LogInformation("ICC-Re 启动，Version: {Version})", Assembly.GetExecutingAssembly().GetName().Version);
+            Logger.LogInformation("ICC-Re 启动，Version: {Version}", Assembly.GetExecutingAssembly().GetName().Version);
 
             Logger.LogInformation("加载设置");
             GetService<SettingsService>().LoadSettings();

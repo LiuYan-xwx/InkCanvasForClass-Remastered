@@ -1,0 +1,22 @@
+<UserControl
+    x:Class="InkCanvasForClass_Remastered.Controls.SettingsToggleControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
+    x:Name="root">
+    <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+        <TextBlock
+            Margin="0,0,16,0"
+            VerticalAlignment="Center"
+            FontSize="14"
+            Foreground="#fafafa"
+            Text="{Binding Header, ElementName=root}" />
+        <ui:ToggleSwitch
+            FontFamily="Microsoft YaHei UI"
+            FontWeight="Bold"
+            IsOn="{Binding IsOn, ElementName=root, Mode=TwoWay}"
+            OffContent=""
+            OnContent=""
+            Toggled="ToggleSwitch_Toggled" />
+    </StackPanel>
+</UserControl>
