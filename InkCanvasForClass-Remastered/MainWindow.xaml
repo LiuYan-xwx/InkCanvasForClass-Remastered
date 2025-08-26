@@ -9,7 +9,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
     xmlns:Settings="clr-namespace:InkCanvasForClass_Remastered.Models"
-    xmlns:local="clr-namespace:InkCanvasForClass_Remastered.Controls"
+    xmlns:controls="clr-namespace:InkCanvasForClass_Remastered.Controls"
     Name="window"
     Title="InkCanvasForClass-Remastered"
     Width="1440"
@@ -360,22 +360,9 @@
                                         Text="启动" />
                                 </GroupBox.Header>
                                 <ikw:SimpleStackPanel Spacing="6">
-
-                                    <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                                        <TextBlock
-                                            Margin="0,0,16,0"
-                                            VerticalAlignment="Center"
-                                            FontSize="14"
-                                            Foreground="#fafafa"
-                                            Text="开机时运行" />
-                                        <ui:ToggleSwitch
-                                            Name="ToggleSwitchRunAtStartup"
-                                            FontFamily="Microsoft YaHei UI"
-                                            FontWeight="Bold"
-                                            IsOn="{Binding Settings.IsAutoStartEnabled, Mode=TwoWay}"
-                                            OffContent=""
-                                            OnContent="" />
-                                    </ikw:SimpleStackPanel>
+                                    <controls:SettingsToggleControl
+                                        Header="开机自启"
+                                        IsOn="{Binding Settings.IsAutoStartEnabled}" />
                                     <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                         <TextBlock
                                             Margin="0,0,16,0"
