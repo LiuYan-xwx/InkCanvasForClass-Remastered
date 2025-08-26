@@ -3012,8 +3012,7 @@
                                         <TextBlock
                                             x:Name="AppVersionTextBlock"
                                             FontSize="18"
-                                            FontWeight="Bold"
-                                            Text="5.X.X.X" />
+                                            FontWeight="Bold" />
                                     </ikw:SimpleStackPanel>
                                     <TextBlock
                                         Foreground="#a1a1aa"
