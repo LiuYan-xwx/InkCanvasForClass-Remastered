@@ -39,8 +39,8 @@ namespace InkCanvasForClass_Remastered.Helpers
             IntPtr foregroundWindowHandle = GetForegroundWindow();
 
             const int nChars = 256;
-            StringBuilder windowTitle = new StringBuilder(nChars);
-            GetWindowText(foregroundWindowHandle, windowTitle, nChars);
+            StringBuilder windowTitle = new(nChars);
+            _ = GetWindowText(foregroundWindowHandle, windowTitle, nChars);
 
             return windowTitle.ToString();
         }
@@ -50,8 +50,8 @@ namespace InkCanvasForClass_Remastered.Helpers
             IntPtr foregroundWindowHandle = GetForegroundWindow();
 
             const int nChars = 256;
-            StringBuilder className = new StringBuilder(nChars);
-            GetClassName(foregroundWindowHandle, className, nChars);
+            StringBuilder className = new(nChars);
+            _ = GetClassName(foregroundWindowHandle, className, nChars);
 
             return className.ToString();
         }
@@ -60,8 +60,7 @@ namespace InkCanvasForClass_Remastered.Helpers
         {
             IntPtr foregroundWindowHandle = GetForegroundWindow();
 
-            RECT windowRect;
-            GetWindowRect(foregroundWindowHandle, out windowRect);
+            _ = GetWindowRect(foregroundWindowHandle, out RECT windowRect);
 
             return windowRect;
         }
@@ -69,8 +68,7 @@ namespace InkCanvasForClass_Remastered.Helpers
         public static string ProcessName()
         {
             IntPtr foregroundWindowHandle = GetForegroundWindow();
-            uint processId;
-            GetWindowThreadProcessId(foregroundWindowHandle, out processId);
+            _ = GetWindowThreadProcessId(foregroundWindowHandle, out uint processId);
 
             try
             {
@@ -87,8 +85,7 @@ namespace InkCanvasForClass_Remastered.Helpers
         public static string ProcessPath()
         {
             IntPtr foregroundWindowHandle = GetForegroundWindow();
-            uint processId;
-            GetWindowThreadProcessId(foregroundWindowHandle, out processId);
+            _ = GetWindowThreadProcessId(foregroundWindowHandle, out uint processId);
 
             try
             {

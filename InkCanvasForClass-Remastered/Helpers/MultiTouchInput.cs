@@ -7,10 +7,7 @@ namespace InkCanvasForClass_Remastered.Helpers
 {
     public class VisualCanvas : FrameworkElement
     {
-        protected override Visual GetVisualChild(int index)
-        {
-            return Visual;
-        }
+        protected override Visual GetVisualChild(int index) => Visual;
 
         protected override int VisualChildrenCount => 1;
 
@@ -63,7 +60,7 @@ namespace InkCanvasForClass_Remastered.Helpers
         {
             if (Stroke == null)
             {
-                var collection = new StylusPointCollection { point };
+                StylusPointCollection collection = new() { point };
                 Stroke = new Stroke(collection) { DrawingAttributes = _drawingAttributes };
             }
             else
@@ -79,10 +76,8 @@ namespace InkCanvasForClass_Remastered.Helpers
         {
             try
             {
-                using (var dc = RenderOpen())
-                {
-                    Stroke.Draw(dc);
-                }
+                using DrawingContext dc = RenderOpen();
+                Stroke.Draw(dc);
             }
             catch { }
         }

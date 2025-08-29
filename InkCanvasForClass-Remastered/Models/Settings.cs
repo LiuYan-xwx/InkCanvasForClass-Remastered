@@ -1,10 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using InkCanvasForClass_Remastered.Enums;
-using InkCanvasForClass_Remastered.Helpers;
 using Microsoft.Extensions.Logging;
 using System.IO;
 using System.Text.Json.Serialization;
-using System.Windows.Shapes;
 using WindowsShortcutFactory;
 
 namespace InkCanvasForClass_Remastered.Models
@@ -58,12 +56,12 @@ namespace InkCanvasForClass_Remastered.Models
             get => File.Exists(System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Startup), "ICC-Re.lnk"));
             set
             {
-                var path = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Startup), "ICC-Re.lnk");
+                string path = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Startup), "ICC-Re.lnk");
                 try
                 {
                     if (value)
                     {
-                        using var shortcut = new WindowsShortcut
+                        using WindowsShortcut shortcut = new()
                         {
                             Path = Environment.ProcessPath,
                             WorkingDirectory = Environment.CurrentDirectory

@@ -61,8 +61,7 @@ namespace InkCanvasForClass_Remastered.Helpers
                     {
                         if (windowTitle.Length == windowName.Length)
                         {
-                            WindowPattern windowPattern = window.GetCurrentPattern(WindowPattern.Pattern) as WindowPattern;
-                            if (windowPattern != null)
+                            if (window.GetCurrentPattern(WindowPattern.Pattern) is WindowPattern)
                             {
                                 return true;
                             }
@@ -70,8 +69,7 @@ namespace InkCanvasForClass_Remastered.Helpers
                     }
                     else
                     {
-                        WindowPattern windowPattern = window.GetCurrentPattern(WindowPattern.Pattern) as WindowPattern;
-                        if (windowPattern != null)
+                        if (window.GetCurrentPattern(WindowPattern.Pattern) is WindowPattern)
                         {
                             return true;
                         }

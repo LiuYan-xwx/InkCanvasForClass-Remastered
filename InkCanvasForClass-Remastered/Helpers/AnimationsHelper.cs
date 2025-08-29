@@ -8,15 +8,16 @@ namespace InkCanvasForClass_Remastered.Helpers
     {
         public static void ShowWithFadeIn(UIElement element, double duration = 0.15)
         {
-            if (element.Visibility == Visibility.Visible) return;
+            if (element.Visibility == Visibility.Visible)
+                return;
 
             if (element == null)
                 throw new ArgumentNullException(nameof(element));
 
-            var sb = new Storyboard();
+            Storyboard sb = new();
 
             // 渐变动画
-            var fadeInAnimation = new DoubleAnimation
+            DoubleAnimation fadeInAnimation = new()
             {
                 From = 0.5,
                 To = 1,
@@ -35,26 +36,27 @@ namespace InkCanvasForClass_Remastered.Helpers
         {
             try
             {
-                if (element.Visibility == Visibility.Visible) return;
+                if (element.Visibility == Visibility.Visible)
+                    return;
 
                 if (element == null)
                     throw new ArgumentNullException(nameof(element));
 
-                var sb = new Storyboard();
+                Storyboard sb = new();
 
                 // 渐变动画
-                var fadeInAnimation = new DoubleAnimation
+                DoubleAnimation fadeInAnimation = new()
                 {
                     From = 0.5,
                     To = 1,
-                    Duration = TimeSpan.FromSeconds(duration)
+                    Duration = TimeSpan.FromSeconds(duration),
+                    EasingFunction = new CubicEase()
                 };
-                fadeInAnimation.EasingFunction = new CubicEase();
 
                 Storyboard.SetTargetProperty(fadeInAnimation, new PropertyPath(UIElement.OpacityProperty));
 
                 // 滑动动画
-                var slideAnimation = new DoubleAnimation
+                DoubleAnimation slideAnimation = new()
                 {
                     From = element.RenderTransform.Value.OffsetY + 10, // 滑动距离
                     To = 0,
@@ -79,15 +81,16 @@ namespace InkCanvasForClass_Remastered.Helpers
         {
             try
             {
-                if (element.Visibility == Visibility.Visible) return;
+                if (element.Visibility == Visibility.Visible)
+                    return;
 
                 if (element == null)
                     throw new ArgumentNullException(nameof(element));
 
-                var sb = new Storyboard();
+                Storyboard sb = new();
 
                 // 渐变动画
-                var fadeInAnimation = new DoubleAnimation
+                DoubleAnimation fadeInAnimation = new()
                 {
                     From = 0.5,
                     To = 1,
@@ -96,7 +99,7 @@ namespace InkCanvasForClass_Remastered.Helpers
                 Storyboard.SetTargetProperty(fadeInAnimation, new PropertyPath(UIElement.OpacityProperty));
 
                 // 滑动动画
-                var slideAnimation = new DoubleAnimation
+                DoubleAnimation slideAnimation = new()
                 {
                     From = element.RenderTransform.Value.OffsetX - 20, // 滑动距离
                     To = 0,
@@ -119,15 +122,16 @@ namespace InkCanvasForClass_Remastered.Helpers
         {
             try
             {
-                if (element.Visibility == Visibility.Visible) return;
+                if (element.Visibility == Visibility.Visible)
+                    return;
 
                 if (element == null)
                     throw new ArgumentNullException(nameof(element));
 
-                var sb = new Storyboard();
+                Storyboard sb = new();
 
                 // 水平方向的缩放动画
-                var scaleXAnimation = new DoubleAnimation
+                DoubleAnimation scaleXAnimation = new()
                 {
                     From = 0,
                     To = 1,
@@ -136,13 +140,13 @@ namespace InkCanvasForClass_Remastered.Helpers
                 Storyboard.SetTargetProperty(scaleXAnimation, new PropertyPath("(UIElement.RenderTransform).(ScaleTransform.ScaleX)"));
 
                 // 垂直方向的缩放动画
-                var scaleYAnimation = new DoubleAnimation
+                DoubleAnimation scaleYAnimation = new()
                 {
                     From = 0,
                     To = 1,
-                    Duration = TimeSpan.FromSeconds(duration)
+                    Duration = TimeSpan.FromSeconds(duration),
+                    EasingFunction = new CubicEase()
                 };
-                scaleYAnimation.EasingFunction = new CubicEase();
                 scaleXAnimation.EasingFunction = new CubicEase();
                 Storyboard.SetTargetProperty(scaleYAnimation, new PropertyPath("(UIElement.RenderTransform).(ScaleTransform.ScaleY)"));
 
@@ -162,15 +166,16 @@ namespace InkCanvasForClass_Remastered.Helpers
         {
             try
             {
-                if (element.Visibility == Visibility.Visible) return;
+                if (element.Visibility == Visibility.Visible)
+                    return;
 
                 if (element == null)
                     throw new ArgumentNullException(nameof(element));
 
-                var sb = new Storyboard();
+                Storyboard sb = new();
 
                 // 水平方向的缩放动画
-                var scaleXAnimation = new DoubleAnimation
+                DoubleAnimation scaleXAnimation = new()
                 {
                     From = 0,
                     To = 1,
@@ -179,7 +184,7 @@ namespace InkCanvasForClass_Remastered.Helpers
                 Storyboard.SetTargetProperty(scaleXAnimation, new PropertyPath("(UIElement.RenderTransform).(ScaleTransform.ScaleX)"));
 
                 // 垂直方向的缩放动画
-                var scaleYAnimation = new DoubleAnimation
+                DoubleAnimation scaleYAnimation = new()
                 {
                     From = 0,
                     To = 1,
@@ -206,41 +211,39 @@ namespace InkCanvasForClass_Remastered.Helpers
         {
             try
             {
-                if (element.Visibility == Visibility.Collapsed) return;
+                if (element.Visibility == Visibility.Collapsed)
+                    return;
 
                 if (element == null)
                     throw new ArgumentNullException(nameof(element));
 
-                var sb = new Storyboard();
+                Storyboard sb = new();
 
                 // 渐变动画
-                var fadeOutAnimation = new DoubleAnimation
+                DoubleAnimation fadeOutAnimation = new()
                 {
                     From = 1,
                     To = 0,
-                    Duration = TimeSpan.FromSeconds(duration)
+                    Duration = TimeSpan.FromSeconds(duration),
+                    EasingFunction = new CubicEase()
                 };
-                fadeOutAnimation.EasingFunction = new CubicEase();
                 Storyboard.SetTargetProperty(fadeOutAnimation, new PropertyPath(UIElement.OpacityProperty));
 
                 // 滑动动画
-                var slideAnimation = new DoubleAnimation
+                DoubleAnimation slideAnimation = new()
                 {
                     From = 0,
                     To = element.RenderTransform.Value.OffsetY + 10, // 滑动距离
-                    Duration = TimeSpan.FromSeconds(duration)
+                    Duration = TimeSpan.FromSeconds(duration),
+                    EasingFunction = new CubicEase()
                 };
-                slideAnimation.EasingFunction = new CubicEase();
 
                 Storyboard.SetTargetProperty(slideAnimation, new PropertyPath("(UIElement.RenderTransform).(TranslateTransform.Y)"));
 
                 sb.Children.Add(fadeOutAnimation);
                 sb.Children.Add(slideAnimation);
 
-                sb.Completed += (s, e) =>
-                {
-                    element.Visibility = Visibility.Collapsed;
-                };
+                sb.Completed += (s, e) => element.Visibility = Visibility.Collapsed;
 
                 element.RenderTransform = new TranslateTransform();
                 sb.Begin((FrameworkElement)element);
@@ -250,15 +253,16 @@ namespace InkCanvasForClass_Remastered.Helpers
 
         public static void HideWithFadeOut(UIElement element, double duration = 0.15)
         {
-            if (element.Visibility == Visibility.Collapsed) return;
+            if (element.Visibility == Visibility.Collapsed)
+                return;
 
             if (element == null)
                 throw new ArgumentNullException(nameof(element));
 
-            var sb = new Storyboard();
+            Storyboard sb = new();
 
             // 渐变动画
-            var fadeOutAnimation = new DoubleAnimation
+            DoubleAnimation fadeOutAnimation = new()
             {
                 From = 1,
                 To = 0,
@@ -268,10 +272,7 @@ namespace InkCanvasForClass_Remastered.Helpers
 
             sb.Children.Add(fadeOutAnimation);
 
-            sb.Completed += (s, e) =>
-            {
-                element.Visibility = Visibility.Collapsed;
-            };
+            sb.Completed += (s, e) => element.Visibility = Visibility.Collapsed;
 
             sb.Begin((FrameworkElement)element);
         }

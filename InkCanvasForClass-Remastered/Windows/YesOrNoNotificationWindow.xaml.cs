@@ -11,7 +11,7 @@ namespace InkCanvasForClass_Remastered
         private readonly Action _noAction;
         private readonly Action _windowClose;
 
-        public YesOrNoNotificationWindow(string text, Action yesAction = null, Action noAction = null, Action windowClose = null)
+        public YesOrNoNotificationWindow(string text, Action? yesAction = null, Action? noAction = null, Action? windowClose = null)
         {
             _yesAction = yesAction;
             _noAction = noAction;

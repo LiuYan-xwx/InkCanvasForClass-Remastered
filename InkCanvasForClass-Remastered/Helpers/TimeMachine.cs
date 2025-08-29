@@ -5,7 +5,7 @@ namespace InkCanvasForClass_Remastered.Helpers
 {
     public class TimeMachine
     {
-        private readonly List<TimeMachineHistory> _currentStrokeHistory = new List<TimeMachineHistory>();
+        private readonly List<TimeMachineHistory> _currentStrokeHistory = new();
 
         private int _currentIndex = -1;
 
@@ -21,7 +21,7 @@ namespace InkCanvasForClass_Remastered.Helpers
         {
             if (_currentIndex + 1 < _currentStrokeHistory.Count)
             {
-                _currentStrokeHistory.RemoveRange(_currentIndex + 1, (_currentStrokeHistory.Count - 1) - _currentIndex);
+                _currentStrokeHistory.RemoveRange(_currentIndex + 1, _currentStrokeHistory.Count - 1 - _currentIndex);
             }
             _currentStrokeHistory.Add(new TimeMachineHistory(stroke, TimeMachineHistoryType.UserInput, false));
             _currentIndex = _currentStrokeHistory.Count - 1;
@@ -32,7 +32,7 @@ namespace InkCanvasForClass_Remastered.Helpers
         {
             if (_currentIndex + 1 < _currentStrokeHistory.Count)
             {
-                _currentStrokeHistory.RemoveRange(_currentIndex + 1, (_currentStrokeHistory.Count - 1) - _currentIndex);
+                _currentStrokeHistory.RemoveRange(_currentIndex + 1, _currentStrokeHistory.Count - 1 - _currentIndex);
             }
             _currentStrokeHistory.Add(new TimeMachineHistory(generatedStroke,
                 TimeMachineHistoryType.ShapeRecognition,
@@ -46,7 +46,7 @@ namespace InkCanvasForClass_Remastered.Helpers
         {
             if (_currentIndex + 1 < _currentStrokeHistory.Count)
             {
-                _currentStrokeHistory.RemoveRange(_currentIndex + 1, (_currentStrokeHistory.Count - 1) - _currentIndex);
+                _currentStrokeHistory.RemoveRange(_currentIndex + 1, _currentStrokeHistory.Count - 1 - _currentIndex);
             }
             _currentStrokeHistory.Add(
                 new TimeMachineHistory(stylusPointDictionary,
@@ -58,7 +58,7 @@ namespace InkCanvasForClass_Remastered.Helpers
         {
             if (_currentIndex + 1 < _currentStrokeHistory.Count)
             {
-                _currentStrokeHistory.RemoveRange(_currentIndex + 1, (_currentStrokeHistory.Count - 1) - _currentIndex);
+                _currentStrokeHistory.RemoveRange(_currentIndex + 1, _currentStrokeHistory.Count - 1 - _currentIndex);
             }
             _currentStrokeHistory.Add(
                 new TimeMachineHistory(drawingAttributes,
@@ -67,11 +67,11 @@ namespace InkCanvasForClass_Remastered.Helpers
             NotifyUndoRedoState();
         }
 
-        public void CommitStrokeEraseHistory(StrokeCollection stroke, StrokeCollection sourceStroke = null)
+        public void CommitStrokeEraseHistory(StrokeCollection stroke, StrokeCollection? sourceStroke = null)
         {
             if (_currentIndex + 1 < _currentStrokeHistory.Count)
             {
-                _currentStrokeHistory.RemoveRange(_currentIndex + 1, (_currentStrokeHistory.Count - 1) - _currentIndex);
+                _currentStrokeHistory.RemoveRange(_currentIndex + 1, _currentStrokeHistory.Count - 1 - _currentIndex);
             }
             _currentStrokeHistory.Add(new TimeMachineHistory(stroke, TimeMachineHistoryType.Clear, true, sourceStroke));
             _currentIndex = _currentStrokeHistory.Count - 1;
@@ -87,7 +87,7 @@ namespace InkCanvasForClass_Remastered.Helpers
 
         public TimeMachineHistory Undo()
         {
-            var item = _currentStrokeHistory[_currentIndex];
+            TimeMachineHistory item = _currentStrokeHistory[_currentIndex];
             item.StrokeHasBeenCleared = !item.StrokeHasBeenCleared;
             _currentIndex--;
             OnUndoStateChanged?.Invoke(_currentIndex > -1);
@@ -97,7 +97,7 @@ namespace InkCanvasForClass_Remastered.Helpers
 
         public TimeMachineHistory Redo()
         {
-            var item = _currentStrokeHistory[++_currentIndex];
+            TimeMachineHistory item = _currentStrokeHistory[++_currentIndex];
             item.StrokeHasBeenCleared = !item.StrokeHasBeenCleared;
             NotifyUndoRedoState();
             return item;
@@ -107,7 +107,7 @@ namespace InkCanvasForClass_Remastered.Helpers
         {
             if (_currentIndex + 1 < _currentStrokeHistory.Count)
             {
-                _currentStrokeHistory.RemoveRange(_currentIndex + 1, (_currentStrokeHistory.Count - 1) - _currentIndex);
+                _currentStrokeHistory.RemoveRange(_currentIndex + 1, _currentStrokeHistory.Count - 1 - _currentIndex);
             }
             return _currentStrokeHistory.ToArray();
         }
@@ -132,7 +132,7 @@ namespace InkCanvasForClass_Remastered.Helpers
         public TimeMachineHistoryType CommitType;
         public bool StrokeHasBeenCleared = false;
         public StrokeCollection CurrentStroke;
-        public StrokeCollection ReplacedStroke;
+        public StrokeCollection? ReplacedStroke;
         //这里说一下 Tuple的 Value1 是初始值 ; Value 2 是改变值
         public Dictionary<Stroke, Tuple<StylusPointCollection, StylusPointCollection>> StylusPointDictionary;
         public Dictionary<Stroke, Tuple<DrawingAttributes, DrawingAttributes>> DrawingAttributes;

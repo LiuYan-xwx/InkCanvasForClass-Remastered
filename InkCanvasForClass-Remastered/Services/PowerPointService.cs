@@ -35,7 +35,10 @@ namespace InkCanvasForClass_Remastered.Services
                 {
                     return _pptApplication?.ActivePresentation;
                 }
-                catch { return null; }
+                catch
+                {
+                    return null;
+                }
             }
         }
 
@@ -51,7 +54,10 @@ namespace InkCanvasForClass_Remastered.Services
                     }
                     return null;
                 }
-                catch { return null; }
+                catch
+                {
+                    return null;
+                }
             }
         }
 
@@ -137,7 +143,8 @@ namespace InkCanvasForClass_Remastered.Services
 
         public void GoToNextSlide()
         {
-            if (!IsConnected || _pptApplication.SlideShowWindows.Count < 1) return;
+            if (!IsConnected || _pptApplication.SlideShowWindows.Count < 1)
+                return;
             try
             {
                 _pptApplication.SlideShowWindows[1].View.Next();
@@ -150,7 +157,8 @@ namespace InkCanvasForClass_Remastered.Services
 
         public void EndSlideShow()
         {
-            if (!IsConnected || _pptApplication.SlideShowWindows.Count < 1) return;
+            if (!IsConnected || _pptApplication.SlideShowWindows.Count < 1)
+                return;
             try
             {
                 _pptApplication.SlideShowWindows[1].View.Exit();

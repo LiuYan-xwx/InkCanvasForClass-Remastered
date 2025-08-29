@@ -30,7 +30,7 @@ namespace InkCanvasForClass_Remastered
         {
             if (originText != TextBoxNames.Text)
             {
-                var result = MessageBox.Show("是否保存？", "名单导入", MessageBoxButton.YesNo);
+                MessageBoxResult result = MessageBox.Show("是否保存？", "名单导入", MessageBoxButton.YesNo);
                 if (result == MessageBoxResult.Yes)
                 {
                     File.WriteAllText(App.AppRootFolderPath + "Names.txt", TextBoxNames.Text);
@@ -38,9 +38,6 @@ namespace InkCanvasForClass_Remastered
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
+        private void Button_Click(object sender, RoutedEventArgs e) => Close();
     }
 }

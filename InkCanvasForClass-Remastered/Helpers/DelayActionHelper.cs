@@ -5,7 +5,7 @@ namespace InkCanvasForClass_Remastered.Helpers
 {
     public class DelayAction
     {
-        Timer _timerDebounce;
+        Timer? _timerDebounce;
 
         /// <summary>
         /// 防抖函式
@@ -20,7 +20,9 @@ namespace InkCanvasForClass_Remastered.Helpers
                     _timerDebounce = new Timer(timeMs) { AutoReset = false };
                     _timerDebounce.Elapsed += (o, e) =>
                     {
-                        _timerDebounce.Stop(); _timerDebounce.Close(); _timerDebounce = null;
+                        _timerDebounce.Stop();
+                        _timerDebounce.Close();
+                        _timerDebounce = null;
                         InvokeAction(action, inv);
                     };
                 }
@@ -39,7 +41,7 @@ namespace InkCanvasForClass_Remastered.Helpers
             {
                 if (inv.InvokeRequired)
                 {
-                    inv.Invoke(action, null);
+                    _ = inv.Invoke(action, null);
                 }
                 else
                 {

@@ -1,5 +1,4 @@
 ﻿using Hardcodet.Wpf.TaskbarNotification;
-using InkCanvasForClass_Remastered.Helpers;
 using InkCanvasForClass_Remastered.Services;
 using InkCanvasForClass_Remastered.Services.Logging;
 using InkCanvasForClass_Remastered.ViewModels;
@@ -50,7 +49,7 @@ namespace InkCanvasForClass_Remastered
                 Environment.Exit(0);
                 return;
             }
-            
+
             FileFolderService.CreateFolders();
 
             IAppHost.Host = Host.CreateDefaultBuilder()

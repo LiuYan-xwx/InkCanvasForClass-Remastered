@@ -5,7 +5,6 @@ using InkCanvasForClass_Remastered.Services;
 using InkCanvasForClass_Remastered.ViewModels;
 using iNKORE.UI.WPF.Modern;
 using Microsoft.Extensions.Logging;
-using Microsoft.Office.Core;
 using Microsoft.Office.Interop.PowerPoint;
 using Microsoft.Win32;
 using OSVersionExtension;

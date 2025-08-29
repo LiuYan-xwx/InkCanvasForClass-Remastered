@@ -7,21 +7,21 @@ namespace InkCanvasForClass_Remastered.Helpers
     {
         public static bool IsOutsideOfScreen(FrameworkElement target)
         {
-            var hwndSource = (HwndSource)PresentationSource.FromVisual(target);
+            HwndSource? hwndSource = (HwndSource)PresentationSource.FromVisual(target);
             if (hwndSource is null)
             {
                 return true;
             }
 
-            var hWnd = hwndSource.Handle;
-            var targetBounds = GetPixelBoundsToScreen(target);
+            nint hWnd = hwndSource.Handle;
+            System.Drawing.Rectangle targetBounds = GetPixelBoundsToScreen(target);
 
-            var screens = System.Windows.Forms.Screen.AllScreens;
+            System.Windows.Forms.Screen[] screens = System.Windows.Forms.Screen.AllScreens;
             return !screens.Any(x => x.Bounds.IntersectsWith(targetBounds));
 
             System.Drawing.Rectangle GetPixelBoundsToScreen(FrameworkElement visual)
             {
-                var pixelBoundsToScreen = Rect.Empty;
+                Rect pixelBoundsToScreen = Rect.Empty;
                 pixelBoundsToScreen.Union(visual.PointToScreen(new Point(0, 0)));
                 pixelBoundsToScreen.Union(visual.PointToScreen(new Point(visual.ActualWidth, 0)));
                 pixelBoundsToScreen.Union(visual.PointToScreen(new Point(0, visual.ActualHeight)));

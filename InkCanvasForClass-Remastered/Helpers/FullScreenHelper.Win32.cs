@@ -73,8 +73,8 @@ namespace InkCanvasForClass_Remastered.Helpers
                 public static extern bool GetWindowRect(IntPtr hWnd, out Rectangle lpRect);
 
                 [DllImport(LibraryName, ExactSpelling = true, SetLastError = true)]
-                public static extern Int32 SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, Int32 x, Int32 y, Int32 cx,
-                    Int32 cy, Int32 wFlagslong);
+                public static extern int SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx,
+                    int cy, int wFlagslong);
 
                 [DllImport(LibraryName, ExactSpelling = true)]
                 public static extern bool GetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl);
@@ -262,29 +262,19 @@ namespace InkCanvasForClass_Remastered.Helpers
             /// 矩形的宽度
             /// </summary>
             public int Width
-            {
-                get { return unchecked((int)(Right - Left)); }
-                set { Right = unchecked((int)(Left + value)); }
+            { get => unchecked((int)(Right - Left)); set => Right = unchecked((int)(Left + value));
             }
 
             /// <summary>
             /// 矩形的高度
             /// </summary>
             public int Height
-            {
-                get { return unchecked((int)(Bottom - Top)); }
-                set { Bottom = unchecked((int)(Top + value)); }
+            { get => unchecked((int)(Bottom - Top)); set => Bottom = unchecked((int)(Top + value));
             }
 
-            public bool Equals(Rectangle other)
-            {
-                return (Left == other.Left) && (Right == other.Right) && (Top == other.Top) && (Bottom == other.Bottom);
-            }
+            public bool Equals(Rectangle other) => (Left == other.Left) && (Right == other.Right) && (Top == other.Top) && (Bottom == other.Bottom);
 
-            public override bool Equals(object obj)
-            {
-                return obj is Rectangle rectangle && Equals(rectangle);
-            }
+            public override bool Equals(object obj) => obj is Rectangle rectangle && Equals(rectangle);
 
             public static bool operator ==(Rectangle left, Rectangle right)
             {
@@ -293,14 +283,7 @@ namespace InkCanvasForClass_Remastered.Helpers
 
             public override int GetHashCode()
             {
-                unchecked
-                {
-                    var hashCode = (int)Left;
-                    hashCode = (hashCode * 397) ^ (int)Top;
-                    hashCode = (hashCode * 397) ^ (int)Right;
-                    hashCode = (hashCode * 397) ^ (int)Bottom;
-                    return hashCode;
-                }
+                return HashCode.Combine(Left, Top, Right, Bottom);
             }
 
             public static bool operator !=(Rectangle left, Rectangle right)

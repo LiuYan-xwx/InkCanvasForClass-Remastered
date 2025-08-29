@@ -25,8 +25,8 @@ namespace InkCanvasForClass_Remastered
         /// <param name="callBack">回调函数</param>
         public static bool Regist(Window window, HotkeyModifiers fsModifiers, Key key, HotKeyCallBackHanlder callBack)
         {
-            var hwnd = new WindowInteropHelper(window).Handle;
-            var _hwndSource = HwndSource.FromHwnd(hwnd);
+            nint hwnd = new WindowInteropHelper(window).Handle;
+            HwndSource _hwndSource = HwndSource.FromHwnd(hwnd);
 
             if (keyid == 10)
             {
@@ -35,7 +35,7 @@ namespace InkCanvasForClass_Remastered
 
             int id = keyid++;
 
-            var vk = KeyInterop.VirtualKeyFromKey(key);
+            int vk = KeyInterop.VirtualKeyFromKey(key);
             if (!RegisterHotKey(hwnd, id, fsModifiers, (uint)vk))
             {
                 //throw new Exception("regist hotkey fail.");
@@ -53,7 +53,7 @@ namespace InkCanvasForClass_Remastered
             if (msg == WM_HOTKEY)
             {
                 int id = wParam.ToInt32();
-                if (keymap.TryGetValue(id, out var callback))
+                if (keymap.TryGetValue(id, out HotKeyCallBackHanlder? callback))
                 {
                     callback();
                 }
@@ -71,14 +71,14 @@ namespace InkCanvasForClass_Remastered
             foreach (KeyValuePair<int, HotKeyCallBackHanlder> var in keymap)
             {
                 if (var.Value == callBack)
-                    UnregisterHotKey(hWnd, var.Key);
+                    _ = UnregisterHotKey(hWnd, var.Key);
             }
         }
 
 
         const int WM_HOTKEY = 0x312;
         static int keyid = 10;
-        static Dictionary<int, HotKeyCallBackHanlder> keymap = new Dictionary<int, HotKeyCallBackHanlder>();
+        static Dictionary<int, HotKeyCallBackHanlder> keymap = new();
 
         public delegate void HotKeyCallBackHanlder();
     }

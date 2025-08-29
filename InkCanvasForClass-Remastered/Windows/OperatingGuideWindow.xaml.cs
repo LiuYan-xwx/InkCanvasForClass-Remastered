@@ -15,14 +15,12 @@ namespace InkCanvasForClass_Remastered
             AnimationsHelper.ShowWithSlideFromBottomAndFade(this, 0.25);
         }
 
-        private void BtnClose_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            Close();
-        }
+        private void BtnClose_MouseUp(object sender, MouseButtonEventArgs e) => Close();
 
         private void WindowDragMove(object sender, MouseEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed) DragMove();
+            if (e.LeftButton == MouseButtonState.Pressed)
+                DragMove();
         }
 
         private void BtnFullscreen_MouseUp(object sender, MouseButtonEventArgs e)
@@ -39,9 +37,6 @@ namespace InkCanvasForClass_Remastered
             }
         }
 
-        private void SCManipulationBoundaryFeedback(object sender, ManipulationBoundaryFeedbackEventArgs e)
-        {
-            e.Handled = true;
-        }
+        private void SCManipulationBoundaryFeedback(object sender, ManipulationBoundaryFeedbackEventArgs e) => e.Handled = true;
     }
 }

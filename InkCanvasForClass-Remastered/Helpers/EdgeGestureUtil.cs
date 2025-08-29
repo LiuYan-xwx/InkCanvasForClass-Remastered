@@ -7,8 +7,8 @@ namespace InkCanvasForClass_Remastered.Helpers
     public static class EdgeGestureUtil
     {
 
-        private static Guid DISABLE_TOUCH_SCREEN = new Guid("32CE38B2-2C9A-41B1-9BC5-B3784394AA44");
-        private static Guid IID_PROPERTY_STORE = new Guid("886d8eeb-8cf2-4446-8d02-cdba1dbdcf99");
+        private static Guid DISABLE_TOUCH_SCREEN = new("32CE38B2-2C9A-41B1-9BC5-B3784394AA44");
+        private static Guid IID_PROPERTY_STORE = new("886d8eeb-8cf2-4446-8d02-cdba1dbdcf99");
 
         private static short VT_BOOL = 11;
         #region "Structures"
@@ -16,7 +16,7 @@ namespace InkCanvasForClass_Remastered.Helpers
         [StructLayout(LayoutKind.Sequential, Pack = 4)]
         public struct PropertyKey
         {
-            public PropertyKey(Guid guid, UInt32 pid)
+            public PropertyKey(Guid guid, uint pid)
             {
                 fmtid = guid;
                 this.pid = pid;
@@ -95,26 +95,18 @@ namespace InkCanvasForClass_Remastered.Helpers
                 get
                 {
                     VarEnum ve = (VarEnum)vt;
-                    switch (ve)
+                    return ve switch
                     {
-                        case VarEnum.VT_I1:
-                            return bVal;
-                        case VarEnum.VT_I2:
-                            return iVal;
-                        case VarEnum.VT_I4:
-                            return lVal;
-                        case VarEnum.VT_I8:
-                            return hVal;
-                        case VarEnum.VT_INT:
-                            return iVal;
-                        case VarEnum.VT_UI4:
-                            return ulVal;
-                        case VarEnum.VT_LPWSTR:
-                            return Marshal.PtrToStringUni(pwszVal);
-                        case VarEnum.VT_BLOB:
-                            return GetBlob();
-                    }
-                    throw new NotImplementedException("PropVariant " + ve.ToString());
+                        VarEnum.VT_I1 => bVal,
+                        VarEnum.VT_I2 => iVal,
+                        VarEnum.VT_I4 => lVal,
+                        VarEnum.VT_I8 => hVal,
+                        VarEnum.VT_INT => iVal,
+                        VarEnum.VT_UI4 => ulVal,
+                        VarEnum.VT_LPWSTR => Marshal.PtrToStringUni(pwszVal),
+                        VarEnum.VT_BLOB => GetBlob(),
+                        _ => throw new NotImplementedException("PropVariant " + ve.ToString()),
+                    };
                 }
             }
         }
@@ -169,19 +161,22 @@ namespace InkCanvasForClass_Remastered.Helpers
 
         public static void DisableEdgeGestures(IntPtr hwnd, bool enable)
         {
-            IPropertyStore pPropStore = null;
-            int hr = 0;
-            hr = SHGetPropertyStoreForWindow(hwnd, ref IID_PROPERTY_STORE, ref pPropStore);
+            IPropertyStore? pPropStore = null;
+            int hr = SHGetPropertyStoreForWindow(hwnd, ref IID_PROPERTY_STORE, ref pPropStore);
             if (hr == 0)
             {
-                PropertyKey propKey = new PropertyKey();
-                propKey.fmtid = DISABLE_TOUCH_SCREEN;
-                propKey.pid = 2;
-                PropVariant var = new PropVariant();
-                var.vt = VT_BOOL;
-                var.boolVal = enable;
+                PropertyKey propKey = new()
+                {
+                    fmtid = DISABLE_TOUCH_SCREEN,
+                    pid = 2
+                };
+                PropVariant var = new()
+                {
+                    vt = VT_BOOL,
+                    boolVal = enable
+                };
                 pPropStore.SetValue(ref propKey, ref var);
-                Marshal.FinalReleaseComObject(pPropStore);
+                _ = Marshal.FinalReleaseComObject(pPropStore);
             }
         }
 

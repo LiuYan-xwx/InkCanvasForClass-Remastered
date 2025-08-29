@@ -22,7 +22,7 @@ namespace InkCanvasForClass_Remastered
             timer.Interval = TimeSpan.FromMilliseconds(50);
         }
 
-        private void Timer_Tick(object sender, EventArgs e)
+        private void Timer_Tick(object sender, EventArgs? e)
         {
             if (!isTimerRunning || isPaused)
             {
@@ -31,9 +31,10 @@ namespace InkCanvasForClass_Remastered
             }
 
             TimeSpan timeSpan = DateTime.Now - startTime;
-            TimeSpan totalTimeSpan = new TimeSpan(hour, minute, second);
+            TimeSpan totalTimeSpan = new(hour, minute, second);
             TimeSpan leftTimeSpan = totalTimeSpan - timeSpan;
-            if (leftTimeSpan.Milliseconds > 0) leftTimeSpan += new TimeSpan(0, 0, 1);
+            if (leftTimeSpan.Milliseconds > 0)
+                leftTimeSpan += new TimeSpan(0, 0, 1);
             double spentTimePercent = timeSpan.TotalMilliseconds / (totalSeconds * 1000.0);
 
             ProcessBarTime.CurrentValue = 1 - spentTimePercent;
@@ -61,7 +62,7 @@ namespace InkCanvasForClass_Remastered
             }
         }
 
-        SoundPlayer player = new SoundPlayer();
+        SoundPlayer player = new();
 
         int hour = 0;
         int minute = 1;
@@ -74,11 +75,12 @@ namespace InkCanvasForClass_Remastered
         bool isTimerRunning = false;
         bool isPaused = false;
 
-        DispatcherTimer timer = new DispatcherTimer();
+        DispatcherTimer timer = new();
 
         private void Grid_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (isTimerRunning) return;
+            if (isTimerRunning)
+                return;
             if (ProcessBarTime.Visibility == Visibility.Visible && isTimerRunning == false)
             {
                 ProcessBarTime.Visibility = Visibility.Collapsed;
@@ -102,84 +104,96 @@ namespace InkCanvasForClass_Remastered
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             hour++;
-            if (hour >= 100) hour = 0;
+            if (hour >= 100)
+                hour = 0;
             TextBlockHour.Text = hour.ToString("00");
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             hour += 5;
-            if (hour >= 100) hour = 0;
+            if (hour >= 100)
+                hour = 0;
             TextBlockHour.Text = hour.ToString("00");
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
             hour--;
-            if (hour < 0) hour = 99;
+            if (hour < 0)
+                hour = 99;
             TextBlockHour.Text = hour.ToString("00");
         }
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
             hour -= 5;
-            if (hour < 0) hour = 99;
+            if (hour < 0)
+                hour = 99;
             TextBlockHour.Text = hour.ToString("00");
         }
 
         private void Button_Click_4(object sender, RoutedEventArgs e)
         {
             minute++;
-            if (minute >= 60) minute = 0;
+            if (minute >= 60)
+                minute = 0;
             TextBlockMinute.Text = minute.ToString("00");
         }
 
         private void Button_Click_5(object sender, RoutedEventArgs e)
         {
             minute += 5;
-            if (minute >= 60) minute = 0;
+            if (minute >= 60)
+                minute = 0;
             TextBlockMinute.Text = minute.ToString("00");
         }
 
         private void Button_Click_6(object sender, RoutedEventArgs e)
         {
             minute--;
-            if (minute < 0) minute = 59;
+            if (minute < 0)
+                minute = 59;
             TextBlockMinute.Text = minute.ToString("00");
         }
 
         private void Button_Click_7(object sender, RoutedEventArgs e)
         {
             minute -= 5;
-            if (minute < 0) minute = 59;
+            if (minute < 0)
+                minute = 59;
             TextBlockMinute.Text = minute.ToString("00");
         }
 
         private void Button_Click_8(object sender, RoutedEventArgs e)
         {
             second += 5;
-            if (second >= 60) second = 0;
+            if (second >= 60)
+                second = 0;
             TextBlockSecond.Text = second.ToString("00");
         }
 
         private void Button_Click_9(object sender, RoutedEventArgs e)
         {
             second++;
-            if (second >= 60) second = 0;
+            if (second >= 60)
+                second = 0;
             TextBlockSecond.Text = second.ToString("00");
         }
 
         private void Button_Click_10(object sender, RoutedEventArgs e)
         {
             second--;
-            if (second < 0) second = 59;
+            if (second < 0)
+                second = 59;
             TextBlockSecond.Text = second.ToString("00");
         }
 
         private void Button_Click_11(object sender, RoutedEventArgs e)
         {
             second -= 5;
-            if (second < 0) second = 59;
+            if (second < 0)
+                second = 59;
             TextBlockSecond.Text = second.ToString("00");
         }
 
@@ -243,20 +257,20 @@ namespace InkCanvasForClass_Remastered
 
         void UpdateStopTime()
         {
-            TimeSpan totalTimeSpan = new TimeSpan(hour, minute, second);
+            TimeSpan totalTimeSpan = new(hour, minute, second);
             TextBlockStopTime.Text = (startTime + totalTimeSpan).ToString("t");
         }
 
         private Color StringToColor(string colorStr)
         {
-            Byte[] argb = new Byte[4];
+            byte[] argb = new byte[4];
             for (int i = 0; i < 4; i++)
             {
-                char[] charArray = colorStr.Substring(i * 2 + 1, 2).ToCharArray();
+                char[] charArray = colorStr.Substring((i * 2) + 1, 2).ToCharArray();
                 //string str = "11";
-                Byte b1 = toByte(charArray[0]);
-                Byte b2 = toByte(charArray[1]);
-                argb[i] = (Byte)(b2 | (b1 << 4));
+                byte b1 = toByte(charArray[0]);
+                byte b2 = toByte(charArray[1]);
+                argb[i] = (byte)(b2 | (b1 << 4));
             }
 
             return Color.FromArgb(argb[0], argb[1], argb[2], argb[3]); //#FFFFFFFF
@@ -297,7 +311,7 @@ namespace InkCanvasForClass_Remastered
             {
                 //从头开始
                 startTime = DateTime.Now;
-                totalSeconds = ((hour * 60) + minute) * 60 + second;
+                totalSeconds = (((hour * 60) + minute) * 60) + second;
                 ProcessBarTime.IsPaused = false;
                 TextBlockHour.Foreground = Brushes.Black;
                 SymbolIconStart.Symbol = iNKORE.UI.WPF.Modern.Controls.Symbol.Pause;
@@ -311,13 +325,9 @@ namespace InkCanvasForClass_Remastered
                 {
                     timer.Interval = TimeSpan.FromMilliseconds(30);
                 }
-                else if (totalSeconds <= 120)
-                {
-                    timer.Interval = TimeSpan.FromMilliseconds(50);
-                }
                 else
                 {
-                    timer.Interval = TimeSpan.FromMilliseconds(100);
+                    timer.Interval = totalSeconds <= 120 ? TimeSpan.FromMilliseconds(50) : TimeSpan.FromMilliseconds(100);
                 }
 
                 isPaused = false;
@@ -328,15 +338,9 @@ namespace InkCanvasForClass_Remastered
             }
         }
 
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            isTimerRunning = false;
-        }
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) => isTimerRunning = false;
 
-        private void BtnClose_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            Close();
-        }
+        private void BtnClose_MouseUp(object sender, MouseButtonEventArgs e) => Close();
 
         private bool _isInCompact = false;
 
@@ -367,7 +371,8 @@ namespace InkCanvasForClass_Remastered
             }
             else
             {
-                if (WindowState == WindowState.Maximized) WindowState = WindowState.Normal;
+                if (WindowState == WindowState.Maximized)
+                    WindowState = WindowState.Normal;
                 Width = 400;
                 Height = 250;
                 BigViewController.Visibility = Visibility.Collapsed;

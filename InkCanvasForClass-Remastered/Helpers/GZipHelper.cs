@@ -7,9 +7,9 @@ namespace InkCanvasForClass_Remastered.Helpers
     {
         public static void CompressFileAndDelete(string path)
         {
-            using var originalFileStream = File.Open(path, FileMode.Open);
-            using var compressedFileStream = File.Create(path + ".gz");
-            using var compressor = new GZipStream(compressedFileStream, CompressionMode.Compress);
+            using FileStream originalFileStream = File.Open(path, FileMode.Open);
+            using FileStream compressedFileStream = File.Create(path + ".gz");
+            using GZipStream compressor = new(compressedFileStream, CompressionMode.Compress);
             originalFileStream.CopyTo(compressor);
             compressor.Close();
             originalFileStream.Close();

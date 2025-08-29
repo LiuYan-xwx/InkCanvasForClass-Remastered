@@ -17,7 +17,7 @@ namespace InkCanvasForClass_Remastered.Helpers
             {
                 try
                 {
-                    Process.Start(executablePath);
+                    _ = Process.Start(executablePath);
                     //Console.WriteLine(softwareName + " 启动成功！");
                 }
                 catch (Exception ex)
@@ -34,35 +34,33 @@ namespace InkCanvasForClass_Remastered.Helpers
 
         private static string FindEasiCameraExecutablePath(string softwareName)
         {
-            string executablePath = null;
+            string? executablePath = null;
 
             using (RegistryKey key = Registry.LocalMachine.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Uninstall"))
             {
                 foreach (string subkeyName in key.GetSubKeyNames())
                 {
-                    using (RegistryKey subkey = key.OpenSubKey(subkeyName))
-                    {
-                        string displayName = subkey.GetValue("DisplayName") as string;
-                        string installLocation = subkey.GetValue("InstallLocation") as string;
-                        string uninstallString = subkey.GetValue("UninstallString") as string;
+                    using RegistryKey subkey = key.OpenSubKey(subkeyName);
+                    string? displayName = subkey.GetValue("DisplayName") as string;
+                    string? installLocation = subkey.GetValue("InstallLocation") as string;
+                    string? uninstallString = subkey.GetValue("UninstallString") as string;
 
-                        if (!string.IsNullOrEmpty(displayName) && displayName.Contains(softwareName))
+                    if (!string.IsNullOrEmpty(displayName) && displayName.Contains(softwareName))
+                    {
+                        if (!string.IsNullOrEmpty(installLocation))
                         {
-                            if (!string.IsNullOrEmpty(installLocation))
-                            {
-                                executablePath = System.IO.Path.Combine(installLocation, "sweclauncher.exe");
-                            }
-                            else if (!string.IsNullOrEmpty(uninstallString))
-                            {
-                                int lastSlashIndex = uninstallString.LastIndexOf("\\");
-                                if (lastSlashIndex >= 0)
-                                {
-                                    string folderPath = uninstallString.Substring(0, lastSlashIndex);
-                                    executablePath = System.IO.Path.Combine(folderPath, "sweclauncher", "sweclauncher.exe");
-                                }
-                            }
-                            break;
+                            executablePath = System.IO.Path.Combine(installLocation, "sweclauncher.exe");
                         }
+                        else if (!string.IsNullOrEmpty(uninstallString))
+                        {
+                            int lastSlashIndex = uninstallString.LastIndexOf("\\");
+                            if (lastSlashIndex >= 0)
+                            {
+                                string folderPath = uninstallString[..lastSlashIndex];
+                                executablePath = System.IO.Path.Combine(folderPath, "sweclauncher", "sweclauncher.exe");
+                            }
+                        }
+                        break;
                     }
                 }
             }
