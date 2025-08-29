@@ -3,13 +3,13 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Controls="http://schemas.microsoft.com/netfx/2009/xaml/presentation"
+    xmlns:Settings="clr-namespace:InkCanvasForClass_Remastered.Models"
+    xmlns:controls="clr-namespace:InkCanvasForClass_Remastered.Controls"
     xmlns:converters="clr-namespace:InkCanvasForClass_Remastered.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ikw="http://schemas.inkore.net/lib/ui/wpf"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
-    xmlns:Settings="clr-namespace:InkCanvasForClass_Remastered.Models"
-    xmlns:controls="clr-namespace:InkCanvasForClass_Remastered.Controls"
     Name="window"
     Title="InkCanvasForClass-Remastered"
     Width="1440"
@@ -360,9 +360,7 @@
                                         Text="启动" />
                                 </GroupBox.Header>
                                 <ikw:SimpleStackPanel Spacing="6">
-                                    <controls:SettingsToggleControl
-                                        Header="开机自启"
-                                        IsOn="{Binding Settings.IsAutoStartEnabled}" />
+                                    <controls:SettingsToggleControl Header="开机自启" IsOn="{Binding Settings.IsAutoStartEnabled}" />
                                     <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                         <TextBlock
                                             Margin="0,0,16,0"
@@ -635,7 +633,7 @@
                                             VerticalAlignment="Center"
                                             FontFamily="Consolas"
                                             FontSize="14"
-                                            Text="{Binding Settings.ViewboxFloatingBarScaleTransformValue,StringFormat={}{0:F2}}" />
+                                            Text="{Binding Settings.ViewboxFloatingBarScaleTransformValue, StringFormat={}{0:F2}}" />
                                     </ikw:SimpleStackPanel>
                                     <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                         <TextBlock
@@ -661,7 +659,7 @@
                                             VerticalAlignment="Center"
                                             FontFamily="Consolas"
                                             FontSize="14"
-                                            Text="{Binding Settings.ViewboxFloatingBarOpacityValue,StringFormat={}{0:F2}}" />
+                                            Text="{Binding Settings.ViewboxFloatingBarOpacityValue, StringFormat={}{0:F2}}" />
                                     </ikw:SimpleStackPanel>
                                     <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                         <TextBlock
@@ -687,7 +685,7 @@
                                             VerticalAlignment="Center"
                                             FontFamily="Consolas"
                                             FontSize="14"
-                                            Text="{Binding Settings.ViewboxFloatingBarOpacityInPPTValue,StringFormat={}{0:F2}}" />
+                                            Text="{Binding Settings.ViewboxFloatingBarOpacityInPPTValue, StringFormat={}{0:F2}}" />
                                     </ikw:SimpleStackPanel>
                                     <TextBlock
                                         Foreground="#a1a1aa"
@@ -1432,7 +1430,7 @@
                                             Name="ToggleSwitchAutoSaveStrokesInPowerPoint"
                                             FontFamily="Microsoft YaHei UI"
                                             FontWeight="Bold"
-                                            IsOn="{Binding Settings.IsAutoSaveStrokesInPowerPoint,Mode=TwoWay}"
+                                            IsOn="{Binding Settings.IsAutoSaveStrokesInPowerPoint, Mode=TwoWay}"
                                             OffContent=""
                                             OnContent="" />
                                     </ikw:SimpleStackPanel>
@@ -2962,7 +2960,9 @@
                                                 FontFamily="Consolas"
                                                 FontSize="14"
                                                 Text="{Binding ElementName=RandWindowOnceCloseLatencySlider, Path=Value}" />
-                                            <TextBlock FontFamily="Consolas" FontSize="14">s</TextBlock>
+                                            <TextBlock FontFamily="Consolas" FontSize="14">
+                                                s
+                                            </TextBlock>
                                         </StackPanel>
                                     </ikw:SimpleStackPanel>
                                     <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
@@ -3205,63 +3205,61 @@
 
         <!--  // 黑/白 板幕布 //  -->
         <Grid Name="GridBackgroundCoverHolder">
-            <Grid
-                Name="GridBackgroundCover"
-                Visibility="Collapsed" >
+            <Grid Name="GridBackgroundCover" Visibility="Collapsed">
                 <Grid.Style>
                     <Style TargetType="Grid">
-                        <Setter Property="Background" Value="#162924"/>
+                        <Setter Property="Background" Value="#162924" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding Settings.UsingWhiteboard}" Value="True">
-                                <Setter Property="Background" Value="#EAEBED"/>
+                                <Setter Property="Background" Value="#EAEBED" />
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Grid.Style>
-            <Canvas IsHitTestVisible="False">
-                <ikw:SimpleStackPanel
-                    Canvas.Left="25"
-                    Canvas.Top="15"
-                    Orientation="Vertical">
-                    <TextBlock
-                        Name="WaterMarkTime"
-                        FontSize="30"
-                        FontWeight="Bold"
-                        Opacity="0.6"
-                        Text="{Binding NowTime}"
-                        Visibility="{Binding EnableTimeDisplayInWhiteboardMode, Converter={StaticResource BooleanToVisibilityConverter}}" >
-                        <TextBlock.Style>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="Foreground" Value="#EAEBED" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Settings.UsingWhiteboard}" Value="True">
-                                        <Setter Property="Foreground" Value="#162924"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                    <TextBlock
-                        Name="WaterMarkDate"
-                        Margin="2,0,0,0"
-                        FontSize="16"
-                        Opacity="0.45"
-                        Text="{Binding NowDate}"
-                        Visibility="{Binding EnableTimeDisplayInWhiteboardMode, Converter={StaticResource BooleanToVisibilityConverter}}" >
-                        <TextBlock.Style>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="Foreground" Value="#EAEBED" />
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding Settings.UsingWhiteboard}" Value="True">
-                                        <Setter Property="Foreground" Value="#162924"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TextBlock.Style>
-                    </TextBlock>
-                </ikw:SimpleStackPanel>
-            </Canvas>
-        </Grid>
+                <Canvas IsHitTestVisible="False">
+                    <ikw:SimpleStackPanel
+                        Canvas.Left="25"
+                        Canvas.Top="15"
+                        Orientation="Vertical">
+                        <TextBlock
+                            Name="WaterMarkTime"
+                            FontSize="30"
+                            FontWeight="Bold"
+                            Opacity="0.6"
+                            Text="{Binding NowTime}"
+                            Visibility="{Binding EnableTimeDisplayInWhiteboardMode, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="#EAEBED" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Settings.UsingWhiteboard}" Value="True">
+                                            <Setter Property="Foreground" Value="#162924" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                        <TextBlock
+                            Name="WaterMarkDate"
+                            Margin="2,0,0,0"
+                            FontSize="16"
+                            Opacity="0.45"
+                            Text="{Binding NowDate}"
+                            Visibility="{Binding EnableTimeDisplayInWhiteboardMode, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="#EAEBED" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Settings.UsingWhiteboard}" Value="True">
+                                            <Setter Property="Foreground" Value="#162924" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </ikw:SimpleStackPanel>
+                </Canvas>
+            </Grid>
         </Grid>
         <Grid Name="GridTransparencyFakeBackground" Opacity="0" />
         <Label
