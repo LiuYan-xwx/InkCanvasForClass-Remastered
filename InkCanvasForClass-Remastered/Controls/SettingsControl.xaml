@@ -38,6 +38,7 @@
         <TextBlock
             Foreground="#a1a1aa"
             Text="{Binding Description, ElementName=root}"
+            FontSize="12"
             TextWrapping="Wrap"
             Visibility="{Binding Description, ElementName=root, Converter={StaticResource StringToVisibilityConverter}}" />
     </StackPanel>
