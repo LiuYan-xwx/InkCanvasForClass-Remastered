@@ -7,6 +7,12 @@
     x:Name="root">
     <UserControl.Resources>
         <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
+        <DataTemplate x:Key="ToggleSwitch">
+            <ui:ToggleSwitch
+                IsOn="{Binding IsOn, ElementName=root, Mode=TwoWay}"
+                OffContent=""
+                OnContent="" />
+        </DataTemplate>
     </UserControl.Resources>
     <StackPanel Orientation="Vertical">
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
@@ -16,16 +22,17 @@
                 FontSize="14"
                 Foreground="#fafafa"
                 Text="{Binding Header, ElementName=root}" />
-            <ContentPresenter Content="{Binding Switcher, ElementName=root}">
-                <ContentPresenter.ContentTemplate>
-                    <DataTemplate>
-                        <ui:ToggleSwitch
-                            IsOn="{Binding IsOn, ElementName=root, Mode=TwoWay}"
-                            OffContent=""
-                            OnContent=""
-                            Toggled="ToggleSwitch_Toggled" />
-                    </DataTemplate>
-                </ContentPresenter.ContentTemplate>
+            <ContentPresenter>
+                <ContentPresenter.Style>
+                    <Style TargetType="ContentPresenter">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Switcher, ElementName=root}" Value="{x:Null}">
+                                <Setter Property="Content" Value="{StaticResource ToggleSwitch}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                        <Setter Property="Content" Value="{Binding Switcher, ElementName=root}" />
+                    </Style>
+                </ContentPresenter.Style>
             </ContentPresenter>
         </StackPanel>
         <TextBlock

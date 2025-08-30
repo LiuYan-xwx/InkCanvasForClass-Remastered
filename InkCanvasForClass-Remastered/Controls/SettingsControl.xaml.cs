@@ -29,12 +29,21 @@ namespace InkCanvasForClass_Remastered.Controls
         }
 
         public static readonly DependencyProperty IsOnProperty =
-            DependencyProperty.Register(nameof(IsOn), typeof(bool), typeof(SettingsControl), new PropertyMetadata(false));
+            DependencyProperty.Register(nameof(IsOn), typeof(bool), typeof(SettingsControl), 
+                new PropertyMetadata(false, OnIsOnChanged));
 
         public bool IsOn
         {
             get => (bool)GetValue(IsOnProperty);
             set => SetValue(IsOnProperty, value);
+        }
+
+        private static void OnIsOnChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is SettingsControl control)
+            {
+                control.RaiseEvent(new RoutedEventArgs(ToggledEvent));
+            }
         }
 
         public static readonly DependencyProperty SwitcherProperty =
@@ -53,11 +62,6 @@ namespace InkCanvasForClass_Remastered.Controls
         {
             add => AddHandler(ToggledEvent, value);
             remove => RemoveHandler(ToggledEvent, value);
-        }
-
-        private void ToggleSwitch_Toggled(object sender, RoutedEventArgs e)
-        {
-            RaiseEvent(new RoutedEventArgs(ToggledEvent));
         }
     }
 }
