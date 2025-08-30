@@ -30,7 +30,7 @@ namespace InkCanvasForClass_Remastered.Controls
 
         public static readonly DependencyProperty IsOnProperty =
             DependencyProperty.Register(nameof(IsOn), typeof(bool), typeof(SettingsControl), 
-                new PropertyMetadata(false, OnIsOnChanged));
+                new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnIsOnChanged));
 
         public bool IsOn
         {

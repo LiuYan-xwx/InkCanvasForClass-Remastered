@@ -37,6 +37,7 @@
         <TextBlock
             Foreground="#a1a1aa"
             Text="{Binding Description, ElementName=root}"
+            TextWrapping="Wrap"
             Visibility="{Binding Description, ElementName=root, Converter={StaticResource StringToVisibilityConverter}}" />
     </StackPanel>
 </UserControl>
