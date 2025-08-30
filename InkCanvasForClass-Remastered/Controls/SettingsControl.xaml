@@ -7,15 +7,14 @@
     x:Name="root">
     <UserControl.Resources>
         <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
-        <DataTemplate x:Key="ToggleSwitch">
-            <ui:ToggleSwitch
-                IsOn="{Binding IsOn, ElementName=root, Mode=TwoWay}"
-                OffContent=""
-                OnContent="" />
-        </DataTemplate>
+        <ui:ToggleSwitch
+            x:Key="ToggleSwitch"
+            IsOn="{Binding IsOn, ElementName=root, Mode=TwoWay}"
+            OffContent=""
+            OnContent="" />
     </UserControl.Resources>
     <StackPanel Orientation="Vertical">
-        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+        <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
             <TextBlock
                 Margin="0,0,16,0"
                 VerticalAlignment="Center"
