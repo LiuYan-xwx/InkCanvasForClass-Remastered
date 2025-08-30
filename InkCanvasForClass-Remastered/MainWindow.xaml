@@ -360,27 +360,9 @@
                                         Text="启动" />
                                 </GroupBox.Header>
                                 <ikw:SimpleStackPanel Spacing="6">
-                                    <controls:SettingsToggleControl Header="开机自启" IsOn="{Binding Settings.IsAutoStartEnabled}" />
-                                    <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                                        <TextBlock
-                                            Margin="0,0,16,0"
-                                            VerticalAlignment="Center"
-                                            FontSize="14"
-                                            Foreground="#fafafa"
-                                            Text="开机运行后收纳到侧边栏" />
-                                        <ui:ToggleSwitch
-                                            Name="ToggleSwitchFoldAtStartup"
-                                            FontFamily="Microsoft YaHei UI"
-                                            FontWeight="Bold"
-                                            IsOn="{Binding Settings.IsFoldAtStartup, Mode=TwoWay}"
-                                            OffContent=""
-                                            OnContent="" />
+                                    <controls:SettingsControl Header="开机自启" IsOn="{Binding Settings.IsAutoStartEnabled}" />
+                                    <controls:SettingsControl Header="开机自启后收纳到侧边栏" IsOn="{Binding Settings.IsFoldAtStartup}" />
                                     </ikw:SimpleStackPanel>
-                                    <!--
-                <ui:ToggleSwitch OnContent="" OffContent="" Name="ToggleSwitchAutoHideCanvas" Header="自动隐藏画板" FontFamily="Microsoft YaHei UI" Toggled="ToggleSwitchAutoHideCanvas_Toggled"/>
-                <ui:ToggleSwitch OnContent="" OffContent="" Name="ToggleSwitchAutoEnterModeFinger" Header="自动进入手指模式" FontFamily="Microsoft YaHei UI" Toggled="ToggleSwitchAutoEnterModeFinger_Toggled"/>
-                                    -->
-                                </ikw:SimpleStackPanel>
                             </GroupBox>
                             <GroupBox>
                                 <GroupBox.Header>
