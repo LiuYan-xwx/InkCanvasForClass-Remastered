@@ -3070,11 +3070,8 @@
                                         Y2="0" />
                                     <TextBlock FontSize="15">
                                         <Bold>本仓库源:</Bold>
-                                        <Hyperlink Click="HyperlinkSourceToICCReRepository_Click">
-                                            <TextBlock
-                                                Margin="2,0"
-                                                Text="LiuYan-xwx/InkCanvasForClass-Remastered"
-                                                TextWrapping="Wrap" />
+                                        <Hyperlink NavigateUri="https://github.com/LiuYan-xwx/InkCanvasForClass-Remastered" RequestNavigate="Hyperlink_RequestNavigate">
+                                            LiuYan-xwx/InkCanvasForClass-Remastered
                                         </Hyperlink>
                                     </TextBlock>
                                     <Line

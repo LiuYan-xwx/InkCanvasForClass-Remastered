@@ -6011,9 +6011,9 @@ namespace InkCanvasForClass_Remastered
             e.Handled = true;
         }
 
-        private void HyperlinkSourceToICCReRepository_Click(object sender, RoutedEventArgs e)
+        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
         {
-            Process.Start("https://github.com/LiuYan-xwx/InkCanvasForClass-Remastered");
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri) { UseShellExecute = true });
             HideSubPanels();
         }
         #endregion
