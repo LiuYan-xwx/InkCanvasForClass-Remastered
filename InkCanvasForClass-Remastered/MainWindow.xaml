@@ -2868,91 +2868,28 @@
                                         Text="随机点名" />
                                 </GroupBox.Header>
                                 <ikw:SimpleStackPanel Spacing="6">
-                                    <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                                        <TextBlock
-                                            Margin="0,0,16,0"
-                                            VerticalAlignment="Center"
-                                            FontSize="14"
-                                            Foreground="#fafafa"
-                                            Text="显示修改随机点名名单的按钮" />
-                                        <ui:ToggleSwitch
-                                            Name="ToggleSwitchDisplayRandWindowNamesInputBtn"
-                                            FontFamily="Microsoft YaHei UI"
-                                            FontWeight="Bold"
-                                            IsOn="True"
-                                            OffContent=""
-                                            OnContent=""
-                                            Toggled="ToggleSwitchDisplayRandWindowNamesInputBtn_OnToggled" />
-                                    </ikw:SimpleStackPanel>
-                                    <Line
-                                        Margin="0,4,0,4"
-                                        HorizontalAlignment="Center"
-                                        Stroke="#3f3f46"
-                                        StrokeThickness="1"
-                                        X1="0"
-                                        X2="400"
-                                        Y1="0"
-                                        Y2="0" />
-                                    <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                                        <TextBlock
-                                            Margin="0,0,16,0"
-                                            VerticalAlignment="Center"
-                                            FontSize="14"
-                                            Foreground="#fafafa"
-                                            Text="单次抽人窗口关闭延迟" />
+                                    <controls:SettingsControl Header="显示修改随机点名名单的按钮" IsOn="{Binding Settings.DisplayRandWindowNamesInputBtn}"/>
+                                    
+                                    <controls:SettingsControl Header="单次抽人窗口关闭延迟">
+                                        <controls:SettingsControl.Switcher>
+                                            <StackPanel Orientation="Horizontal">
                                         <Slider
-                                            x:Name="RandWindowOnceCloseLatencySlider"
                                             Width="168"
                                             AutoToolTipPlacement="None"
-                                            FontFamily="Microsoft YaHei UI"
-                                            FontSize="20"
                                             IsSnapToTickEnabled="True"
                                             Maximum="8"
                                             Minimum="0.5"
                                             TickFrequency="0.1"
                                             TickPlacement="None"
-                                            ValueChanged="RandWindowOnceCloseLatencySlider_ValueChanged"
-                                            Value="2.5" />
-                                        <StackPanel
-                                            Margin="12,0,16,0"
-                                            VerticalAlignment="Center"
-                                            Orientation="Horizontal">
-                                            <TextBlock
-                                                FontFamily="Consolas"
-                                                FontSize="14"
-                                                Text="{Binding ElementName=RandWindowOnceCloseLatencySlider, Path=Value}" />
-                                            <TextBlock FontFamily="Consolas" FontSize="14">
-                                                s
-                                            </TextBlock>
-                                        </StackPanel>
-                                    </ikw:SimpleStackPanel>
-                                    <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                                                    Value="{Binding Settings.RandWindowOnceCloseLatency}" />
                                         <TextBlock
-                                            Margin="0,0,16,0"
+                                                    Margin="8,0,0,0"
                                             VerticalAlignment="Center"
-                                            FontSize="14"
-                                            Foreground="#fafafa"
-                                            Text="单次随机点名人数上限" />
-                                        <Slider
-                                            x:Name="RandWindowOnceMaxStudentsSlider"
-                                            Width="168"
-                                            AutoToolTipPlacement="None"
-                                            FontFamily="Microsoft YaHei UI"
-                                            FontSize="20"
-                                            IsSnapToTickEnabled="True"
-                                            Maximum="20"
-                                            Minimum="0"
-                                            TickFrequency="1"
-                                            TickPlacement="None"
-                                            ValueChanged="RandWindowOnceMaxStudentsSlider_ValueChanged"
-                                            Value="10" />
-                                        <TextBlock
-                                            Margin="12,0,16,0"
-                                            VerticalAlignment="Center"
-                                            FontFamily="Consolas"
-                                            FontSize="14"
-                                            Text="{Binding ElementName=RandWindowOnceMaxStudentsSlider, Path=Value, Converter={StaticResource IntNumberToString}}" />
-                                    </ikw:SimpleStackPanel>
+                                                    Text="{Binding Settings.RandWindowOnceCloseLatency, StringFormat={}{0:F1}}" />
+                                                <Label VerticalAlignment="Center">s</Label>
+                                            </StackPanel>
+                                        </controls:SettingsControl.Switcher>
+                                    </controls:SettingsControl>
                                 </ikw:SimpleStackPanel>
                             </GroupBox>
                             <GroupBox>

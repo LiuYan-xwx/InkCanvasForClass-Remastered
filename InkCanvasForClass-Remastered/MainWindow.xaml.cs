@@ -2305,7 +2305,7 @@ namespace InkCanvasForClass_Remastered
             AnimationsHelper.HideWithSlideAndFade(BorderTools);
             AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
 
-            new RandWindow(Settings).Show();
+            App.GetService<RandWindow>().Show();
         }
 
         public void CheckEraserTypeTab()
@@ -2375,7 +2375,9 @@ namespace InkCanvasForClass_Remastered
             AnimationsHelper.HideWithSlideAndFade(BorderTools);
             AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
 
-            new RandWindow(Settings, true).ShowDialog();
+            var randWindow = App.GetService<RandWindow>();
+            randWindow.IsAutoClose = true;
+            randWindow.ShowDialog();
         }
 
         private void GridInkReplayButton_MouseUp(object sender, MouseButtonEventArgs e)

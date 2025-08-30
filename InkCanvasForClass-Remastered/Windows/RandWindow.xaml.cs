@@ -1,11 +1,13 @@
 ﻿using InkCanvasForClass_Remastered.Helpers;
 using InkCanvasForClass_Remastered.Models;
+using InkCanvasForClass_Remastered.Services;
 using iNKORE.UI.WPF.Modern.Controls;
 using Microsoft.VisualBasic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 using MessageBox = System.Windows.MessageBox;
 
 
@@ -18,38 +20,23 @@ namespace InkCanvasForClass_Remastered
     {
         private HashSet<int> drawnIndices = new HashSet<int>();
 
-        public RandWindow(Settings settings)
+        private readonly SettingsService SettingsService;
+
+        public Settings Settings => SettingsService.Settings;
+
+        public RandWindow(SettingsService settingsService)
         {
             InitializeComponent();
+            SettingsService = settingsService;
+            DataContext = this;
             AnimationsHelper.ShowWithSlideFromBottomAndFade(this, 0.25);
-            BorderBtnHelp.Visibility = settings.DisplayRandWindowNamesInputBtn == false ? Visibility.Collapsed : Visibility.Visible;
-            RandMaxPeopleOneTime = settings.RandWindowOnceMaxStudents;
-            RandDoneAutoCloseWaitTime = (int)settings.RandWindowOnceCloseLatency * 1000;
-        }
-
-        public RandWindow(Settings settings, bool IsAutoClose)
-        {
-            InitializeComponent();
-            isAutoClose = IsAutoClose;
-            PeopleControlPane.Opacity = 0.4;
-            PeopleControlPane.IsHitTestVisible = false;
-            BorderBtnHelp.Visibility = settings.DisplayRandWindowNamesInputBtn == false ? Visibility.Collapsed : Visibility.Visible;
-            RandMaxPeopleOneTime = settings.RandWindowOnceMaxStudents;
-            RandDoneAutoCloseWaitTime = (int)settings.RandWindowOnceCloseLatency * 1000;
-
-            new Thread(new ThreadStart(() =>
-            {
-                Thread.Sleep(100);
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    BorderBtnRand_MouseUp(BorderBtnRand, null);
-                });
-            })).Start();
+            RandMaxPeopleOneTime = 10;
+            RandDoneAutoCloseWaitTime = (int)Settings.RandWindowOnceCloseLatency * 1000;
         }
 
         public static int randSeed = 0;
-        public bool isAutoClose = false;
-        public bool isNotRepeatName = false;
+        public bool IsAutoClose = false;
+        public bool IsNotRepeatName = false;
 
         public int TotalCount = 1;
         public int PeopleCount = 60;
@@ -145,7 +132,7 @@ namespace InkCanvasForClass_Remastered
                     }
 
                     UpdateLabelOutputs(outputs);
-                    if (isAutoClose)
+                    if (IsAutoClose)
                     {
                         new Thread(new ThreadStart(() =>
                         {
@@ -212,6 +199,20 @@ namespace InkCanvasForClass_Remastered
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            if (IsAutoClose)
+            {
+                PeopleControlPane.Opacity = 0.4;
+                PeopleControlPane.IsHitTestVisible = false;
+
+                var timer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(100) };
+                timer.Tick += (s, e) =>
+                {
+                    timer.Stop();
+                    BorderBtnRand_MouseUp(BorderBtnRand, null);
+                };
+                timer.Start();
+            }
+
             Names = new List<string>();
             if (File.Exists(App.AppRootFolderPath + "Names.txt"))
             {

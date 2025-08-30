@@ -232,9 +232,6 @@ namespace InkCanvasForClass_Remastered.Models
         private bool _displayRandWindowNamesInputBtn = false;
         [ObservableProperty]
         private double _randWindowOnceCloseLatency = 2.5;
-        [ObservableProperty]
-        private int _randWindowOnceMaxStudents = 10;
-
 
 
         [JsonIgnore]

@@ -10,6 +10,7 @@
     Title="InkCanvasForClass-Remastered 抽奖"
     Width="900"
     Height="500"
+    d:DataContext="{d:DesignInstance local:MainWindow}"
     ui:ThemeManager.RequestedTheme="Light"
     AllowsTransparency="True"
     Background="Transparent"
@@ -19,6 +20,9 @@
     WindowStartupLocation="CenterScreen"
     WindowStyle="None"
     mc:Ignorable="d">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </Window.Resources>
     <Border
         Margin="0"
         Background="#F0F3F9"
@@ -252,7 +256,8 @@
                 Background="#FBFBFD"
                 CornerRadius="20"
                 MouseUp="BorderBtnHelp_MouseUp"
-                UseLayoutRounding="True">
+                UseLayoutRounding="True"
+                Visibility="{Binding Settings.DisplayRandWindowNamesInputBtn, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Border.Effect>
                     <DropShadowEffect
                         BlurRadius="3"
