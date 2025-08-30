@@ -23,8 +23,6 @@ namespace InkCanvasForClass_Remastered.Models
         [ObservableProperty]
         private int _eraserSize = 1;
         [ObservableProperty]
-        private int _eraserType = 0; // 0 - 图标切换模式      1 - 面积擦     2 - 线条擦
-        [ObservableProperty]
         private int _eraserShapeType = 1; // 0 - 圆形擦  1 - 黑板擦
         [ObservableProperty]
         private bool _hideStrokeWhenSelecting = false;
