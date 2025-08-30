@@ -54,7 +54,7 @@ namespace InkCanvasForClass_Remastered
             _powerPointService = powerPointService;
             Logger = logger;
 
-            DataContext = _viewModel;
+            DataContext = this;
 
             // 挂载PPT服务事件
             _powerPointService.PresentationClose += PptApplication_PresentationClose;
@@ -105,7 +105,51 @@ namespace InkCanvasForClass_Remastered
                 case nameof(Settings.FitToCurve):
                     drawingAttributes.FitToCurve = Settings.FitToCurve;
                     break;
+                case nameof(Settings.EraserSize):
+                    UpdateEraserShape();
+                    break;
             }
+        }
+
+        private void UpdateEraserShape()
+        {
+            double k = GetEraserSizeMultiplier(Settings.EraserSize, Settings.EraserShapeType);
+
+            if (Settings.EraserShapeType == 0)
+            {
+                inkCanvas.EraserShape = new EllipseStylusShape(k * 90, k * 90);
+            }
+            else if (Settings.EraserShapeType == 1)
+            {
+                inkCanvas.EraserShape = new RectangleStylusShape(k * 90 * 0.6, k * 90);
+            }
+
+            inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
+            inkCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
+        }
+
+        private static double GetEraserSizeMultiplier(int eraserSize, int eraserShapeType)
+        {
+            return eraserShapeType switch
+            {
+                0 => eraserSize switch // EllipseStylusShape
+                {
+                    0 => 0.5,
+                    1 => 0.8,
+                    3 => 1.25,
+                    4 => 1.8,
+                    _ => 1.0
+                },
+                1 => eraserSize switch // RectangleStylusShape
+                {
+                    0 => 0.7,
+                    1 => 0.9,
+                    3 => 1.2,
+                    4 => 1.6,
+                    _ => 1.0
+                },
+                _ => 1.0
+            };
         }
 
         #endregion
@@ -735,46 +779,7 @@ namespace InkCanvasForClass_Remastered
             {
                 forceEraser = true;
                 forcePointEraser = true;
-                double k = 1;
-                if (Settings.EraserShapeType == 0)
-                {
-                    switch (BoardComboBoxEraserSize.SelectedIndex)
-                    {
-                        case 0:
-                            k = 0.5;
-                            break;
-                        case 1:
-                            k = 0.8;
-                            break;
-                        case 3:
-                            k = 1.25;
-                            break;
-                        case 4:
-                            k = 1.8;
-                            break;
-                    }
-                    inkCanvas.EraserShape = new EllipseStylusShape(k * 90, k * 90);
-                }
-                else if (Settings.EraserShapeType == 1)
-                {
-                    switch (BoardComboBoxEraserSize.SelectedIndex)
-                    {
-                        case 0:
-                            k = 0.7;
-                            break;
-                        case 1:
-                            k = 0.9;
-                            break;
-                        case 3:
-                            k = 1.2;
-                            break;
-                        case 4:
-                            k = 1.6;
-                            break;
-                    }
-                    inkCanvas.EraserShape = new RectangleStylusShape(k * 90 * 0.6, k * 90);
-                }
-                inkCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
+                UpdateEraserShape();
                 drawingShapeMode = 0;
 
                 inkCanvas_EditingModeChanged(inkCanvas, null);
@@ -5321,131 +5326,18 @@ namespace InkCanvasForClass_Remastered
             _settingsService.SaveSettings();
         }
 
-        private void ComboBoxEraserSize_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (!isLoaded) return;
-            Settings.EraserSize = ComboBoxEraserSize.SelectedIndex;
-            _settingsService.SaveSettings();
-        }
-
-        private void ComboBoxEraserSizeFloatingBar_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (!isLoaded) return;
-
-            ComboBox s = (ComboBox)sender;
-            Settings.EraserSize = s.SelectedIndex;
-            if (s == ComboBoxEraserSizeFloatingBar)
-            {
-                BoardComboBoxEraserSize.SelectedIndex = s.SelectedIndex;
-                ComboBoxEraserSize.SelectedIndex = s.SelectedIndex;
-            }
-            else if (s == BoardComboBoxEraserSize)
-            {
-                ComboBoxEraserSizeFloatingBar.SelectedIndex = s.SelectedIndex;
-                ComboBoxEraserSize.SelectedIndex = s.SelectedIndex;
-            }
-            if (Settings.EraserShapeType == 0)
-            {
-                double k = 1;
-                switch (s.SelectedIndex)
-                {
-                    case 0:
-                        k = 0.5;
-                        break;
-                    case 1:
-                        k = 0.8;
-                        break;
-                    case 3:
-                        k = 1.25;
-                        break;
-                    case 4:
-                        k = 1.8;
-                        break;
-                }
-
-                inkCanvas.EraserShape = new EllipseStylusShape(k * 90, k * 90);
-            }
-            else if (Settings.EraserShapeType == 1)
-            {
-                double k = 1;
-                switch (s.SelectedIndex)
-                {
-                    case 0:
-                        k = 0.7;
-                        break;
-                    case 1:
-                        k = 0.9;
-                        break;
-                    case 3:
-                        k = 1.2;
-                        break;
-                    case 4:
-                        k = 1.6;
-                        break;
-                }
-
-                inkCanvas.EraserShape = new RectangleStylusShape(k * 90 * 0.6, k * 90);
-            }
-
-            inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
-            inkCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
-            _settingsService.SaveSettings();
-        }
-
         private void SwitchToCircleEraser(object sender, MouseButtonEventArgs e)
         {
-            if (!isLoaded) return;
             Settings.EraserShapeType = 0;
-            _settingsService.SaveSettings();
             CheckEraserTypeTab();
-            double k = 1;
-            switch (ComboBoxEraserSizeFloatingBar.SelectedIndex)
-            {
-                case 0:
-                    k = 0.5;
-                    break;
-                case 1:
-                    k = 0.8;
-                    break;
-                case 3:
-                    k = 1.25;
-                    break;
-                case 4:
-                    k = 1.8;
-                    break;
-            }
-
-            inkCanvas.EraserShape = new EllipseStylusShape(k * 90, k * 90);
-            inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
-            inkCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
+            UpdateEraserShape();
         }
 
         private void SwitchToRectangleEraser(object sender, MouseButtonEventArgs e)
         {
-            if (!isLoaded) return;
             Settings.EraserShapeType = 1;
-            _settingsService.SaveSettings();
             CheckEraserTypeTab();
-            double k = 1;
-            switch (ComboBoxEraserSizeFloatingBar.SelectedIndex)
-            {
-                case 0:
-                    k = 0.7;
-                    break;
-                case 1:
-                    k = 0.9;
-                    break;
-                case 3:
-                    k = 1.2;
-                    break;
-                case 4:
-                    k = 1.6;
-                    break;
-            }
-
-            inkCanvas.EraserShape = new RectangleStylusShape(k * 90 * 0.6, k * 90);
-            inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
-            inkCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
+            UpdateEraserShape();
         }
 
 
@@ -6323,10 +6215,6 @@ namespace InkCanvasForClass_Remastered
 
             ComboBoxPenStyle.SelectedIndex = Settings.InkStyle;
             BoardComboBoxPenStyle.SelectedIndex = Settings.InkStyle;
-
-            ComboBoxEraserSize.SelectedIndex = Settings.EraserSize;
-            ComboBoxEraserSizeFloatingBar.SelectedIndex = Settings.EraserSize;
-            BoardComboBoxEraserSize.SelectedIndex = Settings.EraserSize;
 
             ToggleSwitchClearCanvasAndClearTimeMachine.IsOn =
                 Settings.ClearCanvasAndClearTimeMachine == true;

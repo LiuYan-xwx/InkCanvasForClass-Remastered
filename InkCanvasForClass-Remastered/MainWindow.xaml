@@ -10,6 +10,7 @@
     xmlns:ikw="http://schemas.inkore.net/lib/ui/wpf"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
+    xmlns:local="clr-namespace:InkCanvasForClass_Remastered"
     Name="window"
     Title="InkCanvasForClass-Remastered"
     Width="1440"
@@ -35,7 +36,8 @@
     Topmost="True"
     WindowState="Maximized"
     WindowStyle="None"
-    mc:Ignorable="d">
+    mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance local:MainWindow}">
     <!--  资源中添加命令  -->
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
@@ -362,7 +364,7 @@
                                 <ikw:SimpleStackPanel Spacing="6">
                                     <controls:SettingsControl Header="开机自启" IsOn="{Binding Settings.IsAutoStartEnabled}" />
                                     <controls:SettingsControl Header="开机自启后收纳到侧边栏" IsOn="{Binding Settings.IsFoldAtStartup}" />
-                                    </ikw:SimpleStackPanel>
+                                </ikw:SimpleStackPanel>
                             </GroupBox>
                             <GroupBox>
                                 <GroupBox.Header>
@@ -374,45 +376,22 @@
                                         Text="画板和墨迹" />
                                 </GroupBox.Header>
                                 <ikw:SimpleStackPanel Spacing="6">
-                                    <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                                        <TextBlock
-                                            Margin="0,0,16,0"
-                                            VerticalAlignment="Center"
-                                            FontSize="14"
-                                            Foreground="#fafafa"
-                                            Text="显示画笔光标" />
-                                        <ui:ToggleSwitch
-                                            Name="ToggleSwitchShowCursor"
-                                            FontFamily="Microsoft YaHei UI"
-                                            FontWeight="Bold"
-                                            IsOn="{Binding Settings.IsShowCursor, Mode=TwoWay}"
-                                            OffContent=""
-                                            OnContent=""
-                                            Toggled="ToggleSwitchShowCursor_Toggled" />
-                                    </ikw:SimpleStackPanel>
-                                    <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                                        <TextBlock
-                                            Margin="0,0,16,0"
-                                            VerticalAlignment="Center"
-                                            FontSize="14"
-                                            Foreground="#fafafa"
-                                            Text="橡皮大小" />
-                                        <ComboBox
-                                            Name="ComboBoxEraserSize"
-                                            FontFamily="Microsoft YaHei UI"
-                                            SelectedIndex="2"
-                                            SelectionChanged="ComboBoxEraserSize_SelectionChanged">
-                                            <ComboBoxItem Content="很小" FontFamily="Microsoft YaHei UI" />
-                                            <ComboBoxItem Content="较小" FontFamily="Microsoft YaHei UI" />
-                                            <ComboBoxItem Content="中等" FontFamily="Microsoft YaHei UI" />
-                                            <ComboBoxItem Content="较大" FontFamily="Microsoft YaHei UI" />
-                                            <ComboBoxItem Content="很大" FontFamily="Microsoft YaHei UI" />
-                                        </ComboBox>
-                                    </ikw:SimpleStackPanel>
-                                    <TextBlock
-                                        Foreground="#a1a1aa"
-                                        Text="# 非实时切换，下一次使用面积擦时生效。"
-                                        TextWrapping="Wrap" />
+                                    <controls:SettingsControl
+                                        Header="显示画笔光标"
+                                        IsOn="{Binding Settings.IsShowCursor}"
+                                        Toggled="ToggleSwitchShowCursor_Toggled" />
+                                    <controls:SettingsControl Header="橡皮大小" Description="# 非实时切换，下一次使用面积擦时生效。">
+                                        <controls:SettingsControl.Switcher>
+                                            <ComboBox
+                                                SelectedIndex="{Binding Settings.EraserSize, Mode=TwoWay}">
+                                                <ComboBoxItem Content="很小" FontFamily="Microsoft YaHei UI" />
+                                                <ComboBoxItem Content="较小" FontFamily="Microsoft YaHei UI" />
+                                                <ComboBoxItem Content="中等" FontFamily="Microsoft YaHei UI" />
+                                                <ComboBoxItem Content="较大" FontFamily="Microsoft YaHei UI" />
+                                                <ComboBoxItem Content="很大" FontFamily="Microsoft YaHei UI" />
+                                            </ComboBox>
+                                        </controls:SettingsControl.Switcher>
+                                    </controls:SettingsControl>
                                     <Line
                                         Margin="0,4,0,4"
                                         HorizontalAlignment="Center"
@@ -5203,8 +5182,7 @@
                                                             <ComboBox
                                                                 Name="BoardComboBoxEraserSize"
                                                                 FontFamily="Microsoft YaHei UI"
-                                                                SelectedIndex="2"
-                                                                SelectionChanged="ComboBoxEraserSizeFloatingBar_SelectionChanged">
+                                                                SelectedIndex="{Binding Settings.EraserSize, Mode=TwoWay}">
                                                                 <ComboBoxItem Content="很小" FontFamily="Microsoft YaHei UI" />
                                                                 <ComboBoxItem Content="较小" FontFamily="Microsoft YaHei UI" />
                                                                 <ComboBoxItem Content="中等" FontFamily="Microsoft YaHei UI" />
@@ -8879,8 +8857,7 @@
                                                     <ComboBox
                                                         Name="ComboBoxEraserSizeFloatingBar"
                                                         FontFamily="Microsoft YaHei UI"
-                                                        SelectedIndex="2"
-                                                        SelectionChanged="ComboBoxEraserSizeFloatingBar_SelectionChanged">
+                                                        SelectedIndex="{Binding Settings.EraserSize, Mode=TwoWay}">
                                                         <ComboBoxItem Content="很小" FontFamily="Microsoft YaHei UI" />
                                                         <ComboBoxItem Content="较小" FontFamily="Microsoft YaHei UI" />
                                                         <ComboBoxItem Content="中等" FontFamily="Microsoft YaHei UI" />
