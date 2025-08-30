@@ -28,8 +28,17 @@ namespace InkCanvasForClass_Remastered.Controls
             set => SetValue(DescriptionProperty, value);
         }
 
+        public static readonly DependencyProperty HasSwitchProperty =
+            DependencyProperty.Register(nameof(HasSwitcher), typeof(bool), typeof(SettingsControl), new PropertyMetadata(true));
+
+        public bool HasSwitcher
+        {
+            get => (bool)GetValue(HasSwitchProperty);
+            set => SetValue(HasSwitchProperty, value);
+        }
+
         public static readonly DependencyProperty IsOnProperty =
-            DependencyProperty.Register(nameof(IsOn), typeof(bool), typeof(SettingsControl), 
+            DependencyProperty.Register(nameof(IsOn), typeof(bool), typeof(SettingsControl),
                 new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnIsOnChanged));
 
         public bool IsOn

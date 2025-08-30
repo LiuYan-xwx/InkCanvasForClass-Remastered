@@ -6,6 +6,7 @@
     xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
     x:Name="root">
     <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
         <ui:ToggleSwitch
             x:Key="ToggleSwitch"
@@ -21,7 +22,7 @@
                 FontSize="14"
                 Foreground="#fafafa"
                 Text="{Binding Header, ElementName=root}" />
-            <ContentPresenter>
+            <ContentPresenter Visibility="{Binding HasSwitcher, ElementName=root, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <ContentPresenter.Style>
                     <Style TargetType="ContentPresenter">
                         <Style.Triggers>
