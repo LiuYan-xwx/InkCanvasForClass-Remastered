@@ -8716,32 +8716,6 @@ namespace InkCanvasForClass_Remastered
 
         private bool isInMultiTouchMode = false;
 
-        private void BorderMultiTouchMode_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (isInMultiTouchMode)
-            {
-                inkCanvas.StylusDown -= MainWindow_StylusDown;
-                inkCanvas.StylusMove -= MainWindow_StylusMove;
-                inkCanvas.StylusUp -= MainWindow_StylusUp;
-                inkCanvas.TouchDown -= MainWindow_TouchDown;
-                inkCanvas.TouchDown += Main_Grid_TouchDown;
-                inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
-                inkCanvas.Children.Clear();
-                isInMultiTouchMode = false;
-            }
-            else
-            {
-                inkCanvas.StylusDown += MainWindow_StylusDown;
-                inkCanvas.StylusMove += MainWindow_StylusMove;
-                inkCanvas.StylusUp += MainWindow_StylusUp;
-                inkCanvas.TouchDown += MainWindow_TouchDown;
-                inkCanvas.TouchDown -= Main_Grid_TouchDown;
-                inkCanvas.EditingMode = InkCanvasEditingMode.None;
-                inkCanvas.Children.Clear();
-                isInMultiTouchMode = true;
-            }
-        }
-
         private void MainWindow_TouchDown(object sender, TouchEventArgs e)
         {
             if (inkCanvas.EditingMode == InkCanvasEditingMode.EraseByPoint
@@ -8754,14 +8728,17 @@ namespace InkCanvasForClass_Remastered
                 HideSubPanels(); // 书写时自动隐藏二级菜单
             }
 
-            double boundWidth = e.GetTouchPoint(null).Bounds.Width, eraserMultiplier = 1.0;
-            if (!Settings.EraserBindTouchMultiplier && Settings.IsSpecialScreen)
+            double boundWidth = e.GetTouchPoint(null).Bounds.Width;
+            double eraserMultiplier = 1.0;
+
+            if (Settings.EraserBindTouchMultiplier && Settings.IsSpecialScreen)
                 eraserMultiplier = 1 / Settings.TouchMultiplier;
 
-            if ((Settings.TouchMultiplier != 0 || !Settings.IsSpecialScreen) //启用特殊屏幕且触摸倍数为 0 时禁用橡皮
+            if ((Settings.TouchMultiplier != 0 && Settings.IsSpecialScreen) //启用特殊屏幕且触摸倍数为 0 时禁用橡皮
                 && boundWidth > BoundsWidth * 2.5)
             {
-                if (drawingShapeMode == 0 && forceEraser) return;
+                if (drawingShapeMode == 0 && forceEraser)
+                    return;
                 double k = 1;
                 switch (Settings.EraserSize)
                 {
@@ -8798,9 +8775,10 @@ namespace InkCanvasForClass_Remastered
             ViewboxFloatingBar.IsHitTestVisible = false;
             BlackboardUIGridForInkReplay.IsHitTestVisible = false;
 
-            if (inkCanvas.EditingMode == InkCanvasEditingMode.EraseByPoint
-                || inkCanvas.EditingMode == InkCanvasEditingMode.EraseByStroke
-                || inkCanvas.EditingMode == InkCanvasEditingMode.Select) return;
+            if (inkCanvas.EditingMode is InkCanvasEditingMode.EraseByPoint
+                or InkCanvasEditingMode.EraseByStroke
+                or InkCanvasEditingMode.Select)
+                return;
 
             TouchDownPointsList[e.StylusDevice.Id] = InkCanvasEditingMode.None;
         }
