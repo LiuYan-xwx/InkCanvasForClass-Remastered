@@ -83,11 +83,11 @@ namespace InkCanvasForClass_Remastered.Services
                     _pptApplication.SlideShowNextSlide += OnSlideShowNextSlide;
                     _pptApplication.SlideShowEnd += OnSlideShowEnd;
 
-                    // 如果已经有打开的文档，手动触发一次Open事件
-                    if (_pptApplication.Presentations.Count > 0)
+                    // 如果已经正在放映，手动触发一次放映开始事件
+                    if (_pptApplication.SlideShowWindows.Count != 0)
                     {
                         // 延迟一小段时间再触发，确保MainWindow已经加载完毕
-                        _ = new Timer(_ => OnPresentationOpen(_pptApplication.ActivePresentation), null, 500, Timeout.Infinite);
+                        _ = new Timer(_ => OnSlideShowBegin(_pptApplication.SlideShowWindows[1]), null, 500, Timeout.Infinite);
                     }
 
                     return true;
