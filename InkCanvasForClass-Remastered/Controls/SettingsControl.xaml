@@ -21,7 +21,8 @@
                 VerticalAlignment="Center"
                 FontSize="14"
                 Foreground="#fafafa"
-                Text="{Binding Header, ElementName=root}" />
+                Text="{Binding Header, ElementName=root}"
+                Visibility="{Binding Header, ElementName=root, Converter={StaticResource StringToVisibilityConverter}}" />
             <ContentPresenter Visibility="{Binding HasSwitcher, ElementName=root, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <ContentPresenter.Style>
                     <Style TargetType="ContentPresenter">
@@ -36,9 +37,9 @@
             </ContentPresenter>
         </StackPanel>
         <TextBlock
+            FontSize="12"
             Foreground="#a1a1aa"
             Text="{Binding Description, ElementName=root}"
-            FontSize="12"
             TextWrapping="Wrap"
             Visibility="{Binding Description, ElementName=root, Converter={StaticResource StringToVisibilityConverter}}" />
     </StackPanel>
