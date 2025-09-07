@@ -54,7 +54,7 @@ namespace InkCanvasForClass_Remastered
             _powerPointService = powerPointService;
             Logger = logger;
 
-            DataContext = this;
+            DataContext = _viewModel;
 
             // 挂载PPT服务事件
             _powerPointService.PresentationClose += PptApplication_PresentationClose;
@@ -3698,10 +3698,6 @@ namespace InkCanvasForClass_Remastered
         #endregion
 
         #region PPT
-        //public static Microsoft.Office.Interop.PowerPoint.Application pptApplication = null;
-        //public static Presentation presentation = null;
-        //public static Slides slides = null;
-        //public static Slide slide = null;
         private int _slidescount = 0;
         private bool isPresentationHaveBlackSpace = false;
         private string _pptName = null;

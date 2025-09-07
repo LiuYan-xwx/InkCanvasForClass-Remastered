@@ -1,4 +1,5 @@
-﻿using Microsoft.Office.Interop.PowerPoint;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Office.Interop.PowerPoint;
 
 namespace InkCanvasForClass_Remastered.Services
 {

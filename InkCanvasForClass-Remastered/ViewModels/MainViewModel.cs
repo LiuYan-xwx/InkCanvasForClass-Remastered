@@ -7,11 +7,14 @@ namespace InkCanvasForClass_Remastered.ViewModels
     public partial class MainViewModel : ObservableObject
     {
         private readonly SettingsService _settingsService;
-        public MainViewModel(SettingsService settingsService)
+        private readonly IPowerPointService _powerPointService;
+        public MainViewModel(SettingsService settingsService, IPowerPointService powerPointService)
         {
             _settingsService = settingsService;
+            _powerPointService = powerPointService;
         }
         public Settings Settings => _settingsService.Settings;
+        public IPowerPointService PowerPointService => _powerPointService;
 
         [ObservableProperty]
         private string _nowTime;

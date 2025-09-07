@@ -1,4 +1,5 @@
-﻿using InkCanvasForClass_Remastered.Helpers;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using InkCanvasForClass_Remastered.Helpers;
 using Microsoft.Extensions.Logging;
 using Microsoft.Office.Interop.PowerPoint;
 using System.Runtime.InteropServices;
@@ -6,7 +7,7 @@ using Application = Microsoft.Office.Interop.PowerPoint.Application;
 
 namespace InkCanvasForClass_Remastered.Services
 {
-    public class PowerPointService : IPowerPointService
+    public class PowerPointService : ObservableRecipient, IPowerPointService
     {
         private readonly ILogger<PowerPointService> Logger;
 
@@ -123,6 +124,9 @@ namespace InkCanvasForClass_Remastered.Services
                 Marshal.ReleaseComObject(_pptApplication);
                 Logger.LogInformation("已断开与 PowerPoint 应用的连接");
                 _pptApplication = null;
+                
+                // 通知属性变化
+                OnPropertyChanged(nameof(IsInSlideShow));
             }
         }
 
@@ -175,8 +179,19 @@ namespace InkCanvasForClass_Remastered.Services
             Disconnect();
             PresentationClose?.Invoke(Pres);
         }
-        private void OnSlideShowBegin(SlideShowWindow Wn) => SlideShowBegin?.Invoke(Wn);
-        private void OnSlideShowEnd(Presentation Pres) => SlideShowEnd?.Invoke(Pres);
+        
+        private void OnSlideShowBegin(SlideShowWindow Wn)
+        {
+            SlideShowBegin?.Invoke(Wn);
+            OnPropertyChanged(nameof(IsInSlideShow));
+        }
+        
+        private void OnSlideShowEnd(Presentation Pres)
+        {
+            SlideShowEnd?.Invoke(Pres);
+            OnPropertyChanged(nameof(IsInSlideShow));
+        }
+        
         private void OnSlideShowNextSlide(SlideShowWindow Wn) => SlideShowNextSlide?.Invoke(Wn);
     }
 }
