@@ -9024,6 +9024,11 @@ namespace InkCanvasForClass_Remastered
             e.Mode = ManipulationModes.All;
         }
 
+        private void ButtonCrashTest_Click(object sender, RoutedEventArgs e)
+        {
+            throw new Exception("Crash Test");
+        }
+
         private void inkCanvas_ManipulationInertiaStarting(object sender, ManipulationInertiaStartingEventArgs e) { }
 
         private void Main_Grid_ManipulationCompleted(object sender, ManipulationCompletedEventArgs e)

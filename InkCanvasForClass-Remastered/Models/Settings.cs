@@ -233,6 +233,10 @@ namespace InkCanvasForClass_Remastered.Models
         private bool _isEnableDPIChangeDetection = false;
         [ObservableProperty]
         private bool _isSecondConfirmWhenShutdownApp = false;
+        [ObservableProperty]
+        private bool _isCriticalSafeMode = false;
+        [ObservableProperty]
+        private int _criticalSafeModeMethod = 0;
         // RandSettings
         [ObservableProperty]
         private bool _displayRandWindowNamesInputBtn = false;

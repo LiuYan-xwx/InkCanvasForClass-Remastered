@@ -1,4 +1,5 @@
 ﻿using Hardcodet.Wpf.TaskbarNotification;
+using InkCanvasForClass_Remastered.Models;
 using InkCanvasForClass_Remastered.Services;
 using InkCanvasForClass_Remastered.Services.Logging;
 using InkCanvasForClass_Remastered.ViewModels;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Windows;
@@ -22,22 +24,56 @@ namespace InkCanvasForClass_Remastered
         private IHost _host;
         private Mutex mutex;
         private ILogger<App> Logger;
+        private bool _isCriticalSafeMode = false;
+        private Settings Settings = new();
 
         public static T GetService<T>() => IAppHost.GetService<T>();
 
         public static readonly string AppRootFolderPath = "./";
         public static readonly string AppLogFolderPath = Path.Combine(AppRootFolderPath, "Logs");
 
+
         public App()
         {
-            this.DispatcherUnhandledException += App_DispatcherUnhandledException;
+            DispatcherUnhandledException += App_DispatcherUnhandledException;
         }
 
         private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
-            InkCanvasForClass_Remastered.MainWindow.ShowNewMessage("抱歉，出现未预期的异常，可能导致 ICC-Re 运行不稳定。\n建议保存墨迹后重启应用。", true);
-            Logger.LogCritical(e.Exception, "应用程序发生未处理的异常");
             e.Handled = true;
+            ProcessUnhandledException(e.Exception);
+        }
+
+        private void ProcessUnhandledException(Exception e)
+        {
+            Logger.LogCritical(e, "发生严重错误");
+            if (!Settings.IsCriticalSafeMode)
+            {
+                InkCanvasForClass_Remastered.MainWindow.ShowNewMessage("抱歉，出现未预期的异常，可能导致 ICC-Re 运行不稳定。\n建议保存墨迹后重启应用。", true);
+                return;
+            }
+            switch(Settings.CriticalSafeModeMethod)
+            {
+                case 0:
+                    Logger?.LogInformation("因教学安全模式设定，应用将自动退出");
+                    Current.Shutdown();
+                    break;
+                case 1:
+                    Logger?.LogInformation("因教学安全模式设定，应用将自动静默重启");
+                    Process.Start(System.Windows.Forms.Application.ExecutablePath, "-m");
+                    Current.Shutdown();
+                    break;
+                case 2:
+                    Logger?.LogInformation("因教学安全模式设定，应用将忽略异常并显示一条通知");
+                    InkCanvasForClass_Remastered.MainWindow.ShowNewMessage("抱歉，出现未预期的异常，可能导致 ICC-Re 运行不稳定。\n建议保存墨迹后重启应用。", true);
+                    break;
+                case 3:
+                    Logger?.LogInformation("因教学安全模式设定，应用将直接忽略异常");
+                    break;
+                default:
+                    Logger?.LogWarning("无效的教学安全模式设置：{}", Settings.CriticalSafeModeMethod);
+                    break;
+            }
         }
 
         protected override async void OnStartup(StartupEventArgs e)
@@ -65,6 +101,7 @@ namespace InkCanvasForClass_Remastered
 
             Logger.LogInformation("加载设置");
             GetService<SettingsService>().LoadSettings();
+            Settings = GetService<SettingsService>().Settings;
 
             await IAppHost.Host.StartAsync();
 

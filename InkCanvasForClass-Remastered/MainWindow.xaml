@@ -1288,6 +1288,19 @@
 
                                     <controls:SettingsControl Header="关闭软件时二次弹窗确认" IsOn="{Binding Settings.IsSecondConfirmWhenShutdownApp}" />
 
+                                    <controls:SettingsControl Header="教学安全模式" Description="启用后，若程序遇到未处理的异常或将崩溃，将按照选择的对应方法进行处理，否则默认忽略并显示通知">
+                                        <controls:SettingsControl.Switcher>
+                                            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                                <controls:SettingsControl Width="50" IsOn="{Binding Settings.IsCriticalSafeMode}" />
+                                                <ComboBox SelectedIndex="{Binding Settings.CriticalSafeModeMethod}" Visibility="{Binding Settings.IsCriticalSafeMode, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                    <ComboBoxItem>关闭应用</ComboBoxItem>
+                                                    <ComboBoxItem>静默重启应用</ComboBoxItem>
+                                                    <ComboBoxItem>忽略并显示通知（跟原来不开一样）</ComboBoxItem>
+                                                    <ComboBoxItem>忽略</ComboBoxItem>
+                                                </ComboBox>
+                                            </StackPanel>
+                                        </controls:SettingsControl.Switcher>
+                                    </controls:SettingsControl>
                                     <Line
                                         Margin="0,4,0,4"
                                         HorizontalAlignment="Center"
@@ -2399,8 +2412,8 @@
                                         Text="随机点名" />
                                 </GroupBox.Header>
                                 <ikw:SimpleStackPanel Spacing="6">
-                                    <controls:SettingsControl Header="显示修改随机点名名单的按钮" IsOn="{Binding Settings.DisplayRandWindowNamesInputBtn}"/>
-                                    
+                                    <controls:SettingsControl Header="显示修改随机点名名单的按钮" IsOn="{Binding Settings.DisplayRandWindowNamesInputBtn}" />
+
                                     <controls:SettingsControl Header="单次抽人窗口关闭延迟">
                                         <controls:SettingsControl.Switcher>
                                             <StackPanel Orientation="Horizontal">
@@ -2558,6 +2571,28 @@
                                         Text="感谢下列贡献者：" />
                                     <TextBlock Text="...暂无" />
                                 </ikw:SimpleStackPanel>
+                            </GroupBox>
+                            <GroupBox>
+                                <GroupBox.Header>
+                                    <TextBlock
+                                        Margin="0,12,0,0"
+                                        FontSize="26"
+                                        FontWeight="Bold"
+                                        Foreground="#fafafa"
+                                        Text="调试" />
+                                </GroupBox.Header>
+                                <StackPanel>
+                                    <TextBlock
+                                        FontWeight="Bold"
+                                        Foreground="OrangeRed"
+                                        Opacity="20"
+                                        Text="# 以下选项仅供开发者和高级用户使用，请谨慎操作！"
+                                        TextWrapping="Wrap" />
+                                    <Button
+                                        Content="崩溃测试"
+                                        Margin="0,6,0,0"
+                                        Click="ButtonCrashTest_Click" />
+                                </StackPanel>
                             </GroupBox>
                         </StackPanel>
                     </ui:ScrollViewerEx>
