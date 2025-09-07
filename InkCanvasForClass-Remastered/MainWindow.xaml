@@ -9111,7 +9111,7 @@
                         CornerRadius="4"
                         MouseDown="Border_MouseDown"
                         MouseUp="ImagePPTControlEnd_MouseUp"
-                        Visibility="Collapsed">
+                        Visibility="{Binding PowerPointService.IsInSlideShow, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <ikw:SimpleStackPanel
                             Width="28"
                             Margin="0,0"
