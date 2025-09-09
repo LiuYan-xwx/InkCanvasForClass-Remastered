@@ -136,7 +136,8 @@ namespace InkCanvasForClass_Remastered.Services
                 return;
             try
             {
-                _pptApplication.SlideShowWindows[1].View.Previous();
+                // 必须在新线程中调用，否则有时会阻塞UI线程
+                Task.Run(() => _pptApplication.SlideShowWindows[1].View.Previous());
             }
             catch (Exception ex)
             {
@@ -150,7 +151,8 @@ namespace InkCanvasForClass_Remastered.Services
                 return;
             try
             {
-                _pptApplication.SlideShowWindows[1].View.Next();
+                // 必须在新线程中调用，否则有时会阻塞UI线程
+                Task.Run(() => _pptApplication.SlideShowWindows[1].View.Next());
             }
             catch (Exception ex)
             {
