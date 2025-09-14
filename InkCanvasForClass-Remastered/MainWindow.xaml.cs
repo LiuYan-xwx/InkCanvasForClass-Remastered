@@ -8229,8 +8229,6 @@ namespace InkCanvasForClass_Remastered
         private DispatcherTimer timerCheckPPT = new DispatcherTimer();
         private DispatcherTimer timerKillProcess = new DispatcherTimer();
         private DispatcherTimer timerCheckAutoFold = new DispatcherTimer();
-        private string AvailableLatestVersion = null;
-        private DispatcherTimer timerCheckAutoUpdateWithSilence = new DispatcherTimer();
         private bool isHidingSubPanelsWhenInking = false; // 避免书写时触发二次关闭二级菜单导致动画不连续
 
         private DispatcherTimer timerDisplayTime = new DispatcherTimer();
