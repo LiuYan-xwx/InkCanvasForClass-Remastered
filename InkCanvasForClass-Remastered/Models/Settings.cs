@@ -153,47 +153,9 @@ namespace InkCanvasForClass_Remastered.Models
         [ObservableProperty]
         private bool _isAutoFoldInEasiNote5C = false;
         [ObservableProperty]
-        private bool _isAutoFoldInSeewoPincoTeacher = false;
-        [ObservableProperty]
-        private bool _isAutoFoldInHiteTouchPro = false;
-        [ObservableProperty]
-        private bool _isAutoFoldInHiteLightBoard = false;
-        [ObservableProperty]
-        private bool _isAutoFoldInHiteCamera = false;
-        [ObservableProperty]
-        private bool _isAutoFoldInWxBoardMain = false;
-        [ObservableProperty]
-        private bool _isAutoFoldInOldZyBoard = false;
-        [ObservableProperty]
-        private bool _isAutoFoldInMSWhiteboard = false;
-        [ObservableProperty]
-        private bool _isAutoFoldInAdmoxWhiteboard = false;
-        [ObservableProperty]
-        private bool _isAutoFoldInAdmoxBooth = false;
-        [ObservableProperty]
-        private bool _isAutoFoldInQPoint = false;
-        [ObservableProperty]
-        private bool _isAutoFoldInYiYunVisualPresenter = false;
-        [ObservableProperty]
-        private bool _isAutoFoldInMaxHubWhiteboard = false;
-        [ObservableProperty]
         private bool _isAutoFoldInPPTSlideShow = false;
         [ObservableProperty]
         private bool _isAutoKillPptService = false;
-        [ObservableProperty]
-        private bool _isAutoKillEasiNote = false;
-        [ObservableProperty]
-        private bool _isAutoKillHiteAnnotation = false;
-        [ObservableProperty]
-        private bool _isAutoKillVComYouJiao = false;
-        [ObservableProperty]
-        private bool _isAutoKillSeewoLauncher2DesktopAnnotation = false;
-        [ObservableProperty]
-        private bool _isAutoKillInkCanvas = false;
-        [ObservableProperty]
-        private bool _isAutoKillICA = false;
-        [ObservableProperty]
-        private bool _isAutoKillIDT = true;
         [ObservableProperty]
         private bool _isSaveScreenshotsInDateFolders = false;
         [ObservableProperty]
@@ -251,18 +213,6 @@ namespace InkCanvasForClass_Remastered.Models
             || IsAutoFoldInEasiNote3
             || IsAutoFoldInEasiNote3C
             || IsAutoFoldInEasiNote5C
-            || IsAutoFoldInSeewoPincoTeacher
-            || IsAutoFoldInHiteTouchPro
-            || IsAutoFoldInHiteLightBoard
-            || IsAutoFoldInHiteCamera
-            || IsAutoFoldInWxBoardMain
-            || IsAutoFoldInOldZyBoard
-            || IsAutoFoldInMSWhiteboard
-            || IsAutoFoldInAdmoxWhiteboard
-            || IsAutoFoldInAdmoxBooth
-            || IsAutoFoldInQPoint
-            || IsAutoFoldInYiYunVisualPresenter
-            || IsAutoFoldInMaxHubWhiteboard
             || IsAutoFoldInPPTSlideShow;
         [JsonIgnore]
         public bool IsEnableTwoFingerGesture => IsEnableTwoFingerZoom || IsEnableTwoFingerTranslate || IsEnableTwoFingerRotation;

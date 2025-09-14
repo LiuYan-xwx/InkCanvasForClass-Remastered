@@ -5417,99 +5417,6 @@ namespace InkCanvasForClass_Remastered
             StartOrStoptimerCheckAutoFold();
         }
 
-        private void ToggleSwitchAutoFoldInSeewoPincoTeacher_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            Settings.IsAutoFoldInSeewoPincoTeacher = ToggleSwitchAutoFoldInSeewoPincoTeacher.IsOn;
-            _settingsService.SaveSettings();
-            StartOrStoptimerCheckAutoFold();
-        }
-
-        private void ToggleSwitchAutoFoldInHiteTouchPro_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            Settings.IsAutoFoldInHiteTouchPro = ToggleSwitchAutoFoldInHiteTouchPro.IsOn;
-            _settingsService.SaveSettings();
-            StartOrStoptimerCheckAutoFold();
-        }
-
-        private void ToggleSwitchAutoFoldInHiteLightBoard_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            Settings.IsAutoFoldInHiteLightBoard = ToggleSwitchAutoFoldInHiteLightBoard.IsOn;
-            _settingsService.SaveSettings();
-            StartOrStoptimerCheckAutoFold();
-        }
-
-        private void ToggleSwitchAutoFoldInHiteCamera_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            Settings.IsAutoFoldInHiteCamera = ToggleSwitchAutoFoldInHiteCamera.IsOn;
-            _settingsService.SaveSettings();
-            StartOrStoptimerCheckAutoFold();
-        }
-
-        private void ToggleSwitchAutoFoldInWxBoardMain_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            Settings.IsAutoFoldInWxBoardMain = ToggleSwitchAutoFoldInWxBoardMain.IsOn;
-            _settingsService.SaveSettings();
-            StartOrStoptimerCheckAutoFold();
-        }
-
-        private void ToggleSwitchAutoFoldInOldZyBoard_Toggled(object sender, RoutedEventArgs e)
-        {
-            StartOrStoptimerCheckAutoFold();
-        }
-
-        private void ToggleSwitchAutoFoldInMSWhiteboard_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            Settings.IsAutoFoldInMSWhiteboard = ToggleSwitchAutoFoldInMSWhiteboard.IsOn;
-            _settingsService.SaveSettings();
-            StartOrStoptimerCheckAutoFold();
-        }
-
-        private void ToggleSwitchAutoFoldInAdmoxWhiteboard_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            Settings.IsAutoFoldInAdmoxWhiteboard = ToggleSwitchAutoFoldInAdmoxWhiteboard.IsOn;
-            _settingsService.SaveSettings();
-            StartOrStoptimerCheckAutoFold();
-        }
-
-        private void ToggleSwitchAutoFoldInAdmoxBooth_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            Settings.IsAutoFoldInAdmoxBooth = ToggleSwitchAutoFoldInAdmoxBooth.IsOn;
-            _settingsService.SaveSettings();
-            StartOrStoptimerCheckAutoFold();
-        }
-
-        private void ToggleSwitchAutoFoldInQPoint_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            Settings.IsAutoFoldInQPoint = ToggleSwitchAutoFoldInQPoint.IsOn;
-            _settingsService.SaveSettings();
-            StartOrStoptimerCheckAutoFold();
-        }
-
-        private void ToggleSwitchAutoFoldInYiYunVisualPresenter_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            Settings.IsAutoFoldInYiYunVisualPresenter = ToggleSwitchAutoFoldInYiYunVisualPresenter.IsOn;
-            _settingsService.SaveSettings();
-            StartOrStoptimerCheckAutoFold();
-        }
-
-        private void ToggleSwitchAutoFoldInMaxHubWhiteboard_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            Settings.IsAutoFoldInMaxHubWhiteboard = ToggleSwitchAutoFoldInMaxHubWhiteboard.IsOn;
-            _settingsService.SaveSettings();
-            StartOrStoptimerCheckAutoFold();
-        }
-
         private void ToggleSwitchAutoFoldInPPTSlideShow_Toggled(object sender, RoutedEventArgs e)
         {
             if (Settings.IsAutoFoldInPPTSlideShow)
@@ -5529,87 +5436,7 @@ namespace InkCanvasForClass_Remastered
 
         private void ToggleSwitchAutoKillPptService_Toggled(object sender, RoutedEventArgs e)
         {
-            if (Settings.IsAutoKillEasiNote || Settings.IsAutoKillPptService ||
-                Settings.IsAutoKillHiteAnnotation || Settings.IsAutoKillInkCanvas
-                || Settings.IsAutoKillICA || Settings.IsAutoKillIDT || Settings.IsAutoKillVComYouJiao
-                || Settings.IsAutoKillSeewoLauncher2DesktopAnnotation)
-                timerKillProcess.Start();
-            else
-                timerKillProcess.Stop();
-        }
-
-        private void ToggleSwitchAutoKillEasiNote_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (Settings.IsAutoKillEasiNote || Settings.IsAutoKillPptService ||
-                Settings.IsAutoKillHiteAnnotation || Settings.IsAutoKillInkCanvas
-                || Settings.IsAutoKillICA || Settings.IsAutoKillIDT || Settings.IsAutoKillVComYouJiao
-                || Settings.IsAutoKillSeewoLauncher2DesktopAnnotation)
-                timerKillProcess.Start();
-            else
-                timerKillProcess.Stop();
-        }
-
-        private void ToggleSwitchAutoKillHiteAnnotation_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (Settings.IsAutoKillEasiNote || Settings.IsAutoKillPptService ||
-                Settings.IsAutoKillHiteAnnotation || Settings.IsAutoKillInkCanvas
-                || Settings.IsAutoKillICA || Settings.IsAutoKillIDT || Settings.IsAutoKillVComYouJiao
-                || Settings.IsAutoKillSeewoLauncher2DesktopAnnotation)
-                timerKillProcess.Start();
-            else
-                timerKillProcess.Stop();
-        }
-
-        private void ToggleSwitchAutoKillVComYouJiao_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (Settings.IsAutoKillEasiNote || Settings.IsAutoKillPptService ||
-                Settings.IsAutoKillHiteAnnotation || Settings.IsAutoKillInkCanvas
-                || Settings.IsAutoKillICA || Settings.IsAutoKillIDT || Settings.IsAutoKillVComYouJiao
-                || Settings.IsAutoKillSeewoLauncher2DesktopAnnotation)
-                timerKillProcess.Start();
-            else
-                timerKillProcess.Stop();
-        }
-
-        private void ToggleSwitchAutoKillSeewoLauncher2DesktopAnnotation_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (Settings.IsAutoKillEasiNote || Settings.IsAutoKillPptService ||
-                Settings.IsAutoKillHiteAnnotation || Settings.IsAutoKillInkCanvas
-                || Settings.IsAutoKillICA || Settings.IsAutoKillIDT || Settings.IsAutoKillVComYouJiao
-                || Settings.IsAutoKillSeewoLauncher2DesktopAnnotation)
-                timerKillProcess.Start();
-            else
-                timerKillProcess.Stop();
-        }
-
-        private void ToggleSwitchAutoKillInkCanvas_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (Settings.IsAutoKillEasiNote || Settings.IsAutoKillPptService ||
-                Settings.IsAutoKillHiteAnnotation || Settings.IsAutoKillInkCanvas
-                || Settings.IsAutoKillICA || Settings.IsAutoKillIDT || Settings.IsAutoKillVComYouJiao
-                || Settings.IsAutoKillSeewoLauncher2DesktopAnnotation)
-                timerKillProcess.Start();
-            else
-                timerKillProcess.Stop();
-        }
-
-        private void ToggleSwitchAutoKillICA_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (Settings.IsAutoKillEasiNote || Settings.IsAutoKillPptService ||
-                Settings.IsAutoKillHiteAnnotation || Settings.IsAutoKillInkCanvas
-                || Settings.IsAutoKillICA || Settings.IsAutoKillIDT || Settings.IsAutoKillVComYouJiao
-                || Settings.IsAutoKillSeewoLauncher2DesktopAnnotation)
-                timerKillProcess.Start();
-            else
-                timerKillProcess.Stop();
-        }
-
-        private void ToggleSwitchAutoKillIDT_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (Settings.IsAutoKillEasiNote || Settings.IsAutoKillPptService ||
-                Settings.IsAutoKillHiteAnnotation || Settings.IsAutoKillInkCanvas
-                || Settings.IsAutoKillICA || Settings.IsAutoKillIDT || Settings.IsAutoKillVComYouJiao
-                || Settings.IsAutoKillSeewoLauncher2DesktopAnnotation)
+            if (Settings.IsAutoKillPptService)
                 timerKillProcess.Start();
             else
                 timerKillProcess.Stop();
@@ -6052,28 +5879,6 @@ namespace InkCanvasForClass_Remastered
 
             ToggleSwitchAutoFoldInEasiNote5C.IsOn = Settings.IsAutoFoldInEasiNote5C;
 
-            ToggleSwitchAutoFoldInSeewoPincoTeacher.IsOn = Settings.IsAutoFoldInSeewoPincoTeacher;
-
-            ToggleSwitchAutoFoldInHiteTouchPro.IsOn = Settings.IsAutoFoldInHiteTouchPro;
-
-            ToggleSwitchAutoFoldInHiteLightBoard.IsOn = Settings.IsAutoFoldInHiteLightBoard;
-
-            ToggleSwitchAutoFoldInHiteCamera.IsOn = Settings.IsAutoFoldInHiteCamera;
-
-            ToggleSwitchAutoFoldInWxBoardMain.IsOn = Settings.IsAutoFoldInWxBoardMain;
-
-            ToggleSwitchAutoFoldInMSWhiteboard.IsOn = Settings.IsAutoFoldInMSWhiteboard;
-
-            ToggleSwitchAutoFoldInAdmoxWhiteboard.IsOn = Settings.IsAutoFoldInAdmoxWhiteboard;
-
-            ToggleSwitchAutoFoldInAdmoxBooth.IsOn = Settings.IsAutoFoldInAdmoxBooth;
-
-            ToggleSwitchAutoFoldInQPoint.IsOn = Settings.IsAutoFoldInQPoint;
-
-            ToggleSwitchAutoFoldInYiYunVisualPresenter.IsOn = Settings.IsAutoFoldInYiYunVisualPresenter;
-
-            ToggleSwitchAutoFoldInMaxHubWhiteboard.IsOn = Settings.IsAutoFoldInMaxHubWhiteboard;
-
             SettingsPPTInkingAndAutoFoldExplictBorder.Visibility = Visibility.Collapsed;
             if (Settings.IsAutoFoldInPPTSlideShow)
             {
@@ -6082,11 +5887,7 @@ namespace InkCanvasForClass_Remastered
                 SettingsShowCanvasAtNewSlideShowStackPanel.IsHitTestVisible = false;
             }
 
-            if (Settings.IsAutoKillEasiNote || Settings.IsAutoKillPptService ||
-                Settings.IsAutoKillHiteAnnotation || Settings.IsAutoKillInkCanvas
-                || Settings.IsAutoKillICA || Settings.IsAutoKillIDT ||
-                Settings.IsAutoKillVComYouJiao
-                || Settings.IsAutoKillSeewoLauncher2DesktopAnnotation)
+            if (Settings.IsAutoKillPptService)
             {
                 timerKillProcess.Start();
             }
@@ -8469,105 +8270,42 @@ namespace InkCanvasForClass_Remastered
         {
             try
             {
-                // 希沃相关： easinote swenserver RemoteProcess EasiNote.MediaHttpService smartnote.cloud EasiUpdate smartnote EasiUpdate3 EasiUpdate3Protect SeewoP2P CefSharp.BrowserSubprocess SeewoUploadService
-                var arg = "/F";
-                if (Settings.IsAutoKillPptService)
+                if (!Settings.IsAutoKillPptService)
+                    return;
+
+                var processesToKill = new List<string>();
+
+                // 检查 PPTService 进程
+                if (Process.GetProcessesByName("PPTService").Length > 0)
                 {
-                    var processes = Process.GetProcessesByName("PPTService");
-                    if (processes.Length > 0) arg += " /IM PPTService.exe";
-                    processes = Process.GetProcessesByName("SeewoIwbAssistant");
-                    if (processes.Length > 0) arg += " /IM SeewoIwbAssistant.exe" + " /IM Sia.Guard.exe";
+                    processesToKill.Add("PPTService.exe");
                 }
 
-                if (Settings.IsAutoKillEasiNote)
+                // 检查 SeewoIwbAssistant 进程
+                if (Process.GetProcessesByName("SeewoIwbAssistant").Length > 0)
                 {
-                    var processes = Process.GetProcessesByName("EasiNote");
-                    if (processes.Length > 0) arg += " /IM EasiNote.exe";
+                    processesToKill.AddRange(new[] { "SeewoIwbAssistant.exe", "Sia.Guard.exe" });
                 }
 
-                if (Settings.IsAutoKillHiteAnnotation)
+                if (processesToKill.Count > 0)
                 {
-                    var processes = Process.GetProcessesByName("HiteAnnotation");
-                    if (processes.Length > 0) arg += " /IM HiteAnnotation.exe";
-                }
+                    var args = "/F " + string.Join(" ", processesToKill.Select(p => $"/IM {p}"));
 
-                if (Settings.IsAutoKillVComYouJiao)
-                {
-                    var processes = Process.GetProcessesByName("VcomTeach");
-                    if (processes.Length > 0) arg += " /IM VcomTeach.exe" + " /IM VcomDaemon.exe" + " /IM VcomRender.exe";
-                }
-
-                if (Settings.IsAutoKillICA)
-                {
-                    var processesAnnotation = Process.GetProcessesByName("Ink Canvas Annotation");
-                    var processesArtistry = Process.GetProcessesByName("Ink Canvas Artistry");
-                    if (processesAnnotation.Length > 0) arg += " /IM \"Ink Canvas Annotation.exe\"";
-                    if (processesArtistry.Length > 0) arg += " /IM \"Ink Canvas Artistry.exe\"";
-                }
-
-                if (Settings.IsAutoKillInkCanvas)
-                {
-                    var processes = Process.GetProcessesByName("Ink Canvas");
-                    if (processes.Length > 0) arg += " /IM \"Ink Canvas.exe\"";
-                }
-
-                if (Settings.IsAutoKillIDT)
-                {
-                    var processes = Process.GetProcessesByName("智绘教");
-                    if (processes.Length > 0) arg += " /IM \"智绘教.exe\"";
-                }
-
-                if (Settings.IsAutoKillSeewoLauncher2DesktopAnnotation)
-                {
-                    //由于希沃桌面2.0提供的桌面批注是64位应用程序，32位程序无法访问，目前暂不做精准匹配，只匹配进程名称，后面会考虑封装一套基于P/Invoke和WMI的综合进程识别方案。
-                    var processes = Process.GetProcessesByName("DesktopAnnotation");
-                    if (processes.Length > 0) arg += " /IM DesktopAnnotation.exe";
-                }
-
-                if (arg != "/F")
-                {
-                    var p = new Process();
-                    p.StartInfo = new ProcessStartInfo("taskkill", arg);
-                    p.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-                    p.Start();
-
-                    if (arg.Contains("EasiNote"))
+                    using var process = new Process();
+                    process.StartInfo = new ProcessStartInfo("taskkill", args)
                     {
-                        ShowNotification("“希沃白板 5”已自动关闭");
-                    }
-
-                    if (arg.Contains("HiteAnnotation"))
-                    {
-                        ShowNotification("“鸿合屏幕书写”已自动关闭");
-                    }
-
-                    if (arg.Contains("Ink Canvas Annotation") || arg.Contains("Ink Canvas Artistry"))
-                    {
-                        ShowNewMessage("“ICA”已自动关闭");
-                    }
-
-                    if (arg.Contains("\"Ink Canvas.exe\""))
-                    {
-                        ShowNotification("“Ink Canvas”已自动关闭");
-                    }
-
-                    if (arg.Contains("智绘教"))
-                    {
-                        ShowNotification("“智绘教”已自动关闭");
-                    }
-
-                    if (arg.Contains("VcomTeach"))
-                    {
-                        ShowNotification("“优教授课端”已自动关闭");
-                    }
-
-                    if (arg.Contains("DesktopAnnotation"))
-                    {
-                        ShowNotification("“DesktopAnnotation”已自动关闭");
-                    }
+                        WindowStyle = ProcessWindowStyle.Hidden,
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    };
+                    process.Start();
+                    Logger.LogInformation($"Killed processes: {string.Join(", ", processesToKill)}");
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Logger.LogWarning(ex, "Failed to kill processes in TimerKillProcess_Tick");
+            }
         }
 
 
@@ -8626,18 +8364,7 @@ namespace InkCanvasForClass_Remastered
                 "EasiNote" => ShouldFoldEasiNote(windowTitle, windowRect),
                 "EasiCamera" => Settings.IsAutoFoldInEasiCamera && isFullScreen,
                 "EasiNote5C" => Settings.IsAutoFoldInEasiNote5C && isFullScreen,
-                "BoardService" or "seewoPincoTeacher" => Settings.IsAutoFoldInSeewoPincoTeacher,
-                "HiteCamera" => Settings.IsAutoFoldInHiteCamera && isFullScreen,
-                "HiteTouchPro" => Settings.IsAutoFoldInHiteTouchPro && isFullScreen,
-                "WxBoardMain" => Settings.IsAutoFoldInWxBoardMain && isFullScreen,
-                "MicrosoftWhiteboard" or "msedgewebview2" => Settings.IsAutoFoldInMSWhiteboard,
-                "HiteLightBoard" => Settings.IsAutoFoldInHiteLightBoard && isFullScreen,
-                "Amdox.WhiteBoard" => Settings.IsAutoFoldInAdmoxWhiteboard && isFullScreen,
-                "Amdox.Booth" => Settings.IsAutoFoldInAdmoxBooth && isFullScreen,
-                "QPoint" => Settings.IsAutoFoldInQPoint && isFullScreen,
-                "YiYunVisualPresenter" => Settings.IsAutoFoldInYiYunVisualPresenter && isFullScreen,
-                "WhiteBoard" => ShouldFoldMaxHubWhiteboard(isFullScreen),
-                _ => ShouldFoldOtherApps()
+                _ => throw new NotImplementedException()
             };
         }
 
@@ -8673,31 +8400,6 @@ namespace InkCanvasForClass_Remastered
             return false;
         }
 
-        private bool ShouldFoldMaxHubWhiteboard(bool isFullScreen)
-        {
-            if (!Settings.IsAutoFoldInMaxHubWhiteboard ||
-                !WinTabWindowsChecker.IsWindowExisted("白板书写") ||
-                !isFullScreen) return false;
-
-            if (ForegroundWindowInfo.ProcessPath() == "Unknown") return false;
-
-            try
-            {
-                var versionInfo = FileVersionInfo.GetVersionInfo(ForegroundWindowInfo.ProcessPath());
-                return versionInfo.FileVersion.StartsWith("6.") && versionInfo.ProductName == "WhiteBoard";
-            }
-            catch { }
-
-            return false;
-        }
-
-        private bool ShouldFoldOtherApps()
-        {
-            // 中原旧白板
-            return Settings.IsAutoFoldInOldZyBoard &&
-                   (WinTabWindowsChecker.IsWindowExisted("WhiteBoard - DrawingWindow") ||
-                    WinTabWindowsChecker.IsWindowExisted("InstantAnnotationWindow"));
-        }
         #endregion
 
         #region TouchEvents
