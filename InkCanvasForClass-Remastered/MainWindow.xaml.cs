@@ -3699,11 +3699,10 @@ namespace InkCanvasForClass_Remastered
 
         #region PPT
         private int _slidescount = 0;
-        private bool isPresentationHaveBlackSpace = false;
         private string _pptName = null;
         private bool isEnteredSlideShowEndEvent = false;
-        private int _previousSlideID = 0;
-        private MemoryStream[] _memoryStreams = new MemoryStream[50];
+        private int _previousSlideID = 1;
+        private Dictionary<int, MemoryStream> _memoryStreams = new();
 
         private void TimerCheckPPT_Tick(object sender, EventArgs e)
         {
@@ -3885,34 +3884,25 @@ namespace InkCanvasForClass_Remastered
 
             isStopInkReplay = true;
 
-            Logger.LogInformation("幻灯片放映开始");
+            Logger.LogTrace("幻灯片放映开始");
 
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
-
-                //调整颜色
-                var screenRatio = SystemParameters.PrimaryScreenWidth / SystemParameters.PrimaryScreenHeight;
-                if (Math.Abs(screenRatio - 16.0 / 9) <= -0.01)
+                // 清理之前的数据
+                foreach (var stream in _memoryStreams.Values)
                 {
-                    if (Wn.Presentation.PageSetup.SlideWidth / Wn.Presentation.PageSetup.SlideHeight < 1.65)
-                    {
-                        isPresentationHaveBlackSpace = true;
-                        //isButtonBackgroundTransparent = ToggleSwitchTransparentButtonBackground.IsOn;
-                    }
+                    stream?.Dispose();
                 }
-                else if (screenRatio == -256 / 135) { }
-
-                lastDesktopInkColor = 1;
+                _memoryStreams.Clear();
 
                 var currentPresentation = Wn.Presentation;
                 if (currentPresentation == null) return;
 
                 _slidescount = currentPresentation.Slides.Count;
-                _previousSlideID = 0;
-                _memoryStreams = new MemoryStream[_slidescount + 2];
+                _previousSlideID = 1;
 
                 _pptName = currentPresentation.Name;
-                Logger.LogInformation($"当前幻灯片：{_pptName}，总数：{_slidescount}");
+                //Logger.LogInformation($"当前幻灯片：{_pptName}，总数：{_slidescount}");
 
                 //检查是否有已有墨迹，并加载
                 if (Settings.IsAutoSaveStrokesInPowerPoint)
@@ -3937,7 +3927,20 @@ namespace InkCanvasForClass_Remastered
                             }
                             catch (Exception ex)
                             {
-                                Logger.LogInformation(ex, $"加载第 {i} 页墨迹失败");
+                                Logger.LogWarning(ex, $"加载第 {i} 页墨迹失败");
+                            }
+                        }
+                        // 加载第一页墨迹
+                        if (_memoryStreams.ContainsKey(1) && _memoryStreams[1] != null)
+                        {
+                            try
+                            {
+                                _memoryStreams[1].Position = 0;
+                                inkCanvas.Strokes.Add(new StrokeCollection(_memoryStreams[1]));
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.LogWarning(ex, $"加载第 1 页墨迹失败");
                             }
                         }
                         Logger.LogInformation($"加载完成，共 {count} 页");
@@ -3985,7 +3988,7 @@ namespace InkCanvasForClass_Remastered
                     UpdatePPTBtnDisplaySettingsStatus();
                     UpdatePPTBtnStyleSettingsStatus();
                 }
-                Logger.LogInformation("幻灯片放映时处理加载完成");
+                Logger.LogTrace("幻灯片放映时处理加载完成");
 
                 if (!isFloatingBarFolded)
                 {
@@ -4003,9 +4006,9 @@ namespace InkCanvasForClass_Remastered
 
         private async void PptApplication_SlideShowEnd(Presentation Pres)
         {
-            if (isFloatingBarFolded) await UnFoldFloatingBar(new object());
-
-            Logger.LogInformation("幻灯片放映结束");
+            if (isFloatingBarFolded)
+                await UnFoldFloatingBar(new object());
+            Logger.LogTrace("幻灯片放映结束");
             if (isEnteredSlideShowEndEvent)
             {
                 Logger.LogInformation("检测到之前已经进入过退出事件，返回");
@@ -4013,14 +4016,17 @@ namespace InkCanvasForClass_Remastered
             }
 
             isEnteredSlideShowEndEvent = true;
+
             if (Settings.IsAutoSaveStrokesInPowerPoint)
             {
                 var folderPath = Settings.AutoSaveStrokesPath + @"\Auto Saved - Presentations\" +
                                  Pres.Name + "_" + Pres.Slides.Count;
-                if (!Directory.Exists(folderPath)) Directory.CreateDirectory(folderPath);
+                if (!Directory.Exists(folderPath))
+                    Directory.CreateDirectory(folderPath);
 
                 for (var i = 1; i <= Pres.Slides.Count; i++)
-                    if (_memoryStreams[i] != null)
+                {
+                    if (_memoryStreams.ContainsKey(i) && _memoryStreams[i] != null)
                         try
                         {
                             if (_memoryStreams[i].Length > 8)
@@ -4028,7 +4034,7 @@ namespace InkCanvasForClass_Remastered
                                 var srcBuf = new byte[_memoryStreams[i].Length];
                                 var byteLength = _memoryStreams[i].Read(srcBuf, 0, srcBuf.Length);
                                 File.WriteAllBytes(folderPath + @"\" + i.ToString("0000") + ".icstk", srcBuf);
-                                Logger.LogInformation(
+                                Logger.LogTrace(
                                     $"已为第 {i} 页保存墨迹, 大小{_memoryStreams[i].Length}, 字节数{byteLength}");
                             }
                             else
@@ -4041,12 +4047,18 @@ namespace InkCanvasForClass_Remastered
                             Logger.LogError(ex, $"为第 {i} 页保存墨迹失败");
                             File.Delete(folderPath + @"\" + i.ToString("0000") + ".icstk");
                         }
+                }
+                // 清理内存流资源
+                foreach (var stream in _memoryStreams.Values)
+                {
+                    stream?.Dispose();
+                }
+                _memoryStreams.Clear();
+
             }
 
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
-                isPresentationHaveBlackSpace = false;
-
                 StackPanelPPTControls.Visibility = Visibility.Collapsed;
                 LeftBottomPanelForPPTNavigation.Visibility = Visibility.Collapsed;
                 RightBottomPanelForPPTNavigation.Visibility = Visibility.Collapsed;
@@ -4089,10 +4101,17 @@ namespace InkCanvasForClass_Remastered
 
         private void PptApplication_SlideShowNextSlide(SlideShowWindow Wn)
         {
-            Logger.LogInformation($"幻灯片跳转到第 {Wn.View.CurrentShowPosition} 页");
+            Logger.LogTrace($"幻灯片跳转到第 {Wn.View.CurrentShowPosition} 页");
             if (Wn.View.CurrentShowPosition == _previousSlideID) return;
+
             Application.Current.Dispatcher.Invoke(() =>
             {
+                // 释放之前的 MemoryStream 避免内存泄漏
+                if (_memoryStreams.ContainsKey(_previousSlideID))
+                {
+                    _memoryStreams[_previousSlideID]?.Dispose();
+                }
+
                 var ms = new MemoryStream();
                 inkCanvas.Strokes.Save(ms);
                 ms.Position = 0;
@@ -4110,17 +4129,18 @@ namespace InkCanvasForClass_Remastered
                 {
                     if (_memoryStreams[Wn.View.CurrentShowPosition] != null &&
                         _memoryStreams[Wn.View.CurrentShowPosition].Length > 0)
+                    {
+                        _memoryStreams[Wn.View.CurrentShowPosition].Position = 0; // 确保从头读取
                         inkCanvas.Strokes.Add(new StrokeCollection(_memoryStreams[Wn.View.CurrentShowPosition]));
+                    }
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // ignored
+                    Logger.LogWarning(ex, $"加载第 {Wn.View.CurrentShowPosition} 页墨迹失败");
                 }
 
                 PPTBtnPageNow.Text = $"{Wn.View.CurrentShowPosition}";
                 PPTBtnPageTotal.Text = $"/ {Wn.Presentation.Slides.Count}";
-
-                //PptNavigationTextBlock.Text = $"{Wn.View.CurrentShowPosition}/{Wn.Presentation.Slides.Count}";
             });
             _previousSlideID = Wn.View.CurrentShowPosition;
         }
