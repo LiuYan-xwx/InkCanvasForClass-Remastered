@@ -836,18 +836,6 @@ namespace InkCanvasForClass_Remastered
             if (Settings.ClearCanvasAndClearTimeMachine == false) timeMachine.ClearStrokeHistory();
         }
 
-        private void BoardLaunchEasiCamera_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            ImageBlackboard_MouseUp(null, null);
-            SoftwareLauncher.LaunchEasiCamera("希沃视频展台");
-        }
-
-        private void BoardLaunchDesmos_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            HideSubPanelsImmediately();
-            ImageBlackboard_MouseUp(null, null);
-            Process.Start("https://www.desmos.com/calculator?lang=zh-CN");
-        }
         #endregion
 
         #region Colors
