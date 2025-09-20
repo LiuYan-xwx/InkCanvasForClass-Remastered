@@ -54,7 +54,7 @@ https://github.com/3382308510
 > [!note]
 > 目前在 **master** 分支开发
 
-关于本项目已经做出的更改，可以查阅更改日志 CHANGELOG.md  
+关于本项目已经做出的更改，可以查阅更改日志 [CHANGELOG.md](./CHANGELOG.md)  
 
 关于本项目未来计划的或正在进行的修改，可查阅仓库的 Projects 参考
 
