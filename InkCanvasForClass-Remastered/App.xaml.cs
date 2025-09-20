@@ -110,6 +110,10 @@ namespace InkCanvasForClass_Remastered
             mainWindow.Show();
 
             var taskbar = (TaskbarIcon)FindResource("TaskbarTrayIcon");
+            
+            // Initialize TrayIcon service
+            var trayIconService = GetService<TrayIconService>();
+            trayIconService.Initialize();
 
             await GetService<FileFolderService>().ProcessOldFilesAsync();
 
@@ -123,6 +127,7 @@ namespace InkCanvasForClass_Remastered
             services.AddSingleton<SettingsService>();
             services.AddSingleton<IPowerPointService, PowerPointService>();
             services.AddSingleton<FileFolderService>();
+            services.AddSingleton<TrayIconService>();
             // 注册视图模型
             services.AddTransient<MainViewModel>();
 
@@ -172,5 +177,49 @@ namespace InkCanvasForClass_Remastered
             }
             catch { }
         }
+
+        #region TrayIcon Event Handlers
+
+        private void TrayIconService_SysTrayMenu_Opened(object sender, RoutedEventArgs e)
+        {
+            GetService<TrayIconService>().SysTrayMenu_Opened(sender, e);
+        }
+
+        private void TrayIconService_CloseAppTrayIconMenuItem_Clicked(object sender, RoutedEventArgs e)
+        {
+            GetService<TrayIconService>().CloseAppTrayIconMenuItem_Clicked(sender, e);
+        }
+
+        private void TrayIconService_RestartAppTrayIconMenuItem_Clicked(object sender, RoutedEventArgs e)
+        {
+            GetService<TrayIconService>().RestartAppTrayIconMenuItem_Clicked(sender, e);
+        }
+
+        private void TrayIconService_ForceFullScreenTrayIconMenuItem_Clicked(object sender, RoutedEventArgs e)
+        {
+            GetService<TrayIconService>().ForceFullScreenTrayIconMenuItem_Clicked(sender, e);
+        }
+
+        private void TrayIconService_FoldFloatingBarTrayIconMenuItem_Clicked(object sender, RoutedEventArgs e)
+        {
+            GetService<TrayIconService>().FoldFloatingBarTrayIconMenuItem_Clicked(sender, e);
+        }
+
+        private void TrayIconService_ResetFloatingBarPositionTrayIconMenuItem_Clicked(object sender, RoutedEventArgs e)
+        {
+            GetService<TrayIconService>().ResetFloatingBarPositionTrayIconMenuItem_Clicked(sender, e);
+        }
+
+        private void TrayIconService_HideICCMainWindowTrayIconMenuItem_Checked(object sender, RoutedEventArgs e)
+        {
+            GetService<TrayIconService>().HideICCMainWindowTrayIconMenuItem_Checked(sender, e);
+        }
+
+        private void TrayIconService_HideICCMainWindowTrayIconMenuItem_UnChecked(object sender, RoutedEventArgs e)
+        {
+            GetService<TrayIconService>().HideICCMainWindowTrayIconMenuItem_UnChecked(sender, e);
+        }
+
+        #endregion
     }
 }

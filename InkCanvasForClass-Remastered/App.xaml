@@ -17,13 +17,13 @@
                 Padding="6"
                 ui:ThemeManager.RequestedTheme="Light"
                 x:Shared="false"
-                Opened="SysTrayMenu_Opened">
+                Opened="TrayIconService_SysTrayMenu_Opened">
                 <MenuItem
                     Name="HideICCMainWindowTrayIconMenuItem"
-                    Checked="HideICCMainWindowTrayIconMenuItem_Checked"
+                    Checked="TrayIconService_HideICCMainWindowTrayIconMenuItem_Checked"
                     IsCheckable="True"
                     IsChecked="False"
-                    Unchecked="HideICCMainWindowTrayIconMenuItem_UnChecked">
+                    Unchecked="TrayIconService_HideICCMainWindowTrayIconMenuItem_UnChecked">
                     <MenuItem.Header>
                         <ikw:SimpleStackPanel Margin="-4,0,0,0" Orientation="Horizontal">
                             <TextBlock
@@ -79,7 +79,7 @@
                         </Image>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Name="ForceFullScreenTrayIconMenuItem" Click="ForceFullScreenTrayIconMenuItem_Clicked">
+                <MenuItem Name="ForceFullScreenTrayIconMenuItem" Click="TrayIconService_ForceFullScreenTrayIconMenuItem_Clicked">
                     <MenuItem.Header>
                         <ikw:SimpleStackPanel Margin="-4,0,0,0" Orientation="Horizontal">
                             <TextBlock
@@ -144,7 +144,7 @@
                         </Image>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Name="FoldFloatingBarTrayIconMenuItem" Click="FoldFloatingBarTrayIconMenuItem_Clicked">
+                <MenuItem Name="FoldFloatingBarTrayIconMenuItem" Click="TrayIconService_FoldFloatingBarTrayIconMenuItem_Clicked">
                     <MenuItem.Header>
                         <ikw:SimpleStackPanel Margin="-4,0,0,0" Orientation="Horizontal">
                             <TextBlock
@@ -229,7 +229,7 @@
 
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Name="ResetFloatingBarPositionTrayIconMenuItem" Click="ResetFloatingBarPositionTrayIconMenuItem_Clicked">
+                <MenuItem Name="ResetFloatingBarPositionTrayIconMenuItem" Click="TrayIconService_ResetFloatingBarPositionTrayIconMenuItem_Clicked">
                     <MenuItem.Header>
                         <ikw:SimpleStackPanel Margin="-4,0,0,0" Orientation="Horizontal">
                             <TextBlock
@@ -292,7 +292,7 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator Margin="0,3" />
-                <MenuItem Name="RestartAppTrayIconMenuItem" Click="RestartAppTrayIconMenuItem_Clicked">
+                <MenuItem Name="RestartAppTrayIconMenuItem" Click="TrayIconService_RestartAppTrayIconMenuItem_Clicked">
                     <MenuItem.Header>
                         <ikw:SimpleStackPanel Margin="-4,0,0,0" Orientation="Horizontal">
                             <TextBlock
@@ -352,7 +352,7 @@
                         </Image>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Name="CloseAppTrayIconMenuItem" Click="CloseAppTrayIconMenuItem_Clicked">
+                <MenuItem Name="CloseAppTrayIconMenuItem" Click="TrayIconService_CloseAppTrayIconMenuItem_Clicked">
                     <MenuItem.Header>
                         <ikw:SimpleStackPanel Margin="-4,0,0,0" Orientation="Horizontal">
                             <TextBlock
