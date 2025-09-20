@@ -1,5 +1,6 @@
 using Hardcodet.Wpf.TaskbarNotification;
 using iNKORE.UI.WPF.Controls;
+using Microsoft.Extensions.Logging;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
@@ -9,42 +10,89 @@ namespace InkCanvasForClass_Remastered.Services
     public class TrayIconService
     {
         private readonly Application _application;
+        private readonly ILogger<TrayIconService> _logger;
         private TaskbarIcon? _taskbarIcon;
 
-        public TrayIconService()
+        public TrayIconService(ILogger<TrayIconService> logger)
         {
             _application = Application.Current;
+            _logger = logger;
         }
 
         public void Initialize()
         {
-            _taskbarIcon = (TaskbarIcon?)_application.FindResource("TaskbarTrayIcon");
+            try
+            {
+                _taskbarIcon = (TaskbarIcon?)_application.FindResource("TaskbarTrayIcon");
+                _logger.LogInformation("TrayIconService initialized successfully");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to initialize TrayIconService");
+                throw;
+            }
         }
 
         public void SysTrayMenu_Opened(object sender, RoutedEventArgs e)
         {
-            if (sender is not ContextMenu contextMenu) return;
+            try
+            {
+                if (sender is not ContextMenu contextMenu) 
+                {
+                    _logger.LogWarning("SysTrayMenu_Opened called with invalid sender type");
+                    return;
+                }
 
-            var menuItems = GetTrayMenuItems(contextMenu);
-            var mainWin = (MainWindow)Application.Current.MainWindow;
-            
-            if (!mainWin.IsLoaded) return;
+                var menuItems = GetTrayMenuItems(contextMenu);
+                var mainWin = (MainWindow)Application.Current.MainWindow;
+                
+                if (!mainWin.IsLoaded) 
+                {
+                    _logger.LogDebug("MainWindow not loaded, skipping menu update");
+                    return;
+                }
 
-            UpdateFloatingBarMenuState(menuItems, mainWin);
+                UpdateFloatingBarMenuState(menuItems, mainWin);
+                _logger.LogDebug("Tray menu opened and updated successfully");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in SysTrayMenu_Opened");
+            }
         }
 
         public void CloseAppTrayIconMenuItem_Clicked(object sender, RoutedEventArgs e)
         {
-            var mainWin = (MainWindow)Application.Current.MainWindow;
-            if (mainWin.IsLoaded)
-                mainWin.BtnExit_Click(null, null);
+            try
+            {
+                var mainWin = (MainWindow)Application.Current.MainWindow;
+                if (mainWin.IsLoaded)
+                {
+                    _logger.LogInformation("Closing application via tray icon");
+                    mainWin.BtnExit_Click(null, null);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error closing application via tray icon");
+            }
         }
 
         public void RestartAppTrayIconMenuItem_Clicked(object sender, RoutedEventArgs e)
         {
-            var mainWin = (MainWindow)Application.Current.MainWindow;
-            if (mainWin.IsLoaded)
-                mainWin.BtnRestart_Click(null, null);
+            try
+            {
+                var mainWin = (MainWindow)Application.Current.MainWindow;
+                if (mainWin.IsLoaded)
+                {
+                    _logger.LogInformation("Restarting application via tray icon");
+                    mainWin.BtnRestart_Click(null, null);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error restarting application via tray icon");
+            }
         }
 
         public void ForceFullScreenTrayIconMenuItem_Clicked(object sender, RoutedEventArgs e)
@@ -133,16 +181,59 @@ namespace InkCanvasForClass_Remastered.Services
 
         private TrayMenuItems GetTrayMenuItems(ContextMenu contextMenu)
         {
-            return new TrayMenuItems
+            try
             {
-                FoldFloatingBarIconEyeOff = (Image)((Grid)((MenuItem)contextMenu.Items[^5]).Icon).Children[0],
-                FoldFloatingBarIconEyeOn = (Image)((Grid)((MenuItem)contextMenu.Items[contextMenu.Items.Count - 5]).Icon).Children[1],
-                FoldFloatingBarHeaderText = (TextBlock)((SimpleStackPanel)((MenuItem)contextMenu.Items[contextMenu.Items.Count - 5]).Header).Children[0],
-                ResetFloatingBarPosition = (MenuItem)contextMenu.Items[contextMenu.Items.Count - 4],
-                HideICCMainWindow = (MenuItem)contextMenu.Items[contextMenu.Items.Count - 9],
-                FoldFloatingBar = (MenuItem)contextMenu.Items[contextMenu.Items.Count - 5],
-                ForceFullScreen = (MenuItem)contextMenu.Items[contextMenu.Items.Count - 6]
-            };
+                // Find menu items by name instead of using hard-coded indices
+                var hideICCMainWindow = FindMenuItemByName(contextMenu, "HideICCMainWindowTrayIconMenuItem");
+                var foldFloatingBar = FindMenuItemByName(contextMenu, "FoldFloatingBarTrayIconMenuItem");
+                var resetFloatingBarPosition = FindMenuItemByName(contextMenu, "ResetFloatingBarPositionTrayIconMenuItem");
+                var forceFullScreen = FindMenuItemByName(contextMenu, "ForceFullScreenTrayIconMenuItem");
+
+                if (hideICCMainWindow == null || foldFloatingBar == null || resetFloatingBarPosition == null || forceFullScreen == null)
+                {
+                    _logger.LogError("Could not find required menu items in tray context menu");
+                    throw new InvalidOperationException("Could not find required menu items in tray context menu");
+                }
+
+                // Extract the specific UI elements from the FoldFloatingBarTrayIconMenuItem
+                var foldIcon = foldFloatingBar.Icon as Grid;
+                var foldHeader = foldFloatingBar.Header as SimpleStackPanel;
+
+                if (foldIcon?.Children.Count < 2 || foldHeader?.Children.Count < 1)
+                {
+                    _logger.LogError("FoldFloatingBarTrayIconMenuItem structure is not as expected");
+                    throw new InvalidOperationException("FoldFloatingBarTrayIconMenuItem structure is not as expected");
+                }
+
+                _logger.LogDebug("Successfully retrieved all tray menu items");
+                return new TrayMenuItems
+                {
+                    FoldFloatingBarIconEyeOff = (Image)foldIcon.Children[0],
+                    FoldFloatingBarIconEyeOn = (Image)foldIcon.Children[1],
+                    FoldFloatingBarHeaderText = (TextBlock)foldHeader.Children[0],
+                    ResetFloatingBarPosition = resetFloatingBarPosition,
+                    HideICCMainWindow = hideICCMainWindow,
+                    FoldFloatingBar = foldFloatingBar,
+                    ForceFullScreen = forceFullScreen
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting tray menu items");
+                throw;
+            }
+        }
+
+        private MenuItem? FindMenuItemByName(ContextMenu contextMenu, string name)
+        {
+            foreach (var item in contextMenu.Items)
+            {
+                if (item is MenuItem menuItem && menuItem.Name == name)
+                {
+                    return menuItem;
+                }
+            }
+            return null;
         }
 
         private void UpdateFloatingBarMenuState(TrayMenuItems menuItems, MainWindow mainWin)

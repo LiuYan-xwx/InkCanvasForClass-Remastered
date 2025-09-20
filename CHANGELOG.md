@@ -57,4 +57,5 @@
 - 新增控制台格式化器，有美观的上色，并且Debug编译会自动带一个控制台
 - 移除 `DelAutoSavedFiles.cs` 而使用 `FileFolderService`
 - 新增 `SettingsControl` 控件，并且设置页大部分改用此控件
+- 重构 TrayIcon，提取到 `TrayIconService`，提高代码结构和可维护性
 - 
