@@ -24,7 +24,6 @@ namespace InkCanvasForClass_Remastered
         private IHost _host;
         private Mutex mutex;
         private ILogger<App> Logger;
-        private bool _isCriticalSafeMode = false;
         private Settings Settings = new();
 
         public static T GetService<T>() => IAppHost.GetService<T>();

@@ -28,6 +28,55 @@ namespace InkCanvasForClass_Remastered.Services
 
         public bool IsInSlideShow => _pptApplication?.SlideShowWindows.Count > 0;
 
+        public int CurrentSlidePosition
+        {
+            get
+            {
+                try
+                {
+                    var win = ActiveSlideShowWindow;
+                    return win?.View?.CurrentShowPosition ?? -1;
+                }
+                catch
+                {
+                    return -1;
+                }
+            }
+        }
+
+        public int CurrentPresentationSlideCount
+        {
+            get
+            {
+                try
+                {
+                    var app = _pptApplication;
+                    var pres = app?.ActivePresentation;
+                    return pres?.Slides?.Count ?? -1;
+                }
+                catch
+                {
+                    return -1;
+                }
+            }
+        }
+
+        public string? CurrentPresentationName
+        {
+            get
+            {
+                try
+                {
+                    var app = _pptApplication;
+                    return app?.ActivePresentation?.Name;
+                }
+                catch
+                {
+                    return null;
+                }
+            }
+        }
+
         public Presentation? ActivePresentation
         {
             get
@@ -49,10 +98,14 @@ namespace InkCanvasForClass_Remastered.Services
             {
                 try
                 {
-                    if (_pptApplication?.SlideShowWindows.Count > 0)
-                    {
-                        return _pptApplication.SlideShowWindows[1];
-                    }
+                    var app = _pptApplication;
+                    if (app == null)
+                        return null;
+
+                    var windows = app.SlideShowWindows;
+                    if (windows != null && windows.Count > 0)
+                        return windows[1];
+
                     return null;
                 }
                 catch
@@ -62,7 +115,7 @@ namespace InkCanvasForClass_Remastered.Services
             }
         }
 
-        public bool TryConnectAndMonitor()
+        public bool TryConnectToPowerPoint()
         {
             if (_pptApplication != null)
             {
@@ -109,7 +162,7 @@ namespace InkCanvasForClass_Remastered.Services
             return false;
         }
 
-        public void Disconnect()
+        public void DisconnectFromPowerPoint()
         {
             if (_pptApplication != null)
             {
@@ -124,20 +177,17 @@ namespace InkCanvasForClass_Remastered.Services
                 Marshal.ReleaseComObject(_pptApplication);
                 Logger.LogInformation("已断开与 PowerPoint 应用的连接");
                 _pptApplication = null;
-                
-                // 通知属性变化
-                OnPropertyChanged(nameof(IsInSlideShow));
             }
         }
 
         public void GoToPreviousSlide()
         {
-            if (!IsConnected || _pptApplication.SlideShowWindows.Count < 1)
+            if (!IsConnected)
                 return;
             try
             {
                 // 必须在新线程中调用，否则有时会阻塞UI线程
-                Task.Run(() => _pptApplication.SlideShowWindows[1].View.Previous());
+                Task.Run(() => ActiveSlideShowWindow?.View?.Previous());
             }
             catch (Exception ex)
             {
@@ -147,12 +197,12 @@ namespace InkCanvasForClass_Remastered.Services
 
         public void GoToNextSlide()
         {
-            if (!IsConnected || _pptApplication.SlideShowWindows.Count < 1)
+            if (!IsConnected)
                 return;
             try
             {
                 // 必须在新线程中调用，否则有时会阻塞UI线程
-                Task.Run(() => _pptApplication.SlideShowWindows[1].View.Next());
+                Task.Run(() => ActiveSlideShowWindow?.View?.Next());
             }
             catch (Exception ex)
             {
@@ -162,11 +212,11 @@ namespace InkCanvasForClass_Remastered.Services
 
         public void EndSlideShow()
         {
-            if (!IsConnected || _pptApplication.SlideShowWindows.Count < 1)
+            if (!IsConnected)
                 return;
             try
             {
-                _pptApplication.SlideShowWindows[1].View.Exit();
+                ActiveSlideShowWindow?.View?.Exit();
             }
             catch (Exception ex)
             {
@@ -178,14 +228,16 @@ namespace InkCanvasForClass_Remastered.Services
         private void OnPresentationOpen(Presentation Pres) => PresentationOpen?.Invoke(Pres);
         private void OnPresentationClose(Presentation Pres)
         {
-            Disconnect();
+            DisconnectFromPowerPoint();
             PresentationClose?.Invoke(Pres);
         }
         
         private void OnSlideShowBegin(SlideShowWindow Wn)
         {
-            SlideShowBegin?.Invoke(Wn);
             OnPropertyChanged(nameof(IsInSlideShow));
+            OnPropertyChanged(nameof(CurrentSlidePosition));
+            OnPropertyChanged(nameof(CurrentPresentationSlideCount));
+            SlideShowBegin?.Invoke(Wn);
         }
         
         private void OnSlideShowEnd(Presentation Pres)
@@ -193,7 +245,12 @@ namespace InkCanvasForClass_Remastered.Services
             SlideShowEnd?.Invoke(Pres);
             OnPropertyChanged(nameof(IsInSlideShow));
         }
-        
-        private void OnSlideShowNextSlide(SlideShowWindow Wn) => SlideShowNextSlide?.Invoke(Wn);
+
+        private void OnSlideShowNextSlide(SlideShowWindow Wn)
+        {
+            OnPropertyChanged(nameof(CurrentSlidePosition));
+            OnPropertyChanged(nameof(CurrentPresentationSlideCount));
+            SlideShowNextSlide?.Invoke(Wn);
+        } 
     }
 }

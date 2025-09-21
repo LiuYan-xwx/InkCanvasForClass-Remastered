@@ -51,15 +51,15 @@ namespace InkCanvasForClass_Remastered.Services
         SlideShowWindow? ActiveSlideShowWindow { get; }
 
         /// <summary>
-        /// 尝试连接到正在运行的PowerPoint实例并开始监视事件。
+        /// 尝试连接到正在运行的PowerPoint实例并开始监听事件。
         /// </summary>
         /// <returns>如果成功连接则返回 true，否则返回 false。</returns>
-        bool TryConnectAndMonitor();
+        bool TryConnectToPowerPoint();
 
         /// <summary>
-        /// 断开与PowerPoint的连接并停止监视事件。
+        /// 断开与PowerPoint的连接并停止监听事件。
         /// </summary>
-        void Disconnect();
+        void DisconnectFromPowerPoint();
 
         /// <summary>
         /// 切换到上一张幻灯片。
@@ -70,6 +70,21 @@ namespace InkCanvasForClass_Remastered.Services
         /// 切换到下一张幻灯片。
         /// </summary>
         void GoToNextSlide();
+
+        /// <summary>
+        /// 当前幻灯片的页码，没有幻灯片时为 -1。
+        /// </summary>
+        int CurrentSlidePosition { get; }
+
+        /// <summary>
+        /// 总幻灯片数，没有幻灯片时为 -1。
+        /// </summary>
+        int CurrentPresentationSlideCount { get; }
+
+        /// <summary>
+        /// 当前演示文稿的名称，没有演示文稿时为 null。
+        /// </summary>
+        string? CurrentPresentationName { get; }
 
         /// <summary>
         /// 结束幻灯片放映。

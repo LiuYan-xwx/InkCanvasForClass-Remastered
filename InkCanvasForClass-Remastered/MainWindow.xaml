@@ -5816,15 +5816,14 @@
                                     VerticalAlignment="Center"
                                     FontSize="17"
                                     FontWeight="Bold"
-                                    Text="999" />
+                                    Text="{Binding PowerPointService.CurrentSlidePosition}" />
                                 <TextBlock
                                     Name="PPTBtnPageTotal"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
                                     FontSize="10"
-                                    Text="/ 999" />
+                                    Text="{Binding PowerPointService.CurrentSlideTotalCount, StringFormat={}/ {0}}" />
                             </ikw:SimpleStackPanel>
-
                         </Grid>
                     </Border>
                     <Border
