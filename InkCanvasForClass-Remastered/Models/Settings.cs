@@ -201,7 +201,7 @@ namespace InkCanvasForClass_Remastered.Models
         private int _criticalSafeModeMethod = 0;
         // RandSettings
         [ObservableProperty]
-        private bool _displayRandWindowNamesInputBtn = false;
+        private bool _displayRandWindowNamesInputBtn = true;
         [ObservableProperty]
         private double _randWindowOnceCloseLatency = 2.5;
 
