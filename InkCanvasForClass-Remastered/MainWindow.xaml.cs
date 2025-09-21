@@ -86,8 +86,6 @@ namespace InkCanvasForClass_Remastered
             timeMachine.OnUndoStateChanged += TimeMachine_OnUndoStateChanged;
             inkCanvas.Strokes.StrokesChanged += StrokesOnStrokesChanged;
 
-            Microsoft.Win32.SystemEvents.UserPreferenceChanged += SystemEvents_UserPreferenceChanged;
-
             CheckColorTheme(true);
             CheckPenTypeUIState();
         }
@@ -246,9 +244,6 @@ namespace InkCanvasForClass_Remastered
 
             ApplySettingsToUI();
 
-            ThemeManager.Current.ApplicationTheme = ApplicationTheme.Light;
-            SystemEvents_UserPreferenceChanged(null, null);
-
             Logger.LogInformation("MainWindow Loaded");
 
             isLoaded = true;
@@ -260,7 +255,7 @@ namespace InkCanvasForClass_Remastered
 
         }
 
-        private void SystemEventsOnDisplaySettingsChanged(object sender, EventArgs e)
+        private void SystemEventsOnDisplaySettingsChanged(object? sender, EventArgs e)
         {
             if (!Settings.IsEnableResolutionChangeDetection) return;
             ShowNotification($"检测到显示器信息变化，变为{System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width}x{System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height}");
@@ -365,7 +360,6 @@ namespace InkCanvasForClass_Remastered
             if (Settings.AutoSwitchTwoFingerGesture) // 自动启用多指书写
                 ToggleSwitchEnableTwoFingerTranslate.IsOn = false;
             BtnSwitch_Click(BtnSwitch, null);
-            ThemeManager.Current.ApplicationTheme = ApplicationTheme.Dark;
             new Thread(new ThreadStart(() =>
             {
                 Thread.Sleep(200);
@@ -524,91 +518,6 @@ namespace InkCanvasForClass_Remastered
                 if (MarginFromEdge == -50) LeftSidePanel.Visibility = Visibility.Collapsed;
             });
             isFloatingBarChangingHideMode = false;
-        }
-        #endregion
-
-        #region AutoTheme
-        private Color FloatBarForegroundColor = Color.FromRgb(102, 102, 102);
-
-        private void SetTheme(string theme)
-        {
-            if (theme == "Light")
-            {
-                var rd1 = new ResourceDictionary()
-                { Source = new Uri("Resources/Styles/Light.xaml", UriKind.Relative) };
-                Application.Current.Resources.MergedDictionaries.Add(rd1);
-
-                var rd2 = new ResourceDictionary()
-                { Source = new Uri("Resources/DrawShapeImageDictionary.xaml", UriKind.Relative) };
-                Application.Current.Resources.MergedDictionaries.Add(rd2);
-
-                var rd3 = new ResourceDictionary()
-                { Source = new Uri("Resources/SeewoImageDictionary.xaml", UriKind.Relative) };
-                Application.Current.Resources.MergedDictionaries.Add(rd3);
-
-                var rd4 = new ResourceDictionary()
-                { Source = new Uri("Resources/IconImageDictionary.xaml", UriKind.Relative) };
-                Application.Current.Resources.MergedDictionaries.Add(rd4);
-
-                ThemeManager.SetRequestedTheme(window, ElementTheme.Light);
-
-                FloatBarForegroundColor = (Color)Application.Current.FindResource("FloatBarForegroundColor");
-            }
-            else if (theme == "Dark")
-            {
-                var rd1 = new ResourceDictionary() { Source = new Uri("Resources/Styles/Dark.xaml", UriKind.Relative) };
-                Application.Current.Resources.MergedDictionaries.Add(rd1);
-
-                var rd2 = new ResourceDictionary()
-                { Source = new Uri("Resources/DrawShapeImageDictionary.xaml", UriKind.Relative) };
-                Application.Current.Resources.MergedDictionaries.Add(rd2);
-
-                var rd3 = new ResourceDictionary()
-                { Source = new Uri("Resources/SeewoImageDictionary.xaml", UriKind.Relative) };
-                Application.Current.Resources.MergedDictionaries.Add(rd3);
-
-                var rd4 = new ResourceDictionary()
-                { Source = new Uri("Resources/IconImageDictionary.xaml", UriKind.Relative) };
-                Application.Current.Resources.MergedDictionaries.Add(rd4);
-
-                ThemeManager.SetRequestedTheme(window, ElementTheme.Dark);
-
-                FloatBarForegroundColor = (Color)Application.Current.FindResource("FloatBarForegroundColor");
-            }
-        }
-
-        private void SystemEvents_UserPreferenceChanged(object sender, UserPreferenceChangedEventArgs e)
-        {
-            switch (Settings.Theme)
-            {
-                case 0:
-                    SetTheme("Light");
-                    break;
-                case 1:
-                    SetTheme("Dark");
-                    break;
-                case 2:
-                    if (IsSystemThemeLight()) SetTheme("Light");
-                    else SetTheme("Dark");
-                    break;
-            }
-        }
-
-        private bool IsSystemThemeLight()
-        {
-            var light = false;
-            try
-            {
-                var registryKey = Registry.CurrentUser;
-                var themeKey =
-                    registryKey.OpenSubKey("software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize");
-                var keyValue = 0;
-                if (themeKey != null) keyValue = (int)themeKey.GetValue("SystemUsesLightTheme");
-                if (keyValue == 1) light = true;
-            }
-            catch { }
-
-            return light;
         }
         #endregion
 
@@ -2148,7 +2057,6 @@ namespace InkCanvasForClass_Remastered
                 CursorIcon_Click(null, null);
 
             BtnExit.Foreground = Brushes.White;
-            ThemeManager.Current.ApplicationTheme = ApplicationTheme.Dark;
 
             new Thread(new ThreadStart(() =>
             {
