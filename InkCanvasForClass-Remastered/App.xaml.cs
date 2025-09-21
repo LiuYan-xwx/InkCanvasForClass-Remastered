@@ -124,6 +124,7 @@ namespace InkCanvasForClass_Remastered
             services.AddSingleton<FileFolderService>();
             // 注册视图模型
             services.AddTransient<MainViewModel>();
+            services.AddTransient<RandViewModel>();
 
             // 注册窗口
             services.AddSingleton<MainWindow>();

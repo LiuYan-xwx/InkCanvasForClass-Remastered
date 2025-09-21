@@ -5,12 +5,13 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ikw="http://schemas.inkore.net/lib/ui/wpf"
     xmlns:local="clr-namespace:InkCanvasForClass_Remastered"
+    xmlns:viewmodel="clr-namespace:InkCanvasForClass_Remastered.ViewModels"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
     Title="InkCanvasForClass-Remastered 抽奖"
     Width="900"
     Height="500"
-    d:DataContext="{d:DesignInstance local:MainWindow}"
+    d:DataContext="{d:DesignInstance viewmodel:RandViewModel}"
     ui:ThemeManager.RequestedTheme="Light"
     AllowsTransparency="True"
     Background="Transparent"
@@ -131,7 +132,7 @@
                             Margin="10"
                             FontFamily="Consolas"
                             FontSize="55"
-                            Text="1"
+                            Text="{Binding DrawCount}"
                             TextAlignment="Center" />
                         <Border
                             x:Name="BorderBtnAdd"
@@ -174,47 +175,11 @@
                         Margin="0,8,0,0"
                         HorizontalAlignment="Center"
                         Orientation="Horizontal"
-                        Spacing="24"
-                        Visibility="Collapsed">
-                        <CheckBox
-                            x:Name="NoHotStudents"
-                            Content="不抽热门人选"
-                            MinWidth="0"
-                            HorizontalAlignment="Center"
-                            IsThreeState="True" />
-                        <CheckBox
-                            x:Name="NoShengPiZi"
-                            Content="避开生僻字"
-                            MinWidth="0"
-                            HorizontalAlignment="Center"
-                            IsThreeState="True" />
-                    </ikw:SimpleStackPanel>
-                    <ikw:SimpleStackPanel
-                        Margin="0,8,0,0"
-                        HorizontalAlignment="Center"
-                        Orientation="Horizontal"
                         Spacing="24">
                         <CheckBox
                             x:Name="CheckBoxNotRepeatName"
-                            Content="本次不再抽取已抽过的人"
+                            Content="排除已经抽过的人（本次窗口有效）"
                             IsChecked="False" />
-                    </ikw:SimpleStackPanel>
-                    <ikw:SimpleStackPanel
-                        Margin="0,0,0,8"
-                        HorizontalAlignment="Center"
-                        Orientation="Horizontal"
-                        Spacing="24"
-                        Visibility="Collapsed">
-                        <ComboBox
-                            Name="ComboBoxRandMode"
-                            MinWidth="0"
-                            IsEditable="False"
-                            IsReadOnly="True"
-                            SelectedIndex="0">
-                            <ComboBoxItem>全都抽</ComboBoxItem>
-                            <ComboBoxItem>只抽男</ComboBoxItem>
-                            <ComboBoxItem>只抽女</ComboBoxItem>
-                        </ComboBox>
                     </ikw:SimpleStackPanel>
                     <Border
                         x:Name="BorderBtnRand"
