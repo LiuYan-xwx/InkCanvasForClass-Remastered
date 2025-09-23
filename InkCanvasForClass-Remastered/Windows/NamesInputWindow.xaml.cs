@@ -1,6 +1,7 @@
 ﻿using InkCanvasForClass_Remastered.Helpers;
 using System.IO;
 using System.Windows;
+using MessageBox = iNKORE.UI.WPF.Modern.Controls.MessageBox;
 
 namespace InkCanvasForClass_Remastered
 {

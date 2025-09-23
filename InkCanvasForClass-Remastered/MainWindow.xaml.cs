@@ -7504,10 +7504,8 @@ namespace InkCanvasForClass_Remastered
                     //LogHelper.WriteLogToFile(stylusPoint.PressureFactor.ToString(), LogHelper.LogType.Info);
                     // 检查是否是压感笔书写
                     //if (stylusPoint.PressureFactor != 0.5 && stylusPoint.PressureFactor != 0)
-                    if ((stylusPoint.PressureFactor > 0.501 || stylusPoint.PressureFactor < 0.5) &&
-                        stylusPoint.PressureFactor != 0)
+                    if (stylusPoint.PressureFactor is (> (float)0.501 or < (float)0.5) and not 0)
                         return;
-
                 try
                 {
                     if (e.Stroke.StylusPoints.Count > 3)
@@ -7517,8 +7515,6 @@ namespace InkCanvasForClass_Remastered
                             e.Stroke.StylusPoints[random.Next(0, e.Stroke.StylusPoints.Count - 1)].ToPoint(),
                             e.Stroke.StylusPoints[random.Next(0, e.Stroke.StylusPoints.Count - 1)].ToPoint(),
                             e.Stroke.StylusPoints[random.Next(0, e.Stroke.StylusPoints.Count - 1)].ToPoint());
-
-                        RandWindow.randSeed = (int)(_speed * 100000 * 1000);
                     }
                 }
                 catch { }

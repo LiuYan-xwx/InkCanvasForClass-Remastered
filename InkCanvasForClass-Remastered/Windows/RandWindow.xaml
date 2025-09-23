@@ -177,9 +177,8 @@
                         Orientation="Horizontal"
                         Spacing="24">
                         <CheckBox
-                            x:Name="CheckBoxNotRepeatName"
-                            Content="排除已经抽过的人（本次窗口有效）"
-                            IsChecked="False" />
+                            Content="不重复抽取"
+                            IsChecked="{Binding IsNoDuplicate, Mode=TwoWay}" />
                     </ikw:SimpleStackPanel>
                     <Border
                         x:Name="BorderBtnRand"
