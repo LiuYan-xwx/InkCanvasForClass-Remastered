@@ -112,7 +112,7 @@ namespace InkCanvasForClass_Remastered
                     break;
                 case nameof(Settings.PPTButtonsDisplayOption) or nameof(Settings.PPTSButtonsOption) or 
                      nameof(Settings.PPTBButtonsOption) or nameof(Settings.PPTLSButtonPosition) or 
-                     nameof(Settings.PPTRSButtonPosition):
+                     nameof(Settings.PPTRSButtonPosition) or nameof(Settings.ShowPPTButton):
                     _viewModel.UpdatePPTButtonFromSettings();
                     break;
             }

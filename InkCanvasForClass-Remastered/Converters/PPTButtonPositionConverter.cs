@@ -11,9 +11,25 @@ namespace InkCanvasForClass_Remastered.Converters
             if (value is int position)
             {
                 // Convert position to Thickness for margin adjustment
-                return new Thickness(0, -position, 0, 0);
+                // Based on original logic: position affects vertical offset
+                // Left side: 3,0,0,0 baseline + vertical offset
+                // Right side: 0,0,3,0 baseline + vertical offset
+                if (parameter?.ToString() == "Right")
+                {
+                    return new Thickness(0, -position, 3, 0);
+                }
+                else
+                {
+                    return new Thickness(3, -position, 0, 0);
+                }
             }
-            return new Thickness(0);
+            
+            // Default margins
+            if (parameter?.ToString() == "Right")
+            {
+                return new Thickness(0, 0, 3, 0);
+            }
+            return new Thickness(3, 0, 0, 0);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

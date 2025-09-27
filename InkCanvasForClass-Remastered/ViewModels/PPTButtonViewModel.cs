@@ -7,6 +7,7 @@ namespace InkCanvasForClass_Remastered.ViewModels
     public partial class PPTButtonViewModel : ObservableObject
     {
         private readonly IPowerPointService _powerPointService;
+        private bool _showPPTButton = true;
 
         public PPTButtonViewModel(IPowerPointService powerPointService)
         {
@@ -44,7 +45,7 @@ namespace InkCanvasForClass_Remastered.ViewModels
 
         public bool IsNavigationEnabled => _powerPointService.IsInSlideShow;
 
-        public bool CanGoToPrevious => _powerPointService.CurrentSlidePosition > 1;
+        public bool CanGoToPrevious => _powerPointService.IsInSlideShow && _powerPointService.CurrentSlidePosition > 1;
 
         public bool CanGoToNext => _powerPointService.IsInSlideShow && 
                                    _powerPointService.CurrentSlidePosition < _powerPointService.CurrentPresentationSlideCount;
@@ -57,8 +58,12 @@ namespace InkCanvasForClass_Remastered.ViewModels
             ? _powerPointService.CurrentPresentationSlideCount.ToString() 
             : "1";
 
-        public void UpdateFromSettings(int displayOption, int sideButtonsOption, int bottomButtonsOption, int leftPosition, int rightPosition)
+        public Visibility PanelVisibility => _showPPTButton && _powerPointService.IsInSlideShow ? Visibility.Visible : Visibility.Collapsed;
+
+        public void UpdateFromSettings(int displayOption, int sideButtonsOption, int bottomButtonsOption, int leftPosition, int rightPosition, bool showPPTButton = true)
         {
+            _showPPTButton = showPPTButton;
+            
             var displayOptions = displayOption.ToString().PadLeft(4, '1');
             IsLeftBottomVisible = displayOptions[0] == '2';
             IsRightBottomVisible = displayOptions[1] == '2';
@@ -72,6 +77,8 @@ namespace InkCanvasForClass_Remastered.ViewModels
 
             LeftSidePosition = leftPosition;
             RightSidePosition = rightPosition;
+            
+            OnPropertyChanged(nameof(PanelVisibility));
         }
 
         public void RefreshNavigationState()
@@ -81,6 +88,7 @@ namespace InkCanvasForClass_Remastered.ViewModels
             OnPropertyChanged(nameof(CanGoToNext));
             OnPropertyChanged(nameof(CurrentPageText));
             OnPropertyChanged(nameof(TotalPageText));
+            OnPropertyChanged(nameof(PanelVisibility));
         }
     }
 }

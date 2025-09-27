@@ -8415,7 +8415,7 @@
             NextClick="PPTNavigationPanel_NextClick"
             PageClick="PPTNavigationPanel_PageClick"
             PreviousClick="PPTNavigationPanel_PreviousClick"
-            Visibility="{Binding Settings.ShowPPTButton, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            Visibility="{Binding PPTButton.PanelVisibility}" />
         
         <!--  // 侧边栏 //  -->
         <Viewbox

@@ -46,15 +46,10 @@
         <!-- Left Side Panel -->
         <Viewbox
             Height="55"
-            Margin="3,0,0,0"
+            Margin="{Binding PPTButton.LeftSidePosition, Converter={StaticResource PPTButtonPositionConverter}, ConverterParameter=Left}"
             HorizontalAlignment="Left"
             VerticalAlignment="Center"
             Visibility="{Binding PPTButton.IsLeftSideVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Viewbox.Margin>
-                <MultiBinding Converter="{StaticResource PPTButtonPositionConverter}">
-                    <Binding Path="PPTButton.LeftSidePosition" />
-                </MultiBinding>
-            </Viewbox.Margin>
             <controls:PPTNavigationButton
                 DataContext="{Binding PPTButton}"
                 NextClick="PPTButton_NextClick"
@@ -65,15 +60,10 @@
         <!-- Right Side Panel -->
         <Viewbox
             Height="55"
-            Margin="0,0,3,0"
+            Margin="{Binding PPTButton.RightSidePosition, Converter={StaticResource PPTButtonPositionConverter}, ConverterParameter=Right}"
             HorizontalAlignment="Right"
             VerticalAlignment="Center"
             Visibility="{Binding PPTButton.IsRightSideVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Viewbox.Margin>
-                <MultiBinding Converter="{StaticResource PPTButtonPositionConverter}">
-                    <Binding Path="PPTButton.RightSidePosition" />
-                </MultiBinding>
-            </Viewbox.Margin>
             <controls:PPTNavigationButton
                 DataContext="{Binding PPTButton}"
                 NextClick="PPTButton_NextClick"
