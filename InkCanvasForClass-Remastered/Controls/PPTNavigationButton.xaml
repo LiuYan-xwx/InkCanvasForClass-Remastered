@@ -17,7 +17,6 @@
 
     <Border
         Name="MainBorder"
-        Background="#f4f4f5"
         BorderBrush="#a1a1aa"
         BorderThickness="1"
         CornerRadius="6">
