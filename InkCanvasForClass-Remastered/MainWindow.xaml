@@ -49,6 +49,8 @@
         <converters:BoolToBrushConverter x:Key="BoolToBrushConverter" />
         <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter" />
         <converters:BoolToScaleConverter x:Key="BoolToScaleConverter" />
+        <converters:PPTButtonStyleConverter x:Key="PPTButtonStyleConverter" />
+        <converters:PPTButtonPositionConverter x:Key="PPTButtonPositionConverter" />
         <RoutedUICommand x:Key="KeyExit" Text=" " />
         <RoutedUICommand x:Key="HotKey_Command_Undo" Text=" " />
         <RoutedUICommand x:Key="HotKey_Command_Redo" Text=" " />
@@ -8906,6 +8908,15 @@
             </Border>
         </Grid>
 
+        <!--  // 新版 PPT 翻页按钮面板 //  -->
+        <controls:PPTNavigationPanel
+            x:Name="PPTNavigationPanel"
+            DataContext="{Binding}"
+            NextClick="PPTNavigationPanel_NextClick"
+            PageClick="PPTNavigationPanel_PageClick"
+            PreviousClick="PPTNavigationPanel_PreviousClick"
+            Visibility="{Binding Settings.ShowPPTButton, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        
         <!--  // 侧边栏 //  -->
         <Viewbox
             x:Name="LeftSidePanel"

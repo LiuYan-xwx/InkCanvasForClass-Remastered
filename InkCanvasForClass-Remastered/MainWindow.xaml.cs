@@ -112,6 +112,11 @@ namespace InkCanvasForClass_Remastered
                 case nameof(Settings.FingerModeBoundsWidth) or nameof(Settings.NibModeBoundsWidth):
                     BoundsWidth = Settings.IsEnableNibMode ? Settings.NibModeBoundsWidth : Settings.FingerModeBoundsWidth;
                     break;
+                case nameof(Settings.PPTButtonsDisplayOption) or nameof(Settings.PPTSButtonsOption) or 
+                     nameof(Settings.PPTBButtonsOption) or nameof(Settings.PPTLSButtonPosition) or 
+                     nameof(Settings.PPTRSButtonPosition):
+                    _viewModel.UpdatePPTButtonFromSettings();
+                    break;
             }
         }
 
@@ -3776,6 +3781,9 @@ namespace InkCanvasForClass_Remastered
 
             Logger.LogInformation("幻灯片放映开始");
 
+            // 刷新PPT按钮状态
+            _viewModel.RefreshPPTButtonState();
+
             // 清理之前的数据
             foreach (var stream in _memoryStreams.Values)
             {
@@ -3860,6 +3868,10 @@ namespace InkCanvasForClass_Remastered
             if (isFloatingBarFolded)
                 await UnFoldFloatingBar(new object());
             Logger.LogInformation("幻灯片放映结束");
+            
+            // 刷新PPT按钮状态
+            _viewModel.RefreshPPTButtonState();
+            
             if (isEnteredSlideShowEndEvent)
             {
                 Logger.LogInformation("检测到之前已经进入过退出事件，返回");
@@ -3937,6 +3949,10 @@ namespace InkCanvasForClass_Remastered
         {
             var currentPage = _powerPointService.CurrentSlidePosition;
             Logger.LogTrace($"幻灯片跳转到第 {currentPage} 页");
+            
+            // 刷新PPT按钮状态
+            _viewModel.RefreshPPTButtonState();
+            
             if (currentPage == _previousSlideID)
                 return;
 
@@ -4201,6 +4217,23 @@ namespace InkCanvasForClass_Remastered
         {
             _powerPointService.EndSlideShow();
         }
+
+        #region New PPT Navigation Panel Event Handlers
+        private void PPTNavigationPanel_PreviousClick(object sender, RoutedEventArgs e)
+        {
+            BtnPPTSlidesUp_Click(null, null);
+        }
+
+        private void PPTNavigationPanel_NextClick(object sender, RoutedEventArgs e)
+        {
+            BtnPPTSlidesDown_Click(null, null);
+        }
+
+        private void PPTNavigationPanel_PageClick(object sender, RoutedEventArgs e)
+        {
+            // Handle page click if needed (currently not implemented in original code)
+        }
+        #endregion
         #endregion
 
         #region Save&OpenStrokes

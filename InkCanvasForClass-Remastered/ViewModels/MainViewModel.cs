@@ -8,13 +8,18 @@ namespace InkCanvasForClass_Remastered.ViewModels
     {
         private readonly SettingsService _settingsService;
         private readonly IPowerPointService _powerPointService;
+        
         public MainViewModel(SettingsService settingsService, IPowerPointService powerPointService)
         {
             _settingsService = settingsService;
             _powerPointService = powerPointService;
+            PPTButton = new PPTButtonViewModel(powerPointService);
+            UpdatePPTButtonFromSettings();
         }
+        
         public Settings Settings => _settingsService.Settings;
         public IPowerPointService PowerPointService => _powerPointService;
+        public PPTButtonViewModel PPTButton { get; }
 
         [ObservableProperty]
         private string _nowTime;
@@ -40,6 +45,21 @@ namespace InkCanvasForClass_Remastered.ViewModels
         private void UpdateWhiteboardButtonStates()
         {
             IsWhiteboardPreviousPageButtonEnabled = WhiteboardCurrentPage > 1;
+        }
+
+        public void UpdatePPTButtonFromSettings()
+        {
+            PPTButton.UpdateFromSettings(
+                Settings.PPTButtonsDisplayOption,
+                Settings.PPTSButtonsOption,
+                Settings.PPTBButtonsOption,
+                Settings.PPTLSButtonPosition,
+                Settings.PPTRSButtonPosition);
+        }
+
+        public void RefreshPPTButtonState()
+        {
+            PPTButton.RefreshNavigationState();
         }
     }
 }
