@@ -52,21 +52,6 @@
         <RoutedUICommand x:Key="KeyExit" Text=" " />
         <RoutedUICommand x:Key="HotKey_Command_Undo" Text=" " />
         <RoutedUICommand x:Key="HotKey_Command_Redo" Text=" " />
-        <RoutedUICommand x:Key="HotKey_Command_Clear" Text=" " />
-        <RoutedUICommand x:Key="HotKey_Capture" Text=" " />
-        <RoutedUICommand x:Key="HotKey_Hide" Text=" " />
-        <RoutedUICommand x:Key="HotKey_ChangeToDrawTool" Text=" " />
-        <RoutedUICommand x:Key="HotKey_ChangeToQuitDrawTool" Text=" " />
-        <RoutedUICommand x:Key="HotKey_ChangeToSelect" Text=" " />
-        <RoutedUICommand x:Key="HotKey_ChangeToEraser" Text=" " />
-        <RoutedUICommand x:Key="HotKey_ChangeToBoard" Text=" " />
-        <RoutedUICommand x:Key="HotKey_ChangeToPen1" Text=" " />
-        <RoutedUICommand x:Key="HotKey_ChangeToPen2" Text=" " />
-        <RoutedUICommand x:Key="HotKey_ChangeToPen3" Text=" " />
-        <RoutedUICommand x:Key="HotKey_ChangeToPen4" Text=" " />
-        <RoutedUICommand x:Key="HotKey_ChangeToPen5" Text=" " />
-        <RoutedUICommand x:Key="HotKey_DrawLine" Text=" " />
-        <RoutedUICommand x:Key="NothingWillHappened" Text=" " />
     </Window.Resources>
     <!--  输入命令绑定  -->
     <Window.InputBindings>
@@ -79,66 +64,6 @@
             Key="Y"
             Command="{StaticResource HotKey_Command_Redo}"
             Modifiers="Control" />
-        <KeyBinding
-            Key="E"
-            Command="{StaticResource HotKey_Command_Clear}"
-            Modifiers="Control" />
-        <KeyBinding
-            Key="C"
-            Command="{StaticResource HotKey_Capture}"
-            Modifiers="Alt" />
-        <KeyBinding
-            Key="V"
-            Command="{StaticResource HotKey_Hide}"
-            Modifiers="Alt" />
-        <KeyBinding
-            Key="S"
-            Command="{StaticResource HotKey_ChangeToSelect}"
-            Modifiers="Alt" />
-        <KeyBinding
-            Key="D"
-            Command="{StaticResource HotKey_ChangeToDrawTool}"
-            Modifiers="Alt" />
-        <KeyBinding
-            Key="Q"
-            Command="{StaticResource HotKey_ChangeToQuitDrawTool}"
-            Modifiers="Alt" />
-        <KeyBinding
-            Key="E"
-            Command="{StaticResource HotKey_ChangeToEraser}"
-            Modifiers="Alt" />
-        <KeyBinding
-            Key="B"
-            Command="{StaticResource HotKey_ChangeToBoard}"
-            Modifiers="Alt" />
-        <KeyBinding
-            Key="D1"
-            Command="{StaticResource HotKey_ChangeToPen1}"
-            Modifiers="Alt" />
-        <KeyBinding
-            Key="D2"
-            Command="{StaticResource HotKey_ChangeToPen2}"
-            Modifiers="Alt" />
-        <KeyBinding
-            Key="D3"
-            Command="{StaticResource HotKey_ChangeToPen3}"
-            Modifiers="Alt" />
-        <KeyBinding
-            Key="D4"
-            Command="{StaticResource HotKey_ChangeToPen4}"
-            Modifiers="Alt" />
-        <KeyBinding
-            Key="D5"
-            Command="{StaticResource HotKey_ChangeToPen5}"
-            Modifiers="Alt" />
-        <KeyBinding
-            Key="L"
-            Command="{StaticResource HotKey_DrawLine}"
-            Modifiers="Alt" />
-        <KeyBinding
-            Key="F4"
-            Command="{StaticResource NothingWillHappened}"
-            Modifiers="Alt" />
     </Window.InputBindings>
     <!--  命令执行方法绑定  -->
     <Window.CommandBindings>
@@ -154,42 +79,6 @@
             CanExecute="CommandBinding_CanExecute"
             Command="{StaticResource HotKey_Command_Redo}"
             Executed="HotKey_Redo" />
-        <CommandBinding
-            CanExecute="CommandBinding_CanExecute"
-            Command="{StaticResource HotKey_Command_Clear}"
-            Executed="HotKey_Clear" />
-        <CommandBinding
-            CanExecute="CommandBinding_CanExecute"
-            Command="{StaticResource HotKey_ChangeToDrawTool}"
-            Executed="KeyChangeToDrawTool" />
-        <CommandBinding
-            CanExecute="CommandBinding_CanExecute"
-            Command="{StaticResource HotKey_ChangeToQuitDrawTool}"
-            Executed="KeyChangeToQuitDrawTool" />
-        <CommandBinding
-            CanExecute="CommandBinding_CanExecute"
-            Command="{StaticResource HotKey_ChangeToSelect}"
-            Executed="KeyChangeToSelect" />
-        <CommandBinding
-            CanExecute="CommandBinding_CanExecute"
-            Command="{StaticResource HotKey_ChangeToEraser}"
-            Executed="KeyChangeToEraser" />
-        <CommandBinding
-            CanExecute="CommandBinding_CanExecute"
-            Command="{StaticResource HotKey_ChangeToBoard}"
-            Executed="KeyChangeToBoard" />
-        <CommandBinding
-            CanExecute="CommandBinding_CanExecute"
-            Command="{StaticResource HotKey_Capture}"
-            Executed="KeyCapture" />
-        <CommandBinding
-            CanExecute="CommandBinding_CanExecute"
-            Command="{StaticResource HotKey_Hide}"
-            Executed="KeyHide" />
-        <CommandBinding
-            CanExecute="CommandBinding_CanExecute"
-            Command="{StaticResource HotKey_DrawLine}"
-            Executed="KeyDrawLine" />
     </Window.CommandBindings>
 
     <Grid x:Name="Main_Grid">
@@ -5022,32 +4911,7 @@
                                                                     HorizontalAlignment="Center"
                                                                     FontSize="8" />
                                                             </ikw:SimpleStackPanel>
-                                                            <ikw:SimpleStackPanel
-                                                                Width="32"
-                                                                Height="38"
-                                                                Margin="0,0,0,0"
-                                                                MouseDown="Border_MouseDown"
-                                                                MouseUp="OperatingGuideWindowIcon_MouseUp"
-                                                                Orientation="Vertical">
-                                                                <Image
-                                                                    Width="19"
-                                                                    Height="19"
-                                                                    Margin="0,4,0,2">
-                                                                    <Image.Source>
-                                                                        <DrawingImage>
-                                                                            <DrawingImage.Drawing>
-                                                                                <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
-                                                                                    <GeometryDrawing Brush="#18181b" Geometry="F0 M24,24z M0,0z M8.17317,2.7612C9.38642,2.25866 10.6868,2 12,2 13.3132,2 14.6136,2.25866 15.8268,2.7612 17.0401,3.26375 18.1425,4.00035 19.0711,4.92893 19.9997,5.85752 20.7362,6.95991 21.2388,8.17317 21.7413,9.38642 22,10.6868 22,12 22,13.3132 21.7413,14.6136 21.2388,15.8268 20.7362,17.0401 19.9997,18.1425 19.0711,19.0711 18.1425,19.9997 17.0401,20.7362 15.8268,21.2388 14.6136,21.7413 13.3132,22 12,22 10.6868,22 9.38642,21.7413 8.17317,21.2388 6.95991,20.7362 5.85752,19.9997 4.92893,19.0711 4.00035,18.1425 3.26375,17.0401 2.7612,15.8268 2.25866,14.6136 2,13.3132 2,12 2,10.6868 2.25866,9.38642 2.7612,8.17317 3.26375,6.95991 4.00035,5.85752 4.92893,4.92893 5.85752,4.00035 6.95991,3.26375 8.17317,2.7612z M12,4C10.9494,4 9.90914,4.20693 8.93853,4.60896 7.96793,5.011 7.08601,5.60028 6.34315,6.34315 5.60028,7.08601 5.011,7.96793 4.60896,8.93853 4.20693,9.90914 4,10.9494 4,12 4,13.0506 4.20693,14.0909 4.60896,15.0615 5.011,16.0321 5.60028,16.914 6.34315,17.6569 7.08601,18.3997 7.96793,18.989 8.93853,19.391 9.90914,19.7931 10.9494,20 12,20 13.0506,20 14.0909,19.7931 15.0615,19.391 16.0321,18.989 16.914,18.3997 17.6569,17.6569 18.3997,16.914 18.989,16.0321 19.391,15.0615 19.7931,14.0909 20,13.0506 20,12 20,10.9494 19.7931,9.90914 19.391,8.93853 18.989,7.96793 18.3997,7.08602 17.6569,6.34315 16.914,5.60028 16.0321,5.011 15.0615,4.60896 14.0909,4.20693 13.0506,4 12,4z M12,16C12.5523,16,13,16.4477,13,17L13,17.01C13,17.5623 12.5523,18.01 12,18.01 11.4477,18.01 11,17.5623 11,17.01L11,17C11,16.4477,11.4477,16,12,16z M12.0813,5.97153C11.5241,5.96998 10.9742,6.09779 10.4748,6.3449 9.97535,6.59201 9.54013,6.95167 9.20334,7.39557 8.86952,7.83555 8.95559,8.46284 9.39557,8.79666 9.83555,9.13047 10.4628,9.04441 10.7967,8.60443 10.9463,8.40714 11.1398,8.24729 11.3617,8.13746 11.5837,8.02764 11.8281,7.97083 12.0758,7.97152 12.3234,7.97221 12.5675,8.03037 12.7888,8.14142 13.0102,8.25248 13.2027,8.4134 13.3513,8.61151 13.4999,8.80963 13.6005,9.03953 13.6451,9.28311 13.6897,9.5267 13.6772,9.77732 13.6086,10.0152 13.5399,10.2532 13.4169,10.4719 13.2493,10.6542 13.084,10.8341 12.8798,10.9736 12.6524,11.0623 12.1479,11.2435 11.7149,11.5821 11.4175,12.0283 11.1169,12.4792 10.9709,13.0156 11.0016,13.5566 11.0329,14.108 11.5052,14.5297 12.0566,14.4984 12.608,14.4671 13.0297,13.9948 12.9984,13.4434 12.9923,13.3352 13.0214,13.2279 13.0816,13.1377 13.1417,13.0475 13.2295,12.9793 13.3317,12.9434 13.3403,12.9404 13.3487,12.9373 13.3572,12.934 13.8776,12.735 14.3448,12.4179 14.7218,12.0077 15.0989,11.5974 15.3756,11.1053 15.5301,10.5699 15.6846,10.0346 15.7128,9.47068 15.6124,8.92261 15.5119,8.37454 15.2856,7.85727 14.9513,7.41151 14.617,6.96576 14.1838,6.60369 13.6857,6.35381 13.1877,6.10393 12.6385,5.97307 12.0813,5.97153z" />
-                                                                                </DrawingGroup>
-                                                                            </DrawingImage.Drawing>
-                                                                        </DrawingImage>
-                                                                    </Image.Source>
-                                                                </Image>
-                                                                <Label
-                                                                    Content="说明书"
-                                                                    HorizontalAlignment="Center"
-                                                                    FontSize="8" />
-                                                            </ikw:SimpleStackPanel>
+
                                                             <ikw:SimpleStackPanel
                                                                 Width="32"
                                                                 Height="38"
@@ -8335,32 +8199,7 @@
                                                                 HorizontalAlignment="Center"
                                                                 FontSize="8" />
                                                         </ikw:SimpleStackPanel>
-                                                        <ikw:SimpleStackPanel
-                                                            Width="32"
-                                                            Height="38"
-                                                            Margin="0,0,0,0"
-                                                            MouseDown="Border_MouseDown"
-                                                            MouseUp="OperatingGuideWindowIcon_MouseUp"
-                                                            Orientation="Vertical">
-                                                            <Image
-                                                                Width="19"
-                                                                Height="19"
-                                                                Margin="0,4,0,2">
-                                                                <Image.Source>
-                                                                    <DrawingImage>
-                                                                        <DrawingImage.Drawing>
-                                                                            <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
-                                                                                <GeometryDrawing Brush="#18181b" Geometry="F0 M24,24z M0,0z M8.17317,2.7612C9.38642,2.25866 10.6868,2 12,2 13.3132,2 14.6136,2.25866 15.8268,2.7612 17.0401,3.26375 18.1425,4.00035 19.0711,4.92893 19.9997,5.85752 20.7362,6.95991 21.2388,8.17317 21.7413,9.38642 22,10.6868 22,12 22,13.3132 21.7413,14.6136 21.2388,15.8268 20.7362,17.0401 19.9997,18.1425 19.0711,19.0711 18.1425,19.9997 17.0401,20.7362 15.8268,21.2388 14.6136,21.7413 13.3132,22 12,22 10.6868,22 9.38642,21.7413 8.17317,21.2388 6.95991,20.7362 5.85752,19.9997 4.92893,19.0711 4.00035,18.1425 3.26375,17.0401 2.7612,15.8268 2.25866,14.6136 2,13.3132 2,12 2,10.6868 2.25866,9.38642 2.7612,8.17317 3.26375,6.95991 4.00035,5.85752 4.92893,4.92893 5.85752,4.00035 6.95991,3.26375 8.17317,2.7612z M12,4C10.9494,4 9.90914,4.20693 8.93853,4.60896 7.96793,5.011 7.08601,5.60028 6.34315,6.34315 5.60028,7.08601 5.011,7.96793 4.60896,8.93853 4.20693,9.90914 4,10.9494 4,12 4,13.0506 4.20693,14.0909 4.60896,15.0615 5.011,16.0321 5.60028,16.914 6.34315,17.6569 7.08601,18.3997 7.96793,18.989 8.93853,19.391 9.90914,19.7931 10.9494,20 12,20 13.0506,20 14.0909,19.7931 15.0615,19.391 16.0321,18.989 16.914,18.3997 17.6569,17.6569 18.3997,16.914 18.989,16.0321 19.391,15.0615 19.7931,14.0909 20,13.0506 20,12 20,10.9494 19.7931,9.90914 19.391,8.93853 18.989,7.96793 18.3997,7.08602 17.6569,6.34315 16.914,5.60028 16.0321,5.011 15.0615,4.60896 14.0909,4.20693 13.0506,4 12,4z M12,16C12.5523,16,13,16.4477,13,17L13,17.01C13,17.5623 12.5523,18.01 12,18.01 11.4477,18.01 11,17.5623 11,17.01L11,17C11,16.4477,11.4477,16,12,16z M12.0813,5.97153C11.5241,5.96998 10.9742,6.09779 10.4748,6.3449 9.97535,6.59201 9.54013,6.95167 9.20334,7.39557 8.86952,7.83555 8.95559,8.46284 9.39557,8.79666 9.83555,9.13047 10.4628,9.04441 10.7967,8.60443 10.9463,8.40714 11.1398,8.24729 11.3617,8.13746 11.5837,8.02764 11.8281,7.97083 12.0758,7.97152 12.3234,7.97221 12.5675,8.03037 12.7888,8.14142 13.0102,8.25248 13.2027,8.4134 13.3513,8.61151 13.4999,8.80963 13.6005,9.03953 13.6451,9.28311 13.6897,9.5267 13.6772,9.77732 13.6086,10.0152 13.5399,10.2532 13.4169,10.4719 13.2493,10.6542 13.084,10.8341 12.8798,10.9736 12.6524,11.0623 12.1479,11.2435 11.7149,11.5821 11.4175,12.0283 11.1169,12.4792 10.9709,13.0156 11.0016,13.5566 11.0329,14.108 11.5052,14.5297 12.0566,14.4984 12.608,14.4671 13.0297,13.9948 12.9984,13.4434 12.9923,13.3352 13.0214,13.2279 13.0816,13.1377 13.1417,13.0475 13.2295,12.9793 13.3317,12.9434 13.3403,12.9404 13.3487,12.9373 13.3572,12.934 13.8776,12.735 14.3448,12.4179 14.7218,12.0077 15.0989,11.5974 15.3756,11.1053 15.5301,10.5699 15.6846,10.0346 15.7128,9.47068 15.6124,8.92261 15.5119,8.37454 15.2856,7.85727 14.9513,7.41151 14.617,6.96576 14.1838,6.60369 13.6857,6.35381 13.1877,6.10393 12.6385,5.97307 12.0813,5.97153z" />
-                                                                            </DrawingGroup>
-                                                                        </DrawingImage.Drawing>
-                                                                    </DrawingImage>
-                                                                </Image.Source>
-                                                            </Image>
-                                                            <Label
-                                                                Content="说明书"
-                                                                HorizontalAlignment="Center"
-                                                                FontSize="8" />
-                                                        </ikw:SimpleStackPanel>
+
                                                         <ikw:SimpleStackPanel
                                                             Width="32"
                                                             Height="38"
