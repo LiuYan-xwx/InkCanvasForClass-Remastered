@@ -2204,13 +2204,7 @@ namespace InkCanvasForClass_Remastered
             new CountdownTimerWindow().Show();
         }
 
-        private void OperatingGuideWindowIcon_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            AnimationsHelper.HideWithSlideAndFade(BorderTools);
-            AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
 
-            new OperatingGuideWindow().Show();
-        }
 
         private void SymbolIconRand_MouseUp(object sender, MouseButtonEventArgs e)
         {
