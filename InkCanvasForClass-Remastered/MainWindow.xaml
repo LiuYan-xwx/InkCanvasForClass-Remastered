@@ -52,21 +52,6 @@
         <RoutedUICommand x:Key="KeyExit" Text=" " />
         <RoutedUICommand x:Key="HotKey_Command_Undo" Text=" " />
         <RoutedUICommand x:Key="HotKey_Command_Redo" Text=" " />
-        <RoutedUICommand x:Key="HotKey_Command_Clear" Text=" " />
-        <RoutedUICommand x:Key="HotKey_Capture" Text=" " />
-        <RoutedUICommand x:Key="HotKey_Hide" Text=" " />
-        <RoutedUICommand x:Key="HotKey_ChangeToDrawTool" Text=" " />
-        <RoutedUICommand x:Key="HotKey_ChangeToQuitDrawTool" Text=" " />
-        <RoutedUICommand x:Key="HotKey_ChangeToSelect" Text=" " />
-        <RoutedUICommand x:Key="HotKey_ChangeToEraser" Text=" " />
-        <RoutedUICommand x:Key="HotKey_ChangeToBoard" Text=" " />
-        <RoutedUICommand x:Key="HotKey_ChangeToPen1" Text=" " />
-        <RoutedUICommand x:Key="HotKey_ChangeToPen2" Text=" " />
-        <RoutedUICommand x:Key="HotKey_ChangeToPen3" Text=" " />
-        <RoutedUICommand x:Key="HotKey_ChangeToPen4" Text=" " />
-        <RoutedUICommand x:Key="HotKey_ChangeToPen5" Text=" " />
-        <RoutedUICommand x:Key="HotKey_DrawLine" Text=" " />
-        <RoutedUICommand x:Key="NothingWillHappened" Text=" " />
     </Window.Resources>
     <!--  输入命令绑定  -->
     <Window.InputBindings>
@@ -79,66 +64,6 @@
             Key="Y"
             Command="{StaticResource HotKey_Command_Redo}"
             Modifiers="Control" />
-        <KeyBinding
-            Key="E"
-            Command="{StaticResource HotKey_Command_Clear}"
-            Modifiers="Control" />
-        <KeyBinding
-            Key="C"
-            Command="{StaticResource HotKey_Capture}"
-            Modifiers="Alt" />
-        <KeyBinding
-            Key="V"
-            Command="{StaticResource HotKey_Hide}"
-            Modifiers="Alt" />
-        <KeyBinding
-            Key="S"
-            Command="{StaticResource HotKey_ChangeToSelect}"
-            Modifiers="Alt" />
-        <KeyBinding
-            Key="D"
-            Command="{StaticResource HotKey_ChangeToDrawTool}"
-            Modifiers="Alt" />
-        <KeyBinding
-            Key="Q"
-            Command="{StaticResource HotKey_ChangeToQuitDrawTool}"
-            Modifiers="Alt" />
-        <KeyBinding
-            Key="E"
-            Command="{StaticResource HotKey_ChangeToEraser}"
-            Modifiers="Alt" />
-        <KeyBinding
-            Key="B"
-            Command="{StaticResource HotKey_ChangeToBoard}"
-            Modifiers="Alt" />
-        <KeyBinding
-            Key="D1"
-            Command="{StaticResource HotKey_ChangeToPen1}"
-            Modifiers="Alt" />
-        <KeyBinding
-            Key="D2"
-            Command="{StaticResource HotKey_ChangeToPen2}"
-            Modifiers="Alt" />
-        <KeyBinding
-            Key="D3"
-            Command="{StaticResource HotKey_ChangeToPen3}"
-            Modifiers="Alt" />
-        <KeyBinding
-            Key="D4"
-            Command="{StaticResource HotKey_ChangeToPen4}"
-            Modifiers="Alt" />
-        <KeyBinding
-            Key="D5"
-            Command="{StaticResource HotKey_ChangeToPen5}"
-            Modifiers="Alt" />
-        <KeyBinding
-            Key="L"
-            Command="{StaticResource HotKey_DrawLine}"
-            Modifiers="Alt" />
-        <KeyBinding
-            Key="F4"
-            Command="{StaticResource NothingWillHappened}"
-            Modifiers="Alt" />
     </Window.InputBindings>
     <!--  命令执行方法绑定  -->
     <Window.CommandBindings>
@@ -154,42 +79,6 @@
             CanExecute="CommandBinding_CanExecute"
             Command="{StaticResource HotKey_Command_Redo}"
             Executed="HotKey_Redo" />
-        <CommandBinding
-            CanExecute="CommandBinding_CanExecute"
-            Command="{StaticResource HotKey_Command_Clear}"
-            Executed="HotKey_Clear" />
-        <CommandBinding
-            CanExecute="CommandBinding_CanExecute"
-            Command="{StaticResource HotKey_ChangeToDrawTool}"
-            Executed="KeyChangeToDrawTool" />
-        <CommandBinding
-            CanExecute="CommandBinding_CanExecute"
-            Command="{StaticResource HotKey_ChangeToQuitDrawTool}"
-            Executed="KeyChangeToQuitDrawTool" />
-        <CommandBinding
-            CanExecute="CommandBinding_CanExecute"
-            Command="{StaticResource HotKey_ChangeToSelect}"
-            Executed="KeyChangeToSelect" />
-        <CommandBinding
-            CanExecute="CommandBinding_CanExecute"
-            Command="{StaticResource HotKey_ChangeToEraser}"
-            Executed="KeyChangeToEraser" />
-        <CommandBinding
-            CanExecute="CommandBinding_CanExecute"
-            Command="{StaticResource HotKey_ChangeToBoard}"
-            Executed="KeyChangeToBoard" />
-        <CommandBinding
-            CanExecute="CommandBinding_CanExecute"
-            Command="{StaticResource HotKey_Capture}"
-            Executed="KeyCapture" />
-        <CommandBinding
-            CanExecute="CommandBinding_CanExecute"
-            Command="{StaticResource HotKey_Hide}"
-            Executed="KeyHide" />
-        <CommandBinding
-            CanExecute="CommandBinding_CanExecute"
-            Command="{StaticResource HotKey_DrawLine}"
-            Executed="KeyDrawLine" />
     </Window.CommandBindings>
 
     <Grid x:Name="Main_Grid">
