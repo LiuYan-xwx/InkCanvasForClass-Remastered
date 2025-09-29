@@ -2633,9 +2633,9 @@
                     Margin="3,0,0,0"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Bottom">
-                    <Viewbox.LayoutTransform>
+                    <Viewbox.RenderTransform>
                         <ScaleTransform ScaleX="{Binding Settings.EnableViewboxBlackBoardScaleTransform, Converter={StaticResource BoolToScaleConverter}}" ScaleY="{Binding Settings.EnableViewboxBlackBoardScaleTransform, Converter={StaticResource BoolToScaleConverter}}" />
-                    </Viewbox.LayoutTransform>
+                    </Viewbox.RenderTransform>
                     <Grid
                         x:Name="BlackboardCenterSide"
                         Height="50"
@@ -5858,11 +5858,10 @@
                 Height="58"
                 Margin="100,5,0,0"
                 HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                RenderTransformOrigin="0.5,0.5">
-                <Viewbox.LayoutTransform>
+                VerticalAlignment="Top">
+                <Viewbox.RenderTransform>
                     <ScaleTransform x:Name="ViewboxFloatingBarScaleTransform" ScaleX="{Binding Settings.ViewboxFloatingBarScaleTransformValue}" ScaleY="{Binding Settings.ViewboxFloatingBarScaleTransformValue}" />
-                </Viewbox.LayoutTransform>
+                </Viewbox.RenderTransform>
                 <Viewbox.Style>
                     <Style TargetType="Viewbox">
                         <Setter Property="Opacity" Value="{Binding Settings.ViewboxFloatingBarOpacityValue}" />
