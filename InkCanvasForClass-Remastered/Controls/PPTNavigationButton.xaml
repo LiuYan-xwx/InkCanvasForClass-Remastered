@@ -13,6 +13,49 @@
         <converters:PPTButtonStyleConverter x:Key="PPTButtonStyleConverter" />
         <converters:PPTButtonPositionConverter x:Key="PPTButtonPositionConverter" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        
+        <!-- PPT Navigation Button Style -->
+        <Style x:Key="PPTNavButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <Border
+                                Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="{TemplateBinding Tag}"
+                                Opacity="1">
+                                <Border
+                                    Name="FeedbackBorder"
+                                    Margin="3"
+                                    Background="#18181b"
+                                    CornerRadius="5"
+                                    Opacity="0" />
+                            </Border>
+                            <ContentPresenter
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="FeedbackBorder" Property="Opacity" Value="0.15" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="FeedbackBorder" Property="Opacity" Value="0.05" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.5" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
 
     <Border
@@ -35,132 +78,103 @@
 
         <ikw:SimpleStackPanel Orientation="Vertical">
             <!--  Previous Button  -->
-            <Border
+            <Button
                 Name="PreviousButton"
                 Width="50"
                 Height="50"
-                Background="Transparent"
-                CornerRadius="5 5 0 0"
+                Click="PreviousButton_Click"
                 IsEnabled="{Binding CanGoToPrevious}"
-                MouseDown="PreviousButton_MouseDown"
-                MouseLeave="PreviousButton_MouseLeave"
-                MouseUp="PreviousButton_MouseUp">
-                <Grid>
-                    <Border
-                        Name="PreviousButtonFeedback"
-                        Margin="3"
-                        Background="#18181b"
-                        CornerRadius="5"
-                        Opacity="0" />
-                    <Image Width="28" Height="28">
-                        <Image.Source>
-                            <DrawingImage>
-                                <DrawingImage.Drawing>
-                                    <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
-                                        <GeometryDrawing Geometry="F0 M24,24z M0,0z M11.0357,3.3994C11.5682,2.86687,12.4316,2.86687,12.9641,3.3994L19.5096,9.94485C20.0421,10.4774 20.0421,11.3408 19.5096,11.8733 18.9771,12.4059 18.1137,12.4059 17.5811,11.8733L13.3635,7.65575 13.3635,19.6364C13.3635,20.3895 12.753,21 11.9999,21 11.2468,21 10.6363,20.3895 10.6363,19.6364L10.6363,7.65575 6.41869,11.8733C5.88616,12.4059 5.02275,12.4059 4.49022,11.8733 3.95769,11.3408 3.95769,10.4774 4.49022,9.94485L11.0357,3.3994z">
-                                            <GeometryDrawing.Brush>
-                                                <MultiBinding Converter="{StaticResource PPTButtonStyleConverter}" ConverterParameter="Foreground">
-                                                    <Binding Path="UseHalfOpacity" />
-                                                    <Binding Path="UseBlackBackground" />
-                                                </MultiBinding>
-                                            </GeometryDrawing.Brush>
-                                        </GeometryDrawing>
-                                    </DrawingGroup>
-                                </DrawingImage.Drawing>
-                            </DrawingImage>
-                        </Image.Source>
-                    </Image>
-                </Grid>
-            </Border>
+                Style="{StaticResource PPTNavButtonStyle}"
+                Tag="5 5 0 0">
+                <Image Width="28" Height="28">
+                    <Image.Source>
+                        <DrawingImage>
+                            <DrawingImage.Drawing>
+                                <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                                    <GeometryDrawing Geometry="F0 M24,24z M0,0z M11.0357,3.3994C11.5682,2.86687,12.4316,2.86687,12.9641,3.3994L19.5096,9.94485C20.0421,10.4774 20.0421,11.3408 19.5096,11.8733 18.9771,12.4059 18.1137,12.4059 17.5811,11.8733L13.3635,7.65575 13.3635,19.6364C13.3635,20.3895 12.753,21 11.9999,21 11.2468,21 10.6363,20.3895 10.6363,19.6364L10.6363,7.65575 6.41869,11.8733C5.88616,12.4059 5.02275,12.4059 4.49022,11.8733 3.95769,11.3408 3.95769,10.4774 4.49022,9.94485L11.0357,3.3994z">
+                                        <GeometryDrawing.Brush>
+                                            <MultiBinding Converter="{StaticResource PPTButtonStyleConverter}" ConverterParameter="Foreground">
+                                                <Binding Path="UseHalfOpacity" />
+                                                <Binding Path="UseBlackBackground" />
+                                            </MultiBinding>
+                                        </GeometryDrawing.Brush>
+                                    </GeometryDrawing>
+                                </DrawingGroup>
+                            </DrawingImage.Drawing>
+                        </DrawingImage>
+                    </Image.Source>
+                </Image>
+            </Button>
 
             <!--  Page Display  -->
-            <Border
+            <Button
                 Name="PageButton"
                 Width="50"
                 Height="50"
-                Background="Transparent"
-                MouseDown="PageButton_MouseDown"
-                MouseLeave="PageButton_MouseLeave"
-                MouseUp="PageButton_MouseUp"
+                Click="PageButton_Click"
+                Style="{StaticResource PPTNavButtonStyle}"
+                Tag="0"
                 Visibility="{Binding ShowPageNumbers, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Grid>
-                    <Border
-                        Name="PageButtonFeedback"
-                        Margin="3,0"
-                        Background="#18181b"
-                        CornerRadius="5"
-                        Opacity="0" />
-                    <ikw:SimpleStackPanel
+                <ikw:SimpleStackPanel
+                    VerticalAlignment="Center"
+                    Orientation="Vertical"
+                    Spacing="0.5">
+                    <TextBlock
+                        HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        Orientation="Vertical"
-                        Spacing="0.5">
-                        <TextBlock
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            FontSize="17"
-                            FontWeight="Bold"
-                            Text="{Binding CurrentPageText}">
-                            <TextBlock.Foreground>
-                                <MultiBinding Converter="{StaticResource PPTButtonStyleConverter}" ConverterParameter="Foreground">
-                                    <Binding Path="UseHalfOpacity" />
-                                    <Binding Path="UseBlackBackground" />
-                                </MultiBinding>
-                            </TextBlock.Foreground>
-                        </TextBlock>
-                        <TextBlock
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            FontSize="8"
-                            Text="{Binding TotalPageText}">
-                            <TextBlock.Foreground>
-                                <MultiBinding Converter="{StaticResource PPTButtonStyleConverter}" ConverterParameter="Foreground">
-                                    <Binding Path="UseHalfOpacity" />
-                                    <Binding Path="UseBlackBackground" />
-                                </MultiBinding>
-                            </TextBlock.Foreground>
-                        </TextBlock>
-                    </ikw:SimpleStackPanel>
-                </Grid>
-            </Border>
+                        FontSize="17"
+                        FontWeight="Bold"
+                        Text="{Binding CurrentPageText}">
+                        <TextBlock.Foreground>
+                            <MultiBinding Converter="{StaticResource PPTButtonStyleConverter}" ConverterParameter="Foreground">
+                                <Binding Path="UseHalfOpacity" />
+                                <Binding Path="UseBlackBackground" />
+                            </MultiBinding>
+                        </TextBlock.Foreground>
+                    </TextBlock>
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="8"
+                        Text="{Binding TotalPageText}">
+                        <TextBlock.Foreground>
+                            <MultiBinding Converter="{StaticResource PPTButtonStyleConverter}" ConverterParameter="Foreground">
+                                <Binding Path="UseHalfOpacity" />
+                                <Binding Path="UseBlackBackground" />
+                            </MultiBinding>
+                        </TextBlock.Foreground>
+                    </TextBlock>
+                </ikw:SimpleStackPanel>
+            </Button>
 
             <!--  Next Button  -->
-            <Border
+            <Button
                 Name="NextButton"
                 Width="50"
                 Height="50"
-                Background="Transparent"
-                CornerRadius="0 0 5 5"
+                Click="NextButton_Click"
                 IsEnabled="{Binding CanGoToNext}"
-                MouseDown="NextButton_MouseDown"
-                MouseLeave="NextButton_MouseLeave"
-                MouseUp="NextButton_MouseUp">
-                <Grid>
-                    <Border
-                        Name="NextButtonFeedback"
-                        Margin="3"
-                        Background="#18181b"
-                        CornerRadius="5"
-                        Opacity="0" />
-                    <Image Width="28" Height="28">
-                        <Image.Source>
-                            <DrawingImage>
-                                <DrawingImage.Drawing>
-                                    <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
-                                        <GeometryDrawing Geometry="F0 M24,24z M0,0z M11.0357,20.6006C11.5682,21.1331,12.4316,21.1331,12.9641,20.6006L19.5096,14.0551C20.0421,13.5226 20.0421,12.6592 19.5096,12.1267 18.9771,11.5941 18.1137,11.5941 17.5811,12.1267L13.3635,16.3443 13.3635,4.36364C13.3635,3.61052 12.753,3 11.9999,3 11.2468,3 10.6363,3.61052 10.6363,4.36364L10.6363,16.3443 6.41869,12.1267C5.88616,11.5941 5.02275,11.5941 4.49022,12.1267 3.95769,12.6592 3.95769,13.5226 4.49022,14.0551L11.0357,20.6006z">
-                                            <GeometryDrawing.Brush>
-                                                <MultiBinding Converter="{StaticResource PPTButtonStyleConverter}" ConverterParameter="Foreground">
-                                                    <Binding Path="UseHalfOpacity" />
-                                                    <Binding Path="UseBlackBackground" />
-                                                </MultiBinding>
-                                            </GeometryDrawing.Brush>
-                                        </GeometryDrawing>
-                                    </DrawingGroup>
-                                </DrawingImage.Drawing>
-                            </DrawingImage>
-                        </Image.Source>
-                    </Image>
-                </Grid>
-            </Border>
+                Style="{StaticResource PPTNavButtonStyle}"
+                Tag="0 0 5 5">
+                <Image Width="28" Height="28">
+                    <Image.Source>
+                        <DrawingImage>
+                            <DrawingImage.Drawing>
+                                <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                                    <GeometryDrawing Geometry="F0 M24,24z M0,0z M11.0357,20.6006C11.5682,21.1331,12.4316,21.1331,12.9641,20.6006L19.5096,14.0551C20.0421,13.5226 20.0421,12.6592 19.5096,12.1267 18.9771,11.5941 18.1137,11.5941 17.5811,12.1267L13.3635,16.3443 13.3635,4.36364C13.3635,3.61052 12.753,3 11.9999,3 11.2468,3 10.6363,3.61052 10.6363,4.36364L10.6363,16.3443 6.41869,12.1267C5.88616,11.5941 5.02275,11.5941 4.49022,12.1267 3.95769,12.6592 3.95769,13.5226 4.49022,14.0551L11.0357,20.6006z">
+                                        <GeometryDrawing.Brush>
+                                            <MultiBinding Converter="{StaticResource PPTButtonStyleConverter}" ConverterParameter="Foreground">
+                                                <Binding Path="UseHalfOpacity" />
+                                                <Binding Path="UseBlackBackground" />
+                                            </MultiBinding>
+                                        </GeometryDrawing.Brush>
+                                    </GeometryDrawing>
+                                </DrawingGroup>
+                            </DrawingImage.Drawing>
+                        </DrawingImage>
+                    </Image.Source>
+                </Image>
+            </Button>
         </ikw:SimpleStackPanel>
     </Border>
 </UserControl>
