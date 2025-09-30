@@ -124,8 +124,6 @@ namespace InkCanvasForClass_Remastered.Models
         [ObservableProperty]
         private int _pPTSButtonsOption = 221;
         [ObservableProperty]
-        private int _pPTBButtonsOption = 121;
-        [ObservableProperty]
         private bool _enablePPTButtonPageClickable = true;
         [ObservableProperty]
         private bool _powerPointSupport = true;

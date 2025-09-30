@@ -15,34 +15,6 @@
     </UserControl.Resources>
 
     <Grid>
-        <!-- Left Bottom Panel -->
-        <Viewbox
-            Height="50"
-            Margin="6,0,0,6"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Bottom"
-            Visibility="{Binding PPTButton.IsLeftBottomVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <controls:PPTNavigationButton
-                DataContext="{Binding PPTButton}"
-                NextClick="PPTButton_NextClick"
-                PageClick="PPTButton_PageClick"
-                PreviousClick="PPTButton_PreviousClick" />
-        </Viewbox>
-
-        <!-- Right Bottom Panel -->
-        <Viewbox
-            Height="50"
-            Margin="0,0,6,6"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Bottom"
-            Visibility="{Binding PPTButton.IsRightBottomVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <controls:PPTNavigationButton
-                DataContext="{Binding PPTButton}"
-                NextClick="PPTButton_NextClick"
-                PageClick="PPTButton_PageClick"
-                PreviousClick="PPTButton_PreviousClick" />
-        </Viewbox>
-
         <!-- Left Side Panel -->
         <Viewbox
             Height="55"

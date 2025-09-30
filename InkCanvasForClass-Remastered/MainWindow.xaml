@@ -749,18 +749,6 @@
                                                     </TransformGroup>
                                                 </Image.RenderTransform>
                                             </Image>
-                                            <Image
-                                                Name="PPTBtnPreviewLB"
-                                                Height="10"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Bottom"
-                                                Source="Resources/PresentationExample/bottombar-white.png" />
-                                            <Image
-                                                Name="PPTBtnPreviewRB"
-                                                Height="12"
-                                                HorizontalAlignment="Right"
-                                                VerticalAlignment="Bottom"
-                                                Source="Resources/PresentationExample/bottombar-white.png" />
                                         </Grid>
                                     </Border>
 
@@ -775,22 +763,6 @@
                                             HorizontalAlignment="Left"
                                             Orientation="Horizontal"
                                             Spacing="16">
-                                            <CheckBox
-                                                Name="CheckboxEnableLBPPTButton"
-                                                MinWidth="0"
-                                                Checked="CheckboxEnableLBPPTButton_IsCheckChanged"
-                                                IsChecked="True"
-                                                Unchecked="CheckboxEnableLBPPTButton_IsCheckChanged">
-                                                左下
-                                            </CheckBox>
-                                            <CheckBox
-                                                Name="CheckboxEnableRBPPTButton"
-                                                MinWidth="0"
-                                                Checked="CheckboxEnableRBPPTButton_IsCheckChanged"
-                                                IsChecked="True"
-                                                Unchecked="CheckboxEnableRBPPTButton_IsCheckChanged">
-                                                右下
-                                            </CheckBox>
                                             <CheckBox
                                                 Name="CheckboxEnableLSPPTButton"
                                                 MinWidth="0"
@@ -1033,41 +1005,6 @@
                                                 Checked="CheckboxSPPTBlackBackground_IsCheckChange"
                                                 IsChecked="True"
                                                 Unchecked="CheckboxSPPTBlackBackground_IsCheckChange">
-                                                黑色背景
-                                            </CheckBox>
-                                        </ikw:SimpleStackPanel>
-                                        <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                                            <TextBlock
-                                                Margin="0,0,24,0"
-                                                VerticalAlignment="Center"
-                                                FontSize="20"
-                                                FontWeight="Bold"
-                                                Foreground="#fafafa"
-                                                Text="左下右下" />
-                                            <CheckBox
-                                                Name="CheckboxBPPTDisplayPage"
-                                                MinWidth="0"
-                                                Checked="CheckboxBPPTDisplayPage_IsCheckChange"
-                                                IsChecked="True"
-                                                Unchecked="CheckboxBPPTDisplayPage_IsCheckChange">
-                                                显示页码
-                                            </CheckBox>
-                                            <CheckBox
-                                                Name="CheckboxBPPTHalfOpacity"
-                                                MinWidth="0"
-                                                Margin="16,0,0,0"
-                                                Checked="CheckboxBPPTHalfOpacity_IsCheckChange"
-                                                IsChecked="True"
-                                                Unchecked="CheckboxBPPTHalfOpacity_IsCheckChange">
-                                                半透明
-                                            </CheckBox>
-                                            <CheckBox
-                                                Name="CheckboxBPPTBlackBackground"
-                                                MinWidth="0"
-                                                Margin="16,0,0,0"
-                                                Checked="CheckboxBPPTBlackBackground_IsCheckChange"
-                                                IsChecked="True"
-                                                Unchecked="CheckboxBPPTBlackBackground_IsCheckChange">
                                                 黑色背景
                                             </CheckBox>
                                         </ikw:SimpleStackPanel>

@@ -17,12 +17,6 @@ namespace InkCanvasForClass_Remastered.ViewModels
         public IPowerPointService PowerPointService => _powerPointService;
 
         [ObservableProperty]
-        private bool _isLeftBottomVisible = true;
-
-        [ObservableProperty]
-        private bool _isRightBottomVisible = true;
-
-        [ObservableProperty]
         private bool _isLeftSideVisible = true;
 
         [ObservableProperty]
@@ -65,8 +59,7 @@ namespace InkCanvasForClass_Remastered.ViewModels
             _showPPTButton = showPPTButton;
             
             var displayOptions = displayOption.ToString().PadLeft(4, '1');
-            IsLeftBottomVisible = displayOptions[0] == '2';
-            IsRightBottomVisible = displayOptions[1] == '2';
+            // Bottom buttons removed - only use side buttons (indices 2 and 3)
             IsLeftSideVisible = displayOptions[2] == '2';
             IsRightSideVisible = displayOptions[3] == '2';
 

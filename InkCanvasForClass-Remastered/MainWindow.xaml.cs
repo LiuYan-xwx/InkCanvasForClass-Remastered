@@ -4466,28 +4466,6 @@ namespace InkCanvasForClass_Remastered
             UpdatePPTBtnPreview();
         }
 
-        private void CheckboxEnableLBPPTButton_IsCheckChanged(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            var str = Settings.PPTButtonsDisplayOption.ToString();
-            char[] c = str.ToCharArray();
-            c[0] = (bool)((CheckBox)sender).IsChecked ? '2' : '1';
-            Settings.PPTButtonsDisplayOption = int.Parse(new string(c));
-            _settingsService.SaveSettings();
-            UpdatePPTBtnPreview();
-        }
-
-        private void CheckboxEnableRBPPTButton_IsCheckChanged(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            var str = Settings.PPTButtonsDisplayOption.ToString();
-            char[] c = str.ToCharArray();
-            c[1] = (bool)((CheckBox)sender).IsChecked ? '2' : '1';
-            Settings.PPTButtonsDisplayOption = int.Parse(new string(c));
-            _settingsService.SaveSettings();
-            UpdatePPTBtnPreview();
-        }
-
         private void CheckboxEnableLSPPTButton_IsCheckChanged(object sender, RoutedEventArgs e)
         {
             if (!isLoaded) return;
@@ -4539,39 +4517,6 @@ namespace InkCanvasForClass_Remastered
             char[] c = str.ToCharArray();
             c[2] = (bool)((CheckBox)sender).IsChecked ? '2' : '1';
             Settings.PPTSButtonsOption = int.Parse(new string(c));
-            _settingsService.SaveSettings();
-            UpdatePPTBtnPreview();
-        }
-
-        private void CheckboxBPPTDisplayPage_IsCheckChange(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            var str = Settings.PPTBButtonsOption.ToString();
-            char[] c = str.ToCharArray();
-            c[0] = (bool)((CheckBox)sender).IsChecked ? '2' : '1';
-            Settings.PPTBButtonsOption = int.Parse(new string(c));
-            _settingsService.SaveSettings();
-            UpdatePPTBtnPreview();
-        }
-
-        private void CheckboxBPPTHalfOpacity_IsCheckChange(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            var str = Settings.PPTBButtonsOption.ToString();
-            char[] c = str.ToCharArray();
-            c[1] = (bool)((CheckBox)sender).IsChecked ? '2' : '1';
-            Settings.PPTBButtonsOption = int.Parse(new string(c));
-            _settingsService.SaveSettings();
-            UpdatePPTBtnPreview();
-        }
-
-        private void CheckboxBPPTBlackBackground_IsCheckChange(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            var str = Settings.PPTBButtonsOption.ToString();
-            char[] c = str.ToCharArray();
-            c[2] = (bool)((CheckBox)sender).IsChecked ? '2' : '1';
-            Settings.PPTBButtonsOption = int.Parse(new string(c));
             _settingsService.SaveSettings();
             UpdatePPTBtnPreview();
         }
@@ -4641,37 +4586,6 @@ namespace InkCanvasForClass_Remastered
 
         private void UpdatePPTBtnPreview()
         {
-            //new BitmapImage(new Uri("pack://application:,,,/Resources/new-icons/unfold-chevron.png"));
-            var bopt = Settings.PPTBButtonsOption.ToString();
-            char[] boptc = bopt.ToCharArray();
-            if (boptc[1] == '2')
-            {
-                PPTBtnPreviewLB.Opacity = 0.5;
-                PPTBtnPreviewRB.Opacity = 0.5;
-            }
-            else
-            {
-                PPTBtnPreviewLB.Opacity = 1;
-                PPTBtnPreviewRB.Opacity = 1;
-            }
-
-            if (boptc[2] == '2')
-            {
-                PPTBtnPreviewLB.Source =
-                    new BitmapImage(
-                        new Uri("pack://application:,,,/Resources/PresentationExample/bottombar-dark.png"));
-                PPTBtnPreviewRB.Source = new BitmapImage(
-                    new Uri("pack://application:,,,/Resources/PresentationExample/bottombar-dark.png"));
-            }
-            else
-            {
-                PPTBtnPreviewLB.Source =
-                    new BitmapImage(
-                        new Uri("pack://application:,,,/Resources/PresentationExample/bottombar-white.png"));
-                PPTBtnPreviewRB.Source = new BitmapImage(
-                    new Uri("pack://application:,,,/Resources/PresentationExample/bottombar-white.png"));
-            }
-
             var sopt = Settings.PPTSButtonsOption.ToString();
             char[] soptc = sopt.ToCharArray();
             if (soptc[1] == '2')
@@ -4707,15 +4621,12 @@ namespace InkCanvasForClass_Remastered
 
             if (Settings.ShowPPTButton)
             {
-                PPTBtnPreviewLB.Visibility = doptc[0] == '2' ? Visibility.Visible : Visibility.Collapsed;
-                PPTBtnPreviewRB.Visibility = doptc[1] == '2' ? Visibility.Visible : Visibility.Collapsed;
+                // Only show side buttons (indices 2 and 3)
                 PPTBtnPreviewLS.Visibility = doptc[2] == '2' ? Visibility.Visible : Visibility.Collapsed;
                 PPTBtnPreviewRS.Visibility = doptc[3] == '2' ? Visibility.Visible : Visibility.Collapsed;
             }
             else
             {
-                PPTBtnPreviewLB.Visibility = Visibility.Collapsed;
-                PPTBtnPreviewRB.Visibility = Visibility.Collapsed;
                 PPTBtnPreviewLS.Visibility = Visibility.Collapsed;
                 PPTBtnPreviewRS.Visibility = Visibility.Collapsed;
             }
@@ -5118,16 +5029,13 @@ namespace InkCanvasForClass_Remastered
             if ((dopsc[0] == '1' || dopsc[0] == '2') && (dopsc[1] == '1' || dopsc[1] == '2') &&
                 (dopsc[2] == '1' || dopsc[2] == '2') && (dopsc[3] == '1' || dopsc[3] == '2'))
             {
-                CheckboxEnableLBPPTButton.IsChecked = dopsc[0] == '2';
-                CheckboxEnableRBPPTButton.IsChecked = dopsc[1] == '2';
+                // Only use side buttons (indices 2 and 3)
                 CheckboxEnableLSPPTButton.IsChecked = dopsc[2] == '2';
                 CheckboxEnableRSPPTButton.IsChecked = dopsc[3] == '2';
             }
             else
             {
                 Settings.PPTButtonsDisplayOption = 2222;
-                CheckboxEnableLBPPTButton.IsChecked = true;
-                CheckboxEnableRBPPTButton.IsChecked = true;
                 CheckboxEnableLSPPTButton.IsChecked = true;
                 CheckboxEnableRSPPTButton.IsChecked = true;
                 _settingsService.SaveSettings();
@@ -5150,25 +5058,6 @@ namespace InkCanvasForClass_Remastered
                 CheckboxSPPTBlackBackground.IsChecked = false;
                 _settingsService.SaveSettings();
             }
-
-            var bops = Settings.PPTBButtonsOption.ToString();
-            var bopsc = bops.ToCharArray();
-            if ((bopsc[0] == '1' || bopsc[0] == '2') && (bopsc[1] == '1' || bopsc[1] == '2') &&
-                (bopsc[2] == '1' || bopsc[2] == '2'))
-            {
-                CheckboxBPPTDisplayPage.IsChecked = bopsc[0] == '2';
-                CheckboxBPPTHalfOpacity.IsChecked = bopsc[1] == '2';
-                CheckboxBPPTBlackBackground.IsChecked = bopsc[2] == '2';
-            }
-            else
-            {
-                Settings.PPTBButtonsOption = 121;
-                CheckboxBPPTDisplayPage.IsChecked = false;
-                CheckboxBPPTHalfOpacity.IsChecked = true;
-                CheckboxBPPTBlackBackground.IsChecked = false;
-                _settingsService.SaveSettings();
-            }
-
 
             UpdatePPTBtnPreview();
 
