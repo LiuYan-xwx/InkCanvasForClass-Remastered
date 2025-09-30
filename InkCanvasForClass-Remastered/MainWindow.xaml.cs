@@ -25,7 +25,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Application = System.Windows.Application;
 using File = System.IO.File;
-using MessageBox = System.Windows.MessageBox;
+using MessageBox = iNKORE.UI.WPF.Modern.Controls.MessageBox;
 using Point = System.Windows.Point;
 
 namespace InkCanvasForClass_Remastered
@@ -262,18 +262,18 @@ namespace InkCanvasForClass_Remastered
             new Thread(() =>
             {
                 var isFloatingBarOutsideScreen = false;
-                var isInPPTPresentationMode = false;
                 Dispatcher.Invoke(() =>
                 {
                     isFloatingBarOutsideScreen = IsOutsideOfScreenHelper.IsOutsideOfScreen(ViewboxFloatingBar);
-                    isInPPTPresentationMode = _powerPointService.IsInSlideShow;
                 });
                 if (isFloatingBarOutsideScreen) dpiChangedDelayAction.DebounceAction(3000, null, () =>
                 {
                     if (!isFloatingBarFolded)
                     {
-                        if (isInPPTPresentationMode) ViewboxFloatingBarMarginAnimation(60);
-                        else ViewboxFloatingBarMarginAnimation(100, true);
+                        if (_powerPointService.IsInSlideShow)
+                            ViewboxFloatingBarMarginAnimation(60);
+                        else
+                            ViewboxFloatingBarMarginAnimation(100, true);
                     }
                 });
             }).Start();
