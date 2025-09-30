@@ -2204,13 +2204,7 @@ namespace InkCanvasForClass_Remastered
             new CountdownTimerWindow().Show();
         }
 
-        private void OperatingGuideWindowIcon_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            AnimationsHelper.HideWithSlideAndFade(BorderTools);
-            AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
 
-            new OperatingGuideWindow().Show();
-        }
 
         private void SymbolIconRand_MouseUp(object sender, MouseButtonEventArgs e)
         {
@@ -3394,64 +3388,11 @@ namespace InkCanvasForClass_Remastered
             catch { }
         }
 
-        private void HotKey_Clear(object sender, ExecutedRoutedEventArgs e)
-        {
-            SymbolIconDelete_MouseUp(lastBorderMouseDownObject, null);
-        }
-
-
         private void KeyExit(object sender, ExecutedRoutedEventArgs e)
         {
             if (_powerPointService.IsInSlideShow) ImagePPTControlEnd_MouseUp(BorderFloatingBarExitPPTBtn, null);
         }
 
-        private void KeyChangeToDrawTool(object sender, ExecutedRoutedEventArgs e)
-        {
-            PenIcon_Click(lastBorderMouseDownObject, null);
-        }
-
-        private void KeyChangeToQuitDrawTool(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (currentMode != 0) ImageBlackboard_MouseUp(lastBorderMouseDownObject, null);
-            CursorIcon_Click(lastBorderMouseDownObject, null);
-        }
-
-        private void KeyChangeToSelect(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (StackPanelCanvasControls.Visibility == Visibility.Visible)
-                SymbolIconSelect_MouseUp(lastBorderMouseDownObject, null);
-        }
-
-        private void KeyChangeToEraser(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (StackPanelCanvasControls.Visibility == Visibility.Visible)
-            {
-                if (Eraser_Icon.Background != null)
-                    EraserIconByStrokes_Click(lastBorderMouseDownObject, null);
-                else
-                    EraserIcon_Click(lastBorderMouseDownObject, null);
-            }
-        }
-
-        private void KeyChangeToBoard(object sender, ExecutedRoutedEventArgs e)
-        {
-            ImageBlackboard_MouseUp(lastBorderMouseDownObject, null);
-        }
-
-        private void KeyCapture(object sender, ExecutedRoutedEventArgs e)
-        {
-            SaveScreenShotToDesktop();
-        }
-
-        private void KeyDrawLine(object sender, ExecutedRoutedEventArgs e)
-        {
-            if (StackPanelCanvasControls.Visibility == Visibility.Visible) BtnDrawLine_Click(lastMouseDownSender, null);
-        }
-
-        private void KeyHide(object sender, ExecutedRoutedEventArgs e)
-        {
-            SymbolIconEmoji_MouseUp(null, null);
-        }
         #endregion
 
         #region Notification
