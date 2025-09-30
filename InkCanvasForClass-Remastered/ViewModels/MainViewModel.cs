@@ -14,6 +14,15 @@ namespace InkCanvasForClass_Remastered.ViewModels
             _settingsService = settingsService;
             _powerPointService = powerPointService;
             PPTButton = new PPTButtonViewModel(powerPointService);
+            
+            // Set up callback to save settings when PPT button properties change
+            PPTButton.SetSettingsChangedCallback((displayOption, sideButtonsOption) =>
+            {
+                Settings.PPTButtonsDisplayOption = displayOption;
+                Settings.PPTSButtonsOption = sideButtonsOption;
+                _settingsService.SaveSettings();
+            });
+            
             UpdatePPTButtonFromSettings();
         }
         

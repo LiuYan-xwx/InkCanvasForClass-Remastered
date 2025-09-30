@@ -764,19 +764,13 @@
                                             Orientation="Horizontal"
                                             Spacing="16">
                                             <CheckBox
-                                                Name="CheckboxEnableLSPPTButton"
                                                 MinWidth="0"
-                                                Checked="CheckboxEnableLSPPTButton_IsCheckChanged"
-                                                IsChecked="True"
-                                                Unchecked="CheckboxEnableLSPPTButton_IsCheckChanged">
+                                                IsChecked="{Binding PPTButton.IsLeftSideVisible, Mode=TwoWay}">
                                                 左侧
                                             </CheckBox>
                                             <CheckBox
-                                                Name="CheckboxEnableRSPPTButton"
                                                 MinWidth="0"
-                                                Checked="CheckboxEnableRSPPTButton_IsCheckChanged"
-                                                IsChecked="True"
-                                                Unchecked="CheckboxEnableRSPPTButton_IsCheckChanged">
+                                                IsChecked="{Binding PPTButton.IsRightSideVisible, Mode=TwoWay}">
                                                 右侧
                                             </CheckBox>
                                         </ikw:SimpleStackPanel>
@@ -982,29 +976,20 @@
                                                 Foreground="#fafafa"
                                                 Text="两侧" />
                                             <CheckBox
-                                                Name="CheckboxSPPTDisplayPage"
                                                 MinWidth="0"
-                                                Checked="CheckboxSPPTDisplayPage_IsCheckChange"
-                                                IsChecked="True"
-                                                Unchecked="CheckboxSPPTDisplayPage_IsCheckChange">
+                                                IsChecked="{Binding PPTButton.ShowPageNumbers, Mode=TwoWay}">
                                                 显示页码
                                             </CheckBox>
                                             <CheckBox
-                                                Name="CheckboxSPPTHalfOpacity"
                                                 MinWidth="0"
                                                 Margin="16,0,0,0"
-                                                Checked="CheckboxSPPTHalfOpacity_IsCheckChange"
-                                                IsChecked="True"
-                                                Unchecked="CheckboxSPPTHalfOpacity_IsCheckChange">
+                                                IsChecked="{Binding PPTButton.UseHalfOpacity, Mode=TwoWay}">
                                                 半透明
                                             </CheckBox>
                                             <CheckBox
-                                                Name="CheckboxSPPTBlackBackground"
                                                 MinWidth="0"
                                                 Margin="16,0,0,0"
-                                                Checked="CheckboxSPPTBlackBackground_IsCheckChange"
-                                                IsChecked="True"
-                                                Unchecked="CheckboxSPPTBlackBackground_IsCheckChange">
+                                                IsChecked="{Binding PPTButton.UseBlackBackground, Mode=TwoWay}">
                                                 黑色背景
                                             </CheckBox>
                                         </ikw:SimpleStackPanel>

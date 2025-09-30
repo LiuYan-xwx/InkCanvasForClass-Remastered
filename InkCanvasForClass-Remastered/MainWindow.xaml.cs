@@ -56,6 +56,9 @@ namespace InkCanvasForClass_Remastered
 
             DataContext = _viewModel;
 
+            // Set up PPT button preview update callback
+            _viewModel.PPTButton.SetPreviewUpdateCallback(() => UpdatePPTBtnPreview());
+
             // 挂载PPT服务事件
             _powerPointService.PresentationClose += PptApplication_PresentationClose;
             _powerPointService.SlideShowBegin += PptApplication_SlideShowBegin;
@@ -4466,61 +4469,6 @@ namespace InkCanvasForClass_Remastered
             UpdatePPTBtnPreview();
         }
 
-        private void CheckboxEnableLSPPTButton_IsCheckChanged(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            var str = Settings.PPTButtonsDisplayOption.ToString();
-            char[] c = str.ToCharArray();
-            c[2] = (bool)((CheckBox)sender).IsChecked ? '2' : '1';
-            Settings.PPTButtonsDisplayOption = int.Parse(new string(c));
-            _settingsService.SaveSettings();
-            UpdatePPTBtnPreview();
-        }
-
-        private void CheckboxEnableRSPPTButton_IsCheckChanged(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            var str = Settings.PPTButtonsDisplayOption.ToString();
-            char[] c = str.ToCharArray();
-            c[3] = (bool)((CheckBox)sender).IsChecked ? '2' : '1';
-            Settings.PPTButtonsDisplayOption = int.Parse(new string(c));
-            _settingsService.SaveSettings();
-            UpdatePPTBtnPreview();
-        }
-
-        private void CheckboxSPPTDisplayPage_IsCheckChange(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            var str = Settings.PPTSButtonsOption.ToString();
-            char[] c = str.ToCharArray();
-            c[0] = (bool)((CheckBox)sender).IsChecked ? '2' : '1';
-            Settings.PPTSButtonsOption = int.Parse(new string(c));
-            _settingsService.SaveSettings();
-            UpdatePPTBtnPreview();
-        }
-
-        private void CheckboxSPPTHalfOpacity_IsCheckChange(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            var str = Settings.PPTSButtonsOption.ToString();
-            char[] c = str.ToCharArray();
-            c[1] = (bool)((CheckBox)sender).IsChecked ? '2' : '1';
-            Settings.PPTSButtonsOption = int.Parse(new string(c));
-            _settingsService.SaveSettings();
-            UpdatePPTBtnPreview();
-        }
-
-        private void CheckboxSPPTBlackBackground_IsCheckChange(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            var str = Settings.PPTSButtonsOption.ToString();
-            char[] c = str.ToCharArray();
-            c[2] = (bool)((CheckBox)sender).IsChecked ? '2' : '1';
-            Settings.PPTSButtonsOption = int.Parse(new string(c));
-            _settingsService.SaveSettings();
-            UpdatePPTBtnPreview();
-        }
-
         private void PPTButtonLeftPositionValueSlider_ValueChanged(object sender, RoutedEventArgs e)
         {
             if (_powerPointService.IsInSlideShow)
@@ -4586,9 +4534,8 @@ namespace InkCanvasForClass_Remastered
 
         private void UpdatePPTBtnPreview()
         {
-            var sopt = Settings.PPTSButtonsOption.ToString();
-            char[] soptc = sopt.ToCharArray();
-            if (soptc[1] == '2')
+            // Use view model properties instead of settings directly
+            if (_viewModel.PPTButton.UseHalfOpacity)
             {
                 PPTBtnPreviewLS.Opacity = 0.5;
                 PPTBtnPreviewRS.Opacity = 0.5;
@@ -4599,7 +4546,7 @@ namespace InkCanvasForClass_Remastered
                 PPTBtnPreviewRS.Opacity = 1;
             }
 
-            if (soptc[2] == '2')
+            if (_viewModel.PPTButton.UseBlackBackground)
             {
                 PPTBtnPreviewLS.Source =
                     new BitmapImage(
@@ -4616,14 +4563,11 @@ namespace InkCanvasForClass_Remastered
                     new Uri("pack://application:,,,/Resources/PresentationExample/sidebar-white.png"));
             }
 
-            var dopt = Settings.PPTButtonsDisplayOption.ToString();
-            char[] doptc = dopt.ToCharArray();
-
             if (Settings.ShowPPTButton)
             {
-                // Only show side buttons (indices 2 and 3)
-                PPTBtnPreviewLS.Visibility = doptc[2] == '2' ? Visibility.Visible : Visibility.Collapsed;
-                PPTBtnPreviewRS.Visibility = doptc[3] == '2' ? Visibility.Visible : Visibility.Collapsed;
+                // Only show side buttons
+                PPTBtnPreviewLS.Visibility = _viewModel.PPTButton.IsLeftSideVisible ? Visibility.Visible : Visibility.Collapsed;
+                PPTBtnPreviewRS.Visibility = _viewModel.PPTButton.IsRightSideVisible ? Visibility.Visible : Visibility.Collapsed;
             }
             else
             {
@@ -5029,35 +4973,16 @@ namespace InkCanvasForClass_Remastered
             if ((dopsc[0] == '1' || dopsc[0] == '2') && (dopsc[1] == '1' || dopsc[1] == '2') &&
                 (dopsc[2] == '1' || dopsc[2] == '2') && (dopsc[3] == '1' || dopsc[3] == '2'))
             {
-                // Only use side buttons (indices 2 and 3)
-                CheckboxEnableLSPPTButton.IsChecked = dopsc[2] == '2';
-                CheckboxEnableRSPPTButton.IsChecked = dopsc[3] == '2';
+                // Settings are already loaded into view model via UpdatePPTButtonFromSettings
             }
             else
             {
                 Settings.PPTButtonsDisplayOption = 2222;
-                CheckboxEnableLSPPTButton.IsChecked = true;
-                CheckboxEnableRSPPTButton.IsChecked = true;
                 _settingsService.SaveSettings();
+                _viewModel.UpdatePPTButtonFromSettings();
             }
 
-            var sops = Settings.PPTSButtonsOption.ToString();
-            var sopsc = sops.ToCharArray();
-            if ((sopsc[0] == '1' || sopsc[0] == '2') && (sopsc[1] == '1' || sopsc[1] == '2') &&
-                (sopsc[2] == '1' || sopsc[2] == '2'))
-            {
-                CheckboxSPPTDisplayPage.IsChecked = sopsc[0] == '2';
-                CheckboxSPPTHalfOpacity.IsChecked = sopsc[1] == '2';
-                CheckboxSPPTBlackBackground.IsChecked = sopsc[2] == '2';
-            }
-            else
-            {
-                Settings.PPTSButtonsOption = 221;
-                CheckboxSPPTDisplayPage.IsChecked = true;
-                CheckboxSPPTHalfOpacity.IsChecked = true;
-                CheckboxSPPTBlackBackground.IsChecked = false;
-                _settingsService.SaveSettings();
-            }
+            UpdatePPTBtnPreview();
 
             UpdatePPTBtnPreview();
 
