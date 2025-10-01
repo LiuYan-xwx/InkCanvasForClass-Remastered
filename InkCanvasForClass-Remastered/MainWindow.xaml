@@ -750,10 +750,7 @@
                                         </Grid>
                                     </Border>
 
-                                    <controls:SettingsControl
-                                        Header="在 PPT 模式下显示翻页按钮"
-                                        IsOn="{Binding Settings.ShowPPTButton}"
-                                        Toggled="ToggleSwitchShowPPTButton_OnToggled" />
+                                    <controls:SettingsControl Header="在 PPT 模式下显示翻页按钮" IsOn="{Binding Settings.ShowPPTButton}" />
 
                                     <ikw:SimpleStackPanel Spacing="6" Visibility="{Binding Settings.ShowPPTButton, Converter={StaticResource BooleanToVisibilityConverter}}">
                                         <ikw:SimpleStackPanel
@@ -881,7 +878,7 @@
                                         <TextBlock
                                             FontSize="12"
                                             Foreground="#a1a1aa"
-                                            Text="# 调大往上偏移，调小往下偏移，修改为0为不偏移，居中放置"
+                                            Text="# 调大往下偏移，调小往上偏移，修改为0为不偏移，居中放置"
                                             TextWrapping="Wrap" />
                                         <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                             <TextBlock
@@ -5167,9 +5164,7 @@
                         FontFamily="Microsoft YaHei UI"
                         Foreground="{Binding ElementName=BtnExit, Path=Foreground}" />
                     <StackPanel Name="StackPanelPPTButtons">
-                        <StackPanel Name="StackPanelPPTControls" Visibility="Collapsed">
-                            
-                        </StackPanel>
+                        <StackPanel Name="StackPanelPPTControls" Visibility="Collapsed" />
                     </StackPanel>
                 </StackPanel>
                 <Button
@@ -8159,21 +8154,21 @@
         <!--  // 新版 PPT 翻页按钮面板 //  -->
         <controls:PPTNavigationPanel
             x:Name="PPTNavigationPanel"
-            DataContext="{Binding }"
+            DataContext="{Binding}"
             NextClick="PPTNavigationPanel_NextClick"
             PageClick="PPTNavigationPanel_PageClick"
             PreviousClick="PPTNavigationPanel_PreviousClick">
             <controls:PPTNavigationPanel.Style>
                 <Style TargetType="controls:PPTNavigationPanel">
-                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Setter Property="Visibility" Value="Collapsed" />
                     <Style.Triggers>
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
-                                <Condition Binding="{Binding PowerPointService.IsInSlideShow}" Value="True"/>
-                                <Condition Binding="{Binding Settings.ShowPPTButton}" Value="True"/>
+                                <Condition Binding="{Binding PowerPointService.IsInSlideShow}" Value="True" />
+                                <Condition Binding="{Binding Settings.ShowPPTButton}" Value="True" />
                             </MultiDataTrigger.Conditions>
                             <MultiDataTrigger.Setters>
-                                <Setter Property="Visibility" Value="Visible"/>
+                                <Setter Property="Visibility" Value="Visible" />
                             </MultiDataTrigger.Setters>
                         </MultiDataTrigger>
                     </Style.Triggers>

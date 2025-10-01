@@ -110,6 +110,9 @@ namespace InkCanvasForClass_Remastered
                 case nameof(Settings.FingerModeBoundsWidth) or nameof(Settings.NibModeBoundsWidth):
                     BoundsWidth = Settings.IsEnableNibMode ? Settings.NibModeBoundsWidth : Settings.FingerModeBoundsWidth;
                     break;
+                case nameof(Settings.PPTLSButtonPosition) or nameof(Settings.PPTRSButtonPosition):
+                    UpdatePPTBtnPreview();
+                    break;
             }
         }
 
@@ -4415,57 +4418,6 @@ namespace InkCanvasForClass_Remastered
 
         #region Appearance
 
-        //[Obsolete]
-        //private void ToggleSwitchShowButtonPPTNavigation_OnToggled(object sender, RoutedEventArgs e) {
-        //    if (!isLoaded) return;
-        //    Settings.IsShowPPTNavigation = ToggleSwitchShowButtonPPTNavigation.IsOn;
-        //    var vis = Settings.IsShowPPTNavigation ? Visibility.Visible : Visibility.Collapsed;
-        //    PPTLBPageButton.Visibility = vis;
-        //    PPTRBPageButton.Visibility = vis;
-        //    PPTLSPageButton.Visibility = vis;
-        //    PPTRSPageButton.Visibility = vis;
-        //    _settingsService.SaveSettings();
-        //}
-
-        //[Obsolete]
-        //private void ToggleSwitchShowBottomPPTNavigationPanel_OnToggled(object sender, RoutedEventArgs e) {
-        //    if (!isLoaded) return;
-        //    Settings.IsShowBottomPPTNavigationPanel = ToggleSwitchShowBottomPPTNavigationPanel.IsOn;
-        //    if (_powerPointService.IsInSlideShow)
-        //        //BottomViewboxPPTSidesControl.Visibility = Settings.IsShowBottomPPTNavigationPanel
-        //        //    ? Visibility.Visible
-        //        //    : Visibility.Collapsed;
-        //    _settingsService.SaveSettings();
-        //}
-
-        //[Obsolete]
-        //private void ToggleSwitchShowSidePPTNavigationPanel_OnToggled(object sender, RoutedEventArgs e) {
-        //    if (!isLoaded) return;
-        //    Settings.IsShowSidePPTNavigationPanel = ToggleSwitchShowSidePPTNavigationPanel.IsOn;
-        //    if (_powerPointService.IsInSlideShow) {
-        //        LeftSidePanelForPPTNavigation.Visibility = Settings.IsShowSidePPTNavigationPanel
-        //            ? Visibility.Visible
-        //            : Visibility.Collapsed;
-        //        RightSidePanelForPPTNavigation.Visibility = Settings.IsShowSidePPTNavigationPanel
-        //            ? Visibility.Visible
-        //            : Visibility.Collapsed;
-        //    }
-
-        //    _settingsService.SaveSettings();
-        //}
-
-        private void ToggleSwitchShowPPTButton_OnToggled(object sender, RoutedEventArgs e)
-        {
-            UpdatePPTBtnPreview();
-        }
-
-        private void PPTButtonLeftPositionValueSlider_ValueChanged(object sender, RoutedEventArgs e)
-        {
-            if (_powerPointService.IsInSlideShow)
-            SliderDelayAction.DebounceAction(2000, null, _settingsService.SaveSettings);
-            UpdatePPTBtnPreview();
-        }
-
         private void PPTBtnLSPlusBtn_Clicked(object sender, RoutedEventArgs e)
         {
             Settings.PPTLSButtonPosition++;
@@ -4514,17 +4466,8 @@ namespace InkCanvasForClass_Remastered
             UpdatePPTBtnPreview();
         }
 
-        private DelayAction SliderDelayAction = new DelayAction();
-
-        private void PPTButtonRightPositionValueSlider_ValueChanged(object sender, RoutedEventArgs e)
-        {
-            SliderDelayAction.DebounceAction(2000, null, _settingsService.SaveSettings);
-            UpdatePPTBtnPreview();
-        }
-
         private void UpdatePPTBtnPreview()
         {
-            // Use view model properties instead of settings directly
             if (Settings.IsPPTButtonTranslucent)
             {
                 PPTBtnPreviewLS.Opacity = 0.5;
@@ -4565,8 +4508,8 @@ namespace InkCanvasForClass_Remastered
                 PPTBtnPreviewRS.Visibility = Visibility.Collapsed;
             }
 
-            PPTBtnPreviewRSTransform.Y = -(Settings.PPTRSButtonPosition * 0.5);
-            PPTBtnPreviewLSTransform.Y = -(Settings.PPTLSButtonPosition * 0.5);
+            PPTBtnPreviewRSTransform.Y = (Settings.PPTRSButtonPosition * 0.2);
+            PPTBtnPreviewLSTransform.Y = (Settings.PPTLSButtonPosition * 0.2);
         }
 
         private void ToggleSwitchShowCursor_Toggled(object sender, RoutedEventArgs e)

@@ -18,7 +18,6 @@
         <!--  Left Side Panel  -->
         <Viewbox
             Height="155"
-            Margin="{Binding Settings.PPTLSButtonPosition}"
             HorizontalAlignment="Left"
             VerticalAlignment="Center"
             Visibility="{Binding Settings.IsLeftSidePPTButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -27,12 +26,14 @@
                 NextClick="PPTButton_NextClick"
                 PageClick="PPTButton_PageClick"
                 PreviousClick="PPTButton_PreviousClick" />
+            <Viewbox.RenderTransform>
+                <TranslateTransform Y="{Binding Settings.PPTLSButtonPosition}"/>
+            </Viewbox.RenderTransform>
         </Viewbox>
 
         <!--  Right Side Panel  -->
         <Viewbox
             Height="155"
-            Margin="{Binding Settings.PPTRSButtonPosition}"
             HorizontalAlignment="Right"
             VerticalAlignment="Center"
             Visibility="{Binding Settings.IsRightSidePPTButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -41,6 +42,9 @@
                 NextClick="PPTButton_NextClick"
                 PageClick="PPTButton_PageClick"
                 PreviousClick="PPTButton_PreviousClick" />
+            <Viewbox.RenderTransform>
+                <TranslateTransform Y="{Binding Settings.PPTRSButtonPosition}"/>
+            </Viewbox.RenderTransform>
         </Viewbox>
     </Grid>
 </UserControl>
