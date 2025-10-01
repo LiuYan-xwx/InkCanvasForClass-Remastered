@@ -56,9 +56,6 @@ namespace InkCanvasForClass_Remastered
 
             DataContext = _viewModel;
 
-            // Set up PPT button preview update callback
-            _viewModel.PPTButton.SetPreviewUpdateCallback(() => UpdatePPTBtnPreview());
-
             // 挂载PPT服务事件
             _powerPointService.PresentationClose += PptApplication_PresentationClose;
             _powerPointService.SlideShowBegin += PptApplication_SlideShowBegin;
@@ -112,11 +109,6 @@ namespace InkCanvasForClass_Remastered
                     break;
                 case nameof(Settings.FingerModeBoundsWidth) or nameof(Settings.NibModeBoundsWidth):
                     BoundsWidth = Settings.IsEnableNibMode ? Settings.NibModeBoundsWidth : Settings.FingerModeBoundsWidth;
-                    break;
-                case nameof(Settings.PPTButtonsDisplayOption) or nameof(Settings.PPTSButtonsOption) or 
-                     nameof(Settings.PPTLSButtonPosition) or 
-                     nameof(Settings.PPTRSButtonPosition) or nameof(Settings.ShowPPTButton):
-                    _viewModel.UpdatePPTButtonFromSettings();
                     break;
             }
         }
@@ -3336,25 +3328,30 @@ namespace InkCanvasForClass_Remastered
         #region Hotkeys
         private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            if (StackPanelPPTControls.Visibility != Visibility.Visible || currentMode != 0) return;
+            if (!_powerPointService.IsInSlideShow || currentMode != 0)
+                return;
             if (e.Delta >= 120)
-                BtnPPTSlidesUp_Click(BtnPPTSlidesUp, null);
-            else if (e.Delta <= -120) BtnPPTSlidesDown_Click(BtnPPTSlidesDown, null);
+                PPTNavigationPanel_PreviousClick(null, null);
+            else if (e.Delta <= -120)
+                PPTNavigationPanel_NextClick(null, null);
         }
 
         private void Main_Grid_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (StackPanelPPTControls.Visibility != Visibility.Visible || currentMode != 0) return;
-
-            if (e.Key == Key.Down || e.Key == Key.PageDown || e.Key == Key.Right || e.Key == Key.N ||
-                e.Key == Key.Space) BtnPPTSlidesDown_Click(BtnPPTSlidesDown, null);
+            if (!_powerPointService.IsInSlideShow || currentMode != 0)
+                return;
+            if (e.Key == Key.Down || e.Key == Key.PageDown || e.Key == Key.Right || e.Key == Key.N || e.Key == Key.Space)
+                PPTNavigationPanel_NextClick(null, null);
             if (e.Key == Key.Up || e.Key == Key.PageUp || e.Key == Key.Left || e.Key == Key.P)
-                BtnPPTSlidesUp_Click(BtnPPTSlidesUp, null);
+                PPTNavigationPanel_PreviousClick(null, null);
+            if (e.Key == Key.Escape)
+                KeyExit(null, null);
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Escape) KeyExit(null, null);
+            if (e.Key == Key.Escape)
+                KeyExit(null, null);
         }
 
         private void CommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -3388,7 +3385,8 @@ namespace InkCanvasForClass_Remastered
 
         private void KeyExit(object sender, ExecutedRoutedEventArgs e)
         {
-            if (_powerPointService.IsInSlideShow) ImagePPTControlEnd_MouseUp(BorderFloatingBarExitPPTBtn, null);
+            if (_powerPointService.IsInSlideShow)
+                _powerPointService.EndSlideShow();
         }
 
         private void KeyChangeToDrawTool(object sender, ExecutedRoutedEventArgs e)
@@ -3607,9 +3605,6 @@ namespace InkCanvasForClass_Remastered
 
             Logger.LogInformation("幻灯片放映开始");
 
-            // 刷新PPT按钮状态
-            _viewModel.RefreshPPTButtonState();
-
             // 清理之前的数据
             foreach (var stream in _memoryStreams.Values)
             {
@@ -3692,10 +3687,7 @@ namespace InkCanvasForClass_Remastered
             if (isFloatingBarFolded)
                 await UnFoldFloatingBar(new object());
             Logger.LogInformation("幻灯片放映结束");
-            
-            // 刷新PPT按钮状态
-            _viewModel.RefreshPPTButtonState();
-            
+
             if (isEnteredSlideShowEndEvent)
             {
                 Logger.LogInformation("检测到之前已经进入过退出事件，返回");
@@ -3770,9 +3762,6 @@ namespace InkCanvasForClass_Remastered
             var currentPage = _powerPointService.CurrentSlidePosition;
             Logger.LogTrace($"幻灯片跳转到第 {currentPage} 页");
             
-            // 刷新PPT按钮状态
-            _viewModel.RefreshPPTButtonState();
-            
             if (currentPage == _previousSlideID)
                 return;
 
@@ -3809,7 +3798,13 @@ namespace InkCanvasForClass_Remastered
 
         private bool _isPptClickingBtnTurned = false;
 
-        private void BtnPPTSlidesUp_Click(object sender, RoutedEventArgs e)
+        private void ImagePPTControlEnd_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            _powerPointService.EndSlideShow();
+        }
+
+        #region New PPT Navigation Panel Event Handlers
+        private void PPTNavigationPanel_PreviousClick(object? sender, RoutedEventArgs? e)
         {
             _isPptClickingBtnTurned = true;
             if (inkCanvas.Strokes.Count > Settings.MinimumAutomationStrokeNumber &&
@@ -3819,7 +3814,7 @@ namespace InkCanvasForClass_Remastered
             _powerPointService.GoToPreviousSlide();
         }
 
-        private void BtnPPTSlidesDown_Click(object sender, RoutedEventArgs e)
+        private void PPTNavigationPanel_NextClick(object? sender, RoutedEventArgs? e)
         {
             _isPptClickingBtnTurned = true;
             if (inkCanvas.Strokes.Count > Settings.MinimumAutomationStrokeNumber &&
@@ -3828,23 +3823,6 @@ namespace InkCanvasForClass_Remastered
                     $"{_powerPointService.CurrentPresentationName}/{_powerPointService.CurrentSlidePosition}");
 
             _powerPointService.GoToNextSlide();
-        }
-
-
-        private void ImagePPTControlEnd_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            _powerPointService.EndSlideShow();
-        }
-
-        #region New PPT Navigation Panel Event Handlers
-        private void PPTNavigationPanel_PreviousClick(object sender, RoutedEventArgs e)
-        {
-            BtnPPTSlidesUp_Click(null, null);
-        }
-
-        private void PPTNavigationPanel_NextClick(object sender, RoutedEventArgs e)
-        {
-            BtnPPTSlidesDown_Click(null, null);
         }
 
         private void PPTNavigationPanel_PageClick(object sender, RoutedEventArgs e)
@@ -4535,7 +4513,7 @@ namespace InkCanvasForClass_Remastered
         private void UpdatePPTBtnPreview()
         {
             // Use view model properties instead of settings directly
-            if (_viewModel.PPTButton.UseHalfOpacity)
+            if (Settings.IsPPTButtonTranslucent)
             {
                 PPTBtnPreviewLS.Opacity = 0.5;
                 PPTBtnPreviewRS.Opacity = 0.5;
@@ -4546,7 +4524,7 @@ namespace InkCanvasForClass_Remastered
                 PPTBtnPreviewRS.Opacity = 1;
             }
 
-            if (_viewModel.PPTButton.UseBlackBackground)
+            if (Settings.IsPPTButtonBlackBackground)
             {
                 PPTBtnPreviewLS.Source =
                     new BitmapImage(
@@ -4566,8 +4544,8 @@ namespace InkCanvasForClass_Remastered
             if (Settings.ShowPPTButton)
             {
                 // Only show side buttons
-                PPTBtnPreviewLS.Visibility = _viewModel.PPTButton.IsLeftSideVisible ? Visibility.Visible : Visibility.Collapsed;
-                PPTBtnPreviewRS.Visibility = _viewModel.PPTButton.IsRightSideVisible ? Visibility.Visible : Visibility.Collapsed;
+                PPTBtnPreviewLS.Visibility = Settings.IsLeftSidePPTButtonVisible ? Visibility.Visible : Visibility.Collapsed;
+                PPTBtnPreviewRS.Visibility = Settings.IsRightSidePPTButtonVisible ? Visibility.Visible : Visibility.Collapsed;
             }
             else
             {
@@ -4968,24 +4946,7 @@ namespace InkCanvasForClass_Remastered
 
             // -- new --
 
-            var dops = Settings.PPTButtonsDisplayOption.ToString();
-            var dopsc = dops.ToCharArray();
-            if ((dopsc[0] == '1' || dopsc[0] == '2') && (dopsc[1] == '1' || dopsc[1] == '2') &&
-                (dopsc[2] == '1' || dopsc[2] == '2') && (dopsc[3] == '1' || dopsc[3] == '2'))
-            {
-                // Settings are already loaded into view model via UpdatePPTButtonFromSettings
-            }
-            else
-            {
-                Settings.PPTButtonsDisplayOption = 2222;
-                _settingsService.SaveSettings();
-                _viewModel.UpdatePPTButtonFromSettings();
-            }
-
             UpdatePPTBtnPreview();
-
-            UpdatePPTBtnPreview();
-
 
             // Gesture
 

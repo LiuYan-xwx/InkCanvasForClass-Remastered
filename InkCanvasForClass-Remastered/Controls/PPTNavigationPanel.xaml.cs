@@ -1,3 +1,6 @@
+using InkCanvasForClass_Remastered.Models;
+using InkCanvasForClass_Remastered.Services;
+using InkCanvasForClass_Remastered.ViewModels;
 using System.Windows;
 using System.Windows.Controls;
 

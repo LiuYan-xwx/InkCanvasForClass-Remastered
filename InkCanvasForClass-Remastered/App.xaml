@@ -426,6 +426,7 @@
                 <ResourceDictionary Source="Resources/DrawShapeImageDictionary.xaml" />
                 <ResourceDictionary Source="Resources/IconImageDictionary.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Light.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/Resources/IconData.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

@@ -1,3 +1,4 @@
+using InkCanvasForClass_Remastered.ViewModels;
 using System.Windows;
 using System.Windows.Controls;
 

@@ -6,38 +6,38 @@
     xmlns:converters="clr-namespace:InkCanvasForClass_Remastered.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodels="clr-namespace:InkCanvasForClass_Remastered.ViewModels"
     d:DesignHeight="800"
     d:DesignWidth="1200"
     mc:Ignorable="d">
     <UserControl.Resources>
-        <converters:PPTButtonPositionConverter x:Key="PPTButtonPositionConverter" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </UserControl.Resources>
 
     <Grid>
-        <!-- Left Side Panel -->
+        <!--  Left Side Panel  -->
         <Viewbox
             Height="155"
-            Margin="{Binding PPTButton.LeftSidePosition, Converter={StaticResource PPTButtonPositionConverter}, ConverterParameter=Left}"
+            Margin="{Binding Settings.PPTLSButtonPosition}"
             HorizontalAlignment="Left"
             VerticalAlignment="Center"
-            Visibility="{Binding PPTButton.IsLeftSideVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+            Visibility="{Binding Settings.IsLeftSidePPTButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
             <controls:PPTNavigationButton
-                DataContext="{Binding PPTButton}"
+                DataContext="{Binding}"
                 NextClick="PPTButton_NextClick"
                 PageClick="PPTButton_PageClick"
                 PreviousClick="PPTButton_PreviousClick" />
         </Viewbox>
 
-        <!-- Right Side Panel -->
+        <!--  Right Side Panel  -->
         <Viewbox
             Height="155"
-            Margin="{Binding PPTButton.RightSidePosition, Converter={StaticResource PPTButtonPositionConverter}, ConverterParameter=Right}"
+            Margin="{Binding Settings.PPTRSButtonPosition}"
             HorizontalAlignment="Right"
             VerticalAlignment="Center"
-            Visibility="{Binding PPTButton.IsRightSideVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+            Visibility="{Binding Settings.IsRightSidePPTButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
             <controls:PPTNavigationButton
-                DataContext="{Binding PPTButton}"
+                DataContext="{Binding}"
                 NextClick="PPTButton_NextClick"
                 PageClick="PPTButton_PageClick"
                 PreviousClick="PPTButton_PreviousClick" />
