@@ -32,7 +32,7 @@ namespace InkCanvasForClass_Remastered
 {
     public partial class MainWindow : Window
     {
-        private readonly MainViewModel _viewModel;
+        public readonly MainViewModel _viewModel;
         private readonly SettingsService _settingsService;
         private readonly IPowerPointService _powerPointService;
         private readonly ILogger<MainWindow> Logger;
@@ -240,7 +240,7 @@ namespace InkCanvasForClass_Remastered
 
             if (Settings.IsFoldAtStartup)
             {
-                FoldFloatingBar_MouseUp(Fold_Icon, null);
+                _ = HideFloatingBar(Fold_Icon);
             }
 
             ApplySettingsToUI();
@@ -269,7 +269,7 @@ namespace InkCanvasForClass_Remastered
                 });
                 if (isFloatingBarOutsideScreen) dpiChangedDelayAction.DebounceAction(3000, null, () =>
                 {
-                    if (!isFloatingBarFolded)
+                    if (_viewModel.IsFloatingBarVisible)
                     {
                         if (_powerPointService.IsInSlideShow)
                             ViewboxFloatingBarMarginAnimation(60);
@@ -299,7 +299,7 @@ namespace InkCanvasForClass_Remastered
                     });
                     if (isFloatingBarOutsideScreen) dpiChangedDelayAction.DebounceAction(3000, null, () =>
                     {
-                        if (!isFloatingBarFolded)
+                        if (_viewModel.IsFloatingBarVisible)
                         {
                             if (isInPPTPresentationMode) ViewboxFloatingBarMarginAnimation(60);
                             else ViewboxFloatingBarMarginAnimation(100, true);
@@ -350,7 +350,6 @@ namespace InkCanvasForClass_Remastered
         #endregion Definations and Loading
 
         #region AutoFold
-        public bool isFloatingBarFolded = false;
         private bool isFloatingBarChangingHideMode = false;
 
         private void CloseWhiteboardImmediately()
@@ -368,12 +367,12 @@ namespace InkCanvasForClass_Remastered
             })).Start();
         }
 
-        public async void FoldFloatingBar_MouseUp(object sender, MouseButtonEventArgs e)
+        public async void HideFloatingBar_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            await FoldFloatingBar(sender);
+            await HideFloatingBar(sender);
         }
 
-        public async Task FoldFloatingBar(object sender)
+        public async Task HideFloatingBar(object? sender)
         {
             var isShouldRejectAction = false;
 
@@ -381,19 +380,24 @@ namespace InkCanvasForClass_Remastered
             {
                 if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
                     ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
-                if (sender == Fold_Icon && lastBorderMouseDownObject != Fold_Icon) isShouldRejectAction = true;
+                if (sender == Fold_Icon && lastBorderMouseDownObject != Fold_Icon)
+                    isShouldRejectAction = true;
             });
 
-            if (isShouldRejectAction) return;
+            if (isShouldRejectAction)
+                return;
 
-            // FloatingBarIcons_MouseUp_New(sender);
             if (sender == null)
                 foldFloatingBarByUser = false;
             else
                 foldFloatingBarByUser = true;
             unfoldFloatingBarByUser = false;
 
-            if (isFloatingBarChangingHideMode) return;
+            if (isFloatingBarChangingHideMode)
+                return;
+
+            isFloatingBarChangingHideMode = true;
+            _viewModel.IsFloatingBarVisible = false;
 
             await Dispatcher.InvokeAsync(() =>
             {
@@ -410,105 +414,48 @@ namespace InkCanvasForClass_Remastered
 
             await Dispatcher.InvokeAsync(() =>
             {
-                isFloatingBarChangingHideMode = true;
-                isFloatingBarFolded = true;
-                if (currentMode != 0) CloseWhiteboardImmediately();
-                if (StackPanelCanvasControls.Visibility == Visibility.Visible)
+                if (currentMode != 0)
+                    CloseWhiteboardImmediately();
+                if (_powerPointService.IsInSlideShow)
                     if (foldFloatingBarByUser && inkCanvas.Strokes.Count > 2)
                         ShowNotification("正在清空墨迹并收纳至侧边栏，可进入批注模式后通过【撤销】功能来恢复原先墨迹。");
                 lastBorderMouseDownObject = sender;
                 CursorWithDelIcon_Click(sender, null);
             });
 
-            await Task.Delay(10);
-
             await Dispatcher.InvokeAsync(() =>
             {
                 ViewboxFloatingBarMarginAnimation(-60);
                 HideSubPanels("cursor");
-                SidePannelMarginAnimation(-10);
             });
             isFloatingBarChangingHideMode = false;
         }
 
-        private void SidePanelUnFoldButton_MouseUp(object sender, MouseButtonEventArgs e)
+        private async void SidePanelUnFoldButton_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            UnFoldFloatingBar_MouseUp(sender, e);
+            await ShowFloatingBar(sender);
         }
 
-        public async void UnFoldFloatingBar_MouseUp(object sender, MouseButtonEventArgs e)
+        public async Task ShowFloatingBar(object? sender)
         {
-            await UnFoldFloatingBar(sender);
-        }
+            unfoldFloatingBarByUser = sender != null;
 
-        public async Task UnFoldFloatingBar(object sender)
-        {
-            if (sender == null || StackPanelPPTControls.Visibility == Visibility.Visible)
-                unfoldFloatingBarByUser = false;
-            else
-                unfoldFloatingBarByUser = true;
             foldFloatingBarByUser = false;
 
-            if (isFloatingBarChangingHideMode) return;
+            if (isFloatingBarChangingHideMode)
+                return;
+
+            isFloatingBarChangingHideMode = true;
+            _viewModel.IsFloatingBarVisible = true;
 
             await Dispatcher.InvokeAsync(() =>
             {
-                isFloatingBarChangingHideMode = true;
-                isFloatingBarFolded = false;
-            });
-
-            await Task.Delay(0);
-
-            await Dispatcher.InvokeAsync(() =>
-            {
-                if (StackPanelPPTControls.Visibility == Visibility.Visible)
-                {
-                    // PPT buttons are now handled by the new unified PPT navigation panel
-                }
-
                 if (_powerPointService.IsInSlideShow)
                     ViewboxFloatingBarMarginAnimation(60);
                 else
                     ViewboxFloatingBarMarginAnimation(100, true);
-                SidePannelMarginAnimation(-50, !unfoldFloatingBarByUser);
             });
 
-            isFloatingBarChangingHideMode = false;
-        }
-
-        private async void SidePannelMarginAnimation(int MarginFromEdge, bool isNoAnimation = false) // Possible value: -50, -10
-        {
-            await Dispatcher.InvokeAsync(() =>
-            {
-                if (MarginFromEdge == -10) LeftSidePanel.Visibility = Visibility.Visible;
-
-                var LeftSidePanelmarginAnimation = new ThicknessAnimation
-                {
-                    Duration = isNoAnimation == true ? TimeSpan.FromSeconds(0) : TimeSpan.FromSeconds(0.175),
-                    From = LeftSidePanel.Margin,
-                    To = new Thickness(MarginFromEdge, 0, 0, -150)
-                };
-                LeftSidePanelmarginAnimation.EasingFunction = new CubicEase();
-                var RightSidePanelmarginAnimation = new ThicknessAnimation
-                {
-                    Duration = isNoAnimation == true ? TimeSpan.FromSeconds(0) : TimeSpan.FromSeconds(0.175),
-                    From = RightSidePanel.Margin,
-                    To = new Thickness(0, 0, MarginFromEdge, -150)
-                };
-                RightSidePanelmarginAnimation.EasingFunction = new CubicEase();
-                LeftSidePanel.BeginAnimation(MarginProperty, LeftSidePanelmarginAnimation);
-                RightSidePanel.BeginAnimation(MarginProperty, RightSidePanelmarginAnimation);
-            });
-
-            await Task.Delay(600);
-
-            await Dispatcher.InvokeAsync(() =>
-            {
-                LeftSidePanel.Margin = new Thickness(MarginFromEdge, 0, 0, -150);
-                RightSidePanel.Margin = new Thickness(0, 0, MarginFromEdge, -150);
-
-                if (MarginFromEdge == -50) LeftSidePanel.Visibility = Visibility.Collapsed;
-            });
             isFloatingBarChangingHideMode = false;
         }
         #endregion
@@ -1954,7 +1901,7 @@ namespace InkCanvasForClass_Remastered
             if (isDisplayingOrHidingBlackboard) return;
             isDisplayingOrHidingBlackboard = true;
 
-            UnFoldFloatingBar_MouseUp(null, null);
+            _ = ShowFloatingBar(null);
 
             if (inkCanvas.EditingMode == InkCanvasEditingMode.Select) PenIcon_Click(null, null);
 
@@ -2002,11 +1949,6 @@ namespace InkCanvasForClass_Remastered
             {
                 //关闭黑板
                 HideSubPanelsImmediately();
-
-                if (StackPanelPPTControls.Visibility == Visibility.Visible)
-                {
-                    // PPT buttons are now handled by the new unified PPT navigation panel
-                }
 
                 if (Settings.IsAutoSaveStrokesAtClear &&
                     inkCanvas.Strokes.Count > Settings.MinimumAutomationStrokeNumber) SaveScreenShot(true);
@@ -2760,10 +2702,9 @@ namespace InkCanvasForClass_Remastered
 
             StackPanelCanvasControls.Visibility = Visibility.Collapsed;
 
-            if (!isFloatingBarFolded)
+            if (_viewModel.IsFloatingBarVisible)
             {
                 HideSubPanels("cursor", true);
-                //await Task.Delay(50);
 
                 if (_powerPointService.IsInSlideShow)
                     ViewboxFloatingBarMarginAnimation(60);
@@ -3540,10 +3481,10 @@ namespace InkCanvasForClass_Remastered
 
         private async void PptApplication_SlideShowBegin(SlideShowWindow Wn)
         {
-            if (Settings.IsAutoFoldInPPTSlideShow && !isFloatingBarFolded)
-                await FoldFloatingBar(new object());
-            else if (isFloatingBarFolded)
-                await UnFoldFloatingBar(new object());
+            if (Settings.IsAutoFoldInPPTSlideShow && _viewModel.IsFloatingBarVisible)
+                await HideFloatingBar(new object());
+            else if (!_viewModel.IsFloatingBarVisible)
+                await ShowFloatingBar(new object());
 
             isStopInkReplay = true;
 
@@ -3618,9 +3559,8 @@ namespace InkCanvasForClass_Remastered
                 //    BtnColorRed_Click(null, null);
 
                 isEnteredSlideShowEndEvent = false;
-                if (!isFloatingBarFolded)
+                if (_viewModel.IsFloatingBarVisible)
                 {
-
                     ViewboxFloatingBarMarginAnimation(60);
                 }
             });
@@ -3628,8 +3568,8 @@ namespace InkCanvasForClass_Remastered
 
         private async void PptApplication_SlideShowEnd(Presentation Pres)
         {
-            if (isFloatingBarFolded)
-                await UnFoldFloatingBar(new object());
+            if (!_viewModel.IsFloatingBarVisible)
+                await ShowFloatingBar(new object());
             Logger.LogInformation("幻灯片放映结束");
 
             if (isEnteredSlideShowEndEvent)
@@ -7435,14 +7375,14 @@ namespace InkCanvasForClass_Remastered
 
                 if (shouldFold)
                 {
-                    if (!unfoldFloatingBarByUser && !isFloatingBarFolded)
-                        FoldFloatingBar_MouseUp(null, null);
+                    if (!unfoldFloatingBarByUser && _viewModel.IsFloatingBarVisible)
+                        _ = HideFloatingBar(null);
                 }
                 else
                 {
                     // 不在特殊应用中，展开工具栏并重置用户标志
-                    if (isFloatingBarFolded && !foldFloatingBarByUser)
-                        UnFoldFloatingBar_MouseUp(new object(), null);
+                    if (!_viewModel.IsFloatingBarVisible && !foldFloatingBarByUser)
+                        _ = ShowFloatingBar(new object());
                     unfoldFloatingBarByUser = false;
                 }
             }

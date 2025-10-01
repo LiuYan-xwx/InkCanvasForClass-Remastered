@@ -24,7 +24,7 @@ namespace InkCanvasForClass_Remastered
             if (mainWin.IsLoaded)
             {
                 // 判斷是否在收納模式中
-                if (mainWin.isFloatingBarFolded)
+                if (!mainWin._viewModel.IsFloatingBarVisible)
                 {
                     FoldFloatingBarTrayIconMenuItemIconEyeOff.Visibility = Visibility.Hidden;
                     FoldFloatingBarTrayIconMenuItemIconEyeOn.Visibility = Visibility.Visible;
@@ -80,10 +80,10 @@ namespace InkCanvasForClass_Remastered
             MainWindow mainWin = (MainWindow)Application.Current.MainWindow;
             if (mainWin.IsLoaded)
             {
-                if (mainWin.isFloatingBarFolded)
-                    mainWin.UnFoldFloatingBar_MouseUp(new object(), null);
+                if (mainWin._viewModel.IsFloatingBarVisible)
+                    _ = mainWin.HideFloatingBar(new object());
                 else
-                    mainWin.FoldFloatingBar_MouseUp(new object(), null);
+                    _ = mainWin.ShowFloatingBar(new object());
             }
         }
 
@@ -97,7 +97,7 @@ namespace InkCanvasForClass_Remastered
                 {
                     isInPPTPresentationMode = mainWin.BorderFloatingBarExitPPTBtn.Visibility == Visibility.Visible;
                 });
-                if (!mainWin.isFloatingBarFolded)
+                if (mainWin._viewModel.IsFloatingBarVisible)
                 {
                     if (!isInPPTPresentationMode)
                         mainWin.PureViewboxFloatingBarMarginAnimationInDesktopMode();

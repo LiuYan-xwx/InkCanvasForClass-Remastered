@@ -52,6 +52,62 @@
         <RoutedUICommand x:Key="KeyExit" Text=" " />
         <RoutedUICommand x:Key="HotKey_Command_Undo" Text=" " />
         <RoutedUICommand x:Key="HotKey_Command_Redo" Text=" " />
+
+        <Style x:Key="SidePanelViewBoxStyle" TargetType="Viewbox">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Style.Triggers>
+                <Trigger Property="Tag" Value="Left">
+                    <Setter Property="Margin" Value="-60,0,0,-150"/>
+                </Trigger>
+                <Trigger Property="Tag" Value="Right">
+                    <Setter Property="Margin" Value="0,0,-10,-150"/>
+                </Trigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding IsFloatingBarVisible}" Value="False" />
+                        <Condition Binding="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Tag}" Value="Left" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Visibility" Value="Visible" />
+                    <MultiDataTrigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ThicknessAnimation
+                                    Storyboard.TargetProperty="Margin"
+                                    From="-60,0,0,-150"
+                                    To="-10,0,0,-150"
+                                    Duration="0:0:0.175">
+                                    <ThicknessAnimation.EasingFunction>
+                                        <CubicEase EasingMode="EaseInOut" />
+                                    </ThicknessAnimation.EasingFunction>
+                                </ThicknessAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </MultiDataTrigger.EnterActions>
+                </MultiDataTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding IsFloatingBarVisible}" Value="False" />
+                        <Condition Binding="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Tag}" Value="Right" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property="Visibility" Value="Visible" />
+                    <MultiDataTrigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ThicknessAnimation
+                                    Storyboard.TargetProperty="Margin"
+                                    From="0,0,-60,-150"
+                                    To="0,0,-10,-150"
+                                    Duration="0:0:0.175">
+                                    <ThicknessAnimation.EasingFunction>
+                                        <CubicEase EasingMode="EaseInOut" />
+                                    </ThicknessAnimation.EasingFunction>
+                                </ThicknessAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </MultiDataTrigger.EnterActions>
+                </MultiDataTrigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
     <!--  输入命令绑定  -->
     <Window.InputBindings>
@@ -7181,7 +7237,7 @@
                                         Background="Transparent"
                                         MouseDown="FloatingBarToolBtnMouseDownFeedback_Panel"
                                         MouseLeave="FloatingBarToolBtnMouseLeaveFeedback_Panel"
-                                        MouseUp="FoldFloatingBar_MouseUp"
+                                        MouseUp="HideFloatingBar_MouseUp"
                                         Orientation="Vertical">
                                         <Image
                                             Width="28"
@@ -8004,10 +8060,22 @@
                             <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding PowerPointService.IsInSlideShow}" Value="True" />
                                 <Condition Binding="{Binding Settings.ShowPPTButton}" Value="True" />
+                                <Condition Binding="{Binding IsFloatingBarVisible}" Value="True" />
                             </MultiDataTrigger.Conditions>
                             <MultiDataTrigger.Setters>
                                 <Setter Property="Visibility" Value="Visible" />
                             </MultiDataTrigger.Setters>
+                            <MultiDataTrigger.EnterActions>
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation
+                                            Storyboard.TargetProperty="Opacity"
+                                            From="0"
+                                            To="1"
+                                            Duration="0:0:0.3" />
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </MultiDataTrigger.EnterActions>
                         </MultiDataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -8019,11 +8087,11 @@
             x:Name="LeftSidePanel"
             Width="32"
             Height="50"
-            Margin="-60,0,0,-150"
             HorizontalAlignment="Left"
             VerticalAlignment="Center"
             MouseUp="SidePanelUnFoldButton_MouseUp"
-            Visibility="Visible">
+            Style="{StaticResource SidePanelViewBoxStyle}"
+            Tag="Left">
             <ikw:SimpleStackPanel>
                 <Border
                     Width="32"
@@ -8067,11 +8135,11 @@
             x:Name="RightSidePanel"
             Width="32"
             Height="50"
-            Margin="0,0,-60,-150"
             HorizontalAlignment="Right"
             VerticalAlignment="Center"
             MouseUp="SidePanelUnFoldButton_MouseUp"
-            Visibility="{Binding ElementName=LeftSidePanel, Path=Visibility}">
+            Style="{StaticResource SidePanelViewBoxStyle}"
+            Tag="Right">
             <ikw:SimpleStackPanel>
                 <Border
                     Width="32"
@@ -8088,11 +8156,7 @@
                             <Style TargetType="Image">
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding Settings.UnFoldButtonImageType}" Value="0">
-                                        <Setter Property="Source">
-                                            <Setter.Value>
-                                                <BitmapImage UriSource="pack://application:,,,/Resources/new-icons/unfold-chevron.png" />
-                                            </Setter.Value>
-                                        </Setter>
+                                        <Setter Property="Source" Value="pack://application:,,,/Resources/new-icons/unfold-chevron.png" />
                                         <Setter Property="Width" Value="14" />
                                         <Setter Property="Height" Value="14" />
                                         <Setter Property="RenderTransform">
@@ -8102,11 +8166,7 @@
                                         </Setter>
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding Settings.UnFoldButtonImageType}" Value="1">
-                                        <Setter Property="Source">
-                                            <Setter.Value>
-                                                <BitmapImage UriSource="pack://application:,,,/Resources/new-icons/pen-white.png" />
-                                            </Setter.Value>
-                                        </Setter>
+                                        <Setter Property="Source" Value="pack://application:,,,/Resources/new-icons/pen-white.png" />
                                         <Setter Property="Width" Value="18" />
                                         <Setter Property="Height" Value="18" />
                                         <Setter Property="RenderTransform" Value="{x:Null}" />

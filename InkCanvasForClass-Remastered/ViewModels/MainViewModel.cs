@@ -13,9 +13,6 @@ namespace InkCanvasForClass_Remastered.ViewModels
         {
             _settingsService = settingsService;
             _powerPointService = powerPointService;
-            //PPTButton = new PPTButtonViewModel(powerPointService);
-            
-            //UpdatePPTButtonFromSettings();
         }
         
         public Settings Settings => _settingsService.Settings;
@@ -31,6 +28,8 @@ namespace InkCanvasForClass_Remastered.ViewModels
         private int _whiteboardTotalPageCount = 1;
         [ObservableProperty]
         private bool _isWhiteboardPreviousPageButtonEnabled = false;
+        [ObservableProperty]
+        private bool _isFloatingBarVisible = true;
 
         partial void OnWhiteboardCurrentPageChanged(int value)
         {
