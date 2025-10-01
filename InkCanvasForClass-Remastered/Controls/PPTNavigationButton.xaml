@@ -135,8 +135,8 @@
                     <TextBlock
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        FontSize="8"
-                        Text="{Binding TotalPageText}">
+                        FontSize="10"
+                        Text="{Binding TotalPageText,StringFormat={}/{0}}">
                         <TextBlock.Foreground>
                             <MultiBinding Converter="{StaticResource PPTButtonStyleConverter}" ConverterParameter="Foreground">
                                 <Binding Path="UseHalfOpacity" />

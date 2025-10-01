@@ -61,7 +61,6 @@ namespace InkCanvasForClass_Remastered.ViewModels
             PPTButton.UpdateFromSettings(
                 Settings.PPTButtonsDisplayOption,
                 Settings.PPTSButtonsOption,
-                Settings.PPTBButtonsOption,
                 Settings.PPTLSButtonPosition,
                 Settings.PPTRSButtonPosition,
                 Settings.ShowPPTButton);

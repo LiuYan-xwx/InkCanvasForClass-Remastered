@@ -109,7 +109,7 @@ namespace InkCanvasForClass_Remastered.ViewModels
 
         public Visibility PanelVisibility => _showPPTButton && _powerPointService.IsInSlideShow ? Visibility.Visible : Visibility.Collapsed;
 
-        public void UpdateFromSettings(int displayOption, int sideButtonsOption, int bottomButtonsOption, int leftPosition, int rightPosition, bool showPPTButton = true)
+        public void UpdateFromSettings(int displayOption, int sideButtonsOption, int leftPosition, int rightPosition, bool showPPTButton = true)
         {
             _suppressSettingsSave = true;
             

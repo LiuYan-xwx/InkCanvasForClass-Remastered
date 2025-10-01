@@ -17,7 +17,7 @@
     <Grid>
         <!-- Left Side Panel -->
         <Viewbox
-            Height="55"
+            Height="155"
             Margin="{Binding PPTButton.LeftSidePosition, Converter={StaticResource PPTButtonPositionConverter}, ConverterParameter=Left}"
             HorizontalAlignment="Left"
             VerticalAlignment="Center"
@@ -31,7 +31,7 @@
 
         <!-- Right Side Panel -->
         <Viewbox
-            Height="55"
+            Height="155"
             Margin="{Binding PPTButton.RightSidePosition, Converter={StaticResource PPTButtonPositionConverter}, ConverterParameter=Right}"
             HorizontalAlignment="Right"
             VerticalAlignment="Center"
