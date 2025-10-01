@@ -1,0 +1,50 @@
+<UserControl
+    x:Class="InkCanvasForClass_Remastered.Controls.PPTNavigationPanel"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:InkCanvasForClass_Remastered.Controls"
+    xmlns:converters="clr-namespace:InkCanvasForClass_Remastered.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodels="clr-namespace:InkCanvasForClass_Remastered.ViewModels"
+    d:DesignHeight="800"
+    d:DesignWidth="1200"
+    mc:Ignorable="d">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
+
+    <Grid>
+        <!--  Left Side Panel  -->
+        <Viewbox
+            Height="155"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            Visibility="{Binding Settings.IsLeftSidePPTButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <controls:PPTNavigationButton
+                DataContext="{Binding}"
+                NextClick="PPTButton_NextClick"
+                PageClick="PPTButton_PageClick"
+                PreviousClick="PPTButton_PreviousClick" />
+            <Viewbox.RenderTransform>
+                <TranslateTransform Y="{Binding Settings.PPTLSButtonPosition}"/>
+            </Viewbox.RenderTransform>
+        </Viewbox>
+
+        <!--  Right Side Panel  -->
+        <Viewbox
+            Height="155"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"
+            Visibility="{Binding Settings.IsRightSidePPTButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <controls:PPTNavigationButton
+                DataContext="{Binding}"
+                NextClick="PPTButton_NextClick"
+                PageClick="PPTButton_PageClick"
+                PreviousClick="PPTButton_PreviousClick" />
+            <Viewbox.RenderTransform>
+                <TranslateTransform Y="{Binding Settings.PPTRSButtonPosition}"/>
+            </Viewbox.RenderTransform>
+        </Viewbox>
+    </Grid>
+</UserControl>

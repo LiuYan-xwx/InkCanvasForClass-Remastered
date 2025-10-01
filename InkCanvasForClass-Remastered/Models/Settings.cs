@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using InkCanvasForClass_Remastered.Enums;
 using Microsoft.Extensions.Logging;
+using System.Drawing.Printing;
 using System.IO;
 using System.Text.Json.Serialization;
 using WindowsShortcutFactory;
@@ -115,6 +116,10 @@ namespace InkCanvasForClass_Remastered.Models
         // 每一个数位代表一个选项，2就是开启，1就是关闭
         [ObservableProperty]
         private int _pPTButtonsDisplayOption = 2222;
+        [ObservableProperty]
+        private bool _isLeftSidePPTButtonVisible = true;
+        [ObservableProperty]
+        private bool _isRightSidePPTButtonVisible = true;
         // 0居中，+就是往上，-就是往下
         [ObservableProperty]
         private int _pPTLSButtonPosition = 0;
@@ -122,9 +127,13 @@ namespace InkCanvasForClass_Remastered.Models
         [ObservableProperty]
         private int _pPTRSButtonPosition = 0;
         [ObservableProperty]
-        private int _pPTSButtonsOption = 221;
+        private bool _isShowPPTPageNumbers = true;
         [ObservableProperty]
-        private int _pPTBButtonsOption = 121;
+        private bool _isPPTButtonTranslucent = true;
+        [ObservableProperty]
+        private bool _isPPTButtonBlackBackground = false;
+        [ObservableProperty]
+        private int _pPTSButtonsOption = 221;
         [ObservableProperty]
         private bool _enablePPTButtonPageClickable = true;
         [ObservableProperty]

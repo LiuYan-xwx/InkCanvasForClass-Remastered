@@ -8,11 +8,16 @@ namespace InkCanvasForClass_Remastered.ViewModels
     {
         private readonly SettingsService _settingsService;
         private readonly IPowerPointService _powerPointService;
+        
         public MainViewModel(SettingsService settingsService, IPowerPointService powerPointService)
         {
             _settingsService = settingsService;
             _powerPointService = powerPointService;
+            //PPTButton = new PPTButtonViewModel(powerPointService);
+            
+            //UpdatePPTButtonFromSettings();
         }
+        
         public Settings Settings => _settingsService.Settings;
         public IPowerPointService PowerPointService => _powerPointService;
 
