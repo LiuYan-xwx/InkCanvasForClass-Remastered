@@ -3827,7 +3827,19 @@ namespace InkCanvasForClass_Remastered
 
         private void PPTNavigationPanel_PageClick(object sender, RoutedEventArgs e)
         {
-            // Handle page click if needed (currently not implemented in original code)
+            if (!Settings.EnablePPTButtonPageClickable)
+            {
+                return;
+            }
+            CursorIcon_Click(null, null);
+            try
+            {
+                _powerPointService.ActiveSlideShowWindow.SlideNavigation.Visible = true;
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning(ex, "尝试显示幻灯片导航时失败");
+            }
         }
         #endregion
         #endregion
