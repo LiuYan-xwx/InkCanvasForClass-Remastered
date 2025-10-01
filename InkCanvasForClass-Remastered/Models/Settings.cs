@@ -1,9 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using InkCanvasForClass_Remastered.Enums;
 using Microsoft.Extensions.Logging;
-using System.Drawing.Printing;
+using Newtonsoft.Json;
 using System.IO;
-using System.Text.Json.Serialization;
 using WindowsShortcutFactory;
 
 namespace InkCanvasForClass_Remastered.Models
