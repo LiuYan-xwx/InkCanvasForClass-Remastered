@@ -6,9 +6,11 @@
     xmlns:local="clr-namespace:InkCanvasForClass_Remastered"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
+    xmlns:viewmodels="clr-namespace:InkCanvasForClass_Remastered.ViewModels"
     Title="InkCanvasForClass-Remastered 抽奖 - 名单导入"
     Width="400"
     Height="500"
+    d:DataContext="{d:DesignInstancse Type=viewmodels:NamesInputViewModel}"
     ui:ThemeManager.RequestedTheme="Light"
     ui:WindowHelper.UseModernWindowStyle="True"
     Closing="Window_Closing"
@@ -23,7 +25,7 @@
             Name="TextBoxNames"
             Margin="10,40,10,50"
             AcceptsReturn="True"
-            FontFamily="Microsoft YaHei UI"
+            Text="{Binding NameText}"
             VerticalScrollBarVisibility="Auto" />
         <Button
             Content="关闭"
@@ -31,7 +33,6 @@
             Margin="10"
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
-            Click="Button_Click"
-            FontFamily="Microsoft YaHei UI" />
+            Click="Button_Click" />
     </Grid>
 </Window>

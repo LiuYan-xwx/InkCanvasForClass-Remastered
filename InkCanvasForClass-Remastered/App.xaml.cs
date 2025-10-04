@@ -125,10 +125,12 @@ namespace InkCanvasForClass_Remastered
             // 注册视图模型
             services.AddTransient<MainViewModel>();
             services.AddTransient<RandViewModel>();
+            services.AddTransient<NamesInputViewModel>();
 
             // 注册窗口
             services.AddSingleton<MainWindow>();
             services.AddTransient<RandWindow>();
+            services.AddTransient<NamesInputWindow>();
 
             services.AddLogging(builder =>
             {

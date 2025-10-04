@@ -200,7 +200,7 @@ namespace InkCanvasForClass_Remastered
 
         private void BorderBtnHelp_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            new NamesInputWindow().ShowDialog();
+            App.GetService<NamesInputWindow>().ShowDialog();
             ReloadNamesFromFile();
             ShuffleBag = new(NameList);
         }
