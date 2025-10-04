@@ -10,7 +10,7 @@
     Title="InkCanvasForClass-Remastered 抽奖 - 名单导入"
     Width="400"
     Height="500"
-    d:DataContext="{d:DesignInstancse Type=viewmodels:NamesInputViewModel}"
+    d:DataContext="{d:DesignInstance Type=viewmodels:NamesInputViewModel}"
     ui:ThemeManager.RequestedTheme="Light"
     ui:WindowHelper.UseModernWindowStyle="True"
     Closing="Window_Closing"
