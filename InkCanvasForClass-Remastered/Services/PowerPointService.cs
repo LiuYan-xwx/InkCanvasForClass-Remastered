@@ -7,7 +7,7 @@ using Application = Microsoft.Office.Interop.PowerPoint.Application;
 
 namespace InkCanvasForClass_Remastered.Services
 {
-    public class PowerPointService : ObservableRecipient, IPowerPointService
+    public partial class PowerPointService : ObservableRecipient, IPowerPointService
     {
         private readonly ILogger<PowerPointService> Logger;
 
@@ -26,7 +26,8 @@ namespace InkCanvasForClass_Remastered.Services
 
         public bool IsConnected => _pptApplication != null;
 
-        public bool IsInSlideShow => _pptApplication?.SlideShowWindows.Count > 0;
+        [ObservableProperty]
+        private bool _isInSlideShow = false;
 
         public int CurrentSlidePosition
         {
@@ -234,16 +235,18 @@ namespace InkCanvasForClass_Remastered.Services
         
         private void OnSlideShowBegin(SlideShowWindow Wn)
         {
-            OnPropertyChanged(nameof(IsInSlideShow));
             OnPropertyChanged(nameof(CurrentSlidePosition));
             OnPropertyChanged(nameof(CurrentPresentationSlideCount));
+            IsInSlideShow = true;
             SlideShowBegin?.Invoke(Wn);
         }
         
         private void OnSlideShowEnd(Presentation Pres)
         {
+            OnPropertyChanged(nameof(CurrentSlidePosition));
+            OnPropertyChanged(nameof(CurrentPresentationSlideCount));
+            IsInSlideShow = false;
             SlideShowEnd?.Invoke(Pres);
-            OnPropertyChanged(nameof(IsInSlideShow));
         }
 
         private void OnSlideShowNextSlide(SlideShowWindow Wn)
