@@ -30,6 +30,10 @@ namespace InkCanvasForClass_Remastered.ViewModels
         private bool _isWhiteboardPreviousPageButtonEnabled = false;
         [ObservableProperty]
         private bool _isFloatingBarVisible = true;
+        [ObservableProperty]
+        private bool _canUndo = false;
+        [ObservableProperty]
+        private bool _canRedo = false;
 
         partial void OnWhiteboardCurrentPageChanged(int value)
         {

@@ -4139,7 +4139,7 @@
                                         Background="#f4f4f5"
                                         BorderBrush="#a1a1aa"
                                         BorderThickness="0,1,0,1"
-                                        IsEnabled="{Binding ElementName=BtnUndo, Path=IsEnabled}"
+                                        IsEnabled="{Binding CanUndo}"
                                         MouseDown="Border_MouseDown"
                                         MouseUp="SymbolIconUndo_MouseUp"
                                         Opacity="0.95">
@@ -4148,7 +4148,7 @@
                                                 Width="20"
                                                 Height="20"
                                                 VerticalAlignment="Top"
-                                                Opacity="{Binding ElementName=BtnUndo, Path=IsEnabled, Converter={StaticResource IsEnabledToOpacityConverter}}"
+                                                Opacity="{Binding CanUndo, Converter={StaticResource IsEnabledToOpacityConverter}}"
                                                 RenderOptions.BitmapScalingMode="HighQuality">
                                                 <Image.Source>
                                                     <DrawingImage>
@@ -4176,7 +4176,7 @@
                                         BorderBrush="#a1a1aa"
                                         BorderThickness="0,1,1,1"
                                         CornerRadius="0,5,5,0"
-                                        IsEnabled="{Binding ElementName=BtnRedo, Path=IsEnabled}"
+                                        IsEnabled="{Binding CanRedo}"
                                         MouseDown="Border_MouseDown"
                                         MouseUp="SymbolIconRedo_MouseUp"
                                         Opacity="0.95">
@@ -4185,7 +4185,7 @@
                                                 Width="20"
                                                 Height="20"
                                                 VerticalAlignment="Top"
-                                                Opacity="{Binding ElementName=BtnRedo, Path=IsEnabled, Converter={StaticResource IsEnabledToOpacityConverter}}"
+                                                Opacity="{Binding CanRedo, Converter={StaticResource IsEnabledToOpacityConverter}}"
                                                 RenderOptions.BitmapScalingMode="HighQuality">
                                                 <Image.Source>
                                                     <DrawingImage>
@@ -4778,122 +4778,7 @@
                     Text="测试文本" />
             </Border>
         </Grid>
-        <!--  // Old UI //  -->
-        <Viewbox
-            Name="ViewBoxStackPanelMain"
-            Width="46"
-            Margin="10,10,10,55"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Bottom"
-            Visibility="Collapsed">
-            <StackPanel Name="StackPanelMain" Width="46">
-                <StackPanel Name="StackPanelControl">
-                    <Button
-                        Name="BtnExit"
-                        Content="退出"
-                        Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
-                        Margin="0,10,0,0"
-                        Background="#7F909090"
-                        Click="BtnExit_Click"
-                        FontFamily="Microsoft YaHei UI" />
-
-                    <Button
-                        Name="BtnThickness"
-                        Content="粗细"
-                        Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
-                        Margin="0,10,0,0"
-                        Background="{Binding ElementName=BtnExit, Path=Background}"
-                        Click="BtnThickness_Click"
-                        FontFamily="Microsoft YaHei UI"
-                        Foreground="{Binding ElementName=BtnExit, Path=Foreground}"
-                        Visibility="Collapsed" />
-                    <Button
-                        Name="BtnSwitch"
-                        Content="背景"
-                        Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
-                        Margin="0,10,0,0"
-                        Background="{Binding ElementName=BtnExit, Path=Background}"
-                        Click="BtnSwitch_Click"
-                        FontFamily="Microsoft YaHei UI"
-                        Foreground="{Binding ElementName=BtnExit, Path=Foreground}" />
-                    <Button
-                        x:Name="BtnHideInkCanvas"
-                        Content="隐藏&#x000A;画板"
-                        Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
-                        Margin="0,10,0,0"
-                        Background="{Binding ElementName=BtnExit, Path=Background}"
-                        Click="BtnHideInkCanvas_Click"
-                        FontFamily="Microsoft YaHei UI"
-                        Foreground="{Binding ElementName=BtnExit, Path=Foreground}" />
-                    <StackPanel Name="StackPanelPPTButtons">
-                        <StackPanel Name="StackPanelPPTControls" Visibility="Collapsed" />
-                    </StackPanel>
-                </StackPanel>
-                <Button
-                    x:Name="BtnHideControl"
-                    Content="⇅"
-                    Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
-                    Margin="0,10,0,0"
-                    Background="{Binding ElementName=BtnExit, Path=Background}"
-                    Click="BtnHideControl_Click"
-                    FontFamily="Microsoft YaHei UI"
-                    Foreground="{Binding ElementName=BtnExit, Path=Foreground}" />
-            </StackPanel>
-        </Viewbox>
-        <Viewbox
-            Name="ViewBoxStackPanelShapes"
-            Width="46"
-            Margin="{Binding ElementName=ViewBoxStackPanelMain, Path=Margin}"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Bottom"
-            Visibility="Collapsed">
-            <StackPanel Name="StackPanelShapes" Width="46">
-                <Button
-                    Name="BtnFingerDragMode"
-                    Content="单指&#x000A;拖动"
-                    Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
-                    Margin="0,25,0,0"
-                    Background="{Binding ElementName=BtnExit, Path=Background}"
-                    Click="BtnFingerDragMode_Click"
-                    FontFamily="Microsoft YaHei UI"
-                    Foreground="{Binding ElementName=BtnExit, Path=Foreground}"
-                    Visibility="Visible" />
-                <Button
-                    x:Name="BtnUndo"
-                    Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
-                    Margin="0,10,0,0"
-                    Background="{Binding ElementName=BtnExit, Path=Background}"
-                    Click="BtnUndo_Click"
-                    FontFamily="Microsoft YaHei UI"
-                    Foreground="{Binding ElementName=BtnExit, Path=Foreground}"
-                    IsEnabled="False"
-                    IsEnabledChanged="Btn_IsEnabledChanged"
-                    Visibility="Collapsed">
-                    <StackPanel Opacity="0.2">
-                        <ui:SymbolIcon Symbol="Undo" />
-                        <TextBlock Margin="0,4,0,0" Text="撤销" />
-                    </StackPanel>
-                </Button>
-                <Button
-                    x:Name="BtnRedo"
-                    Width="{Binding ElementName=StackPanelMain, Path=ActualWidth}"
-                    Margin="0,10,0,0"
-                    Background="{Binding ElementName=BtnExit, Path=Background}"
-                    Click="BtnRedo_Click"
-                    FontFamily="Microsoft YaHei UI"
-                    Foreground="{Binding ElementName=BtnExit, Path=Foreground}"
-                    IsEnabled="False"
-                    IsEnabledChanged="Btn_IsEnabledChanged"
-                    Visibility="Collapsed">
-                    <StackPanel Opacity="0.2">
-                        <ui:SymbolIcon Symbol="Redo" />
-                        <TextBlock Margin="0,4,0,0" Text="恢复" />
-                    </StackPanel>
-                </Button>
-                <Grid Name="GridForLeftSideReservedSpace" Height="{Binding ElementName=StackPanelInfo, Path=ActualHeight}" />
-            </StackPanel>
-        </Viewbox>
-
+        
         <Grid Name="FloatingbarUIForInkReplay">
             <Viewbox
                 Name="ViewboxFloatingBar"
@@ -6175,7 +6060,7 @@
                                         Margin="0,-2"
                                         HorizontalAlignment="Center"
                                         Background="Transparent"
-                                        IsEnabled="{Binding ElementName=BtnUndo, Path=IsEnabled}"
+                                        IsEnabled="{Binding CanUndo}"
                                         MouseDown="FloatingBarToolBtnMouseDownFeedback_Panel"
                                         MouseLeave="FloatingBarToolBtnMouseLeaveFeedback_Panel"
                                         MouseUp="SymbolIconUndo_MouseUp"
@@ -6183,7 +6068,7 @@
                                         <Image
                                             Height="17"
                                             Margin="0,3,0,0"
-                                            Opacity="{Binding ElementName=BtnUndo, Path=IsEnabled, Converter={StaticResource IsEnabledToOpacityConverter}}"
+                                            Opacity="{Binding CanUndo, Converter={StaticResource IsEnabledToOpacityConverter}}"
                                             RenderOptions.BitmapScalingMode="HighQuality">
                                             <Image.Source>
                                                 <DrawingImage>
@@ -6203,7 +6088,7 @@
                                             Margin="0,1,0,0"
                                             FontSize="8"
                                             Foreground="Black"
-                                            Opacity="{Binding ElementName=BtnUndo, Path=IsEnabled, Converter={StaticResource IsEnabledToOpacityConverter}}"
+                                            Opacity="{Binding CanUndo, Converter={StaticResource IsEnabledToOpacityConverter}}"
                                             Text="撤销"
                                             TextAlignment="Center" />
                                     </ikw:SimpleStackPanel>
@@ -6213,7 +6098,7 @@
                                         Margin="0,-2"
                                         HorizontalAlignment="Center"
                                         Background="Transparent"
-                                        IsEnabled="{Binding ElementName=BtnRedo, Path=IsEnabled}"
+                                        IsEnabled="{Binding CanRedo}"
                                         MouseDown="FloatingBarToolBtnMouseDownFeedback_Panel"
                                         MouseLeave="FloatingBarToolBtnMouseLeaveFeedback_Panel"
                                         MouseUp="SymbolIconRedo_MouseUp"
@@ -6221,7 +6106,7 @@
                                         <Image
                                             Height="17"
                                             Margin="0,3,0,0"
-                                            Opacity="{Binding ElementName=BtnRedo, Path=IsEnabled, Converter={StaticResource IsEnabledToOpacityConverter}}"
+                                            Opacity="{Binding CanRedo, Converter={StaticResource IsEnabledToOpacityConverter}}"
                                             RenderOptions.BitmapScalingMode="HighQuality">
                                             <Image.Source>
                                                 <DrawingImage>
@@ -6241,7 +6126,7 @@
                                             Margin="0,1,0,0"
                                             FontSize="8"
                                             Foreground="Black"
-                                            Opacity="{Binding ElementName=BtnRedo, Path=IsEnabled, Converter={StaticResource IsEnabledToOpacityConverter}}"
+                                            Opacity="{Binding CanRedo, Converter={StaticResource IsEnabledToOpacityConverter}}"
                                             Text="重做"
                                             TextAlignment="Center" />
                                     </ikw:SimpleStackPanel>

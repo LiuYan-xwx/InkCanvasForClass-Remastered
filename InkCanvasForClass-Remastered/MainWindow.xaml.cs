@@ -357,7 +357,7 @@ namespace InkCanvasForClass_Remastered
             HideSubPanelsImmediately();
             if (Settings.AutoSwitchTwoFingerGesture) // 自动启用多指书写
                 ToggleSwitchEnableTwoFingerTranslate.IsOn = false;
-            BtnSwitch_Click(BtnSwitch, null);
+            BtnSwitch_Click(null, null);
             new Thread(new ThreadStart(() =>
             {
                 Thread.Sleep(200);
@@ -702,7 +702,7 @@ namespace InkCanvasForClass_Remastered
                     AnimationsHelper.HideWithSlideAndFade(BlackboardRightSide);
                 }
 
-                BtnHideInkCanvas_Click(BtnHideInkCanvas, null);
+                BtnHideInkCanvas_Click(null, null);
             }
 
             var strokes = inkCanvas.GetSelectedStrokes();
@@ -1840,8 +1840,19 @@ namespace InkCanvasForClass_Remastered
                 ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
             if (sender == SymbolIconUndo && lastBorderMouseDownObject != SymbolIconUndo) return;
 
-            if (!BtnUndo.IsEnabled) return;
-            BtnUndo_Click(BtnUndo, null);
+            if (!_viewModel.CanUndo)
+                return;
+
+            //BtnUndo_Click的内容
+            if (inkCanvas.GetSelectedStrokes().Count != 0)
+            {
+                GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
+                inkCanvas.Select(new StrokeCollection());
+            }
+
+            var item = timeMachine.Undo();
+            ApplyHistoryToCanvas(item);
+
             HideSubPanels();
         }
 
@@ -1853,8 +1864,19 @@ namespace InkCanvasForClass_Remastered
                 ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
             if (sender == SymbolIconRedo && lastBorderMouseDownObject != SymbolIconRedo) return;
 
-            if (!BtnRedo.IsEnabled) return;
-            BtnRedo_Click(BtnRedo, null);
+            if (!_viewModel.CanRedo)
+                return;
+
+            //BtnRedo_Click的内容
+            if (inkCanvas.GetSelectedStrokes().Count != 0)
+            {
+                GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
+                inkCanvas.Select(new StrokeCollection());
+            }
+
+            var item = timeMachine.Redo();
+            ApplyHistoryToCanvas(item);
+
             HideSubPanels();
         }
 
@@ -1877,7 +1899,8 @@ namespace InkCanvasForClass_Remastered
 
             _ = ShowFloatingBar(null);
 
-            if (inkCanvas.EditingMode == InkCanvasEditingMode.Select) PenIcon_Click(null, null);
+            if (inkCanvas.EditingMode == InkCanvasEditingMode.Select)
+                PenIcon_Click(null, null);
 
             if (currentMode == 0)
             {
@@ -1910,7 +1933,7 @@ namespace InkCanvasForClass_Remastered
                         AnimationsHelper.HideWithSlideAndFade(BlackboardRightSide);
                     }
 
-                    BtnHideInkCanvas_Click(BtnHideInkCanvas, null);
+                    BtnHideInkCanvas_Click(null, null);
                 }
 
                 if (Settings.AutoSwitchTwoFingerGesture) // 自动关闭多指书写、开启双指移动
@@ -1948,12 +1971,10 @@ namespace InkCanvasForClass_Remastered
                 // if (!isInMultiTouchMode) ToggleSwitchEnableMultiTouchMode.IsOn = true;
             }
 
-            BtnSwitch_Click(BtnSwitch, null);
+            BtnSwitch_Click(null, null);
 
             if (currentMode == 0 && inkCanvas.Strokes.Count == 0 && _powerPointService.IsInSlideShow == false)
                 CursorIcon_Click(null, null);
-
-            BtnExit.Foreground = Brushes.White;
 
             new Thread(new ThreadStart(() =>
             {
@@ -1974,7 +1995,7 @@ namespace InkCanvasForClass_Remastered
             }
             else
             {
-                BtnHideInkCanvas_Click(BtnHideInkCanvas, null);
+                BtnHideInkCanvas_Click(null, null);
 
                 if (_powerPointService.IsInSlideShow)
                 {
@@ -2662,10 +2683,7 @@ namespace InkCanvasForClass_Remastered
                 RestoreStrokes(true);
             }
 
-            StackPanelPPTButtons.Visibility = Visibility.Visible;
-            BtnHideInkCanvas.Content = "显示\n画板";
             CheckEnableTwoFingerGestureBtnVisibility(false);
-
 
             StackPanelCanvasControls.Visibility = Visibility.Collapsed;
 
@@ -2891,61 +2909,6 @@ namespace InkCanvasForClass_Remastered
             HideSubPanels();
         }
 
-        #region Left Side Panel
-
-        private void BtnFingerDragMode_Click(object sender, RoutedEventArgs e)
-        {
-            if (isSingleFingerDragMode)
-            {
-                isSingleFingerDragMode = false;
-                BtnFingerDragMode.Content = "单指\n拖动";
-            }
-            else
-            {
-                isSingleFingerDragMode = true;
-                BtnFingerDragMode.Content = "多指\n拖动";
-            }
-        }
-
-        private void BtnUndo_Click(object sender, RoutedEventArgs e)
-        {
-            if (inkCanvas.GetSelectedStrokes().Count != 0)
-            {
-                GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
-                inkCanvas.Select(new StrokeCollection());
-            }
-
-            var item = timeMachine.Undo();
-            ApplyHistoryToCanvas(item);
-        }
-
-        private void BtnRedo_Click(object sender, RoutedEventArgs e)
-        {
-            if (inkCanvas.GetSelectedStrokes().Count != 0)
-            {
-                GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
-                inkCanvas.Select(new StrokeCollection());
-            }
-
-            var item = timeMachine.Redo();
-            ApplyHistoryToCanvas(item);
-        }
-
-        private void Btn_IsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (!isLoaded) return;
-            try
-            {
-                if (((Button)sender).IsEnabled)
-                    ((UIElement)((Button)sender).Content).Opacity = 1;
-                else
-                    ((UIElement)((Button)sender).Content).Opacity = 0.25;
-            }
-            catch { }
-        }
-
-        #endregion Left Side Panel
-
         #region Right Side Panel
 
         public static bool CloseIsFromButton = false;
@@ -2966,7 +2929,8 @@ namespace InkCanvasForClass_Remastered
 
         private void SettingsOverlayClick(object sender, MouseButtonEventArgs e)
         {
-            if (isOpeningOrHidingSettingsPane == true) return;
+            if (isOpeningOrHidingSettingsPane == true)
+                return;
             BtnSettings_Click(null, null);
         }
 
@@ -3008,8 +2972,6 @@ namespace InkCanvasForClass_Remastered
             }
         }
 
-        private void BtnThickness_Click(object sender, RoutedEventArgs e) { }
-
         private bool forceEraser = false;
 
 
@@ -3048,15 +3010,7 @@ namespace InkCanvasForClass_Remastered
         {
             GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
 
-            if (isSingleFingerDragMode) BtnFingerDragMode_Click(BtnFingerDragMode, null);
-        }
-
-        private void BtnHideControl_Click(object sender, RoutedEventArgs e)
-        {
-            if (StackPanelControl.Visibility == Visibility.Visible)
-                StackPanelControl.Visibility = Visibility.Hidden;
-            else
-                StackPanelControl.Visibility = Visibility.Visible;
+            //isSingleFingerDragMode = false;
         }
 
         private int currentMode = 0;
@@ -3080,7 +3034,7 @@ namespace InkCanvasForClass_Remastered
                 }
 
                 Topmost = true;
-                BtnHideInkCanvas_Click(BtnHideInkCanvas, e);
+                BtnHideInkCanvas_Click(null, e);
             }
             else
             {
@@ -3169,15 +3123,6 @@ namespace InkCanvasForClass_Remastered
                 CheckEnableTwoFingerGestureBtnVisibility(true);
             }
         }
-
-        private void StackPanel_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            if (((StackPanel)sender).Visibility == Visibility.Visible)
-                GridForLeftSideReservedSpace.Visibility = Visibility.Collapsed;
-            else
-                GridForLeftSideReservedSpace.Visibility = Visibility.Visible;
-        }
-
         #endregion
         #endregion
 
@@ -3462,7 +3407,6 @@ namespace InkCanvasForClass_Remastered
 
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
-                StackPanelPPTControls.Visibility = Visibility.Visible;
                 if (currentMode != 0)
                     ImageBlackboard_MouseUp(null, null);
 
@@ -3549,8 +3493,6 @@ namespace InkCanvasForClass_Remastered
 
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
-                StackPanelPPTControls.Visibility = Visibility.Collapsed;
-
                 CursorIcon_Click(null, null);
 
                 ClearStrokes(true);
@@ -5188,16 +5130,12 @@ namespace InkCanvasForClass_Remastered
 
         private void TimeMachine_OnUndoStateChanged(bool status)
         {
-            var result = status ? Visibility.Visible : Visibility.Collapsed;
-            BtnUndo.Visibility = result;
-            BtnUndo.IsEnabled = status;
+            _viewModel.CanUndo = status;
         }
 
         private void TimeMachine_OnRedoStateChanged(bool status)
         {
-            var result = status ? Visibility.Visible : Visibility.Collapsed;
-            BtnRedo.Visibility = result;
-            BtnRedo.IsEnabled = status;
+            _viewModel.CanRedo = status;
         }
 
         private void StrokesOnStrokesChanged(object sender, StrokeCollectionChangedEventArgs e)
@@ -5717,7 +5655,7 @@ namespace InkCanvasForClass_Remastered
                 }
                 else
                 {
-                    if (StackPanelPPTControls.Visibility == Visibility.Visible && inkCanvas.Strokes.Count == 0 &&
+                    if (_powerPointService.IsInSlideShow && inkCanvas.Strokes.Count == 0 &&
                         Settings.IsEnableFingerGestureSlideShowControl)
                     {
                         inkCanvas.EditingMode = InkCanvasEditingMode.GestureOnly;
@@ -5753,7 +5691,6 @@ namespace InkCanvasForClass_Remastered
         private List<int> dec = [];
 
         private InkCanvasEditingMode lastInkCanvasEditingMode = InkCanvasEditingMode.Ink;
-        private bool isSingleFingerDragMode = false;
 
         private void inkCanvas_PreviewTouchDown(object sender, TouchEventArgs e)
         {
@@ -5763,14 +5700,13 @@ namespace InkCanvasForClass_Remastered
             BlackboardUIGridForInkReplay.IsHitTestVisible = false;
 
             dec.Add(e.TouchDevice.Id);
-            //设备1个的时候，记录中心点
             if (dec.Count == 1)
             {
                 //记录第一根手指点击时的 StrokeCollection
                 lastTouchDownStrokeCollection = inkCanvas.Strokes.Clone();
             }
             //设备两个及两个以上，将画笔功能关闭
-            if (dec.Count > 1 || isSingleFingerDragMode || !Settings.IsEnableTwoFingerGesture)
+            if (dec.Count > 1 || !Settings.IsEnableTwoFingerGesture)
             {
                 if (isInMultiTouchMode || !Settings.IsEnableTwoFingerGesture) return;
                 if (inkCanvas.EditingMode == InkCanvasEditingMode.None ||
@@ -5833,10 +5769,9 @@ namespace InkCanvasForClass_Remastered
         private void Main_Grid_ManipulationDelta(object sender, ManipulationDeltaEventArgs e)
         {
             if (isInMultiTouchMode || !Settings.IsEnableTwoFingerGesture) return;
-            if ((dec.Count >= 2 && (Settings.IsEnableTwoFingerGestureInPresentationMode ||
-                                    StackPanelPPTControls.Visibility != Visibility.Visible ||
-                                    StackPanelPPTButtons.Visibility == Visibility.Collapsed)) ||
-                isSingleFingerDragMode)
+            if (dec.Count >= 2 && (Settings.IsEnableTwoFingerGestureInPresentationMode
+                                    || !_powerPointService.IsInSlideShow
+                                    || currentMode != 0))
             {
                 var md = e.DeltaManipulation;
                 var trans = md.Translation; // 获得位移矢量
