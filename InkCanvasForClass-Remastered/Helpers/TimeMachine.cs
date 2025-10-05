@@ -28,20 +28,6 @@ namespace InkCanvasForClass_Remastered.Helpers
             NotifyUndoRedoState();
         }
 
-        public void CommitStrokeShapeHistory(StrokeCollection strokeToBeReplaced, StrokeCollection generatedStroke)
-        {
-            if (_currentIndex + 1 < _currentStrokeHistory.Count)
-            {
-                _currentStrokeHistory.RemoveRange(_currentIndex + 1, _currentStrokeHistory.Count - 1 - _currentIndex);
-            }
-            _currentStrokeHistory.Add(new TimeMachineHistory(generatedStroke,
-                TimeMachineHistoryType.ShapeRecognition,
-                false,
-                strokeToBeReplaced));
-            _currentIndex = _currentStrokeHistory.Count - 1;
-            NotifyUndoRedoState();
-        }
-
         public void CommitStrokeManipulationHistory(Dictionary<Stroke, Tuple<StylusPointCollection, StylusPointCollection>> stylusPointDictionary)
         {
             if (_currentIndex + 1 < _currentStrokeHistory.Count)
@@ -165,7 +151,6 @@ namespace InkCanvasForClass_Remastered.Helpers
     public enum TimeMachineHistoryType
     {
         UserInput,
-        ShapeRecognition,
         Clear,
         Manipulation,
         DrawingAttributes
