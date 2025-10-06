@@ -34,6 +34,8 @@ namespace InkCanvasForClass_Remastered.ViewModels
         private bool _canUndo = false;
         [ObservableProperty]
         private bool _canRedo = false;
+        [ObservableProperty]
+        private bool _isSettingsPanelVisible = false;
 
         partial void OnWhiteboardCurrentPageChanged(int value)
         {

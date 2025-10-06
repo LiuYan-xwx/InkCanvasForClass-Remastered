@@ -1,9 +1,7 @@
-using InkCanvasForClass_Remastered.Enums;
 using InkCanvasForClass_Remastered.Helpers;
 using InkCanvasForClass_Remastered.Models;
 using InkCanvasForClass_Remastered.Services;
 using InkCanvasForClass_Remastered.ViewModels;
-using iNKORE.UI.WPF.Modern;
 using Microsoft.Extensions.Logging;
 using Microsoft.Office.Interop.PowerPoint;
 using Microsoft.Win32;
@@ -68,8 +66,6 @@ namespace InkCanvasForClass_Remastered
             BlackboardCenterSide.Visibility = Visibility.Collapsed;
             BlackboardRightSide.Visibility = Visibility.Collapsed;
             BorderTools.Visibility = Visibility.Collapsed;
-            BorderSettings.Visibility = Visibility.Collapsed;
-            BorderSettings.Margin = new Thickness(0, 0, 0, 0);
             TwoFingerGestureBorder.Visibility = Visibility.Collapsed;
             BoardTwoFingerGestureBorder.Visibility = Visibility.Collapsed;
             GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
@@ -1599,7 +1595,6 @@ namespace InkCanvasForClass_Remastered
             BoardPenPalette.Visibility = Visibility.Collapsed;
             BoardEraserSizePanel.Visibility = Visibility.Collapsed;
             EraserSizePanel.Visibility = Visibility.Collapsed;
-            BorderSettings.Visibility = Visibility.Collapsed;
             BoardBorderLeftPageListView.Visibility = Visibility.Collapsed;
             BoardBorderRightPageListView.Visibility = Visibility.Collapsed;
         }
@@ -1673,38 +1668,6 @@ namespace InkCanvasForClass_Remastered
             AnimationsHelper.HideWithSlideAndFade(EraserSizePanel);
             AnimationsHelper.HideWithSlideAndFade(BoardBorderLeftPageListView);
             AnimationsHelper.HideWithSlideAndFade(BoardBorderRightPageListView);
-
-            if (BorderSettings.Visibility == Visibility.Visible)
-            {
-                BorderSettingsMask.IsHitTestVisible = false;
-                BorderSettingsMask.Background = null;
-                var sb = new Storyboard();
-
-                // 滑动动画
-                var slideAnimation = new DoubleAnimation
-                {
-                    From = 0, // 滑动距离
-                    To = BorderSettings.RenderTransform.Value.OffsetX - 440,
-                    Duration = TimeSpan.FromSeconds(0.6)
-                };
-                slideAnimation.EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseOut };
-                Storyboard.SetTargetProperty(slideAnimation,
-                    new PropertyPath("(UIElement.RenderTransform).(TranslateTransform.X)"));
-
-                sb.Children.Add(slideAnimation);
-
-                sb.Completed += (s, _) =>
-                {
-                    BorderSettings.Visibility = Visibility.Collapsed;
-                    isOpeningOrHidingSettingsPane = false;
-                };
-
-                BorderSettings.Visibility = Visibility.Visible;
-                BorderSettings.RenderTransform = new TranslateTransform();
-
-                isOpeningOrHidingSettingsPane = true;
-                sb.Begin((FrameworkElement)BorderSettings);
-            }
 
             AnimationsHelper.HideWithSlideAndFade(TwoFingerGestureBorder);
             AnimationsHelper.HideWithSlideAndFade(EraserSizePanel);
@@ -2099,9 +2062,9 @@ namespace InkCanvasForClass_Remastered
 
         private void SymbolIconSettings_Click(object sender, RoutedEventArgs e)
         {
-            if (isOpeningOrHidingSettingsPane != false) return;
             HideSubPanels();
-            BtnSettings_Click(null, null);
+            _viewModel.IsSettingsPanelVisible = true;
+            SettingsPanelScrollViewer.ScrollToTop();
         }
 
         private async void SymbolIconScreenshot_MouseUp(object sender, MouseButtonEventArgs e)
@@ -2929,51 +2892,15 @@ namespace InkCanvasForClass_Remastered
 
         private void SettingsOverlayClick(object sender, MouseButtonEventArgs e)
         {
-            if (isOpeningOrHidingSettingsPane == true)
-                return;
-            BtnSettings_Click(null, null);
+            _viewModel.IsSettingsPanelVisible = false;
         }
 
-        private bool isOpeningOrHidingSettingsPane = false;
-
-        private void BtnSettings_Click(object sender, RoutedEventArgs e)
+        private void CloseSettingsPanelButton_Click(object sender, RoutedEventArgs e)
         {
-            if (BorderSettings.Visibility == Visibility.Visible)
-            {
-                HideSubPanels();
-            }
-            else
-            {
-                BorderSettingsMask.IsHitTestVisible = true;
-                BorderSettingsMask.Background = new SolidColorBrush(Color.FromArgb(1, 0, 0, 0));
-                SettingsPanelScrollViewer.ScrollToTop();
-                var sb = new Storyboard();
-
-                // 滑动动画
-                var slideAnimation = new DoubleAnimation
-                {
-                    From = BorderSettings.RenderTransform.Value.OffsetX - 440, // 滑动距离
-                    To = 0,
-                    Duration = TimeSpan.FromSeconds(0.6)
-                };
-                slideAnimation.EasingFunction = new CubicEase() { EasingMode = EasingMode.EaseOut };
-                Storyboard.SetTargetProperty(slideAnimation,
-                    new PropertyPath("(UIElement.RenderTransform).(TranslateTransform.X)"));
-
-                sb.Children.Add(slideAnimation);
-
-                sb.Completed += (s, _) => { isOpeningOrHidingSettingsPane = false; };
-
-                BorderSettings.Visibility = Visibility.Visible;
-                BorderSettings.RenderTransform = new TranslateTransform();
-
-                isOpeningOrHidingSettingsPane = true;
-                sb.Begin((FrameworkElement)BorderSettings);
-            }
+            _viewModel.IsSettingsPanelVisible = false;
         }
 
         private bool forceEraser = false;
-
 
         private void BtnClear_Click(object sender, RoutedEventArgs e)
         {
@@ -3505,7 +3432,7 @@ namespace InkCanvasForClass_Remastered
         {
             var currentPage = _powerPointService.CurrentSlidePosition;
             Logger.LogTrace($"幻灯片跳转到第 {currentPage} 页");
-            
+
             if (currentPage == _previousSlideID)
                 return;
 
@@ -4411,7 +4338,7 @@ namespace InkCanvasForClass_Remastered
         {
             OpenFolderDialog openFolderDialog = new()
             {
-                Title= "选择墨迹与截图的保存文件夹",
+                Title = "选择墨迹与截图的保存文件夹",
             };
             if (openFolderDialog.ShowDialog() == true)
             {

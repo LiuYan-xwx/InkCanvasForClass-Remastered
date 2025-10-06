@@ -142,18 +142,79 @@
         <!--  // 设置界面 //  -->
         <Grid
             x:Name="BorderSettingsMask"
-            Margin="0,0,0,0"
             Panel.ZIndex="999"
-            IsHitTestVisible="False"
+            IsHitTestVisible="{Binding IsSettingsPanelVisible}"
             MouseDown="SettingsOverlayClick">
+            <Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Background" Value="{x:Null}" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsSettingsPanelVisible}" Value="True">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <SolidColorBrush>
+                                        <SolidColorBrush.Color>
+                                            <Color
+                                                A="1"
+                                                B="0"
+                                                G="0"
+                                                R="0" />
+                                        </SolidColorBrush.Color>
+                                    </SolidColorBrush>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Grid.Style>
             <Border
                 Name="BorderSettings"
                 Width="440"
-                Margin="300,150,0,350"
                 HorizontalAlignment="Left"
                 ui:ThemeManager.RequestedTheme="Dark"
-                Background="#ee18181b"
-                Visibility="Visible">
+                Background="#ee18181b">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Margin" Value="-440,0,0,0" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsSettingsPanelVisible}" Value="True">
+                                <Setter Property="Margin" Value="0,0,0,0" />
+                                <DataTrigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ThicknessAnimation
+                                                FillBehavior="Stop"
+                                                Storyboard.TargetProperty="Margin"
+                                                From="-440,0,0,0"
+                                                To="0,0,0,0"
+                                                Duration="0:0:0.6">
+                                                <ThicknessAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseOut" />
+                                                </ThicknessAnimation.EasingFunction>
+                                            </ThicknessAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.EnterActions>
+                                <DataTrigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ThicknessAnimation
+                                                FillBehavior="Stop"
+                                                Storyboard.TargetProperty="Margin"
+                                                From="0,0,0,0"
+                                                To="-440,0,0,0"
+                                                Duration="0:0:0.6">
+                                                <ThicknessAnimation.EasingFunction>
+                                                    <CubicEase EasingMode="EaseOut" />
+                                                </ThicknessAnimation.EasingFunction>
+                                            </ThicknessAnimation>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </DataTrigger.ExitActions>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
                 <Grid>
                     <ui:ScrollViewerEx
                         Name="SettingsPanelScrollViewer"
@@ -163,7 +224,6 @@
                         PanningMode="VerticalOnly"
                         VerticalScrollBarVisibility="Auto">
                         <StackPanel Margin="20,20,20,20">
-
                             <Border
                                 Height="100"
                                 Margin="0,0,0,10"
@@ -1793,7 +1853,7 @@
                             Width="120"
                             Margin="10"
                             HorizontalAlignment="Right"
-                            Click="BtnSettings_Click"
+                            Click="CloseSettingsPanelButton_Click"
                             FontFamily="Microsoft YaHei UI" />
                     </Grid>
                 </Grid>
