@@ -361,26 +361,13 @@ namespace InkCanvasForClass_Remastered
             })).Start();
         }
 
-        public async void HideFloatingBar_MouseUp(object sender, MouseButtonEventArgs e)
+        public async void HideFloatingBar_MouseUp(object sender, RoutedEventArgs e)
         {
             await HideFloatingBar(sender);
         }
 
         public async Task HideFloatingBar(object? sender)
         {
-            var isShouldRejectAction = false;
-
-            await Dispatcher.InvokeAsync(() =>
-            {
-                if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
-                    ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
-                if (sender == Fold_Icon && lastBorderMouseDownObject != Fold_Icon)
-                    isShouldRejectAction = true;
-            });
-
-            if (isShouldRejectAction)
-                return;
-
             if (sender == null)
                 foldFloatingBarByUser = false;
             else
@@ -413,7 +400,6 @@ namespace InkCanvasForClass_Remastered
                 if (_powerPointService.IsInSlideShow)
                     if (foldFloatingBarByUser && inkCanvas.Strokes.Count > 2)
                         ShowNotification("正在清空墨迹并收纳至侧边栏，可进入批注模式后通过【撤销】功能来恢复原先墨迹。");
-                lastBorderMouseDownObject = sender;
                 CursorWithDelIcon_Click(sender, null);
             });
 
@@ -1558,7 +1544,7 @@ namespace InkCanvasForClass_Remastered
             GridForFloatingBarDraging.Visibility = Visibility.Visible;
         }
 
-        private void SymbolIconEmoji_MouseUp(object sender, MouseButtonEventArgs e)
+        private void SymbolIconEmoji_MouseUp(object sender, RoutedEventArgs e)
         {
             isDragDropInEffect = false;
 
@@ -1795,7 +1781,7 @@ namespace InkCanvasForClass_Remastered
         #endregion
 
         #region 撤銷重做按鈕
-        private void SymbolIconUndo_MouseUp(object sender, MouseButtonEventArgs e)
+        private void SymbolIconUndo_MouseUp(object sender, RoutedEventArgs e)
         {
             //if (lastBorderMouseDownObject != sender) return;
 
@@ -1819,7 +1805,7 @@ namespace InkCanvasForClass_Remastered
             HideSubPanels();
         }
 
-        private void SymbolIconRedo_MouseUp(object sender, MouseButtonEventArgs e)
+        private void SymbolIconRedo_MouseUp(object sender, RoutedEventArgs e)
         {
             //if (lastBorderMouseDownObject != sender) return;
 
@@ -1850,7 +1836,7 @@ namespace InkCanvasForClass_Remastered
         //private bool Not_Enter_Blackboard_fir_Mouse_Click = true;
         private bool isDisplayingOrHidingBlackboard = false;
 
-        private void ImageBlackboard_MouseUp(object sender, MouseButtonEventArgs e)
+        private void ImageBlackboard_MouseUp(object sender, RoutedEventArgs e)
         {
 
             if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
@@ -1970,7 +1956,7 @@ namespace InkCanvasForClass_Remastered
 
         #region 清空畫布按鈕
 
-        private void SymbolIconDelete_MouseUp(object sender, MouseButtonEventArgs e)
+        private void SymbolIconDelete_MouseUp(object sender, RoutedEventArgs e)
         {
 
             if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
@@ -2006,7 +1992,7 @@ namespace InkCanvasForClass_Remastered
         /// </summary>
         /// <param name="sender">sender</param>
         /// <param name="e">MouseButtonEventArgs</param>
-        private void SymbolIconSelect_MouseUp(object sender, MouseButtonEventArgs e)
+        private void SymbolIconSelect_MouseUp(object sender, RoutedEventArgs e)
         {
 
             if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
@@ -2045,21 +2031,6 @@ namespace InkCanvasForClass_Remastered
 
         #endregion
 
-        private void FloatingBarToolBtnMouseDownFeedback_Panel(object sender, MouseButtonEventArgs e)
-        {
-            var s = (Panel)sender;
-            lastBorderMouseDownObject = sender;
-            if (s == SymbolIconDelete) s.Background = new SolidColorBrush(Color.FromArgb(28, 127, 29, 29));
-            else s.Background = new SolidColorBrush(Color.FromArgb(28, 24, 24, 27));
-        }
-
-        private void FloatingBarToolBtnMouseLeaveFeedback_Panel(object sender, MouseEventArgs e)
-        {
-            var s = (Panel)sender;
-            lastBorderMouseDownObject = null;
-            s.Background = new SolidColorBrush(Colors.Transparent);
-        }
-
         private void SymbolIconSettings_Click(object sender, RoutedEventArgs e)
         {
             HideSubPanels();
@@ -2067,7 +2038,7 @@ namespace InkCanvasForClass_Remastered
             SettingsPanelScrollViewer.ScrollToTop();
         }
 
-        private async void SymbolIconScreenshot_MouseUp(object sender, MouseButtonEventArgs e)
+        private async void SymbolIconScreenshot_MouseUp(object sender, RoutedEventArgs e)
         {
             HideSubPanelsImmediately();
             await Task.Delay(50);
@@ -2076,7 +2047,7 @@ namespace InkCanvasForClass_Remastered
 
 
 
-        private void ImageCountdownTimer_MouseUp(object sender, MouseButtonEventArgs e)
+        private void ImageCountdownTimer_MouseUp(object sender, RoutedEventArgs e)
         {
             AnimationsHelper.HideWithSlideAndFade(BorderTools);
             AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
@@ -2086,10 +2057,8 @@ namespace InkCanvasForClass_Remastered
 
 
 
-        private void SymbolIconRand_MouseUp(object sender, MouseButtonEventArgs e)
+        private void SymbolIconRand_MouseUp(object sender, RoutedEventArgs e)
         {
-            if (lastBorderMouseDownObject != sender) return;
-
             AnimationsHelper.HideWithSlideAndFade(BorderTools);
             AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
 
@@ -2156,10 +2125,8 @@ namespace InkCanvasForClass_Remastered
             }
         }
 
-        private void SymbolIconRandOne_MouseUp(object sender, MouseButtonEventArgs e)
+        private void SymbolIconRandOne_MouseUp(object sender, RoutedEventArgs e)
         {
-            if (lastBorderMouseDownObject != sender) return;
-
             AnimationsHelper.HideWithSlideAndFade(BorderTools);
             AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
 
@@ -2168,10 +2135,8 @@ namespace InkCanvasForClass_Remastered
             randWindow.ShowDialog();
         }
 
-        private void GridInkReplayButton_MouseUp(object sender, MouseButtonEventArgs e)
+        private void GridInkReplayButton_MouseUp(object sender, RoutedEventArgs e)
         {
-            if (lastBorderMouseDownObject != sender) return;
-
             AnimationsHelper.HideWithSlideAndFade(BorderTools);
             AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
 
@@ -2385,7 +2350,7 @@ namespace InkCanvasForClass_Remastered
             InkReplaySpeedTextBlock.Text = inkReplaySpeed + "x";
         }
 
-        private void SymbolIconTools_MouseUp(object sender, MouseButtonEventArgs e)
+        private void SymbolIconTools_MouseUp(object sender, RoutedEventArgs e)
         {
 
             if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
@@ -2867,7 +2832,7 @@ namespace InkCanvasForClass_Remastered
             CursorIcon_Click(null, null);
         }
 
-        private void CloseBordertools_MouseUp(object sender, MouseButtonEventArgs e)
+        private void CloseBordertools_MouseUp(object sender, RoutedEventArgs e)
         {
             HideSubPanels();
         }
