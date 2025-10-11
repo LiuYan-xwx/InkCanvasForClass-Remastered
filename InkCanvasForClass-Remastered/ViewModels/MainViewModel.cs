@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using InkCanvasForClass_Remastered.Models;
 using InkCanvasForClass_Remastered.Services;
 
@@ -50,6 +51,12 @@ namespace InkCanvasForClass_Remastered.ViewModels
         private void UpdateWhiteboardButtonStates()
         {
             IsWhiteboardPreviousPageButtonEnabled = WhiteboardCurrentPage > 1;
+        }
+
+        [RelayCommand]
+        private void CrashTest()
+        {
+            throw new Exception("Crash Test");
         }
     }
 }

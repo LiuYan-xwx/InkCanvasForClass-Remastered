@@ -5767,9 +5767,5 @@ namespace InkCanvasForClass_Remastered
             }
         }
         #endregion
-        private void ButtonCrashTest_Click(object sender, RoutedEventArgs e)
-        {
-            throw new Exception("Crash Test");
-        }
     }
 }

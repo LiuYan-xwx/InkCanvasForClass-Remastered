@@ -1795,7 +1795,7 @@
                                     <Button
                                         Content="崩溃测试"
                                         Margin="0,6,0,0"
-                                        Click="ButtonCrashTest_Click" />
+                                        Command="{Binding CrashTestCommand}" />
                                 </StackPanel>
                             </GroupBox>
                         </StackPanel>
