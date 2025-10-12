@@ -201,7 +201,7 @@ namespace InkCanvasForClass_Remastered
             //catch { }
         }
 
-        private void inkCanvas_EditingModeChanged(object sender, RoutedEventArgs e)
+        private void inkCanvas_EditingModeChanged(object? sender, RoutedEventArgs? e)
         {
             var inkCanvas1 = sender as InkCanvas;
             if (inkCanvas1 == null) return;
@@ -1194,7 +1194,7 @@ namespace InkCanvasForClass_Remastered
             }
         }
 
-        private void SwitchToDefaultPen(object sender, MouseButtonEventArgs e)
+        private void SwitchToDefaultPen(object? sender, MouseButtonEventArgs? e)
         {
             penType = 0;
             CheckPenTypeUIState();
@@ -1216,7 +1216,7 @@ namespace InkCanvasForClass_Remastered
             drawingAttributes.IsHighlighter = true;
         }
 
-        private void BtnColorBlack_Click(object sender, RoutedEventArgs e)
+        private void BtnColorBlack_Click(object? sender, RoutedEventArgs? e)
         {
             CheckLastColor(0);
             forceEraser = false;
@@ -1251,7 +1251,7 @@ namespace InkCanvasForClass_Remastered
             ColorSwitchCheck();
         }
 
-        private void BtnColorWhite_Click(object sender, RoutedEventArgs e)
+        private void BtnColorWhite_Click(object? sender, RoutedEventArgs? e)
         {
             CheckLastColor(5);
             forceEraser = false;
@@ -1641,7 +1641,7 @@ namespace InkCanvasForClass_Remastered
         /// <param name="autoAlignCenter">
         ///     是否自動居中浮動工具欄
         /// </param>
-        private async void HideSubPanels(string mode = null, bool autoAlignCenter = false)
+        private async void HideSubPanels(string? mode = null, bool autoAlignCenter = false)
         {
             AnimationsHelper.HideWithSlideAndFade(BorderTools);
             AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
@@ -1778,7 +1778,7 @@ namespace InkCanvasForClass_Remastered
         #endregion
 
         #region 撤銷重做按鈕
-        private void SymbolIconUndo_MouseUp(object sender, MouseButtonEventArgs e)
+        private void SymbolIconUndo_MouseUp(object? sender, MouseButtonEventArgs? e)
         {
             //if (lastBorderMouseDownObject != sender) return;
 
@@ -1802,7 +1802,7 @@ namespace InkCanvasForClass_Remastered
             HideSubPanels();
         }
 
-        private void SymbolIconRedo_MouseUp(object sender, MouseButtonEventArgs e)
+        private void SymbolIconRedo_MouseUp(object? sender, MouseButtonEventArgs? e)
         {
             //if (lastBorderMouseDownObject != sender) return;
 
@@ -1832,7 +1832,7 @@ namespace InkCanvasForClass_Remastered
 
         private bool isDisplayingOrHidingBlackboard = false;
 
-        private void ImageBlackboard_MouseUp(object sender, MouseButtonEventArgs e)
+        private void ImageBlackboard_MouseUp(object? sender, MouseButtonEventArgs? e)
         {
             if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
                 ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
@@ -2002,7 +2002,7 @@ namespace InkCanvasForClass_Remastered
 
         #region 清空畫布按鈕
 
-        private void SymbolIconDelete_MouseUp(object sender, MouseButtonEventArgs e)
+        private void SymbolIconDelete_MouseUp(object? sender, MouseButtonEventArgs? e)
         {
 
             if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
@@ -2247,7 +2247,7 @@ namespace InkCanvasForClass_Remastered
                         var stylusPoints = new StylusPointCollection();
                         if (stroke.StylusPoints.Count == 629) //圆或椭圆
                         {
-                            Stroke s = null;
+                            Stroke? s = null;
                             foreach (var stylusPoint in stroke.StylusPoints)
                             {
 
@@ -2282,7 +2282,7 @@ namespace InkCanvasForClass_Remastered
                         }
                         else
                         {
-                            Stroke s = null;
+                            Stroke? s = null;
                             foreach (var stylusPoint in stroke.StylusPoints)
                             {
 
@@ -2622,7 +2622,7 @@ namespace InkCanvasForClass_Remastered
             });
         }
 
-        private void CursorIcon_Click(object sender, RoutedEventArgs e)
+        private void CursorIcon_Click(object? sender, RoutedEventArgs? e)
         {
             if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
                 ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
@@ -2678,7 +2678,7 @@ namespace InkCanvasForClass_Remastered
             }
         }
 
-        private void PenIcon_Click(object sender, RoutedEventArgs e)
+        private void PenIcon_Click(object? sender, RoutedEventArgs? e)
         {
 
             if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
@@ -2872,7 +2872,7 @@ namespace InkCanvasForClass_Remastered
             HideSubPanels("eraserByStrokes");
         }
 
-        private void CursorWithDelIcon_Click(object sender, RoutedEventArgs e)
+        private void CursorWithDelIcon_Click(object? sender, RoutedEventArgs? e)
         {
 
             if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
@@ -2918,7 +2918,7 @@ namespace InkCanvasForClass_Remastered
 
         private bool forceEraser = false;
 
-        private void BtnClear_Click(object sender, RoutedEventArgs e)
+        private void BtnClear_Click(object? sender, RoutedEventArgs? e)
         {
             forceEraser = false;
             //BorderClearInDelete.Visibility = Visibility.Collapsed;
@@ -2958,7 +2958,7 @@ namespace InkCanvasForClass_Remastered
 
         private int BoundsWidth = 5;
 
-        private void BtnHideInkCanvas_Click(object sender, RoutedEventArgs e)
+        private void BtnHideInkCanvas_Click(object? sender, RoutedEventArgs? e)
         {
             if (GridTransparencyFakeBackground.Background == null)
             {
@@ -3021,13 +3021,15 @@ namespace InkCanvasForClass_Remastered
             if (e.Key == Key.Up || e.Key == Key.PageUp || e.Key == Key.Left || e.Key == Key.P)
                 PPTNavigationPanel_PreviousClick(null, null);
             if (e.Key == Key.Escape)
-                KeyExit(null, null);
+                if (_powerPointService.IsInSlideShow)
+                    _powerPointService.EndSlideShow();
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
-                KeyExit(null, null);
+                if (_powerPointService.IsInSlideShow)
+                    _powerPointService.EndSlideShow();
         }
 
         private void CommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -3098,7 +3100,7 @@ namespace InkCanvasForClass_Remastered
         private class PageListViewItem
         {
             public int Index { get; set; }
-            public StrokeCollection Strokes { get; set; }
+            public StrokeCollection? Strokes { get; set; }
         }
 
         ObservableCollection<PageListViewItem> blackBoardSidePageListViewObservableCollection = new ObservableCollection<PageListViewItem>();
@@ -3194,13 +3196,12 @@ namespace InkCanvasForClass_Remastered
         #endregion
 
         #region PPT
-        private int _slidescount = 0;
-        private string _pptName = null;
+        private string? _pptName = null;
         private bool isEnteredSlideShowEndEvent = false;
         private int _previousSlideID = 1;
         private Dictionary<int, MemoryStream> _memoryStreams = new();
 
-        private void TimerCheckPPT_Tick(object sender, EventArgs e)
+        private void TimerCheckPPT_Tick(object? sender, EventArgs e)
         {
             if (_powerPointService.IsConnected) return; // 如果已经连接，就什么都不做
 
@@ -3549,7 +3550,7 @@ namespace InkCanvasForClass_Remastered
         #endregion
 
         #region Screenshot
-        private void SaveScreenShot(bool isHideNotification, string fileName = null)
+        private void SaveScreenShot(bool isHideNotification, string? fileName = null)
         {
             var rc = System.Windows.Forms.SystemInformation.VirtualScreen;
             var bitmap = new System.Drawing.Bitmap(rc.Width, rc.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
@@ -3602,7 +3603,7 @@ namespace InkCanvasForClass_Remastered
         #region SelectionGestures
         #region Floating Control
 
-        private object lastBorderMouseDownObject;
+        private object? lastBorderMouseDownObject;
 
         private void Border_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -4681,7 +4682,7 @@ namespace InkCanvasForClass_Remastered
             BlackboardUIGridForInkReplay.IsHitTestVisible = false;
         }
 
-        private void inkCanvas_MouseUp(object sender, MouseButtonEventArgs e)
+        private void inkCanvas_MouseUp(object? sender, MouseButtonEventArgs? e)
         {
             inkCanvas.ReleaseMouseCapture();
             ViewboxFloatingBar.IsHitTestVisible = true;
@@ -4858,9 +4859,9 @@ namespace InkCanvasForClass_Remastered
 
         private CommitReason _currentCommitType = CommitReason.UserInput;
         private bool IsEraseByPoint => inkCanvas.EditingMode == InkCanvasEditingMode.EraseByPoint;
-        private StrokeCollection ReplacedStroke;
-        private StrokeCollection AddedStroke;
-        private Dictionary<Stroke, Tuple<StylusPointCollection, StylusPointCollection>> StrokeManipulationHistory;
+        private StrokeCollection? ReplacedStroke;
+        private StrokeCollection? AddedStroke;
+        private Dictionary<Stroke, Tuple<StylusPointCollection, StylusPointCollection>>? StrokeManipulationHistory;
 
         private Dictionary<Stroke, StylusPointCollection> StrokeInitialHistory =
             new Dictionary<Stroke, StylusPointCollection>();
@@ -4880,7 +4881,7 @@ namespace InkCanvasForClass_Remastered
 
         private TimeMachine timeMachine = new();
 
-        private void ApplyHistoryToCanvas(TimeMachineHistory item, InkCanvas applyCanvas = null)
+        private void ApplyHistoryToCanvas(TimeMachineHistory item, InkCanvas? applyCanvas = null)
         {
             _currentCommitType = CommitReason.CodeInput;
             var canvas = inkCanvas;
@@ -5120,7 +5121,7 @@ namespace InkCanvasForClass_Remastered
             StrokeInitialHistory[sender as Stroke] = e.NewStylusPoints.Clone();
         }
 
-        private void Stroke_StylusPointsChanged(object sender, EventArgs e)
+        private void Stroke_StylusPointsChanged(object? sender, EventArgs e)
         {
             var selectedStrokes = inkCanvas.GetSelectedStrokes();
             var count = selectedStrokes.Count;
@@ -5176,17 +5177,17 @@ namespace InkCanvasForClass_Remastered
             _viewModel.NowTime = DateTime.Now.ToShortTimeString().ToString();
         }
 
-        private void TimerDisplayTime_Tick(object sender, EventArgs e)
+        private void TimerDisplayTime_Tick(object? sender, EventArgs e)
         {
             _viewModel.NowTime = DateTime.Now.ToShortTimeString().ToString();
         }
 
-        private void TimerDisplayDate_Tick(object sender, EventArgs e)
+        private void TimerDisplayDate_Tick(object? sender, EventArgs e)
         {
             _viewModel.NowDate = DateTime.Now.ToShortDateString().ToString();
         }
 
-        private void TimerKillProcess_Tick(object sender, EventArgs e)
+        private void TimerKillProcess_Tick(object? sender, EventArgs e)
         {
             try
             {
@@ -5232,7 +5233,7 @@ namespace InkCanvasForClass_Remastered
         private bool foldFloatingBarByUser = false; // 保持收纳操作不受自动收纳的控制
         private bool unfoldFloatingBarByUser = false; // 允许用户在希沃软件内进行展开操作
 
-        private void timerCheckAutoFold_Tick(object sender, EventArgs e)
+        private void timerCheckAutoFold_Tick(object? sender, EventArgs e)
         {
             if (isFloatingBarChangingHideMode) return;
 
@@ -5295,8 +5296,8 @@ namespace InkCanvasForClass_Remastered
             try
             {
                 var versionInfo = FileVersionInfo.GetVersionInfo(ForegroundWindowInfo.ProcessPath());
-                string version = versionInfo.FileVersion;
-                string prodName = versionInfo.ProductName;
+                string? version = versionInfo.FileVersion;
+                string? prodName = versionInfo.ProductName;
 
                 if (version.StartsWith("5.") && Settings.IsAutoFoldInEasiNote)
                 {
@@ -5327,7 +5328,7 @@ namespace InkCanvasForClass_Remastered
 
         private bool isInMultiTouchMode = false;
 
-        private void MainWindow_TouchDown(object sender, TouchEventArgs e)
+        private void MainWindow_TouchDown(object? sender, TouchEventArgs? e)
         {
             if (inkCanvas.EditingMode == InkCanvasEditingMode.EraseByPoint
                 || inkCanvas.EditingMode == InkCanvasEditingMode.EraseByStroke
@@ -5464,7 +5465,7 @@ namespace InkCanvasForClass_Remastered
             return strokeVisual;
         }
 
-        private VisualCanvas GetVisualCanvas(int id)
+        private VisualCanvas? GetVisualCanvas(int id)
         {
             return VisualCanvasList.TryGetValue(id, out var visualCanvas) ? visualCanvas : null;
         }
@@ -5483,7 +5484,7 @@ namespace InkCanvasForClass_Remastered
         #endregion
         private bool forcePointEraser = true;
 
-        private void Main_Grid_TouchDown(object sender, TouchEventArgs e)
+        private void Main_Grid_TouchDown(object? sender, TouchEventArgs? e)
         {
             inkCanvas.CaptureTouch(e.TouchDevice);
             ViewboxFloatingBar.IsHitTestVisible = false;

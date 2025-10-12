@@ -53,7 +53,7 @@ namespace InkCanvasForClass_Remastered.Helpers
             NotifyUndoRedoState();
         }
 
-        public void CommitStrokeEraseHistory(StrokeCollection stroke, StrokeCollection? sourceStroke = null)
+        public void CommitStrokeEraseHistory(StrokeCollection? stroke, StrokeCollection? sourceStroke = null)
         {
             if (_currentIndex + 1 < _currentStrokeHistory.Count)
             {
@@ -117,7 +117,7 @@ namespace InkCanvasForClass_Remastered.Helpers
     {
         public TimeMachineHistoryType CommitType;
         public bool StrokeHasBeenCleared = false;
-        public StrokeCollection CurrentStroke;
+        public StrokeCollection? CurrentStroke;
         public StrokeCollection? ReplacedStroke;
         //这里说一下 Tuple的 Value1 是初始值 ; Value 2 是改变值
         public Dictionary<Stroke, Tuple<StylusPointCollection, StylusPointCollection>> StylusPointDictionary;
@@ -139,7 +139,7 @@ namespace InkCanvasForClass_Remastered.Helpers
             CommitType = commitType;
             DrawingAttributes = drawingAttributes;
         }
-        public TimeMachineHistory(StrokeCollection currentStroke, TimeMachineHistoryType commitType, bool strokeHasBeenCleared, StrokeCollection replacedStroke)
+        public TimeMachineHistory(StrokeCollection? currentStroke, TimeMachineHistoryType commitType, bool strokeHasBeenCleared, StrokeCollection? replacedStroke)
         {
             CommitType = commitType;
             CurrentStroke = currentStroke;

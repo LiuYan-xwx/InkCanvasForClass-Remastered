@@ -11,7 +11,7 @@ namespace InkCanvasForClass_Remastered.Helpers
         /// 防抖函式
         /// </summary>
         /// <param name="inv">同步的對象，一般傳入控件，不需要可null</param>
-        public void DebounceAction(int timeMs, ISynchronizeInvoke inv, Action action)
+        public void DebounceAction(int timeMs, ISynchronizeInvoke? inv, Action action)
         {
             lock (this)
             {
@@ -31,7 +31,7 @@ namespace InkCanvasForClass_Remastered.Helpers
             }
         }
 
-        private static void InvokeAction(Action action, ISynchronizeInvoke inv)
+        private static void InvokeAction(Action action, ISynchronizeInvoke? inv)
         {
             if (inv == null)
             {
