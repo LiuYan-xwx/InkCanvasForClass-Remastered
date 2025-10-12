@@ -317,7 +317,9 @@ namespace InkCanvasForClass_Remastered
             if (e.Cancel)
             {
                 Logger.LogInformation("MainWindow closing cancelled");
+                return;
             }
+            _settingsService.SaveSettings();
         }
 
         [DllImport("user32.dll", SetLastError = true)]
