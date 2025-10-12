@@ -1,3 +1,4 @@
+using InkCanvasForClass_Remastered.Enums;
 using InkCanvasForClass_Remastered.Helpers;
 using InkCanvasForClass_Remastered.Models;
 using InkCanvasForClass_Remastered.Services;
@@ -42,7 +43,7 @@ namespace InkCanvasForClass_Remastered
         public MainWindow(MainViewModel viewModel, SettingsService settingsService, IPowerPointService powerPointService, ILogger<MainWindow> logger)
         {
             /*
-                处于画板模式内：Topmost == false / currentMode != 0
+                处于画板模式内：Topmost == false / _viewModel.AppMode == AppMode.WhiteBoard
                 处于 PPT 放映内：_powerPointService.IsInSlideShow
             */
             InitializeComponent();
@@ -393,7 +394,7 @@ namespace InkCanvasForClass_Remastered
 
             await Dispatcher.InvokeAsync(() =>
             {
-                if (currentMode != 0)
+                if (_viewModel.AppMode == AppMode.WhiteBoard)
                     CloseWhiteboard();
                 if (_powerPointService.IsInSlideShow)
                     if (foldFloatingBarByUser && inkCanvas.Strokes.Count > 2)
@@ -671,9 +672,9 @@ namespace InkCanvasForClass_Remastered
             HideSubPanels("color");
             if (GridTransparencyFakeBackground.Background == null)
             {
-                if (currentMode == 1)
+                if (_viewModel.AppMode == AppMode.WhiteBoard)
                 {
-                    currentMode = 0;
+                    _viewModel.AppMode = AppMode.Normal;
                     GridBackgroundCover.Visibility = Visibility.Collapsed;
                     AnimationsHelper.HideWithSlideAndFade(BlackboardLeftSide);
                     AnimationsHelper.HideWithSlideAndFade(BlackboardCenterSide);
@@ -723,7 +724,7 @@ namespace InkCanvasForClass_Remastered
         private void CheckColorTheme(bool changeColorTheme = false)
         {
             if (changeColorTheme)
-                if (currentMode != 0)
+                if (_viewModel.AppMode == AppMode.WhiteBoard)
                 {
                     if (Settings.UsingWhiteboard)
                     {
@@ -735,7 +736,7 @@ namespace InkCanvasForClass_Remastered
                     }
                 }
 
-            if (currentMode == 0)
+            if (_viewModel.AppMode == AppMode.Normal)
             {
                 isUselightThemeColor = isDesktopUselightThemeColor;
                 inkColor = lastDesktopInkColor;
@@ -1049,7 +1050,7 @@ namespace InkCanvasForClass_Remastered
             }
             else
             {
-                if (currentMode == 0) lastDesktopInkColor = inkColor;
+                if (_viewModel.AppMode == AppMode.Normal) lastDesktopInkColor = inkColor;
                 else lastBoardInkColor = inkColor;
             }
         }
@@ -1840,7 +1841,7 @@ namespace InkCanvasForClass_Remastered
             if (isDisplayingOrHidingBlackboard) return;
             isDisplayingOrHidingBlackboard = true;
 
-            if (currentMode == 0)
+            if (_viewModel.AppMode == AppMode.Normal)
             {
                 OpenWhiteboard();
             }
@@ -1929,7 +1930,7 @@ namespace InkCanvasForClass_Remastered
         /// </summary>
         private void SwitchToWhiteboardMode()
         {
-            currentMode = 1;
+            _viewModel.AppMode = AppMode.WhiteBoard;
 
             GridBackgroundCover.Visibility = Visibility.Visible;
             AnimationsHelper.ShowWithSlideFromBottomAndFade(BlackboardLeftSide);
@@ -1954,7 +1955,7 @@ namespace InkCanvasForClass_Remastered
         /// </summary>
         private void SwitchToScreenMode()
         {
-            currentMode = 0;
+            _viewModel.AppMode = AppMode.Normal;
 
             GridBackgroundCover.Visibility = Visibility.Collapsed;
             AnimationsHelper.HideWithSlideAndFade(BlackboardLeftSide);
@@ -1990,7 +1991,7 @@ namespace InkCanvasForClass_Remastered
             GridTransparencyFakeBackground.Background = null;
             GridBackgroundCoverHolder.Visibility = Visibility.Collapsed;
 
-            if (currentMode != 0)
+            if (_viewModel.AppMode == AppMode.WhiteBoard)
             {
                 SaveStrokes();
                 RestoreStrokes(true);
@@ -2656,7 +2657,7 @@ namespace InkCanvasForClass_Remastered
             //GridBackgroundCoverHolder.Visibility = Visibility.Collapsed;
             //GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
 
-            //if (currentMode != 0)
+            //if (_viewModel.AppMode == AppMode.WhiteBoard)
             //{
             //    SaveStrokes();
             //    RestoreStrokes(true);
@@ -2699,7 +2700,7 @@ namespace InkCanvasForClass_Remastered
                 GridBackgroundCoverHolder.Visibility = Visibility.Visible;
                 GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
 
-                /*if (forceEraser && currentMode == 0)
+                /*if (forceEraser && _viewModel.AppMode == AppMode.Normal)
                     BtnColorRed_Click(sender, null);*/
 
                 StackPanelCanvasControls.Visibility = Visibility.Visible;
@@ -2752,7 +2753,7 @@ namespace InkCanvasForClass_Remastered
         private void ColorThemeSwitch_MouseUp(object sender, RoutedEventArgs e)
         {
             isUselightThemeColor = !isUselightThemeColor;
-            if (currentMode == 0) isDesktopUselightThemeColor = isUselightThemeColor;
+            if (_viewModel.AppMode == AppMode.Normal) isDesktopUselightThemeColor = isUselightThemeColor;
             CheckColorTheme();
         }
 
@@ -2922,7 +2923,7 @@ namespace InkCanvasForClass_Remastered
             forceEraser = false;
             //BorderClearInDelete.Visibility = Visibility.Collapsed;
 
-            if (currentMode == 0)
+            if (_viewModel.AppMode == AppMode.Normal)
             {
                 // 先回到画笔再清屏，避免 TimeMachine 的相关 bug 影响
                 if (Pen_Icon.Background == null && StackPanelCanvasControls.Visibility == Visibility.Visible)
@@ -2936,7 +2937,7 @@ namespace InkCanvasForClass_Remastered
             if (inkCanvas.Strokes.Count != 0)
             {
                 var whiteboardIndex = _viewModel.WhiteboardCurrentPage;
-                if (currentMode == 0) whiteboardIndex = 0;
+                if (_viewModel.AppMode == AppMode.Normal) whiteboardIndex = 0;
                 strokeCollections[whiteboardIndex] = inkCanvas.Strokes.Clone();
             }
 
@@ -2954,8 +2955,6 @@ namespace InkCanvasForClass_Remastered
 
             //isSingleFingerDragMode = false;
         }
-
-        private int currentMode = 0;
 
         private int BoundsWidth = 5;
 
@@ -2980,7 +2979,7 @@ namespace InkCanvasForClass_Remastered
 
                 GridBackgroundCoverHolder.Visibility = Visibility.Collapsed;
 
-                if (currentMode != 0)
+                if (_viewModel.AppMode == AppMode.WhiteBoard)
                 {
                     SaveStrokes();
                     RestoreStrokes(true);
@@ -3005,7 +3004,7 @@ namespace InkCanvasForClass_Remastered
         #region Hotkeys
         private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            if (!_powerPointService.IsInSlideShow || currentMode != 0)
+            if (!_powerPointService.IsInSlideShow || _viewModel.AppMode == AppMode.WhiteBoard)
                 return;
             if (e.Delta >= 120)
                 PPTNavigationPanel_PreviousClick(null, null);
@@ -3015,7 +3014,7 @@ namespace InkCanvasForClass_Remastered
 
         private void Main_Grid_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (!_powerPointService.IsInSlideShow || currentMode != 0)
+            if (!_powerPointService.IsInSlideShow || _viewModel.AppMode == AppMode.WhiteBoard)
                 return;
             if (e.Key == Key.Down || e.Key == Key.PageDown || e.Key == Key.Right || e.Key == Key.N || e.Key == Key.Space)
                 PPTNavigationPanel_NextClick(null, null);
@@ -3283,7 +3282,7 @@ namespace InkCanvasForClass_Remastered
 
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
-                if (currentMode != 0)
+                if (_viewModel.AppMode == AppMode.WhiteBoard)
                     ImageBlackboard_MouseUp(null, null);
 
                 if (Settings.IsShowCanvasAtNewSlideShow &&
@@ -3483,10 +3482,10 @@ namespace InkCanvasForClass_Remastered
             {
                 var savePath = Settings.AutoSaveStrokesPath
                                + (saveByUser ? @"\User Saved - " : @"\Auto Saved - ")
-                               + (currentMode == 0 ? "Annotation Strokes" : "BlackBoard Strokes");
+                               + (_viewModel.AppMode == AppMode.Normal ? "Annotation Strokes" : "BlackBoard Strokes");
                 if (!Directory.Exists(savePath)) Directory.CreateDirectory(savePath);
                 string savePathWithName;
-                if (currentMode != 0) // 黑板模式下
+                if (_viewModel.AppMode == AppMode.WhiteBoard) // 黑板模式下
                     savePathWithName = savePath + @"\" + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff") + " Page-" +
                                        _viewModel.WhiteboardCurrentPage + " StrokesCount-" + inkCanvas.Strokes.Count + ".icstk";
                 else
@@ -5645,7 +5644,7 @@ namespace InkCanvasForClass_Remastered
             if (isInMultiTouchMode || !Settings.IsEnableTwoFingerGesture) return;
             if (dec.Count >= 2 && (Settings.IsEnableTwoFingerGestureInPresentationMode
                                     || !_powerPointService.IsInSlideShow
-                                    || currentMode != 0))
+                                    || _viewModel.AppMode == AppMode.WhiteBoard))
             {
                 var md = e.DeltaManipulation;
                 var trans = md.Translation; // 获得位移矢量

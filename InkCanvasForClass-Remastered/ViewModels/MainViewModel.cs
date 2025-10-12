@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using InkCanvasForClass_Remastered.Enums;
 using InkCanvasForClass_Remastered.Models;
 using InkCanvasForClass_Remastered.Services;
 
@@ -19,6 +20,8 @@ namespace InkCanvasForClass_Remastered.ViewModels
         public Settings Settings => _settingsService.Settings;
         public IPowerPointService PowerPointService => _powerPointService;
 
+        [ObservableProperty]
+        private AppMode _appMode = AppMode.Normal;
         [ObservableProperty]
         private string _nowTime;
         [ObservableProperty]
