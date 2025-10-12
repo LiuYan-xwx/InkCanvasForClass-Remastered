@@ -7067,6 +7067,7 @@
                                 <Condition Binding="{Binding PowerPointService.IsInSlideShow}" Value="True" />
                                 <Condition Binding="{Binding Settings.ShowPPTButton}" Value="True" />
                                 <Condition Binding="{Binding IsFloatingBarVisible}" Value="True" />
+                                <Condition Binding="{Binding AppMode}" Value="Normal"/>
                             </MultiDataTrigger.Conditions>
                             <MultiDataTrigger.Setters>
                                 <Setter Property="Visibility" Value="Visible" />
