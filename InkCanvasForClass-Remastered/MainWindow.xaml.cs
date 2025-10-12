@@ -346,21 +346,6 @@ namespace InkCanvasForClass_Remastered
         #region AutoFold
         private bool isFloatingBarChangingHideMode = false;
 
-        private void CloseWhiteboardImmediately()
-        {
-            if (isDisplayingOrHidingBlackboard) return;
-            isDisplayingOrHidingBlackboard = true;
-            HideSubPanelsImmediately();
-            if (Settings.AutoSwitchTwoFingerGesture) // 自动启用多指书写
-                ToggleSwitchEnableTwoFingerTranslate.IsOn = false;
-            BtnSwitch_Click(null, null);
-            new Thread(new ThreadStart(() =>
-            {
-                Thread.Sleep(200);
-                Application.Current.Dispatcher.Invoke(() => { isDisplayingOrHidingBlackboard = false; });
-            })).Start();
-        }
-
         public async void HideFloatingBar_MouseUp(object sender, MouseButtonEventArgs e)
         {
             await HideFloatingBar(sender);
@@ -409,12 +394,11 @@ namespace InkCanvasForClass_Remastered
             await Dispatcher.InvokeAsync(() =>
             {
                 if (currentMode != 0)
-                    CloseWhiteboardImmediately();
+                    CloseWhiteboard();
                 if (_powerPointService.IsInSlideShow)
                     if (foldFloatingBarByUser && inkCanvas.Strokes.Count > 2)
                         ShowNotification("正在清空墨迹并收纳至侧边栏，可进入批注模式后通过【撤销】功能来恢复原先墨迹。");
-                lastBorderMouseDownObject = sender;
-                CursorWithDelIcon_Click(sender, null);
+                CursorWithDelIcon_Click(null, null);
             });
 
             await Dispatcher.InvokeAsync(() =>
@@ -456,8 +440,6 @@ namespace InkCanvasForClass_Remastered
 
         #region BoardControls
         private StrokeCollection[] strokeCollections = new StrokeCollection[101];
-        private bool[] whiteboadLastModeIsRedo = new bool[101];
-        private StrokeCollection lastTouchDownStrokeCollection = new StrokeCollection();
 
         private TimeMachineHistory[][] TimeMachineHistories = new TimeMachineHistory[101][]; //最多99页，0用来存储非白板时的墨迹以便还原
 
@@ -687,7 +669,7 @@ namespace InkCanvasForClass_Remastered
         private void ColorSwitchCheck()
         {
             HideSubPanels("color");
-            if (GridTransparencyFakeBackground.Background == Brushes.Transparent)
+            if (GridTransparencyFakeBackground.Background == null)
             {
                 if (currentMode == 1)
                 {
@@ -1847,12 +1829,10 @@ namespace InkCanvasForClass_Remastered
 
         #region 白板按鈕和退出白板模式按鈕
 
-        //private bool Not_Enter_Blackboard_fir_Mouse_Click = true;
         private bool isDisplayingOrHidingBlackboard = false;
 
         private void ImageBlackboard_MouseUp(object sender, MouseButtonEventArgs e)
         {
-
             if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
                 ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
             if (sender == WhiteboardFloatingBarBtn && lastBorderMouseDownObject != WhiteboardFloatingBarBtn) return;
@@ -1860,113 +1840,164 @@ namespace InkCanvasForClass_Remastered
             if (isDisplayingOrHidingBlackboard) return;
             isDisplayingOrHidingBlackboard = true;
 
-            _ = ShowFloatingBar(null);
-
-            if (inkCanvas.EditingMode == InkCanvasEditingMode.Select)
-                PenIcon_Click(null, null);
-
             if (currentMode == 0)
             {
-                //进入黑板
-
-                /*
-                if (Not_Enter_Blackboard_fir_Mouse_Click) {// BUG-Fixed_tmp：程序启动后直接进入白板会导致后续撤销功能、退出白板无法恢复墨迹
-                    BtnColorRed_Click(BorderPenColorRed, null);
-                    await Task.Delay(200);
-                    SimulateMouseClick.SimulateMouseClickAtTopLeft();
-                    await Task.Delay(10);
-                    Not_Enter_Blackboard_fir_Mouse_Click = false;
-                }
-                */
-                new Thread(new ThreadStart(() =>
-                {
-                    Thread.Sleep(100);
-                    Application.Current.Dispatcher.Invoke(() => { ViewboxFloatingBarMarginAnimation(60); });
-                })).Start();
-
-                HideSubPanels();
-                if (GridTransparencyFakeBackground.Background == Brushes.Transparent)
-                {
-                    if (currentMode == 1)
-                    {
-                        currentMode = 0;
-                        GridBackgroundCover.Visibility = Visibility.Collapsed;
-                        AnimationsHelper.HideWithSlideAndFade(BlackboardLeftSide);
-                        AnimationsHelper.HideWithSlideAndFade(BlackboardCenterSide);
-                        AnimationsHelper.HideWithSlideAndFade(BlackboardRightSide);
-                    }
-
-                    BtnHideInkCanvas_Click(null, null);
-                }
-
-                if (Settings.AutoSwitchTwoFingerGesture) // 自动关闭多指书写、开启双指移动
-                {
-                    ToggleSwitchEnableTwoFingerTranslate.IsOn = true;
-                    if (isInMultiTouchMode) ToggleSwitchEnableMultiTouchMode.IsOn = false;
-                }
+                OpenWhiteboard();
             }
             else
             {
-                //关闭黑板
-                HideSubPanelsImmediately();
-
-                if (Settings.IsAutoSaveStrokesAtClear &&
-                    inkCanvas.Strokes.Count > Settings.MinimumAutomationStrokeNumber) SaveScreenShot(true);
-
-                if (_powerPointService.IsInSlideShow == false)
-                    new Thread(new ThreadStart(() =>
-                    {
-                        Thread.Sleep(300);
-                        Application.Current.Dispatcher.Invoke(() => { ViewboxFloatingBarMarginAnimation(100, true); });
-                    })).Start();
-                else
-                    new Thread(new ThreadStart(() =>
-                    {
-                        Thread.Sleep(300);
-                        Application.Current.Dispatcher.Invoke(() => { ViewboxFloatingBarMarginAnimation(60); });
-                    })).Start();
-
-                if (System.Windows.Controls.Canvas.GetLeft(FloatingbarSelectionBG) != 28) PenIcon_Click(null, null);
-
-                if (Settings.AutoSwitchTwoFingerGesture) // 自动启用多指书写
-                    ToggleSwitchEnableTwoFingerTranslate.IsOn = false;
-                // 2024.5.2 need to be tested
-                // if (!isInMultiTouchMode) ToggleSwitchEnableMultiTouchMode.IsOn = true;
+                CloseWhiteboard();
             }
 
-            BtnSwitch_Click(null, null);
-
-            if (currentMode == 0 && inkCanvas.Strokes.Count == 0 && _powerPointService.IsInSlideShow == false)
-                CursorIcon_Click(null, null);
-
-            new Thread(new ThreadStart(() =>
+            new Thread(() =>
             {
                 Thread.Sleep(200);
                 Application.Current.Dispatcher.Invoke(() => { isDisplayingOrHidingBlackboard = false; });
-            })).Start();
+            }).Start();
+        }
+
+        /// <summary>
+        /// 打开白板模式
+        /// </summary>
+        private void OpenWhiteboard()
+        {
+            // 如果画布当前是透明的（游标模式），先显示画布
+            if (GridTransparencyFakeBackground.Background == null)
+            {
+                ShowInkCanvas();
+            }
+
+            // 动画调整浮动工具栏位置
+            new Thread(() =>
+            {
+                Thread.Sleep(100);
+                Application.Current.Dispatcher.Invoke(() => ViewboxFloatingBarMarginAnimation(60));
+            }).Start();
+
+            HideSubPanels();
+
+            // 自动关闭多指书写、开启双指移动
+            if (Settings.AutoSwitchTwoFingerGesture)
+            {
+                ToggleSwitchEnableTwoFingerTranslate.IsOn = true;
+                if (isInMultiTouchMode)
+                    ToggleSwitchEnableMultiTouchMode.IsOn = false;
+            }
+
+            // 切换到白板模式
+            SwitchToWhiteboardMode();
 
             SwitchToDefaultPen(null, null);
             CheckColorTheme(true);
         }
 
-        #endregion
-        private async void SymbolIconCursor_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// 关闭白板模式
+        /// </summary>
+        private void CloseWhiteboard()
         {
+            HideSubPanelsImmediately();
+
+            // 动画调整浮动工具栏位置
+            var targetMargin = _powerPointService.IsInSlideShow ? 60 : 100;
+            var useTaskbarHeight = !_powerPointService.IsInSlideShow;
+
+            new Thread(() =>
+            {
+                Thread.Sleep(300);
+                Application.Current.Dispatcher.Invoke(() =>
+                    ViewboxFloatingBarMarginAnimation(targetMargin, useTaskbarHeight));
+            }).Start();
+
+            // 自动启用多指书写
+            if (Settings.AutoSwitchTwoFingerGesture)
+            {
+                ToggleSwitchEnableTwoFingerTranslate.IsOn = false;
+            }
+
+            // 切换回屏幕模式
+            SwitchToScreenMode();
+            
+            CursorIcon_Click(null, null);
+
+            SwitchToDefaultPen(null, null);
+            CheckColorTheme(true);
+        }
+
+        /// <summary>
+        /// 切换到白板模式（显示黑板/白板UI）
+        /// </summary>
+        private void SwitchToWhiteboardMode()
+        {
+            currentMode = 1;
+
+            GridBackgroundCover.Visibility = Visibility.Visible;
+            AnimationsHelper.ShowWithSlideFromBottomAndFade(BlackboardLeftSide);
+            AnimationsHelper.ShowWithSlideFromBottomAndFade(BlackboardCenterSide);
+            AnimationsHelper.ShowWithSlideFromBottomAndFade(BlackboardRightSide);
+
+            SaveStrokes(true);
+            ClearStrokes(true);
+            RestoreStrokes();
+
+            // 根据设置选择黑板或白板颜色
+            if (Settings.UsingWhiteboard)
+                BtnColorBlack_Click(null, null);
+            else
+                BtnColorWhite_Click(null, null);
+
+            Topmost = false;
+        }
+
+        /// <summary>
+        /// 切换到屏幕模式（隐藏黑板/白板UI）
+        /// </summary>
+        private void SwitchToScreenMode()
+        {
+            currentMode = 0;
+
+            GridBackgroundCover.Visibility = Visibility.Collapsed;
+            AnimationsHelper.HideWithSlideAndFade(BlackboardLeftSide);
+            AnimationsHelper.HideWithSlideAndFade(BlackboardCenterSide);
+            AnimationsHelper.HideWithSlideAndFade(BlackboardRightSide);
+
+            SaveStrokes();
+            ClearStrokes(true);
+            RestoreStrokes(true);
+
+            Topmost = true;
+        }
+
+        /// <summary>
+        /// 显示墨迹画布（从透明游标模式切换到可见画布）
+        /// </summary>
+        private void ShowInkCanvas()
+        {
+            GridTransparencyFakeBackground.Background = new SolidColorBrush(Color.FromArgb(1, 0, 0, 0));
+            inkCanvas.IsHitTestVisible = true;
+            inkCanvas.Visibility = Visibility.Visible;
+            GridBackgroundCoverHolder.Visibility = Visibility.Visible;
+            GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
+        }
+
+        /// <summary>
+        /// 隐藏墨迹画布（切换到透明游标模式）
+        /// </summary>
+        private void HideInkCanvas()
+        {
+            inkCanvas.IsHitTestVisible = true;
+            inkCanvas.Visibility = Visibility.Visible;
+            GridTransparencyFakeBackground.Background = null;
+            GridBackgroundCoverHolder.Visibility = Visibility.Collapsed;
+
             if (currentMode != 0)
             {
-                ImageBlackboard_MouseUp(null, null);
-            }
-            else
-            {
-                BtnHideInkCanvas_Click(null, null);
-
-                if (_powerPointService.IsInSlideShow)
-                {
-                    await Task.Delay(100);
-                    ViewboxFloatingBarMarginAnimation(60);
-                }
+                SaveStrokes();
+                RestoreStrokes(true);
             }
         }
+
+        #endregion
 
         #region 清空畫布按鈕
 
@@ -2607,44 +2638,29 @@ namespace InkCanvasForClass_Remastered
                     SaveScreenShot(true, $"{_pptName}/{_previousSlideID}_{DateTime.Now:HH-mm-ss}");
                 else SaveScreenShot(true);
             }
-
-            if (_powerPointService.IsInSlideShow == false)
+            if (Settings.HideStrokeWhenSelecting)
             {
-                if (Settings.HideStrokeWhenSelecting)
-                {
-                    inkCanvas.Visibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    inkCanvas.IsHitTestVisible = false;
-                    inkCanvas.Visibility = Visibility.Visible;
-                }
+                inkCanvas.Visibility = Visibility.Collapsed;
             }
             else
             {
-                if (Settings.HideStrokeWhenSelecting)
-                {
-                    inkCanvas.Visibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    inkCanvas.IsHitTestVisible = false;
-                    inkCanvas.Visibility = Visibility.Visible;
-                }
+                inkCanvas.IsHitTestVisible = false;
+                inkCanvas.Visibility = Visibility.Visible;
             }
 
-            GridTransparencyFakeBackground.Opacity = 0;
-            GridTransparencyFakeBackground.Background = Brushes.Transparent;
+            GridTransparencyFakeBackground.Background = null;
 
-            GridBackgroundCoverHolder.Visibility = Visibility.Collapsed;
+            // 取消选中的墨迹
             inkCanvas.Select(new StrokeCollection());
-            GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
 
-            if (currentMode != 0)
-            {
-                SaveStrokes();
-                RestoreStrokes(true);
-            }
+            //GridBackgroundCoverHolder.Visibility = Visibility.Collapsed;
+            //GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
+
+            //if (currentMode != 0)
+            //{
+            //    SaveStrokes();
+            //    RestoreStrokes(true);
+            //}
 
             CheckEnableTwoFingerGestureBtnVisibility(false);
 
@@ -2675,8 +2691,7 @@ namespace InkCanvasForClass_Remastered
             {
                 inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
 
-                GridTransparencyFakeBackground.Opacity = 1;
-                GridTransparencyFakeBackground.Background = new SolidColorBrush(StringToColor("#01FFFFFF"));
+                GridTransparencyFakeBackground.Background = new SolidColorBrush(Color.FromArgb(1, 0, 0, 0));
 
                 inkCanvas.IsHitTestVisible = true;
                 inkCanvas.Visibility = Visibility.Visible;
@@ -2942,78 +2957,13 @@ namespace InkCanvasForClass_Remastered
 
         private int currentMode = 0;
 
-        private void BtnSwitch_Click(object sender, RoutedEventArgs e)
-        {
-            if (GridTransparencyFakeBackground.Background == Brushes.Transparent)
-            {
-                if (currentMode == 0)
-                {
-                    currentMode++;
-                    GridBackgroundCover.Visibility = Visibility.Collapsed;
-                    AnimationsHelper.HideWithSlideAndFade(BlackboardLeftSide);
-                    AnimationsHelper.HideWithSlideAndFade(BlackboardCenterSide);
-                    AnimationsHelper.HideWithSlideAndFade(BlackboardRightSide);
-
-                    SaveStrokes(true);
-                    ClearStrokes(true);
-                    RestoreStrokes();
-
-                }
-
-                Topmost = true;
-                BtnHideInkCanvas_Click(null, e);
-            }
-            else
-            {
-                switch (++currentMode % 2)
-                {
-                    case 0: //屏幕模式
-                        currentMode = 0;
-                        GridBackgroundCover.Visibility = Visibility.Collapsed;
-                        AnimationsHelper.HideWithSlideAndFade(BlackboardLeftSide);
-                        AnimationsHelper.HideWithSlideAndFade(BlackboardCenterSide);
-                        AnimationsHelper.HideWithSlideAndFade(BlackboardRightSide);
-
-                        SaveStrokes();
-                        ClearStrokes(true);
-                        RestoreStrokes(true);
-
-                        Topmost = true;
-                        break;
-                    case 1: //黑板或白板模式
-                        currentMode = 1;
-                        GridBackgroundCover.Visibility = Visibility.Visible;
-                        AnimationsHelper.ShowWithSlideFromBottomAndFade(BlackboardLeftSide);
-                        AnimationsHelper.ShowWithSlideFromBottomAndFade(BlackboardCenterSide);
-                        AnimationsHelper.ShowWithSlideFromBottomAndFade(BlackboardRightSide);
-
-                        SaveStrokes(true);
-                        ClearStrokes(true);
-                        RestoreStrokes();
-
-                        if (Settings.UsingWhiteboard)
-                        {
-                            BtnColorBlack_Click(null, null);
-                        }
-                        else
-                        {
-                            BtnColorWhite_Click(null, null);
-                        }
-
-                        Topmost = false;
-                        break;
-                }
-            }
-        }
-
         private int BoundsWidth = 5;
 
         private void BtnHideInkCanvas_Click(object sender, RoutedEventArgs e)
         {
-            if (GridTransparencyFakeBackground.Background == Brushes.Transparent)
+            if (GridTransparencyFakeBackground.Background == null)
             {
-                GridTransparencyFakeBackground.Opacity = 1;
-                GridTransparencyFakeBackground.Background = new SolidColorBrush(StringToColor("#01FFFFFF"));
+                GridTransparencyFakeBackground.Background = new SolidColorBrush(Color.FromArgb(1, 0, 0, 0));
                 inkCanvas.IsHitTestVisible = true;
                 inkCanvas.Visibility = Visibility.Visible;
 
@@ -3026,8 +2976,7 @@ namespace InkCanvasForClass_Remastered
                 inkCanvas.IsHitTestVisible = true;
                 inkCanvas.Visibility = Visibility.Visible;
 
-                GridTransparencyFakeBackground.Opacity = 0;
-                GridTransparencyFakeBackground.Background = Brushes.Transparent;
+                GridTransparencyFakeBackground.Background = null;
 
                 GridBackgroundCoverHolder.Visibility = Visibility.Collapsed;
 
@@ -3038,7 +2987,7 @@ namespace InkCanvasForClass_Remastered
                 }
             }
 
-            if (GridTransparencyFakeBackground.Background == Brushes.Transparent)
+            if (GridTransparencyFakeBackground.Background == null)
             {
                 StackPanelCanvasControls.Visibility = Visibility.Collapsed;
                 CheckEnableTwoFingerGestureBtnVisibility(false);
@@ -3339,7 +3288,7 @@ namespace InkCanvasForClass_Remastered
 
                 if (Settings.IsShowCanvasAtNewSlideShow &&
                     !Settings.IsAutoFoldInPPTSlideShow &&
-                    GridTransparencyFakeBackground.Background == Brushes.Transparent)
+                    GridTransparencyFakeBackground.Background == null)
                 {
                     PenIcon_Click(null, null);
                 }
@@ -3592,8 +3541,6 @@ namespace InkCanvasForClass_Remastered
                         inkCanvas.Strokes.Add(strokes);
                         Logger.LogInformation($"墨迹文件打开成功，墨迹数 {strokes.Count}");
                     }
-
-                if (inkCanvas.Visibility != Visibility.Visible) SymbolIconCursor_Click(sender, null);
             }
             catch
             {
@@ -5630,7 +5577,7 @@ namespace InkCanvasForClass_Remastered
             if (dec.Count == 1)
             {
                 //记录第一根手指点击时的 StrokeCollection
-                lastTouchDownStrokeCollection = inkCanvas.Strokes.Clone();
+                //lastTouchDownStrokeCollection = inkCanvas.Strokes.Clone();
             }
             //设备两个及两个以上，将画笔功能关闭
             if (dec.Count > 1 || !Settings.IsEnableTwoFingerGesture)

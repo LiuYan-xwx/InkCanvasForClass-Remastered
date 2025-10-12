@@ -150,19 +150,7 @@
                     <Setter Property="Background" Value="{x:Null}" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsSettingsPanelVisible}" Value="True">
-                            <Setter Property="Background">
-                                <Setter.Value>
-                                    <SolidColorBrush>
-                                        <SolidColorBrush.Color>
-                                            <Color
-                                                A="1"
-                                                B="0"
-                                                G="0"
-                                                R="0" />
-                                        </SolidColorBrush.Color>
-                                    </SolidColorBrush>
-                                </Setter.Value>
-                            </Setter>
+                            <Setter Property="Background" Value="#01000000"/>
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -1915,7 +1903,7 @@
                 </Canvas>
             </Grid>
         </Grid>
-        <Grid Name="GridTransparencyFakeBackground" Opacity="0" />
+        <Grid Name="GridTransparencyFakeBackground" />
         <Label
             Name="Label"
             Content="0"
