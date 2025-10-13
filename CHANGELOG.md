@@ -3,6 +3,80 @@
 其实没改什么东西的（）
 
 ### 请注意文档的更新时间
+> 最后更新：2025-10-13
+
+---
+
+**2025-08-31 至 2025-10-13 的更新：**
+
+功能增强：
+- 引入可空引用类型以提升代码安全性
+- 在 MainWindow 关闭时保存设置
+- 在保存设置时记录日志
+- 添加 NamesInputViewModel 和依赖注入支持
+- 优化设置面板的显示/隐藏逻辑
+- 部分图标换成 FontIcon
+- crashtest 按钮的 Click 事件换成 Command
+- 添加回页码点击功能
+- 优化 PPT 按钮位置调整逻辑
+- 重构浮动栏隐藏逻辑
+- 重构 PPT 导航逻辑，优化样式与设置管理
+- MainWindow 的 MessageBox 改为 iNKORE.UI.WPF.Modern 的
+- 优化 PPT 按钮设置实现，改进数据绑定
+- 重构 PPT 导航按钮，使用正确的 Button 控件和样式
+- 实现新的统一 PPT 按钮架构，采用 MVVM 模式
+- 重构抽奖逻辑并引入 RandViewModel
+- 再次重写抽奖功能
+- SettingsControl 支持不写 header
+- 教学安全模式 (关闭 #4)
+- 优化幻灯片墨迹管理与日志记录
+- 优化 PowerPoint 服务交互及墨迹处理逻辑
+- 移除手动触发放映事件前的等待
+
+功能移除：
+- 移除形状绘制功能及相关逻辑 (破坏性变更)
+- 移除旧的 UI
+- 移除很多用不到的自动收纳/查杀项 (关闭 #10)
+- 移除无用的快捷键，仅保留 Ctrl+Z (撤销) 和 Ctrl+Y (重做)
+- 移除 OperatingGuideWindow 和工具栏条目
+- 移除底部 PPT 导航按钮及相关设置
+- 移除主题代码
+
+Bug 修复：
+- 修复 PPT 按钮在白板模式下的显示问题
+- 修复 Settings.cs 中 using 错误的 Json 序列化库
+- 修复页码绑定错误
+- 修复有时切换幻灯片会卡死的问题
+- 修复各种绑定错误
+- 修复放映问题
+- 调整导航按钮 UI 并移除废弃逻辑
+- 修复 XAML 编译错误 MC3024 - 移除重复的 Background 属性
+- 移除无用的 UI 代码
+
+重构与优化：
+- 替换 currentMode 为 AppMode 枚举 (关闭 #23)
+- 重构白板/黑板模式切换逻辑
+- 手动控制 IsInSlideShow 属性
+- 移除所有对 BorderFloatingBarExitPPTBtn.Visibility 的判断，改为 _powerPointService.IsInSlideShow
+- 完全清理旧的 PPT 按钮实现
+- PPT 按钮重构的最终优化 - 位置处理和可见性逻辑
+- 主栏的 LayoutTransform 改为 RenderTransform (性能优化)
+
+其他变更：
+- 添加 Microsoft.Xaml.Behaviors.Wpf 包引用
+- 更改 displayRandWindowNamesInputBtn 设置默认值为 true
+- 注释掉 build.yml 中的 .NET Core 安装
+- 添加 GitHub Copilot 开发指南
+- 在 README 中添加 CHANGELOG.md 超链接
+- 更新 README.md
+- 移除无用代码（多次）
+- 修正错别字
+
+合并的 Pull Requests：
+- #17: 添加 GitHub Copilot 开发指南
+- #19: 在 README 中添加 CHANGELOG.md 链接
+- #20: 优化 PPT 按钮相关功能
+- #22: 移除 OperatingGuideWindow 和无用快捷键
 
 ---
 
