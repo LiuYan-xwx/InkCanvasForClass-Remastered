@@ -708,14 +708,12 @@ namespace InkCanvasForClass_Remastered
                     item.Value.Clear();
                 }
             }
-            else
-            {
-                inkCanvas.IsManipulationEnabled = true;
-                inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
-                CancelSingleFingerDragMode();
-                forceEraser = false;
-                CheckColorTheme();
-            }
+            
+            inkCanvas.IsManipulationEnabled = true;
+            inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
+            CancelSingleFingerDragMode();
+            forceEraser = false;
+            CheckColorTheme();
         }
 
         private bool isUselightThemeColor = false, isDesktopUselightThemeColor = false;
