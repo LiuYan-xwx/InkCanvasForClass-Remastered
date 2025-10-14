@@ -360,8 +360,6 @@ namespace InkCanvasForClass_Remastered
 
             await Dispatcher.InvokeAsync(() =>
             {
-                if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
-                    ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
                 if (sender == Fold_Icon && lastBorderMouseDownObject != Fold_Icon)
                     isShouldRejectAction = true;
             });
@@ -1784,8 +1782,6 @@ namespace InkCanvasForClass_Remastered
         {
             //if (lastBorderMouseDownObject != sender) return;
 
-            if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
-                ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
             if (sender == SymbolIconUndo && lastBorderMouseDownObject != SymbolIconUndo) return;
 
             if (!_viewModel.CanUndo)
@@ -1808,8 +1804,6 @@ namespace InkCanvasForClass_Remastered
         {
             //if (lastBorderMouseDownObject != sender) return;
 
-            if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
-                ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
             if (sender == SymbolIconRedo && lastBorderMouseDownObject != SymbolIconRedo) return;
 
             if (!_viewModel.CanRedo)
@@ -1836,8 +1830,6 @@ namespace InkCanvasForClass_Remastered
 
         private void ImageBlackboard_MouseUp(object? sender, MouseButtonEventArgs? e)
         {
-            if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
-                ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
             if (sender == WhiteboardFloatingBarBtn && lastBorderMouseDownObject != WhiteboardFloatingBarBtn) return;
 
             if (isDisplayingOrHidingBlackboard) return;
@@ -2007,8 +1999,6 @@ namespace InkCanvasForClass_Remastered
         private void SymbolIconDelete_MouseUp(object? sender, MouseButtonEventArgs? e)
         {
 
-            if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
-                ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
             if (sender == SymbolIconDelete && lastBorderMouseDownObject != SymbolIconDelete) return;
 
             if (inkCanvas.GetSelectedStrokes().Count > 0)
@@ -2043,8 +2033,6 @@ namespace InkCanvasForClass_Remastered
         private void SymbolIconSelect_MouseUp(object sender, MouseButtonEventArgs e)
         {
 
-            if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
-                ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
             if (sender == SymbolIconSelect && lastBorderMouseDownObject != SymbolIconSelect) return;
 
             FloatingbarSelectionBG.Visibility = Visibility.Visible;
@@ -2092,6 +2080,16 @@ namespace InkCanvasForClass_Remastered
             var s = (Panel)sender;
             lastBorderMouseDownObject = null;
             s.Background = new SolidColorBrush(Colors.Transparent);
+        }
+
+        private void FloatingBarToolBtn_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            lastBorderMouseDownObject = sender;
+        }
+
+        private void FloatingBarToolBtn_MouseLeave(object sender, MouseEventArgs e)
+        {
+            lastBorderMouseDownObject = null;
         }
 
         private void SymbolIconSettings_Click(object sender, RoutedEventArgs e)
@@ -2422,8 +2420,6 @@ namespace InkCanvasForClass_Remastered
         private void SymbolIconTools_MouseUp(object sender, MouseButtonEventArgs e)
         {
 
-            if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
-                ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
             if (sender == ToolsFloatingBarBtn && lastBorderMouseDownObject != ToolsFloatingBarBtn) return;
 
             if (BorderTools.Visibility == Visibility.Visible)
@@ -2626,8 +2622,6 @@ namespace InkCanvasForClass_Remastered
 
         private void CursorIcon_Click(object? sender, RoutedEventArgs? e)
         {
-            if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
-                ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
             if (sender == Cursor_Icon && lastBorderMouseDownObject != Cursor_Icon) return;
             // 隱藏高亮
             FloatingbarSelectionBG.Visibility = Visibility.Hidden;
@@ -2683,14 +2677,12 @@ namespace InkCanvasForClass_Remastered
         private void PenIcon_Click(object? sender, RoutedEventArgs? e)
         {
 
-            if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
-                ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
             if (sender == Pen_Icon && lastBorderMouseDownObject != Pen_Icon) return;
 
             FloatingbarSelectionBG.Visibility = Visibility.Visible;
             System.Windows.Controls.Canvas.SetLeft(FloatingbarSelectionBG, 28);
 
-            if (Pen_Icon.Background == null || StackPanelCanvasControls.Visibility == Visibility.Collapsed)
+            if (StackPanelCanvasControls.Visibility == Visibility.Collapsed)
             {
                 inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
 
@@ -2762,8 +2754,6 @@ namespace InkCanvasForClass_Remastered
         private void EraserIcon_Click(object sender, RoutedEventArgs e)
         {
 
-            if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
-                ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
             if (sender == Eraser_Icon && lastBorderMouseDownObject != Eraser_Icon) return;
 
             FloatingbarSelectionBG.Visibility = Visibility.Visible;
@@ -2855,8 +2845,6 @@ namespace InkCanvasForClass_Remastered
         private void EraserIconByStrokes_Click(object sender, RoutedEventArgs e)
         {
 
-            if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
-                ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
             if (sender == EraserByStrokes_Icon && lastBorderMouseDownObject != EraserByStrokes_Icon) return;
 
             FloatingbarSelectionBG.Visibility = Visibility.Visible;
@@ -2877,8 +2865,6 @@ namespace InkCanvasForClass_Remastered
         private void CursorWithDelIcon_Click(object? sender, RoutedEventArgs? e)
         {
 
-            if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
-                ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
             if (sender == CursorWithDelFloatingBarBtn && lastBorderMouseDownObject != CursorWithDelFloatingBarBtn) return;
 
             SymbolIconDelete_MouseUp(sender, null);
@@ -2928,12 +2914,12 @@ namespace InkCanvasForClass_Remastered
             if (_viewModel.AppMode == AppMode.Normal)
             {
                 // 先回到画笔再清屏，避免 TimeMachine 的相关 bug 影响
-                if (Pen_Icon.Background == null && StackPanelCanvasControls.Visibility == Visibility.Visible)
+                if (StackPanelCanvasControls.Visibility == Visibility.Visible)
                     PenIcon_Click(null, null);
             }
             else
             {
-                if (Pen_Icon.Background == null) PenIcon_Click(null, null);
+                PenIcon_Click(null, null);
             }
 
             if (inkCanvas.Strokes.Count != 0)
