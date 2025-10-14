@@ -2101,6 +2101,54 @@ namespace InkCanvasForClass_Remastered
             SettingsPanelScrollViewer.ScrollToTop();
         }
 
+        private void ImageCountdownTimer_Click(object sender, RoutedEventArgs e)
+        {
+            AnimationsHelper.HideWithSlideAndFade(BorderTools);
+            AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
+
+            new CountdownTimerWindow().Show();
+        }
+
+        private void SymbolIconRand_Click(object sender, RoutedEventArgs e)
+        {
+            AnimationsHelper.HideWithSlideAndFade(BorderTools);
+            AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
+
+            App.GetService<RandWindow>().Show();
+        }
+
+        private void SymbolIconRandOne_Click(object sender, RoutedEventArgs e)
+        {
+            AnimationsHelper.HideWithSlideAndFade(BorderTools);
+            AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
+
+            var randWindow = App.GetService<RandWindow>();
+            randWindow.IsAutoClose = true;
+            randWindow.ShowDialog();
+        }
+
+        private void SymbolIconSaveStrokes_Click(object sender, RoutedEventArgs e)
+        {
+            SymbolIconSaveStrokes_MouseUp(sender, null);
+        }
+
+        private void SymbolIconOpenStrokes_Click(object sender, RoutedEventArgs e)
+        {
+            SymbolIconOpenStrokes_MouseUp(sender, null);
+        }
+
+        private void GridInkReplayButton_Click(object sender, RoutedEventArgs e)
+        {
+            GridInkReplayButton_MouseUp(sender, null);
+        }
+
+        private async void SymbolIconScreenshot_Click(object sender, RoutedEventArgs e)
+        {
+            HideSubPanelsImmediately();
+            await Task.Delay(50);
+            SaveScreenShotToDesktop();
+        }
+
         private async void SymbolIconScreenshot_MouseUp(object sender, MouseButtonEventArgs e)
         {
             HideSubPanelsImmediately();
