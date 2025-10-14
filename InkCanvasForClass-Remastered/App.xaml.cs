@@ -122,6 +122,7 @@ namespace InkCanvasForClass_Remastered
             services.AddSingleton<SettingsService>();
             services.AddSingleton<IPowerPointService, PowerPointService>();
             services.AddSingleton<FileFolderService>();
+            services.AddSingleton<ITimeMachineService, TimeMachineService>();
             // 注册视图模型
             services.AddTransient<MainViewModel>();
             services.AddTransient<RandViewModel>();

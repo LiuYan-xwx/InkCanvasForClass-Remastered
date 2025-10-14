@@ -1,24 +1,26 @@
-﻿using System.Windows.Ink;
+using System.Windows.Ink;
 using System.Windows.Input;
 
-namespace InkCanvasForClass_Remastered.Helpers
+namespace InkCanvasForClass_Remastered.Services
 {
     /// <summary>
-    /// 时间机器类，用于管理墨迹画布的撤销和重做历史记录
+    /// 时间机器服务，用于管理墨迹画布的撤销和重做历史记录
     /// </summary>
-    public class TimeMachine
+    public class TimeMachineService : ITimeMachineService
     {
         private readonly List<TimeMachineHistory> _currentStrokeHistory = new();
 
         private int _currentIndex = -1;
 
-        public delegate void OnUndoStateChange(bool status);
+        /// <summary>
+        /// 撤销状态变化事件
+        /// </summary>
+        public event Action<bool>? OnUndoStateChanged;
 
-        public event OnUndoStateChange OnUndoStateChanged;
-
-        public delegate void OnRedoStateChange(bool status);
-
-        public event OnRedoStateChange OnRedoStateChanged;
+        /// <summary>
+        /// 重做状态变化事件
+        /// </summary>
+        public event Action<bool>? OnRedoStateChanged;
 
         /// <summary>
         /// 提交历史记录的通用方法
