@@ -2096,9 +2096,10 @@ namespace InkCanvasForClass_Remastered
 
         private void SymbolIconSettings_Click(object sender, RoutedEventArgs e)
         {
-            HideSubPanels();
-            _viewModel.IsSettingsPanelVisible = true;
+            AnimationsHelper.HideWithSlideAndFade(BorderTools);
+            AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
             SettingsPanelScrollViewer.ScrollToTop();
+            _viewModel.IsSettingsPanelVisible = true;
         }
 
         private void ImageCountdownTimer_Click(object sender, RoutedEventArgs e)
@@ -2129,131 +2130,60 @@ namespace InkCanvasForClass_Remastered
 
         private void SymbolIconSaveStrokes_Click(object sender, RoutedEventArgs e)
         {
-            SymbolIconSaveStrokes_MouseUp(sender, null);
+            AnimationsHelper.HideWithSlideAndFade(BorderTools);
+            AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
+
+            GridNotifications.Visibility = Visibility.Collapsed;
+
+            SaveInkCanvasStrokes(true, true);
         }
 
         private void SymbolIconOpenStrokes_Click(object sender, RoutedEventArgs e)
         {
-            SymbolIconOpenStrokes_MouseUp(sender, null);
+            AnimationsHelper.HideWithSlideAndFade(BorderTools);
+            AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
+
+            var openFileDialog = new OpenFileDialog();
+            openFileDialog.InitialDirectory = Settings.AutoSaveStrokesPath;
+            openFileDialog.Title = "打开墨迹文件";
+            openFileDialog.Filter = "Ink Canvas Strokes File (*.icstk)|*.icstk";
+            if (openFileDialog.ShowDialog() != true) return;
+            Logger.LogInformation($"用户选择打开墨迹文件 {openFileDialog.FileName}");
+            try
+            {
+                var fileStreamHasNoStroke = false;
+                using (var fs = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
+                {
+                    var strokes = new StrokeCollection(fs);
+                    fileStreamHasNoStroke = strokes.Count == 0;
+                    if (!fileStreamHasNoStroke)
+                    {
+                        ClearStrokes(true);
+                        timeMachine.ClearStrokeHistory();
+                        inkCanvas.Strokes.Add(strokes);
+                        Logger.LogInformation($"墨迹文件打开成功，墨迹数 {strokes.Count}");
+                    }
+                }
+
+                if (fileStreamHasNoStroke)
+                    using (var ms = new MemoryStream(File.ReadAllBytes(openFileDialog.FileName)))
+                    {
+                        ms.Seek(0, SeekOrigin.Begin);
+                        var strokes = new StrokeCollection(ms);
+                        ClearStrokes(true);
+                        timeMachine.ClearStrokeHistory();
+                        inkCanvas.Strokes.Add(strokes);
+                        Logger.LogInformation($"墨迹文件打开成功，墨迹数 {strokes.Count}");
+                    }
+            }
+            catch
+            {
+                ShowNotification("墨迹打开失败");
+            }
         }
 
         private void GridInkReplayButton_Click(object sender, RoutedEventArgs e)
         {
-            GridInkReplayButton_MouseUp(sender, null);
-        }
-
-        private async void SymbolIconScreenshot_Click(object sender, RoutedEventArgs e)
-        {
-            HideSubPanelsImmediately();
-            await Task.Delay(50);
-            SaveScreenShotToDesktop();
-        }
-
-        private async void SymbolIconScreenshot_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            HideSubPanelsImmediately();
-            await Task.Delay(50);
-            SaveScreenShotToDesktop();
-        }
-
-
-
-        private void ImageCountdownTimer_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            AnimationsHelper.HideWithSlideAndFade(BorderTools);
-            AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
-
-            new CountdownTimerWindow().Show();
-        }
-
-
-
-        private void SymbolIconRand_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (lastBorderMouseDownObject != sender) return;
-
-            AnimationsHelper.HideWithSlideAndFade(BorderTools);
-            AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
-
-            App.GetService<RandWindow>().Show();
-        }
-
-        public void CheckEraserTypeTab()
-        {
-            if (Settings.EraserShapeType == 0)
-            {
-                CircleEraserTabButton.Background = new SolidColorBrush(Color.FromArgb(85, 59, 130, 246));
-                CircleEraserTabButton.Opacity = 1;
-                CircleEraserTabButtonText.FontWeight = FontWeights.Bold;
-                CircleEraserTabButtonText.Margin = new Thickness(2, 0.5, 0, 0);
-                CircleEraserTabButtonText.FontSize = 9.5;
-                CircleEraserTabButtonIndicator.Visibility = Visibility.Visible;
-                RectangleEraserTabButton.Background = new SolidColorBrush(Colors.Transparent);
-                RectangleEraserTabButton.Opacity = 0.75;
-                RectangleEraserTabButtonText.FontWeight = FontWeights.Normal;
-                RectangleEraserTabButtonText.FontSize = 9;
-                RectangleEraserTabButtonText.Margin = new Thickness(2, 1, 0, 0);
-                RectangleEraserTabButtonIndicator.Visibility = Visibility.Collapsed;
-
-                BoardCircleEraserTabButton.Background = new SolidColorBrush(Color.FromArgb(85, 59, 130, 246));
-                BoardCircleEraserTabButton.Opacity = 1;
-                BoardCircleEraserTabButtonText.FontWeight = FontWeights.Bold;
-                BoardCircleEraserTabButtonText.Margin = new Thickness(2, 0.5, 0, 0);
-                BoardCircleEraserTabButtonText.FontSize = 9.5;
-                BoardCircleEraserTabButtonIndicator.Visibility = Visibility.Visible;
-                BoardRectangleEraserTabButton.Background = new SolidColorBrush(Colors.Transparent);
-                BoardRectangleEraserTabButton.Opacity = 0.75;
-                BoardRectangleEraserTabButtonText.FontWeight = FontWeights.Normal;
-                BoardRectangleEraserTabButtonText.FontSize = 9;
-                BoardRectangleEraserTabButtonText.Margin = new Thickness(2, 1, 0, 0);
-                BoardRectangleEraserTabButtonIndicator.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                RectangleEraserTabButton.Background = new SolidColorBrush(Color.FromArgb(85, 59, 130, 246));
-                RectangleEraserTabButton.Opacity = 1;
-                RectangleEraserTabButtonText.FontWeight = FontWeights.Bold;
-                RectangleEraserTabButtonText.Margin = new Thickness(2, 0.5, 0, 0);
-                RectangleEraserTabButtonText.FontSize = 9.5;
-                RectangleEraserTabButtonIndicator.Visibility = Visibility.Visible;
-                CircleEraserTabButton.Background = new SolidColorBrush(Colors.Transparent);
-                CircleEraserTabButton.Opacity = 0.75;
-                CircleEraserTabButtonText.FontWeight = FontWeights.Normal;
-                CircleEraserTabButtonText.FontSize = 9;
-                CircleEraserTabButtonText.Margin = new Thickness(2, 1, 0, 0);
-                CircleEraserTabButtonIndicator.Visibility = Visibility.Collapsed;
-
-                BoardRectangleEraserTabButton.Background = new SolidColorBrush(Color.FromArgb(85, 59, 130, 246));
-                BoardRectangleEraserTabButton.Opacity = 1;
-                BoardRectangleEraserTabButtonText.FontWeight = FontWeights.Bold;
-                BoardRectangleEraserTabButtonText.Margin = new Thickness(2, 0.5, 0, 0);
-                BoardRectangleEraserTabButtonText.FontSize = 9.5;
-                BoardRectangleEraserTabButtonIndicator.Visibility = Visibility.Visible;
-                BoardCircleEraserTabButton.Background = new SolidColorBrush(Colors.Transparent);
-                BoardCircleEraserTabButton.Opacity = 0.75;
-                BoardCircleEraserTabButtonText.FontWeight = FontWeights.Normal;
-                BoardCircleEraserTabButtonText.FontSize = 9;
-                BoardCircleEraserTabButtonText.Margin = new Thickness(2, 1, 0, 0);
-                BoardCircleEraserTabButtonIndicator.Visibility = Visibility.Collapsed;
-            }
-        }
-
-        private void SymbolIconRandOne_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (lastBorderMouseDownObject != sender) return;
-
-            AnimationsHelper.HideWithSlideAndFade(BorderTools);
-            AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
-
-            var randWindow = App.GetService<RandWindow>();
-            randWindow.IsAutoClose = true;
-            randWindow.ShowDialog();
-        }
-
-        private void GridInkReplayButton_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (lastBorderMouseDownObject != sender) return;
-
             AnimationsHelper.HideWithSlideAndFade(BorderTools);
             AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
 
@@ -2381,6 +2311,73 @@ namespace InkCanvasForClass_Remastered
                     BlackboardUIGridForInkReplay.IsHitTestVisible = true;
                 });
             }).Start();
+        }
+
+        private async void SymbolIconScreenshot_Click(object sender, RoutedEventArgs e)
+        {
+            HideSubPanelsImmediately();
+            await Task.Delay(50);
+            SaveScreenShotToDesktop();
+        }
+
+        public void CheckEraserTypeTab()
+        {
+            if (Settings.EraserShapeType == 0)
+            {
+                CircleEraserTabButton.Background = new SolidColorBrush(Color.FromArgb(85, 59, 130, 246));
+                CircleEraserTabButton.Opacity = 1;
+                CircleEraserTabButtonText.FontWeight = FontWeights.Bold;
+                CircleEraserTabButtonText.Margin = new Thickness(2, 0.5, 0, 0);
+                CircleEraserTabButtonText.FontSize = 9.5;
+                CircleEraserTabButtonIndicator.Visibility = Visibility.Visible;
+                RectangleEraserTabButton.Background = new SolidColorBrush(Colors.Transparent);
+                RectangleEraserTabButton.Opacity = 0.75;
+                RectangleEraserTabButtonText.FontWeight = FontWeights.Normal;
+                RectangleEraserTabButtonText.FontSize = 9;
+                RectangleEraserTabButtonText.Margin = new Thickness(2, 1, 0, 0);
+                RectangleEraserTabButtonIndicator.Visibility = Visibility.Collapsed;
+
+                BoardCircleEraserTabButton.Background = new SolidColorBrush(Color.FromArgb(85, 59, 130, 246));
+                BoardCircleEraserTabButton.Opacity = 1;
+                BoardCircleEraserTabButtonText.FontWeight = FontWeights.Bold;
+                BoardCircleEraserTabButtonText.Margin = new Thickness(2, 0.5, 0, 0);
+                BoardCircleEraserTabButtonText.FontSize = 9.5;
+                BoardCircleEraserTabButtonIndicator.Visibility = Visibility.Visible;
+                BoardRectangleEraserTabButton.Background = new SolidColorBrush(Colors.Transparent);
+                BoardRectangleEraserTabButton.Opacity = 0.75;
+                BoardRectangleEraserTabButtonText.FontWeight = FontWeights.Normal;
+                BoardRectangleEraserTabButtonText.FontSize = 9;
+                BoardRectangleEraserTabButtonText.Margin = new Thickness(2, 1, 0, 0);
+                BoardRectangleEraserTabButtonIndicator.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                RectangleEraserTabButton.Background = new SolidColorBrush(Color.FromArgb(85, 59, 130, 246));
+                RectangleEraserTabButton.Opacity = 1;
+                RectangleEraserTabButtonText.FontWeight = FontWeights.Bold;
+                RectangleEraserTabButtonText.Margin = new Thickness(2, 0.5, 0, 0);
+                RectangleEraserTabButtonText.FontSize = 9.5;
+                RectangleEraserTabButtonIndicator.Visibility = Visibility.Visible;
+                CircleEraserTabButton.Background = new SolidColorBrush(Colors.Transparent);
+                CircleEraserTabButton.Opacity = 0.75;
+                CircleEraserTabButtonText.FontWeight = FontWeights.Normal;
+                CircleEraserTabButtonText.FontSize = 9;
+                CircleEraserTabButtonText.Margin = new Thickness(2, 1, 0, 0);
+                CircleEraserTabButtonIndicator.Visibility = Visibility.Collapsed;
+
+                BoardRectangleEraserTabButton.Background = new SolidColorBrush(Color.FromArgb(85, 59, 130, 246));
+                BoardRectangleEraserTabButton.Opacity = 1;
+                BoardRectangleEraserTabButtonText.FontWeight = FontWeights.Bold;
+                BoardRectangleEraserTabButtonText.Margin = new Thickness(2, 0.5, 0, 0);
+                BoardRectangleEraserTabButtonText.FontSize = 9.5;
+                BoardRectangleEraserTabButtonIndicator.Visibility = Visibility.Visible;
+                BoardCircleEraserTabButton.Background = new SolidColorBrush(Colors.Transparent);
+                BoardCircleEraserTabButton.Opacity = 0.75;
+                BoardCircleEraserTabButtonText.FontWeight = FontWeights.Normal;
+                BoardCircleEraserTabButtonText.FontSize = 9;
+                BoardCircleEraserTabButtonText.Margin = new Thickness(2, 1, 0, 0);
+                BoardCircleEraserTabButtonIndicator.Visibility = Visibility.Collapsed;
+            }
         }
 
         private bool isStopInkReplay = false;
@@ -3515,18 +3512,6 @@ namespace InkCanvasForClass_Remastered
         #endregion
 
         #region Save&OpenStrokes
-        private void SymbolIconSaveStrokes_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (lastBorderMouseDownObject != sender || inkCanvas.Visibility != Visibility.Visible) return;
-
-            AnimationsHelper.HideWithSlideAndFade(BorderTools);
-            AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
-
-            GridNotifications.Visibility = Visibility.Collapsed;
-
-            SaveInkCanvasStrokes(true, true);
-        }
-
         private void SaveInkCanvasStrokes(bool newNotice = true, bool saveByUser = false)
         {
             try
@@ -3550,51 +3535,6 @@ namespace InkCanvasForClass_Remastered
             {
                 ShowNotification("墨迹保存失败");
                 Logger.LogError(ex, "墨迹保存失败");
-            }
-        }
-
-        private void SymbolIconOpenStrokes_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (lastBorderMouseDownObject != sender) return;
-            AnimationsHelper.HideWithSlideAndFade(BorderTools);
-            AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
-
-            var openFileDialog = new OpenFileDialog();
-            openFileDialog.InitialDirectory = Settings.AutoSaveStrokesPath;
-            openFileDialog.Title = "打开墨迹文件";
-            openFileDialog.Filter = "Ink Canvas Strokes File (*.icstk)|*.icstk";
-            if (openFileDialog.ShowDialog() != true) return;
-            Logger.LogInformation($"用户选择打开墨迹文件 {openFileDialog.FileName}");
-            try
-            {
-                var fileStreamHasNoStroke = false;
-                using (var fs = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
-                {
-                    var strokes = new StrokeCollection(fs);
-                    fileStreamHasNoStroke = strokes.Count == 0;
-                    if (!fileStreamHasNoStroke)
-                    {
-                        ClearStrokes(true);
-                        timeMachine.ClearStrokeHistory();
-                        inkCanvas.Strokes.Add(strokes);
-                        Logger.LogInformation($"墨迹文件打开成功，墨迹数 {strokes.Count}");
-                    }
-                }
-
-                if (fileStreamHasNoStroke)
-                    using (var ms = new MemoryStream(File.ReadAllBytes(openFileDialog.FileName)))
-                    {
-                        ms.Seek(0, SeekOrigin.Begin);
-                        var strokes = new StrokeCollection(ms);
-                        ClearStrokes(true);
-                        timeMachine.ClearStrokeHistory();
-                        inkCanvas.Strokes.Add(strokes);
-                        Logger.LogInformation($"墨迹文件打开成功，墨迹数 {strokes.Count}");
-                    }
-            }
-            catch
-            {
-                ShowNotification("墨迹打开失败");
             }
         }
         #endregion
