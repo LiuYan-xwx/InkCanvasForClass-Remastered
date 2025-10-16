@@ -3244,7 +3244,7 @@ namespace InkCanvasForClass_Remastered
                             pptName + "_" + slidescount;
 
             //任何情况下都清除现有墨迹
-            await Application.Current.Dispatcher.InvokeAsync(inkCanvas.Strokes.Clear);
+            await Application.Current.Dispatcher.InvokeAsync(() => inkCanvas.Strokes.Clear());
 
             //检查是否有已有墨迹，并加载
             if (Settings.IsAutoSaveStrokesInPowerPoint && Directory.Exists(strokePath))
