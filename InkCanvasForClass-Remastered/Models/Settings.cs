@@ -32,14 +32,6 @@ namespace InkCanvasForClass_Remastered.Models
         private bool _clearCanvasAndClearTimeMachine = false;
         [ObservableProperty]
         private bool _usingWhiteboard = false;
-        [ObservableProperty]
-        private OptionalOperation _hyperbolaAsymptoteOption = OptionalOperation.Yes;
-        [JsonIgnore]
-        public int HyperbolaAsymptoteOptionIndex
-        {
-            get => (int)HyperbolaAsymptoteOption;
-            set => HyperbolaAsymptoteOption = (OptionalOperation)value;
-        }
         // Gesture
         [ObservableProperty]
         private bool _isEnableMultiTouchMode = true;
