@@ -40,7 +40,7 @@ namespace InkCanvasForClass_Remastered
 
         #region Window Initialization
 
-        public MainWindow(MainViewModel viewModel, SettingsService settingsService, IPowerPointService powerPointService, ILogger<MainWindow> logger)
+        public MainWindow(MainViewModel viewModel, SettingsService settingsService, IPowerPointService powerPointService, ITimeMachineService timeMachineService, ILogger<MainWindow> logger)
         {
             /*
                 处于画板模式内：Topmost == false / _viewModel.AppMode == AppMode.WhiteBoard
@@ -51,6 +51,7 @@ namespace InkCanvasForClass_Remastered
             _viewModel = viewModel;
             _settingsService = settingsService;
             _powerPointService = powerPointService;
+            _timeMachineService = timeMachineService;
             Logger = logger;
 
             DataContext = _viewModel;
@@ -75,8 +76,8 @@ namespace InkCanvasForClass_Remastered
             ViewboxFloatingBarMarginAnimation(100, true);
 
             InitTimers();
-            timeMachine.OnRedoStateChanged += TimeMachine_OnRedoStateChanged;
-            timeMachine.OnUndoStateChanged += TimeMachine_OnUndoStateChanged;
+            _timeMachineService.OnRedoStateChanged += TimeMachine_OnRedoStateChanged;
+            _timeMachineService.OnUndoStateChanged += TimeMachine_OnUndoStateChanged;
             inkCanvas.Strokes.StrokesChanged += StrokesOnStrokesChanged;
 
             CheckColorTheme(true);
@@ -450,15 +451,15 @@ namespace InkCanvasForClass_Remastered
         {
             if (isBackupMain)
             {
-                var timeMachineHistory = timeMachine.ExportTimeMachineHistory();
+                var timeMachineHistory = _timeMachineService.ExportTimeMachineHistory();
                 TimeMachineHistories[0] = timeMachineHistory;
-                timeMachine.ClearStrokeHistory();
+                _timeMachineService.ClearStrokeHistory();
             }
             else
             {
-                var timeMachineHistory = timeMachine.ExportTimeMachineHistory();
+                var timeMachineHistory = _timeMachineService.ExportTimeMachineHistory();
                 TimeMachineHistories[_viewModel.WhiteboardCurrentPage] = timeMachineHistory;
-                timeMachine.ClearStrokeHistory();
+                _timeMachineService.ClearStrokeHistory();
             }
         }
 
@@ -480,12 +481,12 @@ namespace InkCanvasForClass_Remastered
                 if (TimeMachineHistories[_viewModel.WhiteboardCurrentPage] == null) return; //防止白板打开后不居中
                 if (isBackupMain)
                 {
-                    timeMachine.ImportTimeMachineHistory(TimeMachineHistories[0]);
+                    _timeMachineService.ImportTimeMachineHistory(TimeMachineHistories[0]);
                     foreach (var item in TimeMachineHistories[0]) ApplyHistoryToCanvas(item);
                 }
                 else
                 {
-                    timeMachine.ImportTimeMachineHistory(TimeMachineHistories[_viewModel.WhiteboardCurrentPage]);
+                    _timeMachineService.ImportTimeMachineHistory(TimeMachineHistories[_viewModel.WhiteboardCurrentPage]);
                     foreach (var item in TimeMachineHistories[_viewModel.WhiteboardCurrentPage]) ApplyHistoryToCanvas(item);
                 }
             }
@@ -661,7 +662,7 @@ namespace InkCanvasForClass_Remastered
         {
             PenIcon_Click(null, null);
             SymbolIconDelete_MouseUp(null, null);
-            if (Settings.ClearCanvasAndClearTimeMachine == false) timeMachine.ClearStrokeHistory();
+            if (Settings.ClearCanvasAndClearTimeMachine == false) _timeMachineService.ClearStrokeHistory();
         }
 
         #endregion
@@ -701,7 +702,7 @@ namespace InkCanvasForClass_Remastered
             }
             if (DrawingAttributesHistory.Count > 0)
             {
-                timeMachine.CommitStrokeDrawingAttributesHistory(DrawingAttributesHistory);
+                _timeMachineService.CommitStrokeDrawingAttributesHistory(DrawingAttributesHistory);
                 DrawingAttributesHistory = new Dictionary<Stroke, Tuple<DrawingAttributes, DrawingAttributes>>();
                 foreach (var item in DrawingAttributesHistoryFlag)
                 {
@@ -1798,7 +1799,7 @@ namespace InkCanvasForClass_Remastered
                 inkCanvas.Select(new StrokeCollection());
             }
 
-            var item = timeMachine.Undo();
+            var item = _timeMachineService.Undo();
             ApplyHistoryToCanvas(item);
 
             HideSubPanels();
@@ -1822,7 +1823,7 @@ namespace InkCanvasForClass_Remastered
                 inkCanvas.Select(new StrokeCollection());
             }
 
-            var item = timeMachine.Redo();
+            var item = _timeMachineService.Redo();
             ApplyHistoryToCanvas(item);
 
             HideSubPanels();
@@ -2948,7 +2949,7 @@ namespace InkCanvasForClass_Remastered
 
             CancelSingleFingerDragMode();
 
-            if (Settings.ClearCanvasAndClearTimeMachine) timeMachine.ClearStrokeHistory();
+            if (Settings.ClearCanvasAndClearTimeMachine) _timeMachineService.ClearStrokeHistory();
         }
 
         private void CancelSingleFingerDragMode()
@@ -3400,7 +3401,7 @@ namespace InkCanvasForClass_Remastered
                 _isPptClickingBtnTurned = false;
 
                 ClearStrokes(true);
-                timeMachine.ClearStrokeHistory();
+                _timeMachineService.ClearStrokeHistory();
 
                 try
                 {
@@ -3527,7 +3528,7 @@ namespace InkCanvasForClass_Remastered
                     if (!fileStreamHasNoStroke)
                     {
                         ClearStrokes(true);
-                        timeMachine.ClearStrokeHistory();
+                        _timeMachineService.ClearStrokeHistory();
                         inkCanvas.Strokes.Add(strokes);
                         Logger.LogInformation($"墨迹文件打开成功，墨迹数 {strokes.Count}");
                     }
@@ -3539,7 +3540,7 @@ namespace InkCanvasForClass_Remastered
                         ms.Seek(0, SeekOrigin.Begin);
                         var strokes = new StrokeCollection(ms);
                         ClearStrokes(true);
-                        timeMachine.ClearStrokeHistory();
+                        _timeMachineService.ClearStrokeHistory();
                         inkCanvas.Strokes.Add(strokes);
                         Logger.LogInformation($"墨迹文件打开成功，墨迹数 {strokes.Count}");
                     }
@@ -3676,7 +3677,7 @@ namespace InkCanvasForClass_Remastered
             if (DrawingAttributesHistory.Count > 0)
             {
 
-                timeMachine.CommitStrokeDrawingAttributesHistory(DrawingAttributesHistory);
+                _timeMachineService.CommitStrokeDrawingAttributesHistory(DrawingAttributesHistory);
                 DrawingAttributesHistory = new Dictionary<Stroke, Tuple<DrawingAttributes, DrawingAttributes>>();
                 foreach (var item in DrawingAttributesHistoryFlag)
                 {
@@ -3722,7 +3723,7 @@ namespace InkCanvasForClass_Remastered
                 //{
                 //    collecion.Add(item.Key);
                 //}
-                timeMachine.CommitStrokeDrawingAttributesHistory(DrawingAttributesHistory);
+                _timeMachineService.CommitStrokeDrawingAttributesHistory(DrawingAttributesHistory);
                 DrawingAttributesHistory = new Dictionary<Stroke, Tuple<DrawingAttributes, DrawingAttributes>>();
                 foreach (var item in DrawingAttributesHistoryFlag)
                 {
@@ -3754,7 +3755,7 @@ namespace InkCanvasForClass_Remastered
 
             if (DrawingAttributesHistory.Count > 0)
             {
-                timeMachine.CommitStrokeDrawingAttributesHistory(DrawingAttributesHistory);
+                _timeMachineService.CommitStrokeDrawingAttributesHistory(DrawingAttributesHistory);
                 DrawingAttributesHistory = new Dictionary<Stroke, Tuple<DrawingAttributes, DrawingAttributes>>();
                 foreach (var item in DrawingAttributesHistoryFlag)
                 {
@@ -3784,7 +3785,7 @@ namespace InkCanvasForClass_Remastered
 
             if (DrawingAttributesHistory.Count > 0)
             {
-                timeMachine.CommitStrokeDrawingAttributesHistory(DrawingAttributesHistory);
+                _timeMachineService.CommitStrokeDrawingAttributesHistory(DrawingAttributesHistory);
                 DrawingAttributesHistory = new Dictionary<Stroke, Tuple<DrawingAttributes, DrawingAttributes>>();
                 foreach (var item in DrawingAttributesHistoryFlag)
                 {
@@ -3819,7 +3820,7 @@ namespace InkCanvasForClass_Remastered
                 {
                     collecion.Add(item.Key);
                 }
-                timeMachine.CommitStrokeDrawingAttributesHistory(DrawingAttributesHistory);
+                _timeMachineService.CommitStrokeDrawingAttributesHistory(DrawingAttributesHistory);
                 DrawingAttributesHistory = new Dictionary<Stroke, Tuple<DrawingAttributes, DrawingAttributes>>();
                 foreach (var item in DrawingAttributesHistoryFlag)
                 {
@@ -3890,7 +3891,7 @@ namespace InkCanvasForClass_Remastered
         {
             if (StrokeManipulationHistory?.Count > 0)
             {
-                timeMachine.CommitStrokeManipulationHistory(StrokeManipulationHistory);
+                _timeMachineService.CommitStrokeManipulationHistory(StrokeManipulationHistory);
                 foreach (var item in StrokeManipulationHistory)
                 {
                     StrokeInitialHistory[item.Key] = item.Value.Item2;
@@ -3899,7 +3900,7 @@ namespace InkCanvasForClass_Remastered
             }
             if (DrawingAttributesHistory.Count > 0)
             {
-                timeMachine.CommitStrokeDrawingAttributesHistory(DrawingAttributesHistory);
+                _timeMachineService.CommitStrokeDrawingAttributesHistory(DrawingAttributesHistory);
                 DrawingAttributesHistory = new Dictionary<Stroke, Tuple<DrawingAttributes, DrawingAttributes>>();
                 foreach (var item in DrawingAttributesHistoryFlag)
                 {
@@ -4691,14 +4692,14 @@ namespace InkCanvasForClass_Remastered
             BlackboardUIGridForInkReplay.IsHitTestVisible = true;
             if (ReplacedStroke != null || AddedStroke != null)
             {
-                timeMachine.CommitStrokeEraseHistory(ReplacedStroke, AddedStroke);
+                _timeMachineService.CommitStrokeEraseHistory(ReplacedStroke, AddedStroke);
                 AddedStroke = null;
                 ReplacedStroke = null;
             }
 
             if (StrokeManipulationHistory?.Count > 0)
             {
-                timeMachine.CommitStrokeManipulationHistory(StrokeManipulationHistory);
+                _timeMachineService.CommitStrokeManipulationHistory(StrokeManipulationHistory);
                 foreach (var item in StrokeManipulationHistory)
                 {
                     StrokeInitialHistory[item.Key] = item.Value.Item2;
@@ -4708,7 +4709,7 @@ namespace InkCanvasForClass_Remastered
 
             if (DrawingAttributesHistory.Count > 0)
             {
-                timeMachine.CommitStrokeDrawingAttributesHistory(DrawingAttributesHistory);
+                _timeMachineService.CommitStrokeDrawingAttributesHistory(DrawingAttributesHistory);
                 DrawingAttributesHistory = new Dictionary<Stroke, Tuple<DrawingAttributes, DrawingAttributes>>();
                 foreach (var item in DrawingAttributesHistoryFlag)
                 {
@@ -4881,7 +4882,7 @@ namespace InkCanvasForClass_Remastered
             { DrawingAttributeIds.StylusWidth, new List<Stroke>() }
         };
 
-        private TimeMachine timeMachine = new();
+        private readonly ITimeMachineService _timeMachineService;
 
         private void ApplyHistoryToCanvas(TimeMachineHistory item, InkCanvas? applyCanvas = null)
         {
@@ -5052,7 +5053,7 @@ namespace InkCanvasForClass_Remastered
 
             if (e.Added.Count != 0)
             {
-                timeMachine.CommitStrokeUserInputHistory(e.Added);
+                _timeMachineService.CommitStrokeUserInputHistory(e.Added);
                 return;
             }
 
@@ -5060,7 +5061,7 @@ namespace InkCanvasForClass_Remastered
             {
                 if (!IsEraseByPoint || _currentCommitType == CommitReason.ClearingCanvas)
                 {
-                    timeMachine.CommitStrokeEraseHistory(e.Removed);
+                    _timeMachineService.CommitStrokeEraseHistory(e.Removed);
                     return;
                 }
             }
@@ -5139,7 +5140,7 @@ namespace InkCanvasForClass_Remastered
                     (sender as Stroke).StylusPoints.Clone());
             if ((StrokeManipulationHistory.Count == count || sender == null) && dec.Count == 0)
             {
-                timeMachine.CommitStrokeManipulationHistory(StrokeManipulationHistory);
+                _timeMachineService.CommitStrokeManipulationHistory(StrokeManipulationHistory);
                 foreach (var item in StrokeManipulationHistory)
                 {
                     StrokeInitialHistory[item.Key] = item.Value.Item2;
