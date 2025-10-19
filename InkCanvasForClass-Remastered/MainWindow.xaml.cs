@@ -8,6 +8,7 @@ using Microsoft.Office.Interop.PowerPoint;
 using Microsoft.Win32;
 using OSVersionExtension;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.IO;
@@ -52,6 +53,14 @@ namespace InkCanvasForClass_Remastered
             _settingsService = settingsService;
             _powerPointService = powerPointService;
             Logger = logger;
+
+    //        DependencyPropertyDescriptor
+    //.FromProperty(InkCanvas.EditingModeProperty, typeof(InkCanvas))
+    //.AddValueChanged(inkCanvas, (s, e) =>
+    //{
+    //    Logger.LogDebug($"EditingMode 改变为：{inkCanvas.EditingMode}");
+    //    Logger.LogDebug(Environment.StackTrace);
+    //});
 
             DataContext = _viewModel;
 
@@ -124,8 +133,11 @@ namespace InkCanvasForClass_Remastered
                 inkCanvas.EraserShape = new RectangleStylusShape(k * 90 * 0.6, k * 90);
             }
 
-            inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
-            inkCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
+            if (inkCanvas.EditingMode == InkCanvasEditingMode.EraseByPoint)
+            {
+                inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
+                inkCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
+            }
         }
 
         private static double GetEraserSizeMultiplier(int eraserSize, int eraserShapeType)
@@ -182,7 +194,7 @@ namespace InkCanvasForClass_Remastered
 
         //ApplicationGesture lastApplicationGesture = ApplicationGesture.AllGestures;
         private DateTime lastGestureTime = DateTime.Now;
-
+        
         private void InkCanvas_Gesture(object sender, InkCanvasGestureEventArgs e)
         {
             //var gestures = e.GetGestureRecognitionResults();
@@ -216,8 +228,6 @@ namespace InkCanvasForClass_Remastered
             {
                 inkCanvas1.ForceCursor = false;
             }
-
-            if (inkCanvas1.EditingMode == InkCanvasEditingMode.Ink) forcePointEraser = !forcePointEraser;
         }
 
         #endregion Ink Canvas
@@ -607,10 +617,8 @@ namespace InkCanvasForClass_Remastered
             }
             else
             {
-                forceEraser = true;
-                forcePointEraser = true;
                 UpdateEraserShape();
-
+                inkCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
                 inkCanvas_EditingModeChanged(inkCanvas, null);
                 CancelSingleFingerDragMode();
 
@@ -624,8 +632,6 @@ namespace InkCanvasForClass_Remastered
             //    AnimationsHelper.ShowWithSlideFromBottomAndFade(BoardDeleteIcon);
             //}
             //else {
-            forceEraser = true;
-            forcePointEraser = false;
 
             inkCanvas.EraserShape = new EllipseStylusShape(5, 5);
             inkCanvas.EditingMode = InkCanvasEditingMode.EraseByStroke;
@@ -698,7 +704,6 @@ namespace InkCanvasForClass_Remastered
                 inkCanvas.IsManipulationEnabled = true;
                 inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
                 CancelSingleFingerDragMode();
-                forceEraser = false;
                 CheckColorTheme();
             }
         }
@@ -1206,63 +1211,54 @@ namespace InkCanvasForClass_Remastered
         private void BtnColorBlack_Click(object? sender, RoutedEventArgs? e)
         {
             CheckLastColor(0);
-            forceEraser = false;
             ColorSwitchCheck();
         }
 
         private void BtnColorRed_Click(object sender, RoutedEventArgs e)
         {
             CheckLastColor(1);
-            forceEraser = false;
             ColorSwitchCheck();
         }
 
         private void BtnColorGreen_Click(object sender, RoutedEventArgs e)
         {
             CheckLastColor(2);
-            forceEraser = false;
             ColorSwitchCheck();
         }
 
         private void BtnColorBlue_Click(object sender, RoutedEventArgs e)
         {
             CheckLastColor(3);
-            forceEraser = false;
             ColorSwitchCheck();
         }
 
         private void BtnColorYellow_Click(object sender, RoutedEventArgs e)
         {
             CheckLastColor(4);
-            forceEraser = false;
             ColorSwitchCheck();
         }
 
         private void BtnColorWhite_Click(object? sender, RoutedEventArgs? e)
         {
             CheckLastColor(5);
-            forceEraser = false;
             ColorSwitchCheck();
         }
 
         private void BtnColorPink_Click(object sender, RoutedEventArgs e)
         {
             CheckLastColor(6);
-            forceEraser = false;
             ColorSwitchCheck();
         }
 
         private void BtnColorOrange_Click(object sender, RoutedEventArgs e)
         {
             CheckLastColor(8);
-            forceEraser = false;
             ColorSwitchCheck();
         }
 
         private void BtnColorTeal_Click(object sender, RoutedEventArgs e)
         {
             CheckLastColor(7);
-            forceEraser = false;
             ColorSwitchCheck();
         }
 
@@ -1270,7 +1266,6 @@ namespace InkCanvasForClass_Remastered
         {
             CheckLastColor(100, true);
             penType = 1;
-            forceEraser = false;
             CheckPenTypeUIState();
             ColorSwitchCheck();
         }
@@ -1279,7 +1274,6 @@ namespace InkCanvasForClass_Remastered
         {
             CheckLastColor(101, true);
             penType = 1;
-            forceEraser = false;
             CheckPenTypeUIState();
             ColorSwitchCheck();
         }
@@ -1288,7 +1282,6 @@ namespace InkCanvasForClass_Remastered
         {
             CheckLastColor(102, true);
             penType = 1;
-            forceEraser = false;
             CheckPenTypeUIState();
             ColorSwitchCheck();
         }
@@ -1297,7 +1290,6 @@ namespace InkCanvasForClass_Remastered
         {
             CheckLastColor(103, true);
             penType = 1;
-            forceEraser = false;
             CheckPenTypeUIState();
             ColorSwitchCheck();
         }
@@ -1306,7 +1298,6 @@ namespace InkCanvasForClass_Remastered
         {
             CheckLastColor(104, true);
             penType = 1;
-            forceEraser = false;
             CheckPenTypeUIState();
             ColorSwitchCheck();
         }
@@ -1315,7 +1306,6 @@ namespace InkCanvasForClass_Remastered
         {
             CheckLastColor(105, true);
             penType = 1;
-            forceEraser = false;
             CheckPenTypeUIState();
             ColorSwitchCheck();
         }
@@ -1324,7 +1314,6 @@ namespace InkCanvasForClass_Remastered
         {
             CheckLastColor(106, true);
             penType = 1;
-            forceEraser = false;
             CheckPenTypeUIState();
             ColorSwitchCheck();
         }
@@ -1333,7 +1322,6 @@ namespace InkCanvasForClass_Remastered
         {
             CheckLastColor(107, true);
             penType = 1;
-            forceEraser = false;
             CheckPenTypeUIState();
             ColorSwitchCheck();
         }
@@ -1342,7 +1330,6 @@ namespace InkCanvasForClass_Remastered
         {
             CheckLastColor(108, true);
             penType = 1;
-            forceEraser = false;
             CheckPenTypeUIState();
             ColorSwitchCheck();
         }
@@ -1351,7 +1338,6 @@ namespace InkCanvasForClass_Remastered
         {
             CheckLastColor(109, true);
             penType = 1;
-            forceEraser = false;
             CheckPenTypeUIState();
             ColorSwitchCheck();
         }
@@ -1905,7 +1891,7 @@ namespace InkCanvasForClass_Remastered
 
             // 切换回屏幕模式
             SwitchToScreenMode();
-            
+
             CursorIcon_Click(null, null);
 
             SwitchToDefaultPen(null, null);
@@ -2036,7 +2022,6 @@ namespace InkCanvasForClass_Remastered
             System.Windows.Controls.Canvas.SetLeft(FloatingbarSelectionBG, 140);
 
             //BtnSelect_Click
-            forceEraser = true;
             inkCanvas.IsManipulationEnabled = false;
             if (inkCanvas.EditingMode == InkCanvasEditingMode.Select)
             {
@@ -2518,9 +2503,6 @@ namespace InkCanvasForClass_Remastered
                 GridBackgroundCoverHolder.Visibility = Visibility.Visible;
                 GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
 
-                /*if (forceEraser && _viewModel.AppMode == AppMode.Normal)
-                    BtnColorRed_Click(sender, null);*/
-
                 StackPanelCanvasControls.Visibility = Visibility.Visible;
                 //AnimationsHelper.ShowWithSlideFromLeftAndFade(StackPanelCanvasControls);
                 CheckEnableTwoFingerGestureBtnVisibility(true);
@@ -2585,50 +2567,7 @@ namespace InkCanvasForClass_Remastered
             FloatingbarSelectionBG.Visibility = Visibility.Visible;
             System.Windows.Controls.Canvas.SetLeft(FloatingbarSelectionBG, 84);
 
-            forceEraser = true;
-            forcePointEraser = true;
-            if (Settings.EraserShapeType == 0)
-            {
-                double k = 1;
-                switch (Settings.EraserSize)
-                {
-                    case 0:
-                        k = 0.5;
-                        break;
-                    case 1:
-                        k = 0.8;
-                        break;
-                    case 3:
-                        k = 1.25;
-                        break;
-                    case 4:
-                        k = 1.8;
-                        break;
-                }
-
-                inkCanvas.EraserShape = new EllipseStylusShape(k * 90, k * 90);
-            }
-            else if (Settings.EraserShapeType == 1)
-            {
-                double k = 1;
-                switch (Settings.EraserSize)
-                {
-                    case 0:
-                        k = 0.7;
-                        break;
-                    case 1:
-                        k = 0.9;
-                        break;
-                    case 3:
-                        k = 1.2;
-                        break;
-                    case 4:
-                        k = 1.6;
-                        break;
-                }
-
-                inkCanvas.EraserShape = new RectangleStylusShape(k * 90 * 0.6, k * 90);
-            }
+            UpdateEraserShape();
 
             if (inkCanvas.EditingMode == InkCanvasEditingMode.EraseByPoint)
             {
@@ -2677,9 +2616,6 @@ namespace InkCanvasForClass_Remastered
 
             FloatingbarSelectionBG.Visibility = Visibility.Visible;
             System.Windows.Controls.Canvas.SetLeft(FloatingbarSelectionBG, 112);
-
-            forceEraser = true;
-            forcePointEraser = false;
 
             inkCanvas.EraserShape = new EllipseStylusShape(5, 5);
             inkCanvas.EditingMode = InkCanvasEditingMode.EraseByStroke;
@@ -2734,11 +2670,12 @@ namespace InkCanvasForClass_Remastered
             _viewModel.IsSettingsPanelVisible = false;
         }
 
-        private bool forceEraser = false;
+        private bool ForceEraser => inkCanvas.EditingMode is InkCanvasEditingMode.EraseByPoint
+                or InkCanvasEditingMode.EraseByStroke
+                or InkCanvasEditingMode.Select;
 
         private void BtnClear_Click(object? sender, RoutedEventArgs? e)
         {
-            forceEraser = false;
             //BorderClearInDelete.Visibility = Visibility.Collapsed;
 
             if (_viewModel.AppMode == AppMode.Normal)
@@ -4298,55 +4235,7 @@ namespace InkCanvasForClass_Remastered
             ComboBoxPenStyle.SelectedIndex = Settings.InkStyle;
             BoardComboBoxPenStyle.SelectedIndex = Settings.InkStyle;
 
-            switch (Settings.EraserShapeType)
-            {
-                case 0:
-                    {
-                        double k = 1;
-                        switch (Settings.EraserSize)
-                        {
-                            case 0:
-                                k = 0.5;
-                                break;
-                            case 1:
-                                k = 0.8;
-                                break;
-                            case 3:
-                                k = 1.25;
-                                break;
-                            case 4:
-                                k = 1.8;
-                                break;
-                        }
-
-                        inkCanvas.EraserShape = new EllipseStylusShape(k * 90, k * 90);
-                        inkCanvas.EditingMode = InkCanvasEditingMode.None;
-                        break;
-                    }
-                case 1:
-                    {
-                        double k = 1;
-                        switch (Settings.EraserSize)
-                        {
-                            case 0:
-                                k = 0.7;
-                                break;
-                            case 1:
-                                k = 0.9;
-                                break;
-                            case 3:
-                                k = 1.2;
-                                break;
-                            case 4:
-                                k = 1.6;
-                                break;
-                        }
-
-                        inkCanvas.EraserShape = new RectangleStylusShape(k * 90 * 0.6, k * 90);
-                        inkCanvas.EditingMode = InkCanvasEditingMode.None;
-                        break;
-                    }
-            }
+            UpdateEraserShape();
 
             CheckEraserTypeTab();
 
@@ -5089,9 +4978,12 @@ namespace InkCanvasForClass_Remastered
 
         private void MainWindow_TouchDown(object? sender, TouchEventArgs? e)
         {
-            if (inkCanvas.EditingMode == InkCanvasEditingMode.EraseByPoint
-                || inkCanvas.EditingMode == InkCanvasEditingMode.EraseByStroke
-                || inkCanvas.EditingMode == InkCanvasEditingMode.Select) return;
+            //Logger.LogTrace("Mainwindow_touchdown");
+            if (ForceEraser)
+            {
+                //Logger.LogTrace("Mainwindow_touchdown return");
+                return;
+            }
 
             if (!isHidingSubPanelsWhenInking)
             {
@@ -5105,11 +4997,9 @@ namespace InkCanvasForClass_Remastered
             if (Settings.EraserBindTouchMultiplier && Settings.IsSpecialScreen)
                 eraserMultiplier = 1 / Settings.TouchMultiplier;
 
-            if ((Settings.TouchMultiplier != 0 && Settings.IsSpecialScreen) //启用特殊屏幕且触摸倍数为 0 时禁用橡皮
+            if (!(Settings.TouchMultiplier != 0 && Settings.IsSpecialScreen) //启用特殊屏幕且触摸倍数为 0 时禁用橡皮
                 && boundWidth > BoundsWidth * 2.5)
             {
-                if (forceEraser)
-                    return;
                 double k = 1;
                 switch (Settings.EraserSize)
                 {
@@ -5146,9 +5036,7 @@ namespace InkCanvasForClass_Remastered
             ViewboxFloatingBar.IsHitTestVisible = false;
             BlackboardUIGridForInkReplay.IsHitTestVisible = false;
 
-            if (inkCanvas.EditingMode is InkCanvasEditingMode.EraseByPoint
-                or InkCanvasEditingMode.EraseByStroke
-                or InkCanvasEditingMode.Select)
+            if (ForceEraser)
                 return;
 
             TouchDownPointsList[e.StylusDevice.Id] = InkCanvasEditingMode.None;
@@ -5156,6 +5044,7 @@ namespace InkCanvasForClass_Remastered
 
         private async void MainWindow_StylusUp(object sender, StylusEventArgs e)
         {
+            //Logger.LogTrace("StylusUp event triggered");
             try
             {
                 inkCanvas.Strokes.Add(GetStrokeVisual(e.StylusDevice.Id).Stroke);
@@ -5183,7 +5072,10 @@ namespace InkCanvasForClass_Remastered
                     TouchDownPointsList.Clear();
                 }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Logger.LogWarning(ex, "Error in StylusUp event");
+            }
 
             inkCanvas.ReleaseStylusCapture();
             ViewboxFloatingBar.IsHitTestVisible = true;
@@ -5192,14 +5084,18 @@ namespace InkCanvasForClass_Remastered
 
         private void MainWindow_StylusMove(object sender, StylusEventArgs e)
         {
+            //Logger.LogTrace("StylusMove event triggered");
             try
             {
                 if (GetTouchDownPointsList(e.StylusDevice.Id) != InkCanvasEditingMode.None) return;
-                try
-                {
-                    if (e.StylusDevice.StylusButtons[1].StylusButtonState == StylusButtonState.Down) return;
-                }
-                catch { }
+                //try
+                //{
+                //    if (e.StylusDevice.StylusButtons[1].StylusButtonState == StylusButtonState.Down) return;
+                //}
+                //catch (Exception ex)
+                //{
+                //    Logger.LogWarning(ex, "Error checking stylus button state");
+                //}
 
                 var strokeVisual = GetStrokeVisual(e.StylusDevice.Id);
                 var stylusPointCollection = e.GetStylusPoints(this);
@@ -5207,7 +5103,10 @@ namespace InkCanvasForClass_Remastered
                     strokeVisual.Add(new StylusPoint(stylusPoint.X, stylusPoint.Y, stylusPoint.PressureFactor));
                 strokeVisual.Redraw();
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Logger.LogWarning(ex, "Error in StylusMove event");
+            }
         }
 
         private StrokeVisual GetStrokeVisual(int id)
@@ -5241,10 +5140,10 @@ namespace InkCanvasForClass_Remastered
         private Dictionary<int, VisualCanvas> VisualCanvasList { get; } = new Dictionary<int, VisualCanvas>();
 
         #endregion
-        private bool forcePointEraser = true;
 
         private void Main_Grid_TouchDown(object? sender, TouchEventArgs? e)
         {
+            //Logger.LogTrace("Main_Grid_touchdown");
             inkCanvas.CaptureTouch(e.TouchDevice);
             ViewboxFloatingBar.IsHitTestVisible = false;
             BlackboardUIGridForInkReplay.IsHitTestVisible = false;
@@ -5255,59 +5154,57 @@ namespace InkCanvasForClass_Remastered
                 HideSubPanels(); // 书写时自动隐藏二级菜单
             }
 
-            inkCanvas.Opacity = 1;
-            double boundsWidth = GetTouchBoundWidth(e), eraserMultiplier = 1.0;
-            if (!Settings.EraserBindTouchMultiplier && Settings.IsSpecialScreen)
-                eraserMultiplier = 1 / Settings.TouchMultiplier;
-            if (boundsWidth > BoundsWidth)
-            {
-                if (forceEraser)
-                    return;
-                if (boundsWidth > BoundsWidth * 2.5)
-                {
-                    double k = 1;
-                    switch (Settings.EraserSize)
-                    {
-                        case 0:
-                            k = 0.5;
-                            break;
-                        case 1:
-                            k = 0.8;
-                            break;
-                        case 3:
-                            k = 1.25;
-                            break;
-                        case 4:
-                            k = 1.8;
-                            break;
-                    }
+            //inkCanvas.Opacity = 1;
+            //double boundsWidth = GetTouchBoundWidth(e), eraserMultiplier = 1.0;
+            //if (!Settings.EraserBindTouchMultiplier && Settings.IsSpecialScreen)
+            //    eraserMultiplier = 1 / Settings.TouchMultiplier;
+            //if (boundsWidth > BoundsWidth)
+            //{
+            //    if (boundsWidth > BoundsWidth * 2.5)
+            //    {
+            //        double k = 1;
+            //        switch (Settings.EraserSize)
+            //        {
+            //            case 0:
+            //                k = 0.5;
+            //                break;
+            //            case 1:
+            //                k = 0.8;
+            //                break;
+            //            case 3:
+            //                k = 1.25;
+            //                break;
+            //            case 4:
+            //                k = 1.8;
+            //                break;
+            //        }
 
-                    inkCanvas.EraserShape = new EllipseStylusShape(boundsWidth * k * eraserMultiplier,
-                        boundsWidth * k * eraserMultiplier);
-                    inkCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
-                }
-                else
-                {
-                    if (_powerPointService.IsInSlideShow && inkCanvas.Strokes.Count == 0 &&
-                        Settings.IsEnableFingerGestureSlideShowControl)
-                    {
-                        inkCanvas.EditingMode = InkCanvasEditingMode.GestureOnly;
-                        inkCanvas.Opacity = 0.1;
-                    }
-                    else
-                    {
-                        inkCanvas.EraserShape = new EllipseStylusShape(5, 5);
-                        inkCanvas.EditingMode = InkCanvasEditingMode.EraseByStroke;
-                    }
-                }
-            }
-            else
-            {
-                inkCanvas.EraserShape =
-                    forcePointEraser ? new EllipseStylusShape(50, 50) : new EllipseStylusShape(5, 5);
-                if (forceEraser) return;
-                inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
-            }
+            //        inkCanvas.EraserShape = new EllipseStylusShape(boundsWidth * k * eraserMultiplier,
+            //            boundsWidth * k * eraserMultiplier);
+            //        inkCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
+            //    }
+            //    else
+            //    {
+            //        if (_powerPointService.IsInSlideShow && inkCanvas.Strokes.Count == 0 &&
+            //            Settings.IsEnableFingerGestureSlideShowControl)
+            //        {
+            //            inkCanvas.EditingMode = InkCanvasEditingMode.GestureOnly;
+            //            inkCanvas.Opacity = 0.1;
+            //        }
+            //        else
+            //        {
+            //            inkCanvas.EraserShape = new EllipseStylusShape(5, 5);
+            //            inkCanvas.EditingMode = InkCanvasEditingMode.EraseByStroke;
+            //        }
+            //    }
+            //}
+            //else
+            //{
+            //    inkCanvas.EraserShape =
+            //        forcePointEraser ? new EllipseStylusShape(50, 50) : new EllipseStylusShape(5, 5);
+            //    if (forceEraser) return;
+            //    inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
+            //}
         }
 
         private double GetTouchBoundWidth(TouchEventArgs e)
@@ -5327,7 +5224,7 @@ namespace InkCanvasForClass_Remastered
 
         private void inkCanvas_PreviewTouchDown(object sender, TouchEventArgs e)
         {
-
+            //Logger.LogTrace("inkCanvas_PreviewTouchDown");
             inkCanvas.CaptureTouch(e.TouchDevice);
             ViewboxFloatingBar.IsHitTestVisible = false;
             BlackboardUIGridForInkReplay.IsHitTestVisible = false;
@@ -5351,7 +5248,7 @@ namespace InkCanvasForClass_Remastered
 
         private void inkCanvas_PreviewTouchUp(object sender, TouchEventArgs e)
         {
-
+            //Logger.LogTrace("inkCanvas_PreviewTouchUp");
             inkCanvas.ReleaseAllTouchCaptures();
             ViewboxFloatingBar.IsHitTestVisible = true;
             BlackboardUIGridForInkReplay.IsHitTestVisible = true;
@@ -5367,6 +5264,7 @@ namespace InkCanvasForClass_Remastered
 
         private void inkCanvas_ManipulationStarting(object sender, ManipulationStartingEventArgs e)
         {
+            //Logger.LogTrace("inkCanvas_ManipulationStarting");
             e.Mode = ManipulationModes.All;
         }
 
@@ -5374,8 +5272,10 @@ namespace InkCanvasForClass_Remastered
 
         private void Main_Grid_ManipulationCompleted(object sender, ManipulationCompletedEventArgs e)
         {
+            //Logger.LogTrace("Main_Grid_ManipulationCompleted");
             if (e.Manipulators.Count() != 0) return;
-            if (forceEraser) return;
+            if (ForceEraser)
+                return;
             inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
         }
 
