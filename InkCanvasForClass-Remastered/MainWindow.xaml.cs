@@ -1493,10 +1493,10 @@ namespace InkCanvasForClass_Remastered
         #region 浮動工具欄的拖動實現
 
         private bool isDragDropInEffect = false;
-        private Point pos = new Point();
-        private Point downPos = new Point();
-        private Point pointDesktop = new Point(-1, -1); //用于记录上次在桌面时的坐标
-        private Point pointPPT = new Point(-1, -1); //用于记录上次在PPT中的坐标
+        private Point pos = new();
+        private Point downPos = new();
+        private Point pointDesktop = new(-1, -1); //用于记录上次在桌面时的坐标
+        private Point pointPPT = new(-1, -1); //用于记录上次在PPT中的坐标
 
         private void SymbolIconEmoji_MouseMove(object sender, MouseEventArgs e)
         {
@@ -5167,7 +5167,7 @@ namespace InkCanvasForClass_Remastered
             }
             catch (Exception ex)
             {
-                Label.Content = ex.ToString();
+                Logger.LogWarning(ex, "Error in StylusUp event");
             }
 
             try

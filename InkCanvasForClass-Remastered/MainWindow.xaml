@@ -1920,11 +1920,6 @@
             </Grid>
         </Grid>
         <Grid Name="GridTransparencyFakeBackground" />
-        <Label
-            Name="Label"
-            Content="0"
-            Foreground="Gray"
-            Visibility="Collapsed" />
         <Grid Name="InkCanvasGridForInkReplay">
             <InkCanvas
                 x:Name="inkCanvas"
@@ -6415,7 +6410,6 @@
                             </ikw:SimpleStackPanel>
                         </Grid>
                     </Border>
-
                     <Border
                         x:Name="EnableTwoFingerGestureBorder"
                         Width="36"
@@ -6640,7 +6634,6 @@
                             </ikw:SimpleStackPanel>
                         </Border>
                     </Grid>
-                    <!--  Visibility="{Binding ElementName=BtnPPTSlideShowEnd, Path=Visibility}">  -->
                     <Border
                         x:Name="BorderFloatingBarExitPPTBtn"
                         Width="34"
