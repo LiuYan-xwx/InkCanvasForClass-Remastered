@@ -3,6 +3,7 @@ using CommunityToolkit.Mvvm.Input;
 using InkCanvasForClass_Remastered.Enums;
 using InkCanvasForClass_Remastered.Models;
 using InkCanvasForClass_Remastered.Services;
+using System.Windows.Controls;
 
 namespace InkCanvasForClass_Remastered.ViewModels
 {
@@ -22,6 +23,8 @@ namespace InkCanvasForClass_Remastered.ViewModels
 
         [ObservableProperty]
         private AppMode _appMode = AppMode.Normal;
+        [ObservableProperty]
+        private InkCanvasEditingMode _appPenMode = InkCanvasEditingMode.None;
         [ObservableProperty]
         private string _nowTime;
         [ObservableProperty]

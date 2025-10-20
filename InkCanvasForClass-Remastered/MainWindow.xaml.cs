@@ -2021,6 +2021,7 @@ namespace InkCanvasForClass_Remastered
             FloatingbarSelectionBG.Visibility = Visibility.Visible;
             System.Windows.Controls.Canvas.SetLeft(FloatingbarSelectionBG, 140);
 
+            _viewModel.AppPenMode = InkCanvasEditingMode.Select;
             //BtnSelect_Click
             inkCanvas.IsManipulationEnabled = false;
             if (inkCanvas.EditingMode == InkCanvasEditingMode.Select)
@@ -2434,6 +2435,7 @@ namespace InkCanvasForClass_Remastered
             FloatingbarSelectionBG.Visibility = Visibility.Hidden;
             System.Windows.Controls.Canvas.SetLeft(FloatingbarSelectionBG, 0);
 
+            _viewModel.AppPenMode = InkCanvasEditingMode.None;
             // 切换前自动截图保存墨迹
             if (inkCanvas.Strokes.Count > 0 &&
                 inkCanvas.Strokes.Count > Settings.MinimumAutomationStrokeNumber)
@@ -2491,6 +2493,7 @@ namespace InkCanvasForClass_Remastered
             FloatingbarSelectionBG.Visibility = Visibility.Visible;
             System.Windows.Controls.Canvas.SetLeft(FloatingbarSelectionBG, 28);
 
+            _viewModel.AppPenMode = InkCanvasEditingMode.Ink;
             if (Pen_Icon.Background == null || StackPanelCanvasControls.Visibility == Visibility.Collapsed)
             {
                 inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
@@ -2567,6 +2570,7 @@ namespace InkCanvasForClass_Remastered
             FloatingbarSelectionBG.Visibility = Visibility.Visible;
             System.Windows.Controls.Canvas.SetLeft(FloatingbarSelectionBG, 84);
 
+            _viewModel.AppPenMode = InkCanvasEditingMode.EraseByPoint;
             UpdateEraserShape();
 
             if (inkCanvas.EditingMode == InkCanvasEditingMode.EraseByPoint)
@@ -2617,6 +2621,7 @@ namespace InkCanvasForClass_Remastered
             FloatingbarSelectionBG.Visibility = Visibility.Visible;
             System.Windows.Controls.Canvas.SetLeft(FloatingbarSelectionBG, 112);
 
+            _viewModel.AppPenMode = InkCanvasEditingMode.EraseByStroke;
             inkCanvas.EraserShape = new EllipseStylusShape(5, 5);
             inkCanvas.EditingMode = InkCanvasEditingMode.EraseByStroke;
 
@@ -4978,13 +4983,13 @@ namespace InkCanvasForClass_Remastered
 
         private void MainWindow_TouchDown(object? sender, TouchEventArgs? e)
         {
-            //Logger.LogTrace("Mainwindow_touchdown");
+            //Logger.LogDebug("Mainwindow_touchdown");
             if (ForceEraser)
             {
-                //Logger.LogTrace("Mainwindow_touchdown return");
+                //Logger.LogDebug("Mainwindow_touchdown return");
                 return;
             }
-
+            
             if (!isHidingSubPanelsWhenInking)
             {
                 isHidingSubPanelsWhenInking = true;
@@ -4997,7 +5002,7 @@ namespace InkCanvasForClass_Remastered
             if (Settings.EraserBindTouchMultiplier && Settings.IsSpecialScreen)
                 eraserMultiplier = 1 / Settings.TouchMultiplier;
 
-            if (!(Settings.TouchMultiplier != 0 && Settings.IsSpecialScreen) //启用特殊屏幕且触摸倍数为 0 时禁用橡皮
+            if ((Settings.TouchMultiplier != 0 && Settings.IsSpecialScreen) //启用特殊屏幕且触摸倍数为 0 时禁用橡皮
                 && boundWidth > BoundsWidth * 2.5)
             {
                 double k = 1;
@@ -5044,7 +5049,7 @@ namespace InkCanvasForClass_Remastered
 
         private async void MainWindow_StylusUp(object sender, StylusEventArgs e)
         {
-            //Logger.LogTrace("StylusUp event triggered");
+            //Logger.LogDebug("StylusUp event triggered");
             try
             {
                 inkCanvas.Strokes.Add(GetStrokeVisual(e.StylusDevice.Id).Stroke);
@@ -5056,7 +5061,7 @@ namespace InkCanvasForClass_Remastered
             }
             catch (Exception ex)
             {
-                Logger.LogWarning(ex, "Error in StylusUp event");
+                //Logger.LogWarning(ex, "Error in StylusUp event");
             }
 
             try
@@ -5084,7 +5089,7 @@ namespace InkCanvasForClass_Remastered
 
         private void MainWindow_StylusMove(object sender, StylusEventArgs e)
         {
-            //Logger.LogTrace("StylusMove event triggered");
+            //Logger.LogDebug("StylusMove event triggered");
             try
             {
                 if (GetTouchDownPointsList(e.StylusDevice.Id) != InkCanvasEditingMode.None) return;
@@ -5143,7 +5148,7 @@ namespace InkCanvasForClass_Remastered
 
         private void Main_Grid_TouchDown(object? sender, TouchEventArgs? e)
         {
-            //Logger.LogTrace("Main_Grid_touchdown");
+            //Logger.LogDebug("Main_Grid_touchdown");
             inkCanvas.CaptureTouch(e.TouchDevice);
             ViewboxFloatingBar.IsHitTestVisible = false;
             BlackboardUIGridForInkReplay.IsHitTestVisible = false;
@@ -5224,7 +5229,7 @@ namespace InkCanvasForClass_Remastered
 
         private void inkCanvas_PreviewTouchDown(object sender, TouchEventArgs e)
         {
-            //Logger.LogTrace("inkCanvas_PreviewTouchDown");
+            //Logger.LogDebug("inkCanvas_PreviewTouchDown");
             inkCanvas.CaptureTouch(e.TouchDevice);
             ViewboxFloatingBar.IsHitTestVisible = false;
             BlackboardUIGridForInkReplay.IsHitTestVisible = false;
@@ -5248,7 +5253,7 @@ namespace InkCanvasForClass_Remastered
 
         private void inkCanvas_PreviewTouchUp(object sender, TouchEventArgs e)
         {
-            //Logger.LogTrace("inkCanvas_PreviewTouchUp");
+            //Logger.LogDebug("inkCanvas_PreviewTouchUp");
             inkCanvas.ReleaseAllTouchCaptures();
             ViewboxFloatingBar.IsHitTestVisible = true;
             BlackboardUIGridForInkReplay.IsHitTestVisible = true;
@@ -5264,7 +5269,7 @@ namespace InkCanvasForClass_Remastered
 
         private void inkCanvas_ManipulationStarting(object sender, ManipulationStartingEventArgs e)
         {
-            //Logger.LogTrace("inkCanvas_ManipulationStarting");
+            //Logger.LogDebug("inkCanvas_ManipulationStarting");
             e.Mode = ManipulationModes.All;
         }
 
@@ -5272,10 +5277,12 @@ namespace InkCanvasForClass_Remastered
 
         private void Main_Grid_ManipulationCompleted(object sender, ManipulationCompletedEventArgs e)
         {
-            //Logger.LogTrace("Main_Grid_ManipulationCompleted");
+            //Logger.LogDebug("Main_Grid_ManipulationCompleted");
             if (e.Manipulators.Count() != 0) return;
-            if (ForceEraser)
+            if (_viewModel.AppPenMode is InkCanvasEditingMode.EraseByPoint or InkCanvasEditingMode.EraseByStroke)
+            {
                 return;
+            }
             inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
         }
 
