@@ -17,7 +17,7 @@
     <Grid>
         <!--  Left Side Panel  -->
         <Viewbox
-            Height="155"
+            Width="60"
             HorizontalAlignment="Left"
             VerticalAlignment="Center"
             Visibility="{Binding Settings.IsLeftSidePPTButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -33,7 +33,7 @@
 
         <!--  Right Side Panel  -->
         <Viewbox
-            Height="155"
+            Width="60"
             HorizontalAlignment="Right"
             VerticalAlignment="Center"
             Visibility="{Binding Settings.IsRightSidePPTButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}">

@@ -22,26 +22,19 @@
                             <Border
                                 Name="ButtonBorder"
                                 Background="{TemplateBinding Background}"
-                                CornerRadius="6"
-                                Opacity="1">
-                                <Border
-                                    Name="FeedbackBorder"
-                                    Margin="3"
-                                    Background="Black"
-                                    CornerRadius="6"
-                                    Opacity="0" />
+                                CornerRadius="6">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                             </Border>
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Grid>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="FeedbackBorder" Property="Opacity" Value="0.1" />
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#11000000" />
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="FeedbackBorder" Property="Opacity" Value="0.2" />
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#1C18181B" />
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="ButtonBorder" Property="Opacity" Value="0.5" />
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="Transparent" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -86,7 +79,7 @@
             </Style>
         </Border.Style>
 
-        <ikw:SimpleStackPanel Orientation="Vertical">
+        <StackPanel Margin="3" Orientation="Vertical">
             <!--  Previous Button  -->
             <Button
                 Name="PreviousButton"
@@ -132,6 +125,6 @@
                 Style="{StaticResource PPTNavButtonStyle}">
                 <Path Data="{StaticResource DownArrowGeometry}" Style="{StaticResource PathStyle}" />
             </Button>
-        </ikw:SimpleStackPanel>
+        </StackPanel>
     </Border>
 </UserControl>

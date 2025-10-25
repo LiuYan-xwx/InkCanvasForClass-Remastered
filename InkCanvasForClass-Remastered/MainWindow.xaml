@@ -6677,7 +6677,7 @@
             MouseUp="SymbolIconEmoji_MouseUp"
             Visibility="Collapsed" />
 
-        <!--  // 新版 PPT 翻页按钮面板 //  -->
+        <!--  // PPT 翻页按钮面板 //  -->
         <controls:PPTNavigationPanel
             x:Name="PPTNavigationPanel"
             DataContext="{Binding}"
