@@ -72,13 +72,6 @@ namespace InkCanvasForClass_Remastered
 
             Settings.PropertyChanged += Settings_PropertyChanged;
 
-            BlackboardLeftSide.Visibility = Visibility.Collapsed;
-            BlackboardCenterSide.Visibility = Visibility.Collapsed;
-            BlackboardRightSide.Visibility = Visibility.Collapsed;
-            BorderTools.Visibility = Visibility.Collapsed;
-            TwoFingerGestureBorder.Visibility = Visibility.Collapsed;
-            BoardTwoFingerGestureBorder.Visibility = Visibility.Collapsed;
-            GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
             ViewboxFloatingBar.Margin = new Thickness((SystemParameters.WorkArea.Width - 284) / 2,
                 SystemParameters.WorkArea.Height - 60, -2000, -200);
             ViewboxFloatingBarMarginAnimation(100, true);
@@ -668,10 +661,6 @@ namespace InkCanvasForClass_Remastered
                 if (_viewModel.AppMode == AppMode.WhiteBoard)
                 {
                     _viewModel.AppMode = AppMode.Normal;
-                    GridBackgroundCover.Visibility = Visibility.Collapsed;
-                    AnimationsHelper.HideWithSlideAndFade(BlackboardLeftSide);
-                    AnimationsHelper.HideWithSlideAndFade(BlackboardCenterSide);
-                    AnimationsHelper.HideWithSlideAndFade(BlackboardRightSide);
                 }
 
                 BtnHideInkCanvas_Click(null, null);
@@ -1905,10 +1894,7 @@ namespace InkCanvasForClass_Remastered
         {
             _viewModel.AppMode = AppMode.WhiteBoard;
 
-            GridBackgroundCover.Visibility = Visibility.Visible;
-            AnimationsHelper.ShowWithSlideFromBottomAndFade(BlackboardLeftSide);
-            AnimationsHelper.ShowWithSlideFromBottomAndFade(BlackboardCenterSide);
-            AnimationsHelper.ShowWithSlideFromBottomAndFade(BlackboardRightSide);
+            inkCanvas.Select(new StrokeCollection());
 
             SaveStrokes(true);
             ClearStrokes(true);
@@ -1930,10 +1916,7 @@ namespace InkCanvasForClass_Remastered
         {
             _viewModel.AppMode = AppMode.Normal;
 
-            GridBackgroundCover.Visibility = Visibility.Collapsed;
-            AnimationsHelper.HideWithSlideAndFade(BlackboardLeftSide);
-            AnimationsHelper.HideWithSlideAndFade(BlackboardCenterSide);
-            AnimationsHelper.HideWithSlideAndFade(BlackboardRightSide);
+            inkCanvas.Select(new StrokeCollection());
 
             SaveStrokes();
             ClearStrokes(true);
@@ -1950,7 +1933,6 @@ namespace InkCanvasForClass_Remastered
             GridTransparencyFakeBackground.Background = new SolidColorBrush(Color.FromArgb(1, 0, 0, 0));
             inkCanvas.IsHitTestVisible = true;
             inkCanvas.Visibility = Visibility.Visible;
-            GridBackgroundCoverHolder.Visibility = Visibility.Visible;
             GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
         }
 
@@ -1962,7 +1944,6 @@ namespace InkCanvasForClass_Remastered
             inkCanvas.IsHitTestVisible = true;
             inkCanvas.Visibility = Visibility.Visible;
             GridTransparencyFakeBackground.Background = null;
-            GridBackgroundCoverHolder.Visibility = Visibility.Collapsed;
 
             if (_viewModel.AppMode == AppMode.WhiteBoard)
             {
@@ -2459,7 +2440,6 @@ namespace InkCanvasForClass_Remastered
             // 取消选中的墨迹
             inkCanvas.Select(new StrokeCollection());
 
-            //GridBackgroundCoverHolder.Visibility = Visibility.Collapsed;
             //GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
 
             //if (_viewModel.AppMode == AppMode.WhiteBoard)
@@ -2503,7 +2483,6 @@ namespace InkCanvasForClass_Remastered
                 inkCanvas.IsHitTestVisible = true;
                 inkCanvas.Visibility = Visibility.Visible;
 
-                GridBackgroundCoverHolder.Visibility = Visibility.Visible;
                 GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
 
                 StackPanelCanvasControls.Visibility = Visibility.Visible;
@@ -2726,8 +2705,6 @@ namespace InkCanvasForClass_Remastered
                 inkCanvas.IsHitTestVisible = true;
                 inkCanvas.Visibility = Visibility.Visible;
 
-                GridBackgroundCoverHolder.Visibility = Visibility.Visible;
-
                 GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
             }
             else
@@ -2736,8 +2713,6 @@ namespace InkCanvasForClass_Remastered
                 inkCanvas.Visibility = Visibility.Visible;
 
                 GridTransparencyFakeBackground.Background = null;
-
-                GridBackgroundCoverHolder.Visibility = Visibility.Collapsed;
 
                 if (_viewModel.AppMode == AppMode.WhiteBoard)
                 {
@@ -4323,7 +4298,7 @@ namespace InkCanvasForClass_Remastered
 
             inkCanvas.ReleaseAllTouchCaptures();
             ViewboxFloatingBar.IsHitTestVisible = true;
-            BlackboardUIGridForInkReplay.IsHitTestVisible = true;
+            WhiteboardGrid.IsHitTestVisible = true;
 
             inkCanvas_MouseUp(sender, null);
         }
@@ -4332,14 +4307,14 @@ namespace InkCanvasForClass_Remastered
         {
             inkCanvas.CaptureMouse();
             ViewboxFloatingBar.IsHitTestVisible = false;
-            BlackboardUIGridForInkReplay.IsHitTestVisible = false;
+            WhiteboardGrid.IsHitTestVisible = false;
         }
 
         private void inkCanvas_MouseUp(object? sender, MouseButtonEventArgs? e)
         {
             inkCanvas.ReleaseMouseCapture();
             ViewboxFloatingBar.IsHitTestVisible = true;
-            BlackboardUIGridForInkReplay.IsHitTestVisible = true;
+            WhiteboardGrid.IsHitTestVisible = true;
             if (ReplacedStroke != null || AddedStroke != null)
             {
                 timeMachine.CommitStrokeEraseHistory(ReplacedStroke, AddedStroke);
@@ -5039,7 +5014,7 @@ namespace InkCanvasForClass_Remastered
 
             inkCanvas.CaptureStylus();
             ViewboxFloatingBar.IsHitTestVisible = false;
-            BlackboardUIGridForInkReplay.IsHitTestVisible = false;
+            WhiteboardGrid.IsHitTestVisible = false;
 
             if (ForceEraser)
                 return;
@@ -5084,7 +5059,7 @@ namespace InkCanvasForClass_Remastered
 
             inkCanvas.ReleaseStylusCapture();
             ViewboxFloatingBar.IsHitTestVisible = true;
-            BlackboardUIGridForInkReplay.IsHitTestVisible = true;
+            WhiteboardGrid.IsHitTestVisible = true;
         }
 
         private void MainWindow_StylusMove(object sender, StylusEventArgs e)
@@ -5151,7 +5126,7 @@ namespace InkCanvasForClass_Remastered
             //Logger.LogDebug("Main_Grid_touchdown");
             inkCanvas.CaptureTouch(e.TouchDevice);
             ViewboxFloatingBar.IsHitTestVisible = false;
-            BlackboardUIGridForInkReplay.IsHitTestVisible = false;
+            WhiteboardGrid.IsHitTestVisible = false;
 
             if (!isHidingSubPanelsWhenInking)
             {
@@ -5232,7 +5207,7 @@ namespace InkCanvasForClass_Remastered
             //Logger.LogDebug("inkCanvas_PreviewTouchDown");
             inkCanvas.CaptureTouch(e.TouchDevice);
             ViewboxFloatingBar.IsHitTestVisible = false;
-            BlackboardUIGridForInkReplay.IsHitTestVisible = false;
+            WhiteboardGrid.IsHitTestVisible = false;
 
             dec.Add(e.TouchDevice.Id);
             if (dec.Count == 1)
@@ -5256,7 +5231,7 @@ namespace InkCanvasForClass_Remastered
             //Logger.LogDebug("inkCanvas_PreviewTouchUp");
             inkCanvas.ReleaseAllTouchCaptures();
             ViewboxFloatingBar.IsHitTestVisible = true;
-            BlackboardUIGridForInkReplay.IsHitTestVisible = true;
+            WhiteboardGrid.IsHitTestVisible = true;
 
             //手势完成后切回之前的状态
             if (dec.Count > 1)
