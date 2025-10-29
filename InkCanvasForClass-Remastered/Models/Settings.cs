@@ -139,6 +139,8 @@ namespace InkCanvasForClass_Remastered.Models
         private bool _isEnableTwoFingerGestureInPresentationMode = false;
         [ObservableProperty]
         private bool _isEnableFingerGestureSlideShowControl = false;
+        [ObservableProperty]
+        private int _pPTNavigationPanelWidth = 60;
         // Automation
         [ObservableProperty]
         private bool _isAutoFoldInEasiNote = true;

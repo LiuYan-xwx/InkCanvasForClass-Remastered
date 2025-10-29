@@ -840,6 +840,25 @@
                                                 黑色背景
                                             </CheckBox>
                                         </ikw:SimpleStackPanel>
+                                        <controls:SettingsControl Header="翻页按钮宽度" Description="默认为 60">
+                                            <controls:SettingsControl.Switcher>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Slider
+                                                        Width="250"
+                                                        IsSnapToTickEnabled="True"
+                                                        Maximum="120"
+                                                        Minimum="20"
+                                                        TickFrequency="1"
+                                                        TickPlacement="None"
+                                                        Value="{Binding Settings.PPTNavigationPanelWidth, Mode=TwoWay}" />
+                                                    <TextBlock
+                                                        Margin="8,0,0,0"
+                                                        VerticalAlignment="Center"
+                                                        FontSize="14"
+                                                        Text="{Binding Settings.PPTNavigationPanelWidth}" />
+                                                </StackPanel>
+                                            </controls:SettingsControl.Switcher>
+                                        </controls:SettingsControl>
                                         <controls:SettingsControl
                                             Header="PPT 页码按钮可点击"
                                             Description="# 开启该选项后，点击页码按钮可以唤起PowerPoint自带的网格缩略图视图。WPS不支持该功能，开启也没用。"
@@ -6680,6 +6699,7 @@
             DataContext="{Binding}"
             NextClick="PPTNavigationPanel_NextClick"
             PageClick="PPTNavigationPanel_PageClick"
+            PanelWidth="{Binding Settings.PPTNavigationPanelWidth}"
             PreviousClick="PPTNavigationPanel_PreviousClick">
             <controls:PPTNavigationPanel.Style>
                 <Style TargetType="controls:PPTNavigationPanel">

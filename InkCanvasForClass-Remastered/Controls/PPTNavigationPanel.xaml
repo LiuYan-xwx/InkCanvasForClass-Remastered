@@ -17,7 +17,7 @@
     <Grid>
         <!--  Left Side Panel  -->
         <Viewbox
-            Width="60"
+            Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=controls:PPTNavigationPanel},Path=PanelWidth}"
             HorizontalAlignment="Left"
             VerticalAlignment="Center"
             Visibility="{Binding Settings.IsLeftSidePPTButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -33,7 +33,7 @@
 
         <!--  Right Side Panel  -->
         <Viewbox
-            Width="60"
+            Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=controls:PPTNavigationPanel},Path=PanelWidth}"
             HorizontalAlignment="Right"
             VerticalAlignment="Center"
             Visibility="{Binding Settings.IsRightSidePPTButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}">

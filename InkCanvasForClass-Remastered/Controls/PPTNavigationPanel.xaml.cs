@@ -25,6 +25,20 @@ namespace InkCanvasForClass_Remastered.Controls
         public static readonly RoutedEvent NextClickEvent = 
             EventManager.RegisterRoutedEvent(nameof(NextClick), RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(PPTNavigationPanel));
 
+
+
+        public double PanelWidth
+        {
+            get { return (double)GetValue(PanelWidthProperty); }
+            set { SetValue(PanelWidthProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for PanelWidth.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty PanelWidthProperty =
+            DependencyProperty.Register("PanelWidth", typeof(double), typeof(PPTNavigationPanel), new PropertyMetadata(60.0));
+
+
+
         public event RoutedEventHandler NextClick
         {
             add => AddHandler(NextClickEvent, value);
