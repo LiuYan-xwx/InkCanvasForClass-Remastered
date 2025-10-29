@@ -60,6 +60,17 @@ namespace InkCanvasForClass_Remastered.ViewModels
         }
 
         [RelayCommand]
+        private void OpenSettingsPanel()
+        {
+            IsSettingsPanelVisible = true;
+        }
+        [RelayCommand]
+        private void CloseSettingsPanel()
+        {
+            IsSettingsPanelVisible = false;
+        }
+
+        [RelayCommand]
         private void CrashTest()
         {
             throw new Exception("Crash Test");

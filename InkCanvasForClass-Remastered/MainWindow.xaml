@@ -1877,7 +1877,7 @@
                             Width="120"
                             Margin="10"
                             HorizontalAlignment="Right"
-                            Click="CloseSettingsPanelButton_Click"
+                            Command="{Binding CloseSettingsPanelCommand}"
                             FontFamily="Microsoft YaHei UI" />
                     </Grid>
                 </Grid>
@@ -4315,7 +4315,7 @@
                                                                 FontSize="8" />
                                                         </StackPanel>
                                                     </Button>
-                                                    <Button Click="SymbolIconSettings_Click" Style="{StaticResource ToolPanelButtonStyle}">
+                                                    <Button Command="{Binding OpenSettingsPanelCommand}" Style="{StaticResource ToolPanelButtonStyle}">
                                                         <StackPanel Orientation="Vertical">
                                                             <Image
                                                                 Width="19"
@@ -6395,7 +6395,7 @@
                                                                 FontSize="8" />
                                                         </StackPanel>
                                                     </Button>
-                                                    <Button Click="SymbolIconSettings_Click" Style="{StaticResource ToolPanelButtonStyle}">
+                                                    <Button Command="{Binding OpenSettingsPanelCommand}" Style="{StaticResource ToolPanelButtonStyle}">
                                                         <StackPanel Orientation="Vertical">
                                                             <Image
                                                                 Width="19"

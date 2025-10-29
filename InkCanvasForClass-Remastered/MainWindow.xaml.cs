@@ -2046,14 +2046,6 @@ namespace InkCanvasForClass_Remastered
             s.Background = new SolidColorBrush(Colors.Transparent);
         }
 
-        private void SymbolIconSettings_Click(object sender, RoutedEventArgs e)
-        {
-            AnimationsHelper.HideWithSlideAndFade(BorderTools);
-            AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
-            SettingsPanelScrollViewer.ScrollToTop();
-            _viewModel.IsSettingsPanelVisible = true;
-        }
-
         private void ImageCountdownTimer_Click(object sender, RoutedEventArgs e)
         {
             AnimationsHelper.HideWithSlideAndFade(BorderTools);
