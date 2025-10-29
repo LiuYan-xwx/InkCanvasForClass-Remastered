@@ -1,3 +1,4 @@
+using InkCanvasForClass_Remastered.Controls;
 using InkCanvasForClass_Remastered.Enums;
 using InkCanvasForClass_Remastered.Helpers;
 using InkCanvasForClass_Remastered.Models;
@@ -4291,6 +4292,7 @@ namespace InkCanvasForClass_Remastered
             inkCanvas.ReleaseAllTouchCaptures();
             ViewboxFloatingBar.IsHitTestVisible = true;
             WhiteboardGrid.IsHitTestVisible = true;
+            PPTNavigationPanel.IsHitTestVisible = true;
 
             inkCanvas_MouseUp(sender, null);
         }
@@ -4300,6 +4302,7 @@ namespace InkCanvasForClass_Remastered
             inkCanvas.CaptureMouse();
             ViewboxFloatingBar.IsHitTestVisible = false;
             WhiteboardGrid.IsHitTestVisible = false;
+            PPTNavigationPanel.IsHitTestVisible = false;
         }
 
         private void inkCanvas_MouseUp(object? sender, MouseButtonEventArgs? e)
@@ -4307,6 +4310,7 @@ namespace InkCanvasForClass_Remastered
             inkCanvas.ReleaseMouseCapture();
             ViewboxFloatingBar.IsHitTestVisible = true;
             WhiteboardGrid.IsHitTestVisible = true;
+            PPTNavigationPanel.IsHitTestVisible = true;
             if (ReplacedStroke != null || AddedStroke != null)
             {
                 timeMachine.CommitStrokeEraseHistory(ReplacedStroke, AddedStroke);
@@ -5007,6 +5011,7 @@ namespace InkCanvasForClass_Remastered
             inkCanvas.CaptureStylus();
             ViewboxFloatingBar.IsHitTestVisible = false;
             WhiteboardGrid.IsHitTestVisible = false;
+            PPTNavigationPanel.IsHitTestVisible = false;
 
             if (ForceEraser)
                 return;
@@ -5052,6 +5057,7 @@ namespace InkCanvasForClass_Remastered
             inkCanvas.ReleaseStylusCapture();
             ViewboxFloatingBar.IsHitTestVisible = true;
             WhiteboardGrid.IsHitTestVisible = true;
+            PPTNavigationPanel.IsHitTestVisible = true;
         }
 
         private void MainWindow_StylusMove(object sender, StylusEventArgs e)
@@ -5119,6 +5125,7 @@ namespace InkCanvasForClass_Remastered
             inkCanvas.CaptureTouch(e.TouchDevice);
             ViewboxFloatingBar.IsHitTestVisible = false;
             WhiteboardGrid.IsHitTestVisible = false;
+            PPTNavigationPanel.IsHitTestVisible = false;
 
             if (!isHidingSubPanelsWhenInking)
             {
@@ -5200,6 +5207,7 @@ namespace InkCanvasForClass_Remastered
             inkCanvas.CaptureTouch(e.TouchDevice);
             ViewboxFloatingBar.IsHitTestVisible = false;
             WhiteboardGrid.IsHitTestVisible = false;
+            PPTNavigationPanel.IsHitTestVisible = false;
 
             dec.Add(e.TouchDevice.Id);
             if (dec.Count == 1)
@@ -5224,6 +5232,7 @@ namespace InkCanvasForClass_Remastered
             inkCanvas.ReleaseAllTouchCaptures();
             ViewboxFloatingBar.IsHitTestVisible = true;
             WhiteboardGrid.IsHitTestVisible = true;
+            PPTNavigationPanel.IsHitTestVisible = true;
 
             //手势完成后切回之前的状态
             if (dec.Count > 1)
