@@ -24,7 +24,6 @@
 
 https://github.com/WXRIW  
 https://github.com/WuChanging  
-https://github.com/douxiba  
 https://github.com/Raspberry-Monster  
 https://github.com/Kengwang  
 https://github.com/jiajiaxd  
