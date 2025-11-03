@@ -87,40 +87,6 @@
                                 FontSize="14"
                                 Foreground="#18181b"
                                 Text="强制全屏化" />
-                            <ikw:SimpleStackPanel
-                                Margin="16,0,0,0"
-                                VerticalAlignment="Center"
-                                Orientation="Horizontal"
-                                Spacing="4">
-                                <Border
-                                    Padding="4,2,4,1"
-                                    Background="#e4e4e7"
-                                    BorderBrush="#a1a1aa"
-                                    BorderThickness="1"
-                                    CornerRadius="2.5">
-                                    <TextBlock
-                                        FontSize="8"
-                                        FontWeight="Bold"
-                                        Foreground="#3f3f46"
-                                        Text="CTRL" />
-                                </Border>
-                                <TextBlock
-                                    FontSize="10"
-                                    Foreground="#3f3f46"
-                                    Text="+" />
-                                <Border
-                                    Padding="4,2,4,1"
-                                    Background="#e4e4e7"
-                                    BorderBrush="#a1a1aa"
-                                    BorderThickness="1"
-                                    CornerRadius="2.5">
-                                    <TextBlock
-                                        FontSize="8"
-                                        FontWeight="Bold"
-                                        Foreground="#3f3f46"
-                                        Text="F" />
-                                </Border>
-                            </ikw:SimpleStackPanel>
                         </ikw:SimpleStackPanel>
                     </MenuItem.Header>
                     <MenuItem.Icon>
@@ -153,40 +119,6 @@
                                 FontSize="14"
                                 Foreground="#18181b"
                                 Text="切换为收纳模式" />
-                            <ikw:SimpleStackPanel
-                                Margin="16,0,0,0"
-                                VerticalAlignment="Center"
-                                Orientation="Horizontal"
-                                Spacing="4">
-                                <Border
-                                    Padding="4,2,4,1"
-                                    Background="#e4e4e7"
-                                    BorderBrush="#a1a1aa"
-                                    BorderThickness="1"
-                                    CornerRadius="2.5">
-                                    <TextBlock
-                                        FontSize="8"
-                                        FontWeight="Bold"
-                                        Foreground="#3f3f46"
-                                        Text="CTRL" />
-                                </Border>
-                                <TextBlock
-                                    FontSize="10"
-                                    Foreground="#3f3f46"
-                                    Text="+" />
-                                <Border
-                                    Padding="4,2,4,1"
-                                    Background="#e4e4e7"
-                                    BorderBrush="#a1a1aa"
-                                    BorderThickness="1"
-                                    CornerRadius="2.5">
-                                    <TextBlock
-                                        FontSize="8"
-                                        FontWeight="Bold"
-                                        Foreground="#3f3f46"
-                                        Text="S" />
-                                </Border>
-                            </ikw:SimpleStackPanel>
                         </ikw:SimpleStackPanel>
                     </MenuItem.Header>
                     <MenuItem.Icon>
@@ -237,40 +169,6 @@
                                 FontSize="14"
                                 Foreground="#18181b"
                                 Text="重置工具栏位置" />
-                            <ikw:SimpleStackPanel
-                                Margin="16,0,0,0"
-                                VerticalAlignment="Center"
-                                Orientation="Horizontal"
-                                Spacing="4">
-                                <Border
-                                    Padding="4,2,4,1"
-                                    Background="#e4e4e7"
-                                    BorderBrush="#a1a1aa"
-                                    BorderThickness="1"
-                                    CornerRadius="2.5">
-                                    <TextBlock
-                                        FontSize="8"
-                                        FontWeight="Bold"
-                                        Foreground="#3f3f46"
-                                        Text="CTRL" />
-                                </Border>
-                                <TextBlock
-                                    FontSize="10"
-                                    Foreground="#3f3f46"
-                                    Text="+" />
-                                <Border
-                                    Padding="4,2,4,1"
-                                    Background="#e4e4e7"
-                                    BorderBrush="#a1a1aa"
-                                    BorderThickness="1"
-                                    CornerRadius="2.5">
-                                    <TextBlock
-                                        FontSize="8"
-                                        FontWeight="Bold"
-                                        Foreground="#3f3f46"
-                                        Text="T" />
-                                </Border>
-                            </ikw:SimpleStackPanel>
                         </ikw:SimpleStackPanel>
                     </MenuItem.Header>
                     <MenuItem.Icon>
@@ -301,40 +199,6 @@
                                 FontWeight="Bold"
                                 Foreground="#2563eb"
                                 Text="重启软件" />
-                            <ikw:SimpleStackPanel
-                                Margin="16,0,0,0"
-                                VerticalAlignment="Center"
-                                Orientation="Horizontal"
-                                Spacing="4">
-                                <Border
-                                    Padding="4,2,4,1"
-                                    Background="#e4e4e7"
-                                    BorderBrush="#a1a1aa"
-                                    BorderThickness="1"
-                                    CornerRadius="2.5">
-                                    <TextBlock
-                                        FontSize="8"
-                                        FontWeight="Bold"
-                                        Foreground="#3f3f46"
-                                        Text="CTRL" />
-                                </Border>
-                                <TextBlock
-                                    FontSize="10"
-                                    Foreground="#3f3f46"
-                                    Text="+" />
-                                <Border
-                                    Padding="4,2,4,1"
-                                    Background="#e4e4e7"
-                                    BorderBrush="#a1a1aa"
-                                    BorderThickness="1"
-                                    CornerRadius="2.5">
-                                    <TextBlock
-                                        FontSize="8"
-                                        FontWeight="Bold"
-                                        Foreground="#3f3f46"
-                                        Text="R" />
-                                </Border>
-                            </ikw:SimpleStackPanel>
                         </ikw:SimpleStackPanel>
                     </MenuItem.Header>
                     <MenuItem.Icon>
@@ -361,40 +225,6 @@
                                 FontWeight="Bold"
                                 Foreground="#dc2626"
                                 Text="退出软件" />
-                            <ikw:SimpleStackPanel
-                                Margin="16,0,0,0"
-                                VerticalAlignment="Center"
-                                Orientation="Horizontal"
-                                Spacing="4">
-                                <Border
-                                    Padding="4,2,4,1"
-                                    Background="#e4e4e7"
-                                    BorderBrush="#a1a1aa"
-                                    BorderThickness="1"
-                                    CornerRadius="2.5">
-                                    <TextBlock
-                                        FontSize="8"
-                                        FontWeight="Bold"
-                                        Foreground="#3f3f46"
-                                        Text="CTRL" />
-                                </Border>
-                                <TextBlock
-                                    FontSize="10"
-                                    Foreground="#3f3f46"
-                                    Text="+" />
-                                <Border
-                                    Padding="4,2,4,1"
-                                    Background="#e4e4e7"
-                                    BorderBrush="#a1a1aa"
-                                    BorderThickness="1"
-                                    CornerRadius="2.5">
-                                    <TextBlock
-                                        FontSize="8"
-                                        FontWeight="Bold"
-                                        Foreground="#3f3f46"
-                                        Text="Q" />
-                                </Border>
-                            </ikw:SimpleStackPanel>
                         </ikw:SimpleStackPanel>
                     </MenuItem.Header>
                     <MenuItem.Icon>
@@ -426,7 +256,7 @@
                 <ResourceDictionary Source="Resources/DrawShapeImageDictionary.xaml" />
                 <ResourceDictionary Source="Resources/IconImageDictionary.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Light.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/Resources/IconData.xaml"/>
+                <ResourceDictionary Source="pack://application:,,,/Resources/IconData.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
