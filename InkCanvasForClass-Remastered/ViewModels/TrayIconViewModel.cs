@@ -10,7 +10,9 @@ using System.Windows.Interop;
 namespace InkCanvasForClass_Remastered.ViewModels
 {
     /// <summary>
-    /// ViewModel for the system tray icon and its context menu
+    /// Modern MVVM ViewModel for the system tray icon and its context menu.
+    /// Manages tray icon state, menu item visibility, and delegates user actions to MainWindow.
+    /// This replaces the old code-behind approach with proper data binding and command pattern.
     /// </summary>
     public partial class TrayIconViewModel : ObservableObject
     {
@@ -25,33 +27,60 @@ namespace InkCanvasForClass_Remastered.ViewModels
 
         public Settings Settings => _settingsService.Settings;
 
+        /// <summary>
+        /// Indicates whether the main window is currently hidden
+        /// </summary>
         [ObservableProperty]
         private bool _isMainWindowHidden = false;
 
+        /// <summary>
+        /// Indicates whether the floating bar is in folded/收纳 mode
+        /// </summary>
         [ObservableProperty]
         private bool _isFloatingBarFolded = false;
 
+        /// <summary>
+        /// Dynamic text for the fold floating bar menu item
+        /// </summary>
         [ObservableProperty]
         private string _foldFloatingBarMenuText = "切换为收纳模式";
 
+        /// <summary>
+        /// Controls visibility of the eye-off icon (shown when bar is visible)
+        /// </summary>
         [ObservableProperty]
         private bool _isFoldEyeOffVisible = true;
 
+        /// <summary>
+        /// Controls visibility of the eye-on icon (shown when bar is folded)
+        /// </summary>
         [ObservableProperty]
         private bool _isFoldEyeOnVisible = false;
 
+        /// <summary>
+        /// Controls whether the reset floating bar position menu item is enabled
+        /// </summary>
         [ObservableProperty]
         private bool _isResetPositionEnabled = true;
 
+        /// <summary>
+        /// Controls whether the fold floating bar menu item is enabled
+        /// </summary>
         [ObservableProperty]
         private bool _isFoldFloatingBarEnabled = true;
 
+        /// <summary>
+        /// Controls whether the force fullscreen menu item is enabled
+        /// </summary>
         [ObservableProperty]
         private bool _isForceFullScreenEnabled = true;
 
         /// <summary>
-        /// Updates the tray icon menu state based on the main window state
+        /// Updates the tray icon menu state based on the main window state.
+        /// This method centralizes all state management logic for the tray icon menu.
         /// </summary>
+        /// <param name="isFloatingBarVisible">Whether the floating toolbar is currently visible</param>
+        /// <param name="isMainWindowHidden">Whether the main application window is hidden</param>
         public void UpdateMenuState(bool isFloatingBarVisible, bool isMainWindowHidden)
         {
             IsMainWindowHidden = isMainWindowHidden;
@@ -96,6 +125,9 @@ namespace InkCanvasForClass_Remastered.ViewModels
             }
         }
 
+        /// <summary>
+        /// Hides the main application window
+        /// </summary>
         [RelayCommand]
         private void HideMainWindow()
         {
@@ -109,6 +141,9 @@ namespace InkCanvasForClass_Remastered.ViewModels
             }
         }
 
+        /// <summary>
+        /// Shows the main application window
+        /// </summary>
         [RelayCommand]
         private void ShowMainWindow()
         {
@@ -122,6 +157,9 @@ namespace InkCanvasForClass_Remastered.ViewModels
             }
         }
 
+        /// <summary>
+        /// Forces the main window to fullscreen mode covering the entire primary screen
+        /// </summary>
         [RelayCommand]
         private void ForceFullScreen()
         {
@@ -144,6 +182,9 @@ namespace InkCanvasForClass_Remastered.ViewModels
             }
         }
 
+        /// <summary>
+        /// Toggles the floating toolbar between visible and folded/收纳 states
+        /// </summary>
         [RelayCommand]
         private void FoldFloatingBar()
         {
@@ -164,6 +205,9 @@ namespace InkCanvasForClass_Remastered.ViewModels
             }
         }
 
+        /// <summary>
+        /// Resets the floating toolbar to its default position
+        /// </summary>
         [RelayCommand]
         private void ResetFloatingBarPosition()
         {
@@ -189,6 +233,9 @@ namespace InkCanvasForClass_Remastered.ViewModels
             }
         }
 
+        /// <summary>
+        /// Restarts the application
+        /// </summary>
         [RelayCommand]
         private void RestartApp()
         {
@@ -200,6 +247,9 @@ namespace InkCanvasForClass_Remastered.ViewModels
             }
         }
 
+        /// <summary>
+        /// Closes the application
+        /// </summary>
         [RelayCommand]
         private void CloseApp()
         {
@@ -211,6 +261,9 @@ namespace InkCanvasForClass_Remastered.ViewModels
             }
         }
 
+        /// <summary>
+        /// Called when the context menu is opened. Updates menu state to reflect current application state.
+        /// </summary>
         [RelayCommand]
         private void ContextMenuOpened()
         {
@@ -221,6 +274,10 @@ namespace InkCanvasForClass_Remastered.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets the main application window instance
+        /// </summary>
+        /// <returns>MainWindow instance or null if not available</returns>
         private MainWindow? GetMainWindow()
         {
             return Application.Current.MainWindow as MainWindow;
