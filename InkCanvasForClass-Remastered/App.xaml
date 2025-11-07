@@ -9,6 +9,7 @@
     <Application.Resources>
         <ResourceDictionary>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <local:IsEnabledToOpacityConverter x:Key="IsEnabledToOpacityConverter" />
             <Style TargetType="ui:ScrollViewerEx">
                 <EventSetter Event="PreviewMouseWheel" Handler="ScrollViewer_PreviewMouseWheel" />
             </Style>
@@ -79,7 +80,10 @@
                         </Image>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Name="ForceFullScreenTrayIconMenuItem" Click="ForceFullScreenTrayIconMenuItem_Clicked">
+                <MenuItem Name="ForceFullScreenTrayIconMenuItem" 
+                          Click="ForceFullScreenTrayIconMenuItem_Clicked"
+                          IsEnabled="{Binding IsForceFullScreenEnabled}"
+                          Opacity="{Binding IsForceFullScreenEnabled, Converter={StaticResource IsEnabledToOpacityConverter}}">
                     <MenuItem.Header>
                         <ikw:SimpleStackPanel Margin="-4,0,0,0" Orientation="Horizontal">
                             <TextBlock
@@ -110,7 +114,10 @@
                         </Image>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Name="FoldFloatingBarTrayIconMenuItem" Click="FoldFloatingBarTrayIconMenuItem_Clicked">
+                <MenuItem Name="FoldFloatingBarTrayIconMenuItem" 
+                          Click="FoldFloatingBarTrayIconMenuItem_Clicked"
+                          IsEnabled="{Binding IsFoldFloatingBarEnabled}"
+                          Opacity="{Binding IsFoldFloatingBarEnabled, Converter={StaticResource IsEnabledToOpacityConverter}}">
                     <MenuItem.Header>
                         <ikw:SimpleStackPanel Margin="-4,0,0,0" Orientation="Horizontal">
                             <TextBlock
@@ -118,7 +125,7 @@
                                 VerticalAlignment="Center"
                                 FontSize="14"
                                 Foreground="#18181b"
-                                Text="切换为收纳模式" />
+                                Text="{Binding FoldFloatingBarMenuText}" />
                         </ikw:SimpleStackPanel>
                     </MenuItem.Header>
                     <MenuItem.Icon>
@@ -128,7 +135,7 @@
                                 Width="28"
                                 Height="28"
                                 Margin="-2"
-                                Visibility="Hidden">
+                                Visibility="{Binding IsFoldEyeOffVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <Image.Source>
                                     <DrawingImage>
                                         <DrawingImage.Drawing>
@@ -145,7 +152,7 @@
                                 Width="28"
                                 Height="28"
                                 Margin="-2"
-                                Visibility="Hidden">
+                                Visibility="{Binding IsFoldEyeOnVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <Image.Source>
                                     <DrawingImage>
                                         <DrawingImage.Drawing>
@@ -161,7 +168,10 @@
 
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Name="ResetFloatingBarPositionTrayIconMenuItem" Click="ResetFloatingBarPositionTrayIconMenuItem_Clicked">
+                <MenuItem Name="ResetFloatingBarPositionTrayIconMenuItem" 
+                          Click="ResetFloatingBarPositionTrayIconMenuItem_Clicked"
+                          IsEnabled="{Binding IsResetPositionEnabled}"
+                          Opacity="{Binding IsResetPositionEnabled, Converter={StaticResource IsEnabledToOpacityConverter}}">
                     <MenuItem.Header>
                         <ikw:SimpleStackPanel Margin="-4,0,0,0" Orientation="Horizontal">
                             <TextBlock

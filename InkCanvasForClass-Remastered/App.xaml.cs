@@ -108,7 +108,10 @@ namespace InkCanvasForClass_Remastered
             MainWindow = mainWindow;
             mainWindow.Show();
 
+            // Initialize tray icon with ViewModel
             var taskbar = (TaskbarIcon)FindResource("TaskbarTrayIcon");
+            var trayIconViewModel = GetService<TrayIconViewModel>();
+            taskbar.DataContext = trayIconViewModel;
 
             await GetService<FileFolderService>().ProcessOldFilesAsync();
 
@@ -126,6 +129,7 @@ namespace InkCanvasForClass_Remastered
             services.AddTransient<MainViewModel>();
             services.AddTransient<RandViewModel>();
             services.AddTransient<NamesInputViewModel>();
+            services.AddSingleton<TrayIconViewModel>();
 
             // 注册窗口
             services.AddSingleton<MainWindow>();
