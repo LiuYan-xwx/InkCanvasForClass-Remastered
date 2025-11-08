@@ -28,6 +28,7 @@
     KeyDown="Window_KeyDown"
     Loaded="Window_Loaded"
     MouseWheel="Window_MouseWheel"
+    SourceInitialized="Window_SourceInitialized"
     PreviewKeyDown="Main_Grid_PreviewKeyDown"
     ResizeMode="NoResize"
     ShowInTaskbar="False"
@@ -337,6 +338,8 @@
                                     <controls:SettingsControl Header="开机自启" IsOn="{Binding Settings.IsAutoStartEnabled}" />
 
                                     <controls:SettingsControl Header="开机自启后收纳到侧边栏" IsOn="{Binding Settings.IsFoldAtStartup}" />
+
+                                    <controls:SettingsControl Header="使窗口永不激活（无焦点模式）" Description="懂得都懂，不懂的不用开。此设置需要重启生效！" IsOn="{Binding Settings.IsWindowNoActivate}"/>
                                 </ikw:SimpleStackPanel>
                             </GroupBox>
                             <GroupBox>

@@ -207,6 +207,8 @@ namespace InkCanvasForClass_Remastered.Models
         [ObservableProperty]
         private double _randWindowOnceCloseLatency = 2.5;
 
+        [ObservableProperty]
+        private bool _isWindowNoActivate = false;
 
         [JsonIgnore]
         public bool IsEnableAutoFold =>
