@@ -8,7 +8,10 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    <Button Name="PART_Button" Cursor="Hand">
+    <Button
+        Name="PART_Button"
+        Margin="0,1,0,0"
+        Cursor="Hand">
         <Button.Style>
             <Style TargetType="Button">
                 <Setter Property="Background" Value="Transparent" />
@@ -40,6 +43,7 @@
                 Source="{Binding IconSource, RelativeSource={RelativeSource AncestorType=UserControl}}" />
             <TextBlock
                 x:Name="PART_Label"
+                Margin="0,1,0,0"
                 FontSize="8"
                 Foreground="Black"
                 Text="{Binding Label, RelativeSource={RelativeSource AncestorType=UserControl}}"
