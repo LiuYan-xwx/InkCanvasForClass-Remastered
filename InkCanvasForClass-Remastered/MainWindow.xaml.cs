@@ -54,13 +54,13 @@ namespace InkCanvasForClass_Remastered
             _powerPointService = powerPointService;
             Logger = logger;
 
-    //        DependencyPropertyDescriptor
-    //.FromProperty(InkCanvas.EditingModeProperty, typeof(InkCanvas))
-    //.AddValueChanged(inkCanvas, (s, e) =>
-    //{
-    //    Logger.LogDebug($"EditingMode 改变为：{inkCanvas.EditingMode}");
-    //    Logger.LogDebug(Environment.StackTrace);
-    //});
+            //        DependencyPropertyDescriptor
+            //.FromProperty(InkCanvas.EditingModeProperty, typeof(InkCanvas))
+            //.AddValueChanged(inkCanvas, (s, e) =>
+            //{
+            //    Logger.LogDebug($"EditingMode 改变为：{inkCanvas.EditingMode}");
+            //    Logger.LogDebug(Environment.StackTrace);
+            //});
 
             DataContext = _viewModel;
 
@@ -187,7 +187,7 @@ namespace InkCanvasForClass_Remastered
 
         //ApplicationGesture lastApplicationGesture = ApplicationGesture.AllGestures;
         private DateTime lastGestureTime = DateTime.Now;
-        
+
         private void InkCanvas_Gesture(object sender, InkCanvasGestureEventArgs e)
         {
             //var gestures = e.GetGestureRecognitionResults();
@@ -4904,7 +4904,7 @@ namespace InkCanvasForClass_Remastered
                 "EasiNote" => ShouldFoldEasiNote(windowTitle, windowRect),
                 "EasiCamera" => Settings.IsAutoFoldInEasiCamera && isFullScreen,
                 "EasiNote5C" => Settings.IsAutoFoldInEasiNote5C && isFullScreen,
-                _ => throw new NotImplementedException()
+                _ => false
             };
         }
 
@@ -4955,7 +4955,7 @@ namespace InkCanvasForClass_Remastered
                 //Logger.LogDebug("Mainwindow_touchdown return");
                 return;
             }
-            
+
             if (!isHidingSubPanelsWhenInking)
             {
                 isHidingSubPanelsWhenInking = true;
