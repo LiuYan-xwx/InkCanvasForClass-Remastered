@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Drawing.Drawing2D;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -15,10 +16,10 @@ namespace InkCanvasForClass_Remastered.Controls
             PART_Button.Click += (s, e) => RaiseEvent(new RoutedEventArgs(ClickEvent));
         }
 
-        public static readonly DependencyProperty IconSourceProperty =
+        public static readonly DependencyProperty PathDataProperty =
             DependencyProperty.Register(
-                nameof(IconSource),
-                typeof(ImageSource),
+                nameof(PathData),
+                typeof(Geometry),
                 typeof(FloatingBarButton),
                 new PropertyMetadata(null));
 
@@ -36,10 +37,10 @@ namespace InkCanvasForClass_Remastered.Controls
                 typeof(RoutedEventHandler),
                 typeof(FloatingBarButton));
 
-        public ImageSource IconSource
+        public Geometry PathData
         {
-            get => (ImageSource)GetValue(IconSourceProperty);
-            set => SetValue(IconSourceProperty, value);
+            get => (Geometry)GetValue(PathDataProperty);
+            set => SetValue(PathDataProperty, value);
         }
 
         public string Label

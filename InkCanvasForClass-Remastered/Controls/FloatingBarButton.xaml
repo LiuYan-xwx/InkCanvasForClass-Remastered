@@ -35,12 +35,9 @@
             </Style>
         </Button.Style>
         <StackPanel Orientation="Vertical">
-            <Image
-                x:Name="PART_Icon"
-                Width="28"
-                Height="17"
-                RenderOptions.BitmapScalingMode="HighQuality"
-                Source="{Binding IconSource, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+            <Viewbox Width="28" Height="17">
+                <Path Fill="#FF1B1B1B" Data="{Binding PathData, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+            </Viewbox>
             <TextBlock
                 x:Name="PART_Label"
                 Margin="0,1,0,0"
