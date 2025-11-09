@@ -245,7 +245,7 @@ namespace InkCanvasForClass_Remastered
             loadPenCanvas();
             AppVersionTextBlock.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
-            CursorIcon_Click(null, null);
+            CursorFloatingBarButton_Click(null, null);
 
             ApplySettingsToUI();
 
@@ -384,7 +384,7 @@ namespace InkCanvasForClass_Remastered
                 if (_powerPointService.IsInSlideShow)
                     if (foldFloatingBarByUser && inkCanvas.Strokes.Count > 2)
                         ShowNotification("正在清空墨迹并收纳至侧边栏，可进入批注模式后通过【撤销】功能来恢复原先墨迹。");
-                CursorWithDelIcon_Click(null, null);
+                ClearAndMouseFloatingbarButton_Click(null, null);
             });
 
             await Dispatcher.InvokeAsync(() =>
@@ -1617,8 +1617,6 @@ namespace InkCanvasForClass_Remastered
             {
                 if (mode != "clear")
                 {
-                    CursorIconGeometry.Brush = new SolidColorBrush(Color.FromRgb(27, 27, 27));
-                    CursorIconGeometry.Geometry = Geometry.Parse(XamlGraphicsIconGeometries.LinedCursorIcon);
                     PenIconGeometry.Brush = new SolidColorBrush(Color.FromRgb(27, 27, 27));
                     PenIconGeometry.Geometry = Geometry.Parse(XamlGraphicsIconGeometries.LinedPenIcon);
                     StrokeEraserIconGeometry.Brush = new SolidColorBrush(Color.FromRgb(27, 27, 27));
@@ -1787,31 +1785,9 @@ namespace InkCanvasForClass_Remastered
 
         #region 白板按鈕和退出白板模式按鈕
 
-        private bool isDisplayingOrHidingBlackboard = false;
-
-        private void ImageBlackboard_MouseUp(object? sender, MouseButtonEventArgs? e)
+        private async void OpenWhiteboardFloatingBarButton_Click(object? sender, RoutedEventArgs? e)
         {
-            if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
-                ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
-            if (sender == WhiteboardFloatingBarBtn && lastBorderMouseDownObject != WhiteboardFloatingBarBtn) return;
-
-            if (isDisplayingOrHidingBlackboard) return;
-            isDisplayingOrHidingBlackboard = true;
-
-            if (_viewModel.AppMode == AppMode.Normal)
-            {
-                OpenWhiteboard();
-            }
-            else
-            {
-                CloseWhiteboard();
-            }
-
-            new Thread(() =>
-            {
-                Thread.Sleep(200);
-                Application.Current.Dispatcher.Invoke(() => { isDisplayingOrHidingBlackboard = false; });
-            }).Start();
+            OpenWhiteboard();
         }
 
         /// <summary>
@@ -1876,7 +1852,7 @@ namespace InkCanvasForClass_Remastered
             // 切换回屏幕模式
             SwitchToScreenMode();
 
-            CursorIcon_Click(null, null);
+            CursorFloatingBarButton_Click(null, null);
 
             SwitchToDefaultPen(null, null);
             CheckColorTheme(true);
@@ -2189,13 +2165,8 @@ namespace InkCanvasForClass_Remastered
         }
 
 
-        private void SymbolIconTools_MouseUp(object sender, MouseButtonEventArgs e)
+        private void ToolsFloatingBarButton_Click(object? sender, RoutedEventArgs? e)
         {
-
-            if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
-                ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
-            if (sender == ToolsFloatingBarBtn && lastBorderMouseDownObject != ToolsFloatingBarBtn) return;
-
             if (BorderTools.Visibility == Visibility.Visible)
             {
                 AnimationsHelper.HideWithSlideAndFade(EraserSizePanel);
@@ -2394,13 +2365,10 @@ namespace InkCanvasForClass_Remastered
             });
         }
 
-        private void CursorIcon_Click(object? sender, RoutedEventArgs? e)
+        private void CursorFloatingBarButton_Click(object? sender, RoutedEventArgs? e)
         {
-            if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
-                ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
-            if (sender == Cursor_Icon && lastBorderMouseDownObject != Cursor_Icon) return;
             // 隱藏高亮
-            FloatingbarSelectionBG.Visibility = Visibility.Hidden;
+            FloatingbarSelectionBG.Visibility = Visibility.Visible;
             System.Windows.Controls.Canvas.SetLeft(FloatingbarSelectionBG, 0);
 
             _viewModel.AppPenMode = InkCanvasEditingMode.None;
@@ -2597,15 +2565,10 @@ namespace InkCanvasForClass_Remastered
             HideSubPanels("eraserByStrokes");
         }
 
-        private void CursorWithDelIcon_Click(object? sender, RoutedEventArgs? e)
+        private void ClearAndMouseFloatingbarButton_Click(object? sender, RoutedEventArgs? e)
         {
-
-            if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
-                ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
-            if (sender == CursorWithDelFloatingBarBtn && lastBorderMouseDownObject != CursorWithDelFloatingBarBtn) return;
-
             SymbolIconDelete_MouseUp(sender, null);
-            CursorIcon_Click(null, null);
+            CursorFloatingBarButton_Click(null, null);
         }
 
         private void CloseBordertools_MouseUp(object sender, MouseButtonEventArgs e)
@@ -3004,7 +2967,7 @@ namespace InkCanvasForClass_Remastered
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
                 if (_viewModel.AppMode == AppMode.WhiteBoard)
-                    ImageBlackboard_MouseUp(null, null);
+                    CloseWhiteboard();
 
                 if (Settings.IsShowCanvasAtNewSlideShow &&
                     !Settings.IsAutoFoldInPPTSlideShow &&
@@ -3089,7 +3052,7 @@ namespace InkCanvasForClass_Remastered
 
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
-                CursorIcon_Click(null, null);
+                CursorFloatingBarButton_Click(null, null);
 
                 inkCanvas.Strokes.Clear();
 
@@ -3171,7 +3134,7 @@ namespace InkCanvasForClass_Remastered
             {
                 return;
             }
-            CursorIcon_Click(null, null);
+            CursorFloatingBarButton_Click(null, null);
             try
             {
                 _powerPointService.ActiveSlideShowWindow.SlideNavigation.Visible = true;
@@ -5384,5 +5347,14 @@ namespace InkCanvasForClass_Remastered
         private static extern IntPtr SetWindowLong64(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
 
         #endregion
+
+        private void SymbolIconTools_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            ToolsFloatingBarButton_Click(null, null);
+        }
+        private void CloseWhiteboardWhiteBoardButton_Click(object sender, MouseButtonEventArgs e)
+        {
+            CloseWhiteboard();
+        }
     }
 }
