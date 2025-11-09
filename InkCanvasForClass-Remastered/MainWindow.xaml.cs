@@ -9,7 +9,6 @@ using Microsoft.Office.Interop.PowerPoint;
 using Microsoft.Win32;
 using OSVersionExtension;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.IO;
@@ -259,7 +258,7 @@ namespace InkCanvasForClass_Remastered
 
             if (Settings.IsHideFloatingBarOnStart)
             {
-                _ = HideFloatingBar(new object());
+                _ = HideFloatingBar();
             }
         }
 
@@ -361,30 +360,15 @@ namespace InkCanvasForClass_Remastered
         #region AutoFold
         private bool isFloatingBarChangingHideMode = false;
 
-        public async void HideFloatingBar_MouseUp(object sender, MouseButtonEventArgs e)
+        public void HideFloatingBar_Click(object sender, RoutedEventArgs e)
         {
-            await HideFloatingBar(sender);
+            _ = HideFloatingBar(true);
         }
 
-        public async Task HideFloatingBar(object? sender)
+        public async Task HideFloatingBar(bool isHideManually = false)
         {
-            var isShouldRejectAction = false;
+            foldFloatingBarByUser = isHideManually;
 
-            await Dispatcher.InvokeAsync(() =>
-            {
-                if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
-                    ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
-                if (sender == Fold_Icon && lastBorderMouseDownObject != Fold_Icon)
-                    isShouldRejectAction = true;
-            });
-
-            if (isShouldRejectAction)
-                return;
-
-            if (sender == null)
-                foldFloatingBarByUser = false;
-            else
-                foldFloatingBarByUser = true;
             unfoldFloatingBarByUser = false;
 
             if (isFloatingBarChangingHideMode)
@@ -413,12 +397,12 @@ namespace InkCanvasForClass_Remastered
 
         private async void SidePanelUnFoldButton_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            await ShowFloatingBar(sender);
+            await ShowFloatingBar(true);
         }
 
-        public async Task ShowFloatingBar(object? sender)
+        public async Task ShowFloatingBar(bool isShowManually = false)
         {
-            unfoldFloatingBarByUser = sender != null;
+            unfoldFloatingBarByUser = isShowManually;
 
             foldFloatingBarByUser = false;
 
@@ -2959,9 +2943,9 @@ namespace InkCanvasForClass_Remastered
         private async void PptApplication_SlideShowBegin(SlideShowWindow Wn)
         {
             if (Settings.IsAutoFoldInPPTSlideShow && _viewModel.IsFloatingBarVisible)
-                await HideFloatingBar(new object());
+                await HideFloatingBar(true);
             else if (!_viewModel.IsFloatingBarVisible)
-                await ShowFloatingBar(new object());
+                await ShowFloatingBar(true);
 
             Logger.LogInformation("幻灯片放映开始");
 
@@ -3043,7 +3027,7 @@ namespace InkCanvasForClass_Remastered
         private async void PptApplication_SlideShowEnd(Presentation Pres)
         {
             if (!_viewModel.IsFloatingBarVisible)
-                await ShowFloatingBar(new object());
+                await ShowFloatingBar(true);
             Logger.LogInformation("幻灯片放映结束");
 
             if (isEnteredSlideShowEndEvent)
@@ -4889,13 +4873,14 @@ namespace InkCanvasForClass_Remastered
                 if (shouldFold)
                 {
                     if (!unfoldFloatingBarByUser && _viewModel.IsFloatingBarVisible)
-                        _ = HideFloatingBar(null);
+                        _ = HideFloatingBar();
                 }
                 else
                 {
-                    // 不在特殊应用中，展开工具栏并重置用户标志
                     if (!_viewModel.IsFloatingBarVisible && !foldFloatingBarByUser)
-                        _ = ShowFloatingBar(new object());
+                    {
+                        _ = ShowFloatingBar();
+                    }
                     unfoldFloatingBarByUser = false;
                 }
             }

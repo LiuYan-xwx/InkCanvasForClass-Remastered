@@ -28,11 +28,11 @@
     KeyDown="Window_KeyDown"
     Loaded="Window_Loaded"
     MouseWheel="Window_MouseWheel"
-    SourceInitialized="Window_SourceInitialized"
     PreviewKeyDown="Main_Grid_PreviewKeyDown"
     ResizeMode="NoResize"
     ShowInTaskbar="False"
     SizeChanged="MainWindow_OnSizeChanged"
+    SourceInitialized="Window_SourceInitialized"
     Stylus.IsFlicksEnabled="False"
     Stylus.IsPressAndHoldEnabled="False"
     Stylus.IsTapFeedbackEnabled="False"
@@ -339,7 +339,10 @@
 
                                     <controls:SettingsControl Header="软件启动后自动隐藏" IsOn="{Binding Settings.IsHideFloatingBarOnStart}" />
 
-                                    <controls:SettingsControl Header="使窗口永不激活（无焦点模式）" Description="懂得都懂，不懂的不用开。此设置需要重启生效！" IsOn="{Binding Settings.IsWindowNoActivate}"/>
+                                    <controls:SettingsControl
+                                        Header="使窗口永不激活（无焦点模式）"
+                                        Description="懂得都懂，不懂的不用开。此设置需要重启生效！"
+                                        IsOn="{Binding Settings.IsWindowNoActivate}" />
                                 </ikw:SimpleStackPanel>
                             </GroupBox>
                             <GroupBox>
@@ -4631,12 +4634,10 @@
                         Name="BorderFloatingBarMainControls"
                         Height="36"
                         Margin="2,0,0,0"
-                        Padding="2"
                         Background="#fafafa"
                         BorderBrush="#9952525b"
                         BorderThickness="1"
-                        CornerRadius="5"
-                        Visibility="Visible">
+                        CornerRadius="5">
                         <Grid>
                             <Canvas Name="FloatingbarSelectionBGCanvas" Margin="2,0,2,0">
                                 <Border
@@ -4644,7 +4645,6 @@
                                     Canvas.Left="28"
                                     Width="28"
                                     Height="34"
-                                    Margin="0,-2,0,-2"
                                     Background="#153b82f6"
                                     Visibility="Hidden">
                                     <Canvas>
@@ -4660,13 +4660,12 @@
                             </Canvas>
                             <ikw:SimpleStackPanel
                                 Name="StackPanelFloatingBar"
-                                Margin="2,0"
+                                Margin="4,0,4,0"
                                 Orientation="Horizontal">
                                 <!--  <ikw:SimpleStackPanel Name="Cursor_Icon" MouseDown="Border_MouseDown" MouseUp="CursorIcon_Click"  -->
                                 <ikw:SimpleStackPanel
                                     Name="Cursor_Icon"
                                     Width="28"
-                                    Margin="0,-2"
                                     HorizontalAlignment="Center"
                                     Background="Transparent"
                                     MouseDown="FloatingBarToolBtnMouseDownFeedback_Panel"
@@ -4699,7 +4698,6 @@
                                 <ikw:SimpleStackPanel
                                     Name="Pen_Icon"
                                     Width="28"
-                                    Margin="0,-2"
                                     HorizontalAlignment="Center"
                                     Background="Transparent"
                                     MouseDown="FloatingBarToolBtnMouseDownFeedback_Panel"
@@ -4735,7 +4733,6 @@
                                 <ikw:SimpleStackPanel
                                     Name="SymbolIconDelete"
                                     Width="28"
-                                    Margin="0,-2"
                                     HorizontalAlignment="Center"
                                     Background="Transparent"
                                     MouseDown="FloatingBarToolBtnMouseDownFeedback_Panel"
@@ -5756,7 +5753,6 @@
                                     <ikw:SimpleStackPanel
                                         Name="Eraser_Icon"
                                         Width="28"
-                                        Margin="0,-2"
                                         HorizontalAlignment="Center"
                                         Background="Transparent"
                                         MouseDown="FloatingBarToolBtnMouseDownFeedback_Panel"
@@ -5789,7 +5785,6 @@
                                     <ikw:SimpleStackPanel
                                         Name="EraserByStrokes_Icon"
                                         Width="28"
-                                        Margin="0,-2"
                                         HorizontalAlignment="Center"
                                         Background="Transparent"
                                         MouseDown="FloatingBarToolBtnMouseDownFeedback_Panel"
@@ -5822,7 +5817,6 @@
                                     <ikw:SimpleStackPanel
                                         Name="SymbolIconSelect"
                                         Width="28"
-                                        Margin="0,-2"
                                         HorizontalAlignment="Center"
                                         Background="Transparent"
                                         MouseDown="FloatingBarToolBtnMouseDownFeedback_Panel"
@@ -5855,7 +5849,6 @@
                                     <ikw:SimpleStackPanel
                                         Name="SymbolIconUndo"
                                         Width="28"
-                                        Margin="0,-2"
                                         HorizontalAlignment="Center"
                                         Background="Transparent"
                                         IsEnabled="{Binding CanUndo}"
@@ -5893,7 +5886,6 @@
                                     <ikw:SimpleStackPanel
                                         Name="SymbolIconRedo"
                                         Width="28"
-                                        Margin="0,-2"
                                         HorizontalAlignment="Center"
                                         Background="Transparent"
                                         IsEnabled="{Binding CanRedo}"
@@ -5931,7 +5923,6 @@
                                     <ikw:SimpleStackPanel
                                         Name="CursorWithDelFloatingBarBtn"
                                         Width="28"
-                                        Margin="0,-2"
                                         HorizontalAlignment="Center"
                                         Background="Transparent"
                                         MouseDown="FloatingBarToolBtnMouseDownFeedback_Panel"
@@ -6123,13 +6114,12 @@
                                 </Grid>
                                 <ikw:SimpleStackPanel Orientation="{Binding ElementName=StackPanelFloatingBar, Path=Orientation}">
                                     <Border
-                                        Margin="2,0,2,0"
+                                        Margin="2"
                                         BorderBrush="#71717a"
                                         BorderThickness="1,0,0,0" />
                                     <ikw:SimpleStackPanel
                                         Name="WhiteboardFloatingBarBtn"
                                         Width="28"
-                                        Margin="0,-2"
                                         HorizontalAlignment="Center"
                                         Background="Transparent"
                                         MouseDown="FloatingBarToolBtnMouseDownFeedback_Panel"
@@ -6162,7 +6152,6 @@
                                     <ikw:SimpleStackPanel
                                         Name="ToolsFloatingBarBtn"
                                         Width="28"
-                                        Margin="0,-2"
                                         HorizontalAlignment="Center"
                                         Background="Transparent"
                                         MouseDown="FloatingBarToolBtnMouseDownFeedback_Panel"
@@ -6192,39 +6181,19 @@
                                             Text="工具"
                                             TextAlignment="Center" />
                                     </ikw:SimpleStackPanel>
-                                    <ikw:SimpleStackPanel
-                                        x:Name="Fold_Icon"
-                                        Width="28"
-                                        Margin="0,-2"
-                                        HorizontalAlignment="Center"
-                                        Background="Transparent"
-                                        MouseDown="FloatingBarToolBtnMouseDownFeedback_Panel"
-                                        MouseLeave="FloatingBarToolBtnMouseLeaveFeedback_Panel"
-                                        MouseUp="HideFloatingBar_MouseUp"
-                                        Orientation="Vertical">
-                                        <Image
-                                            Width="28"
-                                            Height="17"
-                                            Margin="0,3,0,0"
-                                            RenderOptions.BitmapScalingMode="HighQuality">
-                                            <Image.Source>
-                                                <DrawingImage>
-                                                    <DrawingImage.Drawing>
-                                                        <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
-                                                            <GeometryDrawing Brush="#FF1B1B1B" Geometry="F1 M24,24z M0,0z M19.1634,15.0537C18.9999,15.0537 18.8278,15.0021 18.6902,14.8902 18.3632,14.6321 18.3116,14.1589 18.5783,13.832 19.0343,13.2642 19.4387,12.6447 19.7656,11.9909 19.172,10.8208 16.763,6.72556 11.9967,6.72556 11.6612,6.72556 11.3256,6.75137 10.9987,6.78579 10.5943,6.83741 10.2072,6.54489 10.1556,6.13193 10.1039,5.71896 10.3965,5.34041 10.8094,5.28879 11.1966,5.23717 11.5923,5.21136 11.9967,5.21136 18.4407,5.21136 21.1766,11.423 21.297,11.6897 21.383,11.8876 21.3744,12.1113 21.2884,12.3006 20.8754,13.1781 20.3592,14.0041 19.757,14.7612 19.6107,14.9418 19.387,15.0451 19.172,15.0451L19.1634,15.0537z M10.689,15.1483C11.0847,15.3118,11.5063,15.3892,11.9365,15.3892L11.9451,15.4064 12.0053,15.4064C12.4613,15.3978 12.8915,15.2946 13.3044,15.1139 13.4763,15.0387 13.6392,14.9486 13.7931,14.8455L15.4197,16.472 16.533,17.5854 20.0753,21.1277C20.2216,21.2826,20.4195,21.3514,20.6087,21.3514L20.6001,21.36C20.7894,21.36 20.9873,21.2826 21.1335,21.1363 21.4261,20.8438 21.4261,20.362 21.1335,20.0695L3.92668,2.86262C3.63416,2.5615 3.16958,2.57011 2.86846,2.86262 2.56734,3.15514 2.56734,3.62833 2.86846,3.92085L6.21371,7.2661C4.72738,8.44444 3.5311,9.95577 2.71359,11.6725 2.62756,11.8704 2.61896,12.0941 2.70499,12.292 2.81684,12.5587 5.55273,18.7704 12.0053,18.7704L12.0311,18.7704C13.6161,18.7704,15.1606,18.3654,16.533,17.5854L15.4197,16.472C14.3708,16.9906,13.2144,17.2648,12.0311,17.2648L12.0053,17.2648C7.239,17.2648 4.83004,13.1695 4.2364,11.9995 4.96897,10.5725 6.01289,9.32147 7.29011,8.3425L9.15767,10.2101C9.05523,10.3645 8.96629,10.5279 8.89086,10.7003 8.71018,11.1133 8.60694,11.5521 8.60694,11.9995 8.59834,12.4468 8.67577,12.8856 8.84784,13.3072 9.0113,13.7288 9.26081,14.0987 9.57913,14.417 9.89746,14.7354 10.2674,14.9763 10.689,15.1483z" />
-                                                        </DrawingGroup>
-                                                    </DrawingImage.Drawing>
-                                                </DrawingImage>
-                                            </Image.Source>
-                                        </Image>
-                                        <TextBlock
-                                            x:Name="HideToolbarTextBlock"
-                                            Margin="0,1,0,0"
-                                            FontSize="8"
-                                            Foreground="Black"
-                                            Text="隐藏"
-                                            TextAlignment="Center" />
-                                    </ikw:SimpleStackPanel>
+                                    <controls:FloatingBarButton
+                                        Click="HideFloatingBar_Click"
+                                        Label="隐藏">
+                                        <controls:FloatingBarButton.IconSource>
+                                            <DrawingImage>
+                                                <DrawingImage.Drawing>
+                                                    <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
+                                                        <GeometryDrawing Brush="#FF1B1B1B" Geometry="F1 M24,24z M0,0z M19.1634,15.0537C18.9999,15.0537 18.8278,15.0021 18.6902,14.8902 18.3632,14.6321 18.3116,14.1589 18.5783,13.832 19.0343,13.2642 19.4387,12.6447 19.7656,11.9909 19.172,10.8208 16.763,6.72556 11.9967,6.72556 11.6612,6.72556 11.3256,6.75137 10.9987,6.78579 10.5943,6.83741 10.2072,6.54489 10.1556,6.13193 10.1039,5.71896 10.3965,5.34041 10.8094,5.28879 11.1966,5.23717 11.5923,5.21136 11.9967,5.21136 18.4407,5.21136 21.1766,11.423 21.297,11.6897 21.383,11.8876 21.3744,12.1113 21.2884,12.3006 20.8754,13.1781 20.3592,14.0041 19.757,14.7612 19.6107,14.9418 19.387,15.0451 19.172,15.0451L19.1634,15.0537z M10.689,15.1483C11.0847,15.3118,11.5063,15.3892,11.9365,15.3892L11.9451,15.4064 12.0053,15.4064C12.4613,15.3978 12.8915,15.2946 13.3044,15.1139 13.4763,15.0387 13.6392,14.9486 13.7931,14.8455L15.4197,16.472 16.533,17.5854 20.0753,21.1277C20.2216,21.2826,20.4195,21.3514,20.6087,21.3514L20.6001,21.36C20.7894,21.36 20.9873,21.2826 21.1335,21.1363 21.4261,20.8438 21.4261,20.362 21.1335,20.0695L3.92668,2.86262C3.63416,2.5615 3.16958,2.57011 2.86846,2.86262 2.56734,3.15514 2.56734,3.62833 2.86846,3.92085L6.21371,7.2661C4.72738,8.44444 3.5311,9.95577 2.71359,11.6725 2.62756,11.8704 2.61896,12.0941 2.70499,12.292 2.81684,12.5587 5.55273,18.7704 12.0053,18.7704L12.0311,18.7704C13.6161,18.7704,15.1606,18.3654,16.533,17.5854L15.4197,16.472C14.3708,16.9906,13.2144,17.2648,12.0311,17.2648L12.0053,17.2648C7.239,17.2648 4.83004,13.1695 4.2364,11.9995 4.96897,10.5725 6.01289,9.32147 7.29011,8.3425L9.15767,10.2101C9.05523,10.3645 8.96629,10.5279 8.89086,10.7003 8.71018,11.1133 8.60694,11.5521 8.60694,11.9995 8.59834,12.4468 8.67577,12.8856 8.84784,13.3072 9.0113,13.7288 9.26081,14.0987 9.57913,14.417 9.89746,14.7354 10.2674,14.9763 10.689,15.1483z" />
+                                                    </DrawingGroup>
+                                                </DrawingImage.Drawing>
+                                            </DrawingImage>
+                                        </controls:FloatingBarButton.IconSource>
+                                    </controls:FloatingBarButton>
                                     <Grid Width="0">
                                         <Border
                                             Name="BorderTools"

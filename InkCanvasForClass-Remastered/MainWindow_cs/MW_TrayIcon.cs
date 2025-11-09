@@ -81,9 +81,9 @@ namespace InkCanvasForClass_Remastered
             if (mainWin.IsLoaded)
             {
                 if (mainWin._viewModel.IsFloatingBarVisible)
-                    _ = mainWin.HideFloatingBar(new object());
+                    _ = mainWin.HideFloatingBar(true);
                 else
-                    _ = mainWin.ShowFloatingBar(new object());
+                    _ = mainWin.ShowFloatingBar(true);
             }
         }
 
