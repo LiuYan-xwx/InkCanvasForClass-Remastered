@@ -248,11 +248,6 @@ namespace InkCanvasForClass_Remastered
 
             CursorIcon_Click(null, null);
 
-            if (Settings.IsFoldAtStartup)
-            {
-                _ = HideFloatingBar(Fold_Icon);
-            }
-
             ApplySettingsToUI();
 
             Logger.LogInformation("MainWindow Loaded");
@@ -262,6 +257,10 @@ namespace InkCanvasForClass_Remastered
             BlackBoardLeftSidePageListView.ItemsSource = blackBoardSidePageListViewObservableCollection;
             BlackBoardRightSidePageListView.ItemsSource = blackBoardSidePageListViewObservableCollection;
 
+            if (Settings.IsHideFloatingBarOnStart)
+            {
+                _ = HideFloatingBar(new object());
+            }
         }
 
         private void SystemEventsOnDisplaySettingsChanged(object? sender, EventArgs e)

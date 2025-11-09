@@ -112,7 +112,6 @@ namespace InkCanvasForClass_Remastered
 
             await GetService<FileFolderService>().ProcessOldFilesAsync();
 
-
             base.OnStartup(e);
         }
 

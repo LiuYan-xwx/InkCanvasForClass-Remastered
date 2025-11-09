@@ -79,7 +79,7 @@ namespace InkCanvasForClass_Remastered.Models
         [ObservableProperty]
         private bool _isEnableNibMode = false;
         [ObservableProperty]
-        private bool _isFoldAtStartup = false;
+        private bool _isHideFloatingBarOnStart = false;
         // Appearance
         [ObservableProperty]
         private bool _isEnableDisPlayNibModeToggler = false;
