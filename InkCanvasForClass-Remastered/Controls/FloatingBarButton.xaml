@@ -8,10 +8,7 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    <Button
-        Name="PART_Button"
-        Margin="0,1,0,0"
-        Cursor="Hand">
+    <Button Name="PART_Button" Cursor="Hand">
         <Button.Style>
             <Style TargetType="Button">
                 <Setter Property="Background" Value="Transparent" />
@@ -19,7 +16,10 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
                             <Border Background="{TemplateBinding Background}" BorderThickness="0">
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <ContentPresenter
+                                    Margin="0,1,0,0"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center" />
                             </Border>
                         </ControlTemplate>
                     </Setter.Value>
@@ -36,7 +36,7 @@
         </Button.Style>
         <StackPanel Orientation="Vertical">
             <Viewbox Width="28" Height="17">
-                <Path Fill="#FF1B1B1B" Data="{Binding PathData, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                <Path Data="{Binding PathData, RelativeSource={RelativeSource AncestorType=UserControl}}" Fill="#FF1B1B1B" />
             </Viewbox>
             <TextBlock
                 x:Name="PART_Label"
