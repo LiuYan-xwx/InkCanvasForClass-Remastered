@@ -63,6 +63,7 @@ namespace InkCanvasForClass_Remastered.ViewModels
         private void OpenSettingsPanel()
         {
             IsSettingsPanelVisible = true;
+            App.GetService<MainWindow>().HideToolsPanel();
         }
         [RelayCommand]
         private void CloseSettingsPanel()

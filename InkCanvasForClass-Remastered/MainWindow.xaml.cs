@@ -5356,5 +5356,11 @@ namespace InkCanvasForClass_Remastered
         {
             CloseWhiteboard();
         }
+
+        public void HideToolsPanel()
+        {
+            AnimationsHelper.HideWithSlideAndFade(BorderTools);
+            AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
+        }
     }
 }
