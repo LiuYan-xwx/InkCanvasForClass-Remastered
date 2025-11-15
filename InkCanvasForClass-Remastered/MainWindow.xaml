@@ -2960,7 +2960,7 @@
                                                                     VerticalAlignment="Bottom"
                                                                     FontFamily="Consolas"
                                                                     FontSize="15"
-                                                                    Text="{Binding Value, ElementName=InkWidthSlider, Mode=OneWay}" />
+                                                                    Text="{Binding Value, ElementName=InkWidthSlider, StringFormat={}{0:F1}}" />
                                                             </StackPanel>
                                                             <StackPanel Height="30" Orientation="Horizontal">
                                                                 <Label
