@@ -1097,45 +1097,7 @@
                                         X2="400"
                                         Y1="0"
                                         Y2="0" />
-
-                                    <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                                        <TextBlock
-                                            Margin="0,0,6,0"
-                                            VerticalAlignment="Center"
-                                            Foreground="#fafafa"
-                                            Text="启用FullScreenHelper" />
-                                        <Border
-                                            Height="20"
-                                            Margin="0,0,12,0"
-                                            Padding="4,0"
-                                            Background="#7f1d1d"
-                                            CornerRadius="3">
-                                            <ikw:SimpleStackPanel
-                                                VerticalAlignment="Center"
-                                                Orientation="Horizontal"
-                                                Spacing="3">
-                                                <ui:FontIcon Foreground="#fca5a5" Icon="{x:Static ui:FluentSystemIcons.Beaker_16_Regular}" />
-                                                <TextBlock
-                                                    VerticalAlignment="Center"
-                                                    FontSize="12"
-                                                    Foreground="#fca5a5"
-                                                    Text="实验性选项" />
-                                            </ikw:SimpleStackPanel>
-                                        </Border>
-                                        <ui:ToggleSwitch
-                                            Name="ToggleSwitchIsEnableFullScreenHelper"
-                                            FontFamily="Microsoft YaHei UI"
-                                            FontWeight="Bold"
-                                            IsOn="True"
-                                            OffContent=""
-                                            OnContent=""
-                                            Toggled="ToggleSwitchIsEnableFullScreenHelper_Toggled" />
-                                    </ikw:SimpleStackPanel>
-                                    <TextBlock
-                                        FontSize="12"
-                                        Foreground="#a1a1aa"
-                                        Text="# 感谢lindexi大佬提供的FullScreenHelper，可以减少任务栏弹出的问题，且支持多显示器自动全屏（虽然对icc来说没什么用就是了），如果遇到一些玄学问题，可以关闭该功能，重启icc后生效。"
-                                        TextWrapping="Wrap" />
+                                    
                                     <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                         <TextBlock
                                             Margin="0,0,6,0"

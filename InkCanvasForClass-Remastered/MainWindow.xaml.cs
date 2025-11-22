@@ -4036,13 +4036,6 @@ namespace InkCanvasForClass_Remastered
             TextBlockShowCalculatedMultiplier.Text = (5 / (value * 1.1)).ToString();
         }
 
-        private void ToggleSwitchIsEnableFullScreenHelper_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            Settings.IsEnableFullScreenHelper = ToggleSwitchIsEnableFullScreenHelper.IsOn;
-            _settingsService.SaveSettings();
-        }
-
         private void ToggleSwitchIsEnableEdgeGestureUtil_Toggled(object sender, RoutedEventArgs e)
         {
             if (!isLoaded) return;
@@ -4179,13 +4172,6 @@ namespace InkCanvasForClass_Remastered
             }
 
             // Advanced
-
-            ToggleSwitchIsEnableFullScreenHelper.IsOn = Settings.IsEnableFullScreenHelper;
-            if (Settings.IsEnableFullScreenHelper)
-            {
-                FullScreenHelper.MarkFullscreenWindowTaskbarList(new WindowInteropHelper(this).Handle, true);
-            }
-
             ToggleSwitchIsEnableEdgeGestureUtil.IsOn = Settings.IsEnableEdgeGestureUtil;
             if (Settings.IsEnableEdgeGestureUtil)
             {

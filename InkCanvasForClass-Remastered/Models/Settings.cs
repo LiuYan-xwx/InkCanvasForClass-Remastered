@@ -186,8 +186,6 @@ namespace InkCanvasForClass_Remastered.Models
         [ObservableProperty]
         private bool _eraserBindTouchMultiplier = true;
         [ObservableProperty]
-        private bool _isEnableFullScreenHelper = false;
-        [ObservableProperty]
         private bool _isEnableEdgeGestureUtil = false;
         [ObservableProperty]
         private bool _isEnableForceFullScreen = false;
