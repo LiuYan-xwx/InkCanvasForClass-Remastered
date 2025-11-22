@@ -38,7 +38,6 @@
     Stylus.IsTapFeedbackEnabled="False"
     Stylus.IsTouchFeedbackEnabled="False"
     Topmost="True"
-    WindowState="Maximized"
     WindowStyle="None"
     mc:Ignorable="d">
     <!--  资源中添加命令  -->
@@ -1074,6 +1073,15 @@
                                         Y2="0" />
 
                                     <controls:SettingsControl Header="关闭软件时二次弹窗确认" IsOn="{Binding Settings.IsSecondConfirmWhenShutdownApp}" />
+
+                                    <controls:SettingsControl Header="窗口模式" Description="无边框窗口模式能有效解决 Win11 中任务栏点不动的问题">
+                                        <controls:SettingsControl.Switcher>
+                                            <ComboBox SelectedIndex="{Binding Settings.WindowMode}">
+                                                <ComboBoxItem>全屏</ComboBoxItem>
+                                                <ComboBoxItem>无边框窗口</ComboBoxItem>
+                                            </ComboBox>
+                                        </controls:SettingsControl.Switcher>
+                                    </controls:SettingsControl>
 
                                     <controls:SettingsControl Header="教学安全模式" Description="启用后，若程序遇到未处理的异常或将崩溃，将按照选择的对应方法进行处理，否则默认忽略并显示通知">
                                         <controls:SettingsControl.Switcher>

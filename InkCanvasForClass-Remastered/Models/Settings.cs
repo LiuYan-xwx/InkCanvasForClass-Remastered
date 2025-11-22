@@ -199,6 +199,8 @@ namespace InkCanvasForClass_Remastered.Models
         private bool _isCriticalSafeMode = false;
         [ObservableProperty]
         private int _criticalSafeModeMethod = 0;
+        [ObservableProperty]
+        private int _windowMode = 0;
         // RandSettings
         [ObservableProperty]
         private bool _displayRandWindowNamesInputBtn = true;

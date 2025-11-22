@@ -22,6 +22,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Threading;
 using Application = System.Windows.Application;
 using File = System.IO.File;
@@ -109,6 +110,9 @@ namespace InkCanvasForClass_Remastered
                     break;
                 case nameof(Settings.PPTLSButtonPosition) or nameof(Settings.PPTRSButtonPosition):
                     UpdatePPTBtnPreview();
+                    break;
+                case nameof(Settings.WindowMode):
+                    SetWindowMode();
                     break;
             }
         }
@@ -242,6 +246,7 @@ namespace InkCanvasForClass_Remastered
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            SetWindowMode();
             loadPenCanvas();
             AppVersionTextBlock.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
@@ -259,6 +264,23 @@ namespace InkCanvasForClass_Remastered
             if (Settings.IsHideFloatingBarOnStart)
             {
                 _ = HideFloatingBar();
+            }
+        }
+
+        private void SetWindowMode()
+        {
+            switch (Settings.WindowMode)
+            {
+                case 0:
+                    WindowState = WindowState.Maximized;
+                    break;
+                case 1:
+                    WindowState = WindowState.Normal;
+                    Left = 0.0;
+                    Top = 0.0;
+                    Height = SystemParameters.PrimaryScreenHeight;
+                    Width = SystemParameters.PrimaryScreenWidth;
+                    break;
             }
         }
 
