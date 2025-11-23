@@ -3,6 +3,7 @@ using InkCanvasForClass_Remastered.Models;
 using InkCanvasForClass_Remastered.Services;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,5 +25,7 @@ namespace InkCanvasForClass_Remastered.ViewModels
         private int _drawCount = 1;
         [ObservableProperty]
         private bool _isNoDuplicate = true;
+        [ObservableProperty]
+        private ObservableCollection<string> _selectedNames = new();
     }
 }
