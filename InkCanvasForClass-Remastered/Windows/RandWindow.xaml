@@ -55,10 +55,11 @@
                     <ItemsControl
                         Name="ItemsControlOutput"
                         MinHeight="470"
+                        HorizontalAlignment="Center"
                         ItemsSource="{Binding SelectedNames}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <UniformGrid Columns="{Binding DisplayColumns}" />
+                                <UniformGrid Columns="2" />
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
