@@ -5,9 +5,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ikw="http://schemas.inkore.net/lib/ui/wpf"
     xmlns:local="clr-namespace:InkCanvasForClass_Remastered"
-    xmlns:viewmodel="clr-namespace:InkCanvasForClass_Remastered.ViewModels"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
+    xmlns:viewmodel="clr-namespace:InkCanvasForClass_Remastered.ViewModels"
     Title="InkCanvasForClass-Remastered 抽奖"
     Width="900"
     Height="500"
@@ -25,20 +25,19 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Window.Resources>
     <Border
-        Margin="0"
         Background="#F0F3F9"
         BorderBrush="#0066BF"
         BorderThickness="1"
         ClipToBounds="True"
         CornerRadius="10">
-        <Grid>
+        <Grid Margin="24">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <!--  主内容区域  -->
-            <Grid Grid.Row="0" Margin="20">
+            <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*" />
                     <ColumnDefinition Width="Auto" />
@@ -47,15 +46,15 @@
                 <!--  结果显示区  -->
                 <Viewbox
                     Grid.Column="0"
-                    Margin="0,20"
+                    MaxWidth="320"
+                    Margin="16,0"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center">
                     <ItemsControl
                         Name="ItemsControlOutput"
-                        MinHeight="300"
                         HorizontalAlignment="Center"
                         ItemsSource="{Binding SelectedNames}"
-                        ToolTip="显示抽取结果"
+                        ToolTip="显示抽取结果">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <UniformGrid Columns="2" />
@@ -64,13 +63,12 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <TextBlock
-                                    Margin="30,20"
+                                    Margin="16,8"
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
-                                    FontSize="130"
+                                    FontSize="64"
                                     Text="{Binding}"
-                                    TextAlignment="Center"
-                                    TextWrapping="Wrap" />
+                                    TextAlignment="Center" />
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -80,12 +78,9 @@
                 <ikw:SimpleStackPanel
                     Name="PeopleControlPane"
                     Grid.Column="1"
-                    Margin="20,0"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Opacity="1"
                     Spacing="16">
-
                     <!--  抽取数量控制  -->
                     <ikw:SimpleStackPanel
                         HorizontalAlignment="Center"
@@ -181,16 +176,16 @@
 
                     <!--  选项复选框  -->
                     <CheckBox
+                        Content="不重复抽取"
                         Margin="0,8"
                         HorizontalAlignment="Center"
-                        Content="不重复抽取"
                         IsChecked="{Binding IsNoDuplicate, Mode=TwoWay}" />
 
                     <!--  开抽按钮  -->
                     <Border
                         x:Name="BorderBtnRand"
-                        MinWidth="200"
                         Height="64"
+                        MinWidth="200"
                         Padding="20,0"
                         Background="#0066BF"
                         CornerRadius="32"
@@ -224,24 +219,13 @@
                 </ikw:SimpleStackPanel>
             </Grid>
 
-            <!--  底部区域：装饰图片和按钮  -->
-            <Grid Grid.Row="1" Margin="16">
-                <!--  装饰图片 - 左下角  -->
-                <!--  负边距用于创建图片部分超出窗口边界的"窥视"效果  -->
-                <Image
-                    Width="300"
-                    Height="Auto"
-                    Margin="-64,0,0,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Bottom"
-                    Source="/Resources/hatsune-miku1.png" />
-
-                <!--  底部按钮组 - 右下角  -->
+            <!--  底部区域  -->
+            <Grid Grid.Row="1">
                 <ikw:SimpleStackPanel
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
                     Orientation="Horizontal"
-                    Spacing="8">
+                    Spacing="16">
                     <!--  名单导入按钮  -->
                     <Border
                         x:Name="BorderBtnHelp"
