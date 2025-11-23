@@ -72,9 +72,6 @@ namespace InkCanvasForClass_Remastered
 
             List<string> outputs = [];
 
-            LabelOutput2.Visibility = Visibility.Collapsed;
-            LabelOutput3.Visibility = Visibility.Collapsed;
-
             // 生成动画阶段
             await Task.Run(async () =>
             {
@@ -90,7 +87,8 @@ namespace InkCanvasForClass_Remastered
 
                     Application.Current.Dispatcher.Invoke(() =>
                     {
-                        LabelOutput.Content = NameList[animationIndex];
+                        ViewModel.SelectedNames.Clear();
+                        ViewModel.SelectedNames.Add(NameList[animationIndex]);
                     });
                     await Task.Delay(switchInterval);
                     elapsed += switchInterval;
@@ -114,7 +112,14 @@ namespace InkCanvasForClass_Remastered
                 }
             }
 
-            UpdateLabelOutputs(outputs);
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                ViewModel.SelectedNames.Clear();
+                foreach (var name in outputs)
+                {
+                    ViewModel.SelectedNames.Add(name);
+                }
+            });
 
             //if (IsAutoClose)
             //{
@@ -126,31 +131,6 @@ namespace InkCanvasForClass_Remastered
             //        Close();
             //    });
             //}
-        }
-
-        private void UpdateLabelOutputs(List<string> outputs)
-        {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                if (ViewModel.DrawCount <= 5)
-                {
-                    LabelOutput.Content = string.Join(Environment.NewLine, outputs);
-                }
-                else if (ViewModel.DrawCount <= 10)
-                {
-                    LabelOutput2.Visibility = Visibility.Visible;
-                    LabelOutput.Content = string.Join(Environment.NewLine, outputs.Take((outputs.Count + 1) / 2));
-                    LabelOutput2.Content = string.Join(Environment.NewLine, outputs.Skip((outputs.Count + 1) / 2));
-                }
-                else
-                {
-                    LabelOutput2.Visibility = Visibility.Visible;
-                    LabelOutput3.Visibility = Visibility.Visible;
-                    LabelOutput.Content = string.Join(Environment.NewLine, outputs.Take((outputs.Count + 1) / 3));
-                    LabelOutput2.Content = string.Join(Environment.NewLine, outputs.Skip((outputs.Count + 1) / 3).Take((outputs.Count + 1) / 3));
-                    LabelOutput3.Content = string.Join(Environment.NewLine, outputs.Skip((outputs.Count + 1) * 2 / 3));
-                }
-            });
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
