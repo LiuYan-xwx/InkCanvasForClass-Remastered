@@ -12,12 +12,15 @@ namespace InkCanvasForClass_Remastered.ViewModels
 {
     public partial class RandViewModel : ObservableRecipient
     {
+        private const int SingleColumnThreshold = 3;
+        private const int TwoColumnThreshold = 6;
+
         private readonly SettingsService _settingsService;
 
         public RandViewModel(SettingsService settingsService)
         {
             _settingsService = settingsService;
-            SelectedNames.CollectionChanged += (s, e) => OnPropertyChanged(nameof(DisplayColumns));
+            SelectedNames.CollectionChanged += OnSelectedNamesChanged;
         }
 
         public Settings Settings => _settingsService.Settings;
@@ -29,13 +32,18 @@ namespace InkCanvasForClass_Remastered.ViewModels
         [ObservableProperty]
         private ObservableCollection<string> _selectedNames = new();
 
+        private void OnSelectedNamesChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            OnPropertyChanged(nameof(DisplayColumns));
+        }
+
         public int DisplayColumns
         {
             get
             {
                 int count = SelectedNames.Count;
-                if (count <= 3) return 1;
-                if (count <= 6) return 2;
+                if (count <= SingleColumnThreshold) return 1;
+                if (count <= TwoColumnThreshold) return 2;
                 return 3;
             }
         }
