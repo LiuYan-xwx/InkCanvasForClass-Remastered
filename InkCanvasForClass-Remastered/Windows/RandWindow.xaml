@@ -37,15 +37,6 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <!--  装饰图片层  -->
-            <Image
-                Grid.Row="1"
-                Width="300"
-                Margin="-48,0,0,0"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Bottom"
-                Source="/Resources/hatsune-miku1.png" />
-
             <!--  主内容区域  -->
             <Grid Grid.Row="0" Margin="20">
                 <Grid.ColumnDefinitions>
@@ -232,10 +223,21 @@
                 </ikw:SimpleStackPanel>
             </Grid>
 
-            <!--  底部按钮区  -->
+            <!--  底部区域：装饰图片和按钮  -->
             <Grid Grid.Row="1" Margin="16">
+                <!--  装饰图片 - 左下角  -->
+                <Image
+                    Width="300"
+                    Height="Auto"
+                    Margin="-64,0,0,0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Bottom"
+                    Source="/Resources/hatsune-miku1.png" />
+
+                <!--  底部按钮组 - 右下角  -->
                 <ikw:SimpleStackPanel
                     HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
                     Orientation="Horizontal"
                     Spacing="8">
                     <!--  名单导入按钮  -->
