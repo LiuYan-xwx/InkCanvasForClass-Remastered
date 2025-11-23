@@ -34,6 +34,8 @@ namespace InkCanvasForClass_Remastered.ViewModels
 
         private void OnSelectedNamesChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
+            // Note: This fires on every collection change. For small collections (max 10 items),
+            // the performance impact is negligible. DisplayColumns calculation is trivial.
             OnPropertyChanged(nameof(DisplayColumns));
         }
 
