@@ -278,7 +278,7 @@ namespace InkCanvasForClass_Remastered
                     WindowState = WindowState.Normal;
                     Left = 0.0;
                     Top = 0.0;
-                    Height = SystemParameters.PrimaryScreenHeight;
+                    Height = SystemParameters.PrimaryScreenHeight - 1;
                     Width = SystemParameters.PrimaryScreenWidth;
                     break;
             }
