@@ -54,7 +54,8 @@
                         Name="ItemsControlOutput"
                         MinHeight="300"
                         HorizontalAlignment="Center"
-                        ItemsSource="{Binding SelectedNames}">
+                        ItemsSource="{Binding SelectedNames}"
+                        ToolTip="显示抽取结果"
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <UniformGrid Columns="2" />
@@ -226,6 +227,7 @@
             <!--  底部区域：装饰图片和按钮  -->
             <Grid Grid.Row="1" Margin="16">
                 <!--  装饰图片 - 左下角  -->
+                <!--  负边距用于创建图片部分超出窗口边界的"窥视"效果  -->
                 <Image
                     Width="300"
                     Height="Auto"
