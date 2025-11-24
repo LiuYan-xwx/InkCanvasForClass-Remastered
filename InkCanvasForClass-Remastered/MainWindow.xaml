@@ -337,11 +337,6 @@
                                     <controls:SettingsControl Header="开机自启" IsOn="{Binding Settings.IsAutoStartEnabled}" />
 
                                     <controls:SettingsControl Header="软件启动后自动隐藏" IsOn="{Binding Settings.IsHideFloatingBarOnStart}" />
-
-                                    <controls:SettingsControl
-                                        Header="使窗口永不激活（无焦点模式）"
-                                        Description="懂得都懂，不懂的不用开。此设置需要重启生效！"
-                                        IsOn="{Binding Settings.IsWindowNoActivate}" />
                                 </ikw:SimpleStackPanel>
                             </GroupBox>
                             <GroupBox>
@@ -1074,7 +1069,12 @@
 
                                     <controls:SettingsControl Header="关闭软件时二次弹窗确认" IsOn="{Binding Settings.IsSecondConfirmWhenShutdownApp}" />
 
-                                    <controls:SettingsControl Header="窗口模式" Description="假全屏实质是WindowState设为Normal，窗口高度比全屏少了一个像素。能有效解决 Win11 中任务栏点不动的问题">
+                                    <controls:SettingsControl
+                                        Header="使窗口永不激活（无焦点模式）"
+                                        Description="懂得都懂，不懂的不用开。此设置需要重启生效！"
+                                        IsOn="{Binding Settings.IsWindowNoActivate}" />
+
+                                    <controls:SettingsControl Header="窗口模式" Description="假全屏实质是WindowState设为Normal，窗口高度比全屏少了一个像素。能有效解决 Win11 中任务栏点不动的问题。当然缺点是，如果焦点在任务栏上，那么程序就会被遮挡。如果开启了无焦点，那么任务栏始终会遮挡应用。">
                                         <controls:SettingsControl.Switcher>
                                             <ComboBox SelectedIndex="{Binding Settings.WindowMode}">
                                                 <ComboBoxItem>全屏</ComboBoxItem>
@@ -1105,7 +1105,7 @@
                                         X2="400"
                                         Y1="0"
                                         Y2="0" />
-                                    
+
                                     <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                         <TextBlock
                                             Margin="0,0,6,0"
