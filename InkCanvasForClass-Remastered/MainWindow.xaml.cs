@@ -1735,7 +1735,7 @@ namespace InkCanvasForClass_Remastered
                         await Task.Delay(50);
                         ViewboxFloatingBarMarginAnimation(60);
                     }
-                    else if (Topmost == true) //非黑板
+                    else if (_viewModel.AppMode == AppMode.Normal) //非黑板
                     {
                         await Task.Delay(50);
                         ViewboxFloatingBarMarginAnimation(100, true);
@@ -1898,8 +1898,6 @@ namespace InkCanvasForClass_Remastered
                 BtnColorBlack_Click(null, null);
             else
                 BtnColorWhite_Click(null, null);
-
-            Topmost = false;
         }
 
         /// <summary>
@@ -1914,8 +1912,6 @@ namespace InkCanvasForClass_Remastered
             SaveStrokes();
             ClearStrokes(true);
             RestoreStrokes(true);
-
-            Topmost = true;
         }
 
         /// <summary>
@@ -2225,7 +2221,7 @@ namespace InkCanvasForClass_Remastered
             if (MarginFromEdge == 60) MarginFromEdge = 55;
             await Dispatcher.InvokeAsync(() =>
             {
-                if (Topmost == false)
+                if (_viewModel.AppMode == AppMode.WhiteBoard)
                     MarginFromEdge = -60;
                 else
                     ViewboxFloatingBar.Visibility = Visibility.Visible;
@@ -2291,7 +2287,7 @@ namespace InkCanvasForClass_Remastered
             await Dispatcher.InvokeAsync(() =>
             {
                 ViewboxFloatingBar.Margin = new Thickness(pos.X, pos.Y, -2000, -200);
-                if (Topmost == false) ViewboxFloatingBar.Visibility = Visibility.Hidden;
+                if (_viewModel.AppMode == AppMode.WhiteBoard) ViewboxFloatingBar.Visibility = Visibility.Hidden;
             });
         }
 
@@ -4144,7 +4140,7 @@ namespace InkCanvasForClass_Remastered
 
             if (Settings.AutoSwitchTwoFingerGesture)
             {
-                if (Topmost)
+                if (_viewModel.AppMode == AppMode.Normal)
                 {
                     ToggleSwitchEnableTwoFingerTranslate.IsOn = false;
                     BoardToggleSwitchEnableTwoFingerTranslate.IsOn = false;
