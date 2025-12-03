@@ -3753,7 +3753,7 @@
                                             ClipToBounds="True"
                                             CornerRadius="5"
                                             Opacity="1"
-                                            Visibility="Visible">
+                                            Visibility="Collapsed">
                                             <ikw:SimpleStackPanel Margin="0">
                                                 <Border
                                                     Margin="-1,-1,-1,1"
@@ -5876,7 +5876,7 @@
                                         ClipToBounds="True"
                                         CornerRadius="5"
                                         Opacity="1"
-                                        Visibility="Visible">
+                                        Visibility="Collapsed">
                                         <ikw:SimpleStackPanel Margin="0">
                                             <Border
                                                 Margin="-1,-1,-1,1"

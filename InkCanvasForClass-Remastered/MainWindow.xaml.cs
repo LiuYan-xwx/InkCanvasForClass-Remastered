@@ -2710,9 +2710,9 @@ namespace InkCanvasForClass_Remastered
             if (!_powerPointService.IsInSlideShow || _viewModel.AppMode == AppMode.WhiteBoard)
                 return;
             if (e.Delta >= 120)
-                PPTNavigationPanel_PreviousClick(null, null);
+                HandlePPTPreviousPage();
             else if (e.Delta <= -120)
-                PPTNavigationPanel_NextClick(null, null);
+                HandlePPTNextPage();
         }
 
         private void Main_Grid_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -2720,9 +2720,9 @@ namespace InkCanvasForClass_Remastered
             if (!_powerPointService.IsInSlideShow || _viewModel.AppMode == AppMode.WhiteBoard)
                 return;
             if (e.Key == Key.Down || e.Key == Key.PageDown || e.Key == Key.Right || e.Key == Key.N || e.Key == Key.Space)
-                PPTNavigationPanel_NextClick(null, null);
+                HandlePPTNextPage();
             if (e.Key == Key.Up || e.Key == Key.PageUp || e.Key == Key.Left || e.Key == Key.P)
-                PPTNavigationPanel_PreviousClick(null, null);
+                HandlePPTPreviousPage();
             if (e.Key == Key.Escape)
                 if (_powerPointService.IsInSlideShow)
                     _powerPointService.EndSlideShow();
@@ -3093,11 +3093,6 @@ namespace InkCanvasForClass_Remastered
                 ms.Position = 0;
                 _memoryStreams[_previousSlideID] = ms;
 
-                if (inkCanvas.Strokes.Count > Settings.MinimumAutomationStrokeNumber &&
-                    Settings.IsAutoSaveScreenShotInPowerPoint && !_isPptClickingBtnTurned)
-                    SaveScreenShot(true, _powerPointService.CurrentPresentationName + "/" + currentPage);
-                _isPptClickingBtnTurned = false;
-
                 ClearStrokes(true);
                 timeMachine.ClearStrokeHistory();
 
@@ -3117,33 +3112,39 @@ namespace InkCanvasForClass_Remastered
             _previousSlideID = currentPage;
         }
 
-        private bool _isPptClickingBtnTurned = false;
-
         private void ImagePPTControlEnd_MouseUp(object sender, MouseButtonEventArgs e)
         {
             _powerPointService.EndSlideShow();
         }
 
         #region New PPT Navigation Panel Event Handlers
+        private void HandlePPTPreviousPage()
+        {
+            if (inkCanvas.Strokes.Count > Settings.MinimumAutomationStrokeNumber
+                && Settings.IsAutoSaveScreenShotInPowerPoint)
+            {
+                SaveScreenShot(true, $"{_powerPointService.CurrentPresentationName}/{_powerPointService.CurrentSlidePosition}");
+            }
+            _powerPointService.GoToPreviousSlide();
+        }
+
+        private void HandlePPTNextPage()
+        {
+            if (inkCanvas.Strokes.Count > Settings.MinimumAutomationStrokeNumber
+                && Settings.IsAutoSaveScreenShotInPowerPoint)
+            {
+                SaveScreenShot(true, $"{_powerPointService.CurrentPresentationName}/{_powerPointService.CurrentSlidePosition}");
+            }
+            _powerPointService.GoToNextSlide();
+        }
         private void PPTNavigationPanel_PreviousClick(object? sender, RoutedEventArgs? e)
         {
-            _isPptClickingBtnTurned = true;
-            if (inkCanvas.Strokes.Count > Settings.MinimumAutomationStrokeNumber &&
-                Settings.IsAutoSaveScreenShotInPowerPoint)
-                SaveScreenShot(true,
-                    $"{_powerPointService.CurrentPresentationName}/{_powerPointService.CurrentSlidePosition}");
-            _powerPointService.GoToPreviousSlide();
+            HandlePPTPreviousPage();
         }
 
         private void PPTNavigationPanel_NextClick(object? sender, RoutedEventArgs? e)
         {
-            _isPptClickingBtnTurned = true;
-            if (inkCanvas.Strokes.Count > Settings.MinimumAutomationStrokeNumber &&
-                Settings.IsAutoSaveScreenShotInPowerPoint)
-                SaveScreenShot(true,
-                    $"{_powerPointService.CurrentPresentationName}/{_powerPointService.CurrentSlidePosition}");
-
-            _powerPointService.GoToNextSlide();
+            HandlePPTNextPage();
         }
 
         private void PPTNavigationPanel_PageClick(object sender, RoutedEventArgs e)
