@@ -210,6 +210,9 @@
                                                     <CubicEase EasingMode="EaseOut" />
                                                 </ThicknessAnimation.EasingFunction>
                                             </ThicknessAnimation>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Visible}" />
+                                            </ObjectAnimationUsingKeyFrames>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </DataTrigger.EnterActions>
