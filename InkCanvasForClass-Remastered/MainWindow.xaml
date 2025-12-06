@@ -192,7 +192,7 @@
                 <Border.Style>
                     <Style TargetType="Border">
                         <Setter Property="Margin" Value="-440,0,0,0" />
-                        <Setter Property="Visibility" Value="Collapsed" />
+                        <Setter Property="Visibility" Value="Hidden" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsSettingsPanelVisible}" Value="True">
                                 <Setter Property="Margin" Value="0,0,0,0" />
@@ -230,7 +230,7 @@
                                                 </ThicknessAnimation.EasingFunction>
                                             </ThicknessAnimation>
                                             <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility">
-                                                <DiscreteObjectKeyFrame KeyTime="0:0:0.6" Value="{x:Static Visibility.Collapsed}" />
+                                                <DiscreteObjectKeyFrame KeyTime="0:0:0.6" Value="{x:Static Visibility.Hidden}" />
                                             </ObjectAnimationUsingKeyFrames>
                                         </Storyboard>
                                     </BeginStoryboard>
