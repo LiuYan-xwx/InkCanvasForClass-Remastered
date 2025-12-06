@@ -192,9 +192,11 @@
                 <Border.Style>
                     <Style TargetType="Border">
                         <Setter Property="Margin" Value="-440,0,0,0" />
+                        <Setter Property="Visibility" Value="Hidden" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsSettingsPanelVisible}" Value="True">
                                 <Setter Property="Margin" Value="0,0,0,0" />
+                                <Setter Property="Visibility" Value="Visible" />
                                 <DataTrigger.EnterActions>
                                     <BeginStoryboard>
                                         <Storyboard>
@@ -208,6 +210,9 @@
                                                     <CubicEase EasingMode="EaseOut" />
                                                 </ThicknessAnimation.EasingFunction>
                                             </ThicknessAnimation>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Visible}" />
+                                            </ObjectAnimationUsingKeyFrames>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </DataTrigger.EnterActions>
@@ -224,6 +229,9 @@
                                                     <CubicEase EasingMode="EaseOut" />
                                                 </ThicknessAnimation.EasingFunction>
                                             </ThicknessAnimation>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility">
+                                                <DiscreteObjectKeyFrame KeyTime="0:0:0.6" Value="{x:Static Visibility.Hidden}" />
+                                            </ObjectAnimationUsingKeyFrames>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </DataTrigger.ExitActions>
