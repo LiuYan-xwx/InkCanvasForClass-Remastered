@@ -47,35 +47,30 @@
                 </Grid.ColumnDefinitions>
 
                 <!--  结果显示区  -->
-                <Viewbox
+                <ItemsControl
+                    Name="ItemsControlOutput"
                     Grid.Column="0"
-                    MaxWidth="320"
-                    Margin="16,0"
                     HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
-                    <ItemsControl
-                        Name="ItemsControlOutput"
-                        HorizontalAlignment="Center"
-                        ItemsSource="{Binding SelectedNames}"
-                        ToolTip="显示抽取结果">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <UniformGrid Columns="2" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock
-                                    Margin="16,8"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    FontSize="64"
-                                    Text="{Binding}"
-                                    TextAlignment="Center" />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </Viewbox>
+                    VerticalAlignment="Center"
+                    ItemsSource="{Binding SelectedNames}"
+                    ToolTip="显示抽取结果">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="2" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock
+                                Margin="16,8"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="64"
+                                Text="{Binding}"
+                                TextAlignment="Center" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
 
                 <!--  控制面板  -->
                 <ikw:SimpleStackPanel
