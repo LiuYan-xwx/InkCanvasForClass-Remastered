@@ -5,92 +5,93 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:ikw="http://schemas.inkore.net/lib/ui/wpf"
     xmlns:local="clr-namespace:InkCanvasForClass_Remastered"
-    xmlns:viewmodel="clr-namespace:InkCanvasForClass_Remastered.ViewModels"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.inkore.net/lib/ui/wpf/modern"
+    xmlns:viewmodel="clr-namespace:InkCanvasForClass_Remastered.ViewModels"
     Title="InkCanvasForClass-Remastered 抽奖"
     Width="900"
     Height="500"
     d:DataContext="{d:DesignInstance viewmodel:RandViewModel}"
     ui:ThemeManager.RequestedTheme="Light"
-    AllowsTransparency="True"
     Background="Transparent"
     FontFamily="Microsoft YaHei UI"
     Loaded="Window_Loaded"
+    ResizeMode="CanMinimize"
     Topmost="True"
     WindowStartupLocation="CenterScreen"
     WindowStyle="None"
     mc:Ignorable="d">
+    <WindowChrome.WindowChrome>
+        <WindowChrome GlassFrameThickness="-1" />
+    </WindowChrome.WindowChrome>
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     </Window.Resources>
     <Border
-        Margin="0"
         Background="#F0F3F9"
         BorderBrush="#0066BF"
         BorderThickness="1"
         ClipToBounds="True"
         CornerRadius="10">
-        <Canvas>
-            <Image
-                Canvas.Left="-48"
-                Canvas.Top="304"
-                Canvas.Bottom="-140"
-                Width="300"
-                Source="/Resources/hatsune-miku1.png" />
-            <Grid
-                Canvas.Left="0"
-                Canvas.Top="0"
-                Canvas.Right="0"
-                Canvas.Bottom="0"
-                Width="900"
-                Height="309"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Top">
+        <Grid Margin="24">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!--  主内容区域  -->
+            <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1.8*" />
-                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <Viewbox Margin="20,0" HorizontalAlignment="Center">
-                    <ItemsControl
-                        Name="ItemsControlOutput"
-                        MinHeight="470"
-                        HorizontalAlignment="Center"
-                        ItemsSource="{Binding SelectedNames}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <UniformGrid Columns="2" />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock
-                                    Margin="25,0"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    FontSize="130"
-                                    Text="{Binding}"
-                                    TextAlignment="Center"
-                                    TextWrapping="Wrap" />
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </Viewbox>
+
+                <!--  结果显示区  -->
+                <ItemsControl
+                    Name="ItemsControlOutput"
+                    Grid.Column="0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    ItemsSource="{Binding SelectedNames}"
+                    ToolTip="显示抽取结果">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="2" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock
+                                Margin="16,8"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="64"
+                                Text="{Binding}"
+                                TextAlignment="Center" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <!--  控制面板  -->
                 <ikw:SimpleStackPanel
                     Name="PeopleControlPane"
                     Grid.Column="1"
-                    Width="256"
-                    HorizontalAlignment="Left"
+                    Margin="0,0,48,0"
+                    HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Opacity="1"
-                    Spacing="8">
-                    <StackPanel Orientation="Horizontal">
+                    Spacing="16">
+                    <!--  抽取数量控制  -->
+                    <ikw:SimpleStackPanel
+                        HorizontalAlignment="Center"
+                        Orientation="Horizontal"
+                        Spacing="12">
                         <Border
                             x:Name="BorderBtnMinus"
-                            Width="70"
-                            Height="70"
+                            Width="64"
+                            Height="64"
                             Background="#FBFBFD"
-                            CornerRadius="100"
+                            CornerRadius="32"
+                            Cursor="Hand"
                             MouseUp="BorderBtnMinus_MouseUp">
                             <Border.Effect>
                                 <DropShadowEffect
@@ -99,7 +100,7 @@
                                     Opacity="0.15"
                                     ShadowDepth="0" />
                             </Border.Effect>
-                            <Viewbox Margin="20">
+                            <Viewbox Margin="18">
                                 <Image Width="18" Height="18">
                                     <Image.Source>
                                         <DrawingImage>
@@ -121,20 +122,25 @@
                                 </Image>
                             </Viewbox>
                         </Border>
+
                         <TextBlock
                             Name="LabelNumberCount"
-                            Width="80"
-                            Margin="10"
+                            MinWidth="70"
+                            Margin="8,0"
+                            VerticalAlignment="Center"
                             FontFamily="Consolas"
-                            FontSize="55"
+                            FontSize="52"
+                            FontWeight="SemiBold"
                             Text="{Binding DrawCount}"
                             TextAlignment="Center" />
+
                         <Border
                             x:Name="BorderBtnAdd"
-                            Width="70"
-                            Height="70"
+                            Width="64"
+                            Height="64"
                             Background="#FBFBFD"
-                            CornerRadius="100"
+                            CornerRadius="32"
+                            Cursor="Hand"
                             MouseUp="BorderBtnAdd_MouseUp">
                             <Border.Effect>
                                 <DropShadowEffect
@@ -143,7 +149,7 @@
                                     Opacity="0.15"
                                     ShadowDepth="0" />
                             </Border.Effect>
-                            <Viewbox Margin="20">
+                            <Viewbox Margin="18">
                                 <Image Width="18" Height="18">
                                     <Image.Source>
                                         <DrawingImage>
@@ -165,104 +171,119 @@
                                 </Image>
                             </Viewbox>
                         </Border>
-                    </StackPanel>
-                    <ikw:SimpleStackPanel
-                        Margin="0,8,0,0"
-                        HorizontalAlignment="Center"
-                        Orientation="Horizontal"
-                        Spacing="24">
-                        <CheckBox
-                            Content="不重复抽取"
-                            IsChecked="{Binding IsNoDuplicate, Mode=TwoWay}" />
                     </ikw:SimpleStackPanel>
+
+                    <!--  选项复选框  -->
+                    <CheckBox
+                        Content="不重复抽取"
+                        Margin="0,8"
+                        HorizontalAlignment="Center"
+                        IsChecked="{Binding IsNoDuplicate, Mode=TwoWay}" />
+
+                    <!--  开抽按钮  -->
                     <Border
                         x:Name="BorderBtnRand"
-                        Width="200"
-                        Height="70"
+                        Height="64"
+                        MinWidth="200"
+                        Padding="20,0"
                         Background="#0066BF"
-                        CornerRadius="35"
+                        CornerRadius="32"
+                        Cursor="Hand"
                         MouseUp="BorderBtnRand_MouseUp">
+                        <Border.Effect>
+                            <DropShadowEffect
+                                BlurRadius="4"
+                                Direction="0"
+                                Opacity="0.2"
+                                ShadowDepth="0" />
+                        </Border.Effect>
                         <ikw:SimpleStackPanel
-                            Margin="3,0"
                             HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
                             Orientation="Horizontal"
-                            Spacing="20">
-                            <Viewbox Margin="0,20">
-                                <ui:SymbolIcon
-                                    Name="SymbolIconStart"
-                                    Foreground="White"
-                                    Symbol="Contact" />
-                            </Viewbox>
+                            Spacing="12">
+                            <ui:SymbolIcon
+                                Name="SymbolIconStart"
+                                FontSize="24"
+                                Foreground="White"
+                                Symbol="Contact" />
                             <TextBlock
-                                Margin="-1,-1,4,0"
                                 VerticalAlignment="Center"
-                                FontSize="32"
+                                FontSize="28"
+                                FontWeight="Medium"
                                 Foreground="White"
                                 Text="开抽" />
                         </ikw:SimpleStackPanel>
                     </Border>
                 </ikw:SimpleStackPanel>
             </Grid>
-            <Border
-                x:Name="BorderBtnHelp"
-                Grid.Column="1"
-                Canvas.Right="8"
-                Canvas.Bottom="8"
-                Height="40"
-                Margin="10,10,60,10"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Bottom"
-                Background="#FBFBFD"
-                CornerRadius="20"
-                MouseUp="BorderBtnHelp_MouseUp"
-                UseLayoutRounding="True"
-                Visibility="{Binding Settings.DisplayRandWindowNamesInputBtn, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Border.Effect>
-                    <DropShadowEffect
-                        BlurRadius="3"
-                        Direction="0"
-                        Opacity="0.15"
-                        ShadowDepth="0" />
-                </Border.Effect>
-                <ikw:SimpleStackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                    <Viewbox Margin="15,12">
-                        <ui:SymbolIcon Foreground="Black" Symbol="People" />
-                    </Viewbox>
-                    <TextBlock
-                        Name="TextBlockPeopleCount"
-                        Margin="-5,12,15,12"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        FontSize="16"
-                        Text="点击此处以导入名单" />
-                </ikw:SimpleStackPanel>
-            </Border>
-            <Border
-                x:Name="BtnClose"
-                Grid.Column="1"
-                Canvas.Right="8"
-                Canvas.Bottom="8"
-                Width="40"
-                Height="40"
-                Margin="10"
-                HorizontalAlignment="Right"
-                VerticalAlignment="{Binding ElementName=BorderBtnHelp, Path=VerticalAlignment}"
-                Background="#E32A34"
-                CornerRadius="100"
-                MouseUp="BtnClose_MouseUp"
-                UseLayoutRounding="True">
-                <Border.Effect>
-                    <DropShadowEffect
-                        BlurRadius="3"
-                        Direction="0"
-                        Opacity="0.1"
-                        ShadowDepth="0" />
-                </Border.Effect>
-                <Viewbox Margin="14">
-                    <ui:SymbolIcon Foreground="White" Symbol="Clear" />
-                </Viewbox>
-            </Border>
-        </Canvas>
 
+            <!--  底部区域  -->
+            <Grid Grid.Row="1">
+                <ikw:SimpleStackPanel
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Orientation="Horizontal"
+                    Spacing="16">
+                    <!--  名单导入按钮  -->
+                    <Border
+                        x:Name="BorderBtnHelp"
+                        Height="40"
+                        Padding="12,0"
+                        Background="#FBFBFD"
+                        CornerRadius="20"
+                        Cursor="Hand"
+                        MouseUp="BorderBtnHelp_MouseUp"
+                        UseLayoutRounding="True"
+                        Visibility="{Binding Settings.DisplayRandWindowNamesInputBtn, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Border.Effect>
+                            <DropShadowEffect
+                                BlurRadius="3"
+                                Direction="0"
+                                Opacity="0.15"
+                                ShadowDepth="0" />
+                        </Border.Effect>
+                        <ikw:SimpleStackPanel
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal"
+                            Spacing="8">
+                            <ui:SymbolIcon
+                                FontSize="16"
+                                Foreground="Black"
+                                Symbol="People" />
+                            <TextBlock
+                                Name="TextBlockPeopleCount"
+                                VerticalAlignment="Center"
+                                FontSize="14"
+                                Text="点击此处以导入名单" />
+                        </ikw:SimpleStackPanel>
+                    </Border>
+
+                    <!--  关闭按钮  -->
+                    <Border
+                        x:Name="BtnClose"
+                        Width="40"
+                        Height="40"
+                        Background="#E32A34"
+                        CornerRadius="20"
+                        Cursor="Hand"
+                        MouseUp="BtnClose_MouseUp"
+                        UseLayoutRounding="True">
+                        <Border.Effect>
+                            <DropShadowEffect
+                                BlurRadius="3"
+                                Direction="0"
+                                Opacity="0.15"
+                                ShadowDepth="0" />
+                        </Border.Effect>
+                        <ui:SymbolIcon
+                            FontSize="16"
+                            Foreground="White"
+                            Symbol="Clear" />
+                    </Border>
+                </ikw:SimpleStackPanel>
+            </Grid>
+        </Grid>
     </Border>
 </Window>
