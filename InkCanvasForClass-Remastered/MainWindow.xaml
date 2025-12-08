@@ -195,24 +195,18 @@
                         <Setter Property="Visibility" Value="Hidden" />
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding IsSettingsPanelVisible}" Value="True">
-                                <Setter Property="Margin" Value="0,0,0,0" />
                                 <Setter Property="Visibility" Value="Visible" />
                                 <DataTrigger.EnterActions>
                                     <BeginStoryboard>
                                         <Storyboard>
                                             <ThicknessAnimation
-                                                FillBehavior="Stop"
                                                 Storyboard.TargetProperty="Margin"
-                                                From="-440,0,0,0"
                                                 To="0,0,0,0"
                                                 Duration="0:0:0.6">
                                                 <ThicknessAnimation.EasingFunction>
                                                     <CubicEase EasingMode="EaseOut" />
                                                 </ThicknessAnimation.EasingFunction>
                                             </ThicknessAnimation>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility">
-                                                <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Visible}" />
-                                            </ObjectAnimationUsingKeyFrames>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </DataTrigger.EnterActions>
@@ -220,17 +214,18 @@
                                     <BeginStoryboard>
                                         <Storyboard>
                                             <ThicknessAnimation
-                                                FillBehavior="Stop"
                                                 Storyboard.TargetProperty="Margin"
-                                                From="0,0,0,0"
                                                 To="-440,0,0,0"
                                                 Duration="0:0:0.6">
                                                 <ThicknessAnimation.EasingFunction>
                                                     <CubicEase EasingMode="EaseOut" />
                                                 </ThicknessAnimation.EasingFunction>
                                             </ThicknessAnimation>
-                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility">
-                                                <DiscreteObjectKeyFrame KeyTime="0:0:0.6" Value="{x:Static Visibility.Hidden}" />
+                                            <ObjectAnimationUsingKeyFrames
+                                                FillBehavior="Stop"
+                                                Storyboard.TargetProperty="Visibility"
+                                                Duration="0:0:0.6">
+                                                <DiscreteObjectKeyFrame KeyTime="0:0:0" Value="{x:Static Visibility.Visible}" />
                                             </ObjectAnimationUsingKeyFrames>
                                         </Storyboard>
                                     </BeginStoryboard>
