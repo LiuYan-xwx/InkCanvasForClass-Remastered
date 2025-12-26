@@ -156,7 +156,7 @@ ICC 可以支持 WPS，但目前無法同時支持 MSOffice 和 WPS。若要啟�
 ## 下载？
 我不会发 Release，你可以：
 1. 自行克隆仓库，本地构建
-2. 从 [Actions 的 Build 工作流中对于 master 分支的运行](https://github.com/LiuYan-xwx/InkCanvasForClass-Remastered/actions) 中下载构建产物
+2. 从 [Actions 的 Build 工作流中对于 master 分支的运行](https://github.com/LiuYan-xwx/InkCanvasForClass-Remastered/actions/workflows/build.yml?query=branch:master) 中下载构建产物
 
 ## 问题反馈
 
