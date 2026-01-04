@@ -29,12 +29,17 @@ namespace InkCanvasForClass_Remastered.ViewModels
         private string _nowTime;
         [ObservableProperty]
         private string _nowDate;
+
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsWhiteboardPreviousPageButtonEnabled))]
         private int _whiteboardCurrentPage = 1;
+
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsWhiteboardPreviousPageButtonEnabled))]
         private int _whiteboardTotalPageCount = 1;
-        [ObservableProperty]
-        private bool _isWhiteboardPreviousPageButtonEnabled = false;
+
+        public bool IsWhiteboardPreviousPageButtonEnabled => WhiteboardCurrentPage > 1;
+
         [ObservableProperty]
         private bool _isFloatingBarVisible = true;
         [ObservableProperty]
@@ -43,21 +48,6 @@ namespace InkCanvasForClass_Remastered.ViewModels
         private bool _canRedo = false;
         [ObservableProperty]
         private bool _isSettingsPanelVisible = false;
-
-        partial void OnWhiteboardCurrentPageChanged(int value)
-        {
-            UpdateWhiteboardButtonStates();
-        }
-
-        partial void OnWhiteboardTotalPageCountChanged(int value)
-        {
-            UpdateWhiteboardButtonStates();
-        }
-
-        private void UpdateWhiteboardButtonStates()
-        {
-            IsWhiteboardPreviousPageButtonEnabled = WhiteboardCurrentPage > 1;
-        }
 
         [RelayCommand]
         private void OpenSettingsPanel()
