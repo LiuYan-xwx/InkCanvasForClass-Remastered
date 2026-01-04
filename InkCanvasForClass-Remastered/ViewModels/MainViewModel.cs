@@ -26,9 +26,9 @@ namespace InkCanvasForClass_Remastered.ViewModels
         [ObservableProperty]
         private InkCanvasEditingMode _appPenMode = InkCanvasEditingMode.None;
         [ObservableProperty]
-        private string _nowTime;
+        private string _nowTime = string.Empty;
         [ObservableProperty]
-        private string _nowDate;
+        private string _nowDate = string.Empty;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsWhiteboardPreviousPageButtonEnabled))]
