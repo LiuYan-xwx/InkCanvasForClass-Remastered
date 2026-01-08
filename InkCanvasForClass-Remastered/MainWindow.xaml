@@ -621,13 +621,9 @@
                                             Foreground="#fafafa"
                                             Text="Microsoft PowerPoint 支持" />
                                         <ui:ToggleSwitch
-                                            Name="ToggleSwitchSupportPowerPoint"
-                                            FontFamily="Microsoft YaHei UI"
-                                            FontWeight="Bold"
                                             IsOn="{Binding Settings.PowerPointSupport, Mode=TwoWay}"
                                             OffContent=""
-                                            OnContent=""
-                                            Toggled="ToggleSwitchSupportPowerPoint_Toggled" />
+                                            OnContent="" />
                                     </ikw:SimpleStackPanel>
                                     <TextBlock
                                         FontSize="12"

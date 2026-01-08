@@ -66,7 +66,6 @@ namespace InkCanvasForClass_Remastered
             DataContext = _viewModel;
 
             // 挂载PPT服务事件
-            _powerPointService.PresentationClose += PptApplication_PresentationClose;
             _powerPointService.SlideShowBegin += PptApplication_SlideShowBegin;
             _powerPointService.SlideShowEnd += PptApplication_SlideShowEnd;
             _powerPointService.SlideShowNextSlide += PptApplication_SlideShowNextSlide;
@@ -2902,24 +2901,7 @@ namespace InkCanvasForClass_Remastered
         private string? _pptName = null;
         private bool isEnteredSlideShowEndEvent = false;
         private int _previousSlideID = 1;
-        private Dictionary<int, MemoryStream> _memoryStreams = new();
-
-        private void TimerCheckPPT_Tick(object? sender, EventArgs e)
-        {
-            if (_powerPointService.IsConnected) return; // 如果已经连接，就什么都不做
-
-            if (_powerPointService.TryConnectToPowerPoint())
-            {
-                // 连接成功！
-                timerCheckPPT.Stop(); // 停止定时器
-            }
-        }
-
-        private void PptApplication_PresentationClose(Presentation Pres)
-        {
-            timerCheckPPT.Start();
-        }
-
+        private Dictionary<int, MemoryStream> _memoryStreams = [];
 
         private async void PptApplication_SlideShowBegin(SlideShowWindow Wn)
         {
@@ -3654,17 +3636,6 @@ namespace InkCanvasForClass_Remastered
         #endregion
 
         #region Settings
-        #region Behavior
-
-        private void ToggleSwitchSupportPowerPoint_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (Settings.PowerPointSupport)
-                timerCheckPPT.Start();
-            else
-                timerCheckPPT.Stop();
-        }
-
-        #endregion
 
         #region Startup
 
@@ -4112,17 +4083,6 @@ namespace InkCanvasForClass_Remastered
             else
             {
                 BoundsWidth = Settings.FingerModeBoundsWidth;
-            }
-
-            // PowerPointSettings
-
-            if (Settings.PowerPointSupport)
-            {
-                timerCheckPPT.Start();
-            }
-            else
-            {
-                timerCheckPPT.Stop();
             }
 
             // -- new --
@@ -4735,7 +4695,6 @@ namespace InkCanvasForClass_Remastered
         #endregion
 
         #region Timer
-        private DispatcherTimer timerCheckPPT = new DispatcherTimer();
         private DispatcherTimer timerKillProcess = new DispatcherTimer();
         private DispatcherTimer timerCheckAutoFold = new DispatcherTimer();
         private bool isHidingSubPanelsWhenInking = false; // 避免书写时触发二次关闭二级菜单导致动画不连续
@@ -4745,8 +4704,6 @@ namespace InkCanvasForClass_Remastered
 
         private void InitTimers()
         {
-            timerCheckPPT.Tick += TimerCheckPPT_Tick;
-            timerCheckPPT.Interval = TimeSpan.FromMilliseconds(500);
             timerKillProcess.Tick += TimerKillProcess_Tick;
             timerKillProcess.Interval = TimeSpan.FromMilliseconds(2000);
             timerCheckAutoFold.Tick += timerCheckAutoFold_Tick;

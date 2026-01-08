@@ -3,6 +3,7 @@ using InkCanvasForClass_Remastered.Helpers;
 using Microsoft.Extensions.Logging;
 using Microsoft.Office.Interop.PowerPoint;
 using System.Runtime.InteropServices;
+using System.Windows.Threading;
 using Application = Microsoft.Office.Interop.PowerPoint.Application;
 
 namespace InkCanvasForClass_Remastered.Services
@@ -10,10 +11,17 @@ namespace InkCanvasForClass_Remastered.Services
     public partial class PowerPointService : ObservableRecipient, IPowerPointService
     {
         private readonly ILogger<PowerPointService> Logger;
+        private readonly DispatcherTimer _autoConnectTimer;
 
         public PowerPointService(ILogger<PowerPointService> logger)
         {
             Logger = logger;
+            _autoConnectTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(500)
+            };
+            _autoConnectTimer.Tick += OnAutoConnectTimer_Tick;
+            _autoConnectTimer.Start();
         }
 
         private Application? _pptApplication;
@@ -225,12 +233,27 @@ namespace InkCanvasForClass_Remastered.Services
             }
         }
 
+        private void OnAutoConnectTimer_Tick(object? sender, EventArgs e)
+        {
+            if(IsConnected)
+            {
+                _autoConnectTimer.Stop();
+                return;
+            }
+            if (TryConnectToPowerPoint())
+            {
+                _autoConnectTimer.Stop();
+            }
+        }
+
+
         // 私有的事件转发器
         private void OnPresentationOpen(Presentation Pres) => PresentationOpen?.Invoke(Pres);
         private void OnPresentationClose(Presentation Pres)
         {
             DisconnectFromPowerPoint();
             PresentationClose?.Invoke(Pres);
+            _autoConnectTimer.Start();
         }
         
         private void OnSlideShowBegin(SlideShowWindow Wn)
