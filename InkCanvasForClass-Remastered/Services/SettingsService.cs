@@ -24,7 +24,7 @@ namespace InkCanvasForClass_Remastered.Services
         {
             try
             {
-                var settingsPath = Path.Combine(App.AppRootFolderPath, settingsFileName);
+                var settingsPath = Path.Combine(CommonDirectories.AppRootFolderPath, settingsFileName);
                 if (File.Exists(settingsPath))
                 {
                     string text = File.ReadAllText(settingsPath);
@@ -53,7 +53,7 @@ namespace InkCanvasForClass_Remastered.Services
             try
             {
                 var text = JsonConvert.SerializeObject(_settings, Formatting.Indented);
-                var settingsPath = Path.Combine(App.AppRootFolderPath, settingsFileName);
+                var settingsPath = Path.Combine(CommonDirectories.AppRootFolderPath, settingsFileName);
                 File.WriteAllText(settingsPath, text);
                 Logger.LogInformation("设置被保存");
             }

@@ -28,8 +28,9 @@ namespace InkCanvasForClass_Remastered
 
         public static T GetService<T>() => IAppHost.GetService<T>();
 
-        public static readonly string AppRootFolderPath = "./";
-        public static readonly string AppLogFolderPath = Path.Combine(AppRootFolderPath, "Logs");
+        //public static readonly string AppRootFolderPath = "./";
+        //public static readonly string AppLogFolderPath = Path.Combine(AppRootFolderPath, "Logs");
+        //public static string AppSavesFolderPath = Path.Combine(AppRootFolderPath, "Saves");
 
 
         public App()
@@ -51,7 +52,7 @@ namespace InkCanvasForClass_Remastered
                 InkCanvasForClass_Remastered.MainWindow.ShowNewMessage("抱歉，出现未预期的异常，可能导致 ICC-Re 运行不稳定。\n建议保存墨迹后重启应用。", true);
                 return;
             }
-            switch(Settings.CriticalSafeModeMethod)
+            switch (Settings.CriticalSafeModeMethod)
             {
                 case 0:
                     Logger?.LogInformation("因教学安全模式设定，应用将自动退出");
@@ -101,6 +102,9 @@ namespace InkCanvasForClass_Remastered
             Logger.LogInformation("加载设置");
             GetService<SettingsService>().LoadSettings();
             Settings = GetService<SettingsService>().Settings;
+
+            CommonDirectories.AppSavesRootFolderPath = string.IsNullOrEmpty(Settings.AutoSaveStrokesPath) ? Path.Combine(CommonDirectories.AppRootFolderPath, "Saves") : Settings.AutoSaveStrokesPath;
+            FileFolderService.CreateSaveFolders();
 
             await IAppHost.Host.StartAsync();
 

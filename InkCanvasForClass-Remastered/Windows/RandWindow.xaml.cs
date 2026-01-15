@@ -21,6 +21,7 @@ namespace InkCanvasForClass_Remastered
         private ShuffleBag<string> ShuffleBag;
         public bool IsAutoClose = false;
         private List<string> NameList = [];
+        private readonly string _namesFilePath = Path.Combine(CommonDirectories.AppRootFolderPath, "Names.txt");
 
         private readonly SettingsService SettingsService;
         private readonly RandViewModel ViewModel;
@@ -161,9 +162,9 @@ namespace InkCanvasForClass_Remastered
         private void ReloadNamesFromFile()
         {
             NameList.Clear();
-            if (File.Exists(App.AppRootFolderPath + "Names.txt"))
+            if (File.Exists(_namesFilePath))
             {
-                string[] nameArray = File.ReadAllLines(App.AppRootFolderPath + "Names.txt");
+                string[] nameArray = File.ReadAllLines(_namesFilePath);
                 NameList.AddRange(
                     from string s in nameArray
                     where s != "" // 过滤掉空行

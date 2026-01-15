@@ -2076,7 +2076,7 @@ namespace InkCanvasForClass_Remastered
             AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
 
             var openFileDialog = new OpenFileDialog();
-            openFileDialog.InitialDirectory = Settings.AutoSaveStrokesPath;
+            openFileDialog.InitialDirectory = CommonDirectories.AppSavesRootFolderPath;
             openFileDialog.Title = "打开墨迹文件";
             openFileDialog.Filter = "Ink Canvas Strokes File (*.icstk)|*.icstk";
             if (openFileDialog.ShowDialog() != true) return;
@@ -2921,8 +2921,10 @@ namespace InkCanvasForClass_Remastered
 
             int slidescount = _powerPointService.CurrentPresentationSlideCount;
             string? pptName = _powerPointService.CurrentPresentationName;
-            string strokePath = Settings.AutoSaveStrokesPath + @"\Auto Saved - Presentations\" +
-                            pptName + "_" + slidescount;
+            //string strokePath = CommonDirectories.AutoSavePresentationStrokesFolderPath +
+            //                pptName + "_" + slidescount;
+            string strokePath = Path.Combine(CommonDirectories.AutoSavePresentationStrokesFolderPath,
+                pptName + "_" + slidescount);
 
             //任何情况下都清除现有墨迹
             await Application.Current.Dispatcher.InvokeAsync(() => inkCanvas.Strokes.Clear());
@@ -2931,7 +2933,7 @@ namespace InkCanvasForClass_Remastered
             if (Settings.IsAutoSaveStrokesInPowerPoint && Directory.Exists(strokePath))
             {
                 Logger.LogInformation("检测到已有保存的墨迹，正在加载...");
-                var files = new DirectoryInfo(strokePath).GetFiles();
+                FileInfo[] files = new DirectoryInfo(strokePath).GetFiles();
                 int count = 0;
                 foreach (var file in files)
                 {
@@ -3003,11 +3005,8 @@ namespace InkCanvasForClass_Remastered
 
             if (Settings.IsAutoSaveStrokesInPowerPoint)
             {
-                var folderPath = Settings.AutoSaveStrokesPath
-                                 + @"\Auto Saved - Presentations\"
-                                 + _powerPointService.CurrentPresentationName
-                                 + "_"
-                                 + _powerPointService.CurrentPresentationSlideCount;
+                var folderPath = Path.Combine(CommonDirectories.AutoSavePresentationStrokesFolderPath,
+                    _powerPointService.CurrentPresentationName + "_" + _powerPointService.CurrentPresentationSlideCount);
                 if (!Directory.Exists(folderPath))
                     Directory.CreateDirectory(folderPath);
 
@@ -3153,17 +3152,19 @@ namespace InkCanvasForClass_Remastered
         {
             try
             {
-                var savePath = Settings.AutoSaveStrokesPath
-                               + (saveByUser ? @"\User Saved - " : @"\Auto Saved - ")
-                               + (_viewModel.AppMode == AppMode.Normal ? "Annotation Strokes" : "BlackBoard Strokes");
-                if (!Directory.Exists(savePath)) Directory.CreateDirectory(savePath);
-                string savePathWithName;
-                if (_viewModel.AppMode == AppMode.WhiteBoard) // 黑板模式下
-                    savePathWithName = savePath + @"\" + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff") + " Page-" +
-                                       _viewModel.WhiteboardCurrentPage + " StrokesCount-" + inkCanvas.Strokes.Count + ".icstk";
-                else
-                    //savePathWithName = savePath + @"\" + DateTime.Now.ToString("u").Replace(':', '-') + ".icstk";
-                    savePathWithName = savePath + @"\" + DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff") + ".icstk";
+                string savePath = saveByUser
+                    ? _viewModel.AppMode == AppMode.Normal
+                        ? CommonDirectories.UserSaveAnnotationStrokesFolderPath
+                        : CommonDirectories.UserSaveWhiteboardStrokesFolderPath
+                    : _viewModel.AppMode == AppMode.Normal
+                        ? CommonDirectories.AutoSaveAnnotationStrokesFolderPath
+                        : CommonDirectories.AutoSaveWhiteboardStrokesFolderPath;
+
+                string savePathWithName = _viewModel.AppMode == AppMode.Normal
+                    ? Path.Combine(savePath, DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff") + ".icstk")
+                    : Path.Combine(savePath,
+                        DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff") + " Page-" +
+                        _viewModel.WhiteboardCurrentPage + ".icstk");
                 var fs = new FileStream(savePathWithName, FileMode.Create);
                 inkCanvas.Strokes.Save(fs);
                 if (newNotice) ShowNotification("墨迹成功保存至 " + savePathWithName);
@@ -3906,18 +3907,20 @@ namespace InkCanvasForClass_Remastered
             if (openFolderDialog.ShowDialog() == true)
             {
                 Settings.AutoSaveStrokesPath = openFolderDialog.FolderName;
+                CommonDirectories.AppSavesRootFolderPath = Settings.AutoSaveStrokesPath;
             }
         }
 
         private void SetAutoSavedStrokesLocationToDiskDButton_Click(object sender, RoutedEventArgs e)
         {
             Settings.AutoSaveStrokesPath = @"D:\ICC-Re";
+            CommonDirectories.AppSavesRootFolderPath = Settings.AutoSaveStrokesPath;
         }
 
-        private void SetAutoSavedStrokesLocationToDocumentFolderButton_Click(object sender, RoutedEventArgs e)
+        private void SetAutoSavedStrokesLocationToAppFolderButton_Click(object sender, RoutedEventArgs e)
         {
-            Settings.AutoSaveStrokesPath =
-                Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\ICC-Re";
+            Settings.AutoSaveStrokesPath = Path.Combine(CommonDirectories.AppRootFolderPath, "Saves");
+            CommonDirectories.AppSavesRootFolderPath = Settings.AutoSaveStrokesPath;
         }
 
         #endregion

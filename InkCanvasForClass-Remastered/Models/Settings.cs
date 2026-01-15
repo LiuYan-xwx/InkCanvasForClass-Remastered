@@ -167,7 +167,7 @@ namespace InkCanvasForClass_Remastered.Models
         [ObservableProperty]
         private double _minimumAutomationStrokeNumber = 0.3;
         [ObservableProperty]
-        private string _autoSaveStrokesPath = @"D:\ICC-Re";
+        private string _autoSaveStrokesPath = string.Empty;
         [ObservableProperty]
         private bool _autoDelSavedFiles = true;
         [ObservableProperty]

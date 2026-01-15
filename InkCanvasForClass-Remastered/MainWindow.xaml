@@ -1565,7 +1565,7 @@
                                         </ikw:SimpleStackPanel>
                                         <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="12">
                                             <Button Content="设置保存到 D:\ICC-Re" Click="SetAutoSavedStrokesLocationToDiskDButton_Click" />
-                                            <Button Content="设置保存到 文档" Click="SetAutoSavedStrokesLocationToDocumentFolderButton_Click" />
+                                            <Button Content="设置保存到 应用目录/Saves" Click="SetAutoSavedStrokesLocationToAppFolderButton_Click" />
                                         </ikw:SimpleStackPanel>
                                         <TextBlock
                                             FontSize="12"

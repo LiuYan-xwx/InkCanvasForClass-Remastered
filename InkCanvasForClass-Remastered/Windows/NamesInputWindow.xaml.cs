@@ -1,4 +1,5 @@
 ﻿using InkCanvasForClass_Remastered.Helpers;
+using InkCanvasForClass_Remastered.Models;
 using InkCanvasForClass_Remastered.ViewModels;
 using System.IO;
 using System.Windows;
@@ -13,6 +14,7 @@ namespace InkCanvasForClass_Remastered
     {
         private readonly NamesInputViewModel ViewModel;
         private string _originText = string.Empty;
+        private readonly string _path = Path.Combine(CommonDirectories.AppRootFolderPath, "Names.txt");
         public NamesInputWindow(NamesInputViewModel viewModel)
         {
             InitializeComponent();
@@ -25,9 +27,9 @@ namespace InkCanvasForClass_Remastered
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (File.Exists(App.AppRootFolderPath + "Names.txt"))
+            if (File.Exists(_path))
             {
-                string names = File.ReadAllText(App.AppRootFolderPath + "Names.txt");
+                string names = File.ReadAllText(_path);
                 ViewModel.NameText = names;
                 _originText = names;
             }
@@ -39,7 +41,7 @@ namespace InkCanvasForClass_Remastered
             {
                 if (MessageBox.Show("是否保存？", "名单导入", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
-                    File.WriteAllText(App.AppRootFolderPath + "Names.txt", ViewModel.NameText);
+                    File.WriteAllText(_path, ViewModel.NameText);
                 }
             }
         }

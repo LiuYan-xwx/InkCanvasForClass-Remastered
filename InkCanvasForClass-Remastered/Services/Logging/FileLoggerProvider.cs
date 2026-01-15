@@ -1,4 +1,5 @@
 ﻿using InkCanvasForClass_Remastered.Helpers;
+using InkCanvasForClass_Remastered.Models;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.IO;
@@ -34,9 +35,9 @@ namespace InkCanvasForClass_Remastered.Services.Logging
         {
             try
             {
-                var logs = Directory.GetFiles(App.AppLogFolderPath);
+                var logs = Directory.GetFiles(CommonDirectories.AppLogFolderPath);
                 var currentLogFile = GetLogFileName();
-                _logStream = File.Open(Path.Combine(App.AppLogFolderPath, currentLogFile), FileMode.Create, FileAccess.ReadWrite, FileShare.Read);
+                _logStream = File.Open(Path.Combine(CommonDirectories.AppLogFolderPath, currentLogFile), FileMode.Create, FileAccess.ReadWrite, FileShare.Read);
                 _logWriter = new StreamWriter(_logStream)
                 {
                     AutoFlush = true
@@ -81,7 +82,7 @@ namespace InkCanvasForClass_Remastered.Services.Logging
 
         private static List<string?> GetLogs()
         {
-            return Directory.GetFiles(App.AppLogFolderPath).Select(Path.GetFileName).ToList();
+            return Directory.GetFiles(CommonDirectories.AppLogFolderPath).Select(Path.GetFileName).ToList();
         }
 
         internal void WriteLog(string log)
