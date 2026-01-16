@@ -36,13 +36,18 @@ namespace InkCanvasForClass_Remastered
         public readonly MainViewModel _viewModel;
         private readonly SettingsService _settingsService;
         private readonly IPowerPointService _powerPointService;
+        private readonly INotificationService _notificationService;
         private readonly ILogger<MainWindow> Logger;
         public Settings Settings => _settingsService.Settings;
 
 
         #region Window Initialization
 
-        public MainWindow(MainViewModel viewModel, SettingsService settingsService, IPowerPointService powerPointService, ILogger<MainWindow> logger)
+        public MainWindow(MainViewModel viewModel,
+                          SettingsService settingsService,
+                          IPowerPointService powerPointService,
+                          INotificationService notificationService,
+                          ILogger<MainWindow> logger)
         {
             /*
                 处于画板模式内：Topmost == false / _viewModel.AppMode == AppMode.WhiteBoard
@@ -53,15 +58,8 @@ namespace InkCanvasForClass_Remastered
             _viewModel = viewModel;
             _settingsService = settingsService;
             _powerPointService = powerPointService;
+            _notificationService = notificationService;
             Logger = logger;
-
-            //        DependencyPropertyDescriptor
-            //.FromProperty(InkCanvas.EditingModeProperty, typeof(InkCanvas))
-            //.AddValueChanged(inkCanvas, (s, e) =>
-            //{
-            //    Logger.LogDebug($"EditingMode 改变为：{inkCanvas.EditingMode}");
-            //    Logger.LogDebug(Environment.StackTrace);
-            //});
 
             DataContext = _viewModel;
 
@@ -71,6 +69,8 @@ namespace InkCanvasForClass_Remastered
             _powerPointService.SlideShowNextSlide += PptApplication_SlideShowNextSlide;
 
             Settings.PropertyChanged += Settings_PropertyChanged;
+
+            _notificationService.NotificationRequested += OnNotificationRequested;
 
             ViewboxFloatingBar.Margin = new Thickness((SystemParameters.WorkArea.Width - 284) / 2,
                 SystemParameters.WorkArea.Height - 60, -2000, -200);
@@ -373,6 +373,7 @@ namespace InkCanvasForClass_Remastered
         private void Window_Closed(object sender, EventArgs e)
         {
             SystemEvents.DisplaySettingsChanged -= SystemEventsOnDisplaySettingsChanged;
+            _notificationService.NotificationRequested -= OnNotificationRequested;
             Logger.LogInformation("MainWindow closed");
         }
 
@@ -2767,24 +2768,18 @@ namespace InkCanvasForClass_Remastered
 
         #region Notification
         private int lastNotificationShowTime = 0;
-        private int notificationShowTime = 2500;
 
-        public static void ShowNewMessage(string notice, bool isShowImmediately = true)
-        {
-            (Application.Current?.Windows.Cast<Window>().FirstOrDefault(window => window is MainWindow) as MainWindow)
-                ?.ShowNotification(notice, isShowImmediately);
-        }
-
-        public void ShowNotification(string notice, bool isShowImmediately = true)
+        private void OnNotificationRequested(NotificationEventArgs args)
         {
             try
             {
                 lastNotificationShowTime = Environment.TickCount;
+                var notificationShowTime = args.DurationMs;
 
-                TextBlockNotice.Text = notice;
+                TextBlockNotice.Text = args.Message;
                 AnimationsHelper.ShowWithSlideFromBottomAndFade(GridNotifications);
 
-                new Thread(new ThreadStart(() =>
+                new Thread(() =>
                 {
                     Thread.Sleep(notificationShowTime + 300);
                     if (Environment.TickCount - lastNotificationShowTime >= notificationShowTime)
@@ -2792,9 +2787,14 @@ namespace InkCanvasForClass_Remastered
                         {
                             AnimationsHelper.HideWithSlideAndFade(GridNotifications);
                         });
-                })).Start();
+                }).Start();
             }
             catch { }
+        }
+
+        private void ShowNotification(string notice)
+        {
+            _notificationService.ShowNotification(notice);
         }
         #endregion
 

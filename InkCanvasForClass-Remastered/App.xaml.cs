@@ -24,6 +24,7 @@ namespace InkCanvasForClass_Remastered
         private IHost _host;
         private Mutex mutex;
         private ILogger<App> Logger;
+        private INotificationService _notificationService;
         private Settings Settings = new();
 
         public static T GetService<T>() => IAppHost.GetService<T>();
@@ -49,7 +50,7 @@ namespace InkCanvasForClass_Remastered
             Logger.LogCritical(e, "发生严重错误");
             if (!Settings.IsCriticalSafeMode)
             {
-                InkCanvasForClass_Remastered.MainWindow.ShowNewMessage("抱歉，出现未预期的异常，可能导致 ICC-Re 运行不稳定。\n建议保存墨迹后重启应用。", true);
+                _notificationService.ShowNotification("抱歉，出现未预期的异常，可能导致 ICC-Re 运行不稳定。\n建议保存墨迹后重启应用。");
                 return;
             }
             switch (Settings.CriticalSafeModeMethod)
@@ -65,7 +66,7 @@ namespace InkCanvasForClass_Remastered
                     break;
                 case 2:
                     Logger?.LogInformation("因教学安全模式设定，应用将忽略异常并显示一条通知");
-                    InkCanvasForClass_Remastered.MainWindow.ShowNewMessage("抱歉，出现未预期的异常，可能导致 ICC-Re 运行不稳定。\n建议保存墨迹后重启应用。", true);
+                    _notificationService.ShowNotification("抱歉，出现未预期的异常，可能导致 ICC-Re 运行不稳定。\n建议保存墨迹后重启应用。");
                     break;
                 case 3:
                     Logger?.LogInformation("因教学安全模式设定，应用将直接忽略异常");
@@ -106,6 +107,7 @@ namespace InkCanvasForClass_Remastered
             CommonDirectories.AppSavesRootFolderPath = string.IsNullOrEmpty(Settings.AutoSaveStrokesPath) ? Path.Combine(CommonDirectories.AppRootFolderPath, "Saves") : Settings.AutoSaveStrokesPath;
             FileFolderService.CreateSaveFolders();
 
+            _notificationService = GetService<INotificationService>();
             await IAppHost.Host.StartAsync();
 
             var mainWindow = GetService<MainWindow>();
@@ -125,6 +127,7 @@ namespace InkCanvasForClass_Remastered
             services.AddSingleton<SettingsService>();
             services.AddSingleton<IPowerPointService, PowerPointService>();
             services.AddSingleton<FileFolderService>();
+            services.AddSingleton<INotificationService, NotificationService>();
             // 注册视图模型
             services.AddTransient<MainViewModel>();
             services.AddTransient<RandViewModel>();
