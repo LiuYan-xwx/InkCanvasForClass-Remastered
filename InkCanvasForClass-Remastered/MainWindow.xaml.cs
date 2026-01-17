@@ -3175,16 +3175,8 @@ namespace InkCanvasForClass_Remastered
         #region Screenshot
         private void SaveScreenShot(bool isHideNotification)
         {
-            var rc = System.Windows.Forms.SystemInformation.VirtualScreen;
-            var bitmap = new System.Drawing.Bitmap(rc.Width, rc.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            var filePath = ScreenshotHelper.SaveScreenshot(CommonDirectories.AutoSaveScreenshotsFolderPath);
 
-            using (var memoryGrahics = System.Drawing.Graphics.FromImage(bitmap))
-            {
-                memoryGrahics.CopyFromScreen(rc.X, rc.Y, 0, 0, rc.Size, System.Drawing.CopyPixelOperation.SourceCopy);
-            }
-
-            var filePath = Path.Combine(CommonDirectories.AutoSaveScreenshotsFolderPath, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fff") + ".png");
-            bitmap.Save(filePath, ImageFormat.Png);
             if (!isHideNotification)
                 ShowNotification($"截图成功保存至 {filePath}");
 
@@ -3194,17 +3186,11 @@ namespace InkCanvasForClass_Remastered
 
         private void SaveScreenShotToDesktop()
         {
-            var rc = System.Windows.Forms.SystemInformation.VirtualScreen;
-            var bitmap = new System.Drawing.Bitmap(rc.Width, rc.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            var filePath = ScreenshotHelper.SaveScreenshotToDesktop();
+            var fileName = Path.GetFileName(filePath);
 
-            using (var memoryGrahics = System.Drawing.Graphics.FromImage(bitmap))
-            {
-                memoryGrahics.CopyFromScreen(rc.X, rc.Y, 0, 0, rc.Size, System.Drawing.CopyPixelOperation.SourceCopy);
-            }
+            ShowNotification($"截图成功保存至【桌面\\{fileName}】");
 
-            var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fff") + ".png");
-            bitmap.Save(filePath, ImageFormat.Png);
-            ShowNotification("截图成功保存至【桌面" + @"\" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fff") + ".png】");
             if (Settings.IsAutoSaveStrokesAtScreenshot)
                 SaveInkCanvasStrokes(false, false);
         }
