@@ -1964,10 +1964,7 @@ namespace InkCanvasForClass_Remastered
                 if (Settings.IsAutoSaveStrokesAtClear &&
                     inkCanvas.Strokes.Count > Settings.MinimumAutomationStrokeNumber)
                 {
-                    if (_powerPointService.IsInSlideShow)
-                        SaveScreenShot(true, $"{_pptName}/{_previousSlideID}_{DateTime.Now:HH-mm-ss}");
-                    else
-                        SaveScreenShot(true);
+                    SaveScreenShot(true);
                 }
 
                 BtnClear_Click(null, null);
@@ -2396,9 +2393,7 @@ namespace InkCanvasForClass_Remastered
             if (inkCanvas.Strokes.Count > 0 &&
                 inkCanvas.Strokes.Count > Settings.MinimumAutomationStrokeNumber)
             {
-                if (_powerPointService.IsInSlideShow)
-                    SaveScreenShot(true, $"{_pptName}/{_previousSlideID}_{DateTime.Now:HH-mm-ss}");
-                else SaveScreenShot(true);
+                SaveScreenShot(true);
             }
             if (Settings.HideStrokeWhenSelecting)
             {
@@ -3104,7 +3099,7 @@ namespace InkCanvasForClass_Remastered
             if (inkCanvas.Strokes.Count > Settings.MinimumAutomationStrokeNumber
                 && Settings.IsAutoSaveScreenShotInPowerPoint)
             {
-                SaveScreenShot(true, $"{_powerPointService.CurrentPresentationName}/{_powerPointService.CurrentSlidePosition}");
+                SaveScreenShot(true);
             }
             _powerPointService.GoToPreviousSlide();
         }
@@ -3114,7 +3109,7 @@ namespace InkCanvasForClass_Remastered
             if (inkCanvas.Strokes.Count > Settings.MinimumAutomationStrokeNumber
                 && Settings.IsAutoSaveScreenShotInPowerPoint)
             {
-                SaveScreenShot(true, $"{_powerPointService.CurrentPresentationName}/{_powerPointService.CurrentSlidePosition}");
+                SaveScreenShot(true);
             }
             _powerPointService.GoToNextSlide();
         }
@@ -3178,7 +3173,7 @@ namespace InkCanvasForClass_Remastered
         #endregion
 
         #region Screenshot
-        private void SaveScreenShot(bool isHideNotification, string? fileName = null)
+        private void SaveScreenShot(bool isHideNotification)
         {
             var rc = System.Windows.Forms.SystemInformation.VirtualScreen;
             var bitmap = new System.Drawing.Bitmap(rc.Width, rc.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
@@ -3188,14 +3183,13 @@ namespace InkCanvasForClass_Remastered
                 memoryGrahics.CopyFromScreen(rc.X, rc.Y, 0, 0, rc.Size, System.Drawing.CopyPixelOperation.SourceCopy);
             }
 
-            var savePath = Settings.AutoSaveStrokesPath + @"\Auto Saved - Screenshots";
-            if (!Directory.Exists(savePath)) Directory.CreateDirectory(savePath);
-            bitmap.Save(savePath + @"\" + DateTime.Now.ToString("u").Replace(':', '-') + ".png", ImageFormat.Png);
+            var filePath = Path.Combine(CommonDirectories.AutoSaveScreenshotsFolderPath, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fff") + ".png");
+            bitmap.Save(filePath, ImageFormat.Png);
             if (!isHideNotification)
-                ShowNotification("截图成功保存至 " + savePath + @"\" + DateTime.Now.ToString("u").Replace(':', '-') +
-                                 ".png");
+                ShowNotification($"截图成功保存至 {filePath}");
 
-            if (Settings.IsAutoSaveStrokesAtScreenshot) SaveInkCanvasStrokes(false, false);
+            if (Settings.IsAutoSaveStrokesAtScreenshot)
+                SaveInkCanvasStrokes(false, false);
         }
 
         private void SaveScreenShotToDesktop()
@@ -3208,10 +3202,11 @@ namespace InkCanvasForClass_Remastered
                 memoryGrahics.CopyFromScreen(rc.X, rc.Y, 0, 0, rc.Size, System.Drawing.CopyPixelOperation.SourceCopy);
             }
 
-            var savePath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-            bitmap.Save(savePath + @"\" + DateTime.Now.ToString("u").Replace(':', '-') + ".png", ImageFormat.Png);
-            ShowNotification("截图成功保存至【桌面" + @"\" + DateTime.Now.ToString("u").Replace(':', '-') + ".png】");
-            if (Settings.IsAutoSaveStrokesAtScreenshot) SaveInkCanvasStrokes(false, false);
+            var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory), DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fff") + ".png");
+            bitmap.Save(filePath, ImageFormat.Png);
+            ShowNotification("截图成功保存至【桌面" + @"\" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss:fff") + ".png】");
+            if (Settings.IsAutoSaveStrokesAtScreenshot)
+                SaveInkCanvasStrokes(false, false);
         }
         #endregion
 
