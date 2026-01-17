@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Office.Interop.PowerPoint;
 
-namespace InkCanvasForClass_Remastered.Services
+namespace InkCanvasForClass_Remastered.Interfaces
 {
     public interface IPowerPointService
     {

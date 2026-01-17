@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using InkCanvasForClass_Remastered.Helpers;
+using InkCanvasForClass_Remastered.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.Office.Interop.PowerPoint;
 using System.Runtime.InteropServices;

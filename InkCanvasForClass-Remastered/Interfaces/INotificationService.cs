@@ -1,6 +1,6 @@
 using InkCanvasForClass_Remastered.Models;
 
-namespace InkCanvasForClass_Remastered.Services;
+namespace InkCanvasForClass_Remastered.Interfaces;
 
 public interface INotificationService
 {

@@ -1,14 +1,9 @@
 ﻿using Microsoft.Extensions.Hosting;
 
-namespace InkCanvasForClass_Remastered.Services
+namespace InkCanvasForClass_Remastered.Interfaces
 {
     public interface IAppHost
     {
-        /// <summary>
-        /// 核心库版本
-        /// </summary>
-        //public static Version CoreVersion = new Version(1, 4, 0, 0);
-
         /// <summary>
         /// 应用主机
         /// </summary>

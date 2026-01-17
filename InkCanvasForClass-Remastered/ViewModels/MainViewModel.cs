@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using InkCanvasForClass_Remastered.Enums;
+using InkCanvasForClass_Remastered.Interfaces;
 using InkCanvasForClass_Remastered.Models;
 using InkCanvasForClass_Remastered.Services;
 using System.Windows.Controls;

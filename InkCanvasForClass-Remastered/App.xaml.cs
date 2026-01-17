@@ -1,4 +1,5 @@
 ﻿using Hardcodet.Wpf.TaskbarNotification;
+using InkCanvasForClass_Remastered.Interfaces;
 using InkCanvasForClass_Remastered.Models;
 using InkCanvasForClass_Remastered.Services;
 using InkCanvasForClass_Remastered.Services.Logging;
