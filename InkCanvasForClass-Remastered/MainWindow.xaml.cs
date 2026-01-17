@@ -8,7 +8,6 @@ using InkCanvasForClass_Remastered.ViewModels;
 using Microsoft.Extensions.Logging;
 using Microsoft.Office.Interop.PowerPoint;
 using Microsoft.Win32;
-using Newtonsoft.Json.Linq;
 using OSVersionExtension;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -24,7 +23,6 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Threading;
 using Application = System.Windows.Application;
 using File = System.IO.File;
@@ -3190,25 +3188,12 @@ namespace InkCanvasForClass_Remastered
                 memoryGrahics.CopyFromScreen(rc.X, rc.Y, 0, 0, rc.Size, System.Drawing.CopyPixelOperation.SourceCopy);
             }
 
-            if (Settings.IsSaveScreenshotsInDateFolders)
-            {
-                if (string.IsNullOrWhiteSpace(fileName)) fileName = DateTime.Now.ToString("HH-mm-ss");
-                var savePath = Settings.AutoSaveStrokesPath +
-                               @"\Auto Saved - Screenshots\{DateTime.Now.Date:yyyyMMdd}\{fileName}.png";
-                if (!Directory.Exists(Path.GetDirectoryName(savePath)))
-                    Directory.CreateDirectory(Path.GetDirectoryName(savePath));
-                bitmap.Save(savePath, ImageFormat.Png);
-                if (!isHideNotification) ShowNotification("截图成功保存至 " + savePath);
-            }
-            else
-            {
-                var savePath = Settings.AutoSaveStrokesPath + @"\Auto Saved - Screenshots";
-                if (!Directory.Exists(savePath)) Directory.CreateDirectory(savePath);
-                bitmap.Save(savePath + @"\" + DateTime.Now.ToString("u").Replace(':', '-') + ".png", ImageFormat.Png);
-                if (!isHideNotification)
-                    ShowNotification("截图成功保存至 " + savePath + @"\" + DateTime.Now.ToString("u").Replace(':', '-') +
-                                     ".png");
-            }
+            var savePath = Settings.AutoSaveStrokesPath + @"\Auto Saved - Screenshots";
+            if (!Directory.Exists(savePath)) Directory.CreateDirectory(savePath);
+            bitmap.Save(savePath + @"\" + DateTime.Now.ToString("u").Replace(':', '-') + ".png", ImageFormat.Png);
+            if (!isHideNotification)
+                ShowNotification("截图成功保存至 " + savePath + @"\" + DateTime.Now.ToString("u").Replace(':', '-') +
+                                 ".png");
 
             if (Settings.IsAutoSaveStrokesAtScreenshot) SaveInkCanvasStrokes(false, false);
         }

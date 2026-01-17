@@ -159,8 +159,6 @@ namespace InkCanvasForClass_Remastered.Models
         [ObservableProperty]
         private bool _isAutoKillPptService = false;
         [ObservableProperty]
-        private bool _isSaveScreenshotsInDateFolders = false;
-        [ObservableProperty]
         private bool _isAutoSaveStrokesAtScreenshot = true;
         [ObservableProperty]
         private bool _isAutoSaveStrokesAtClear = true;
