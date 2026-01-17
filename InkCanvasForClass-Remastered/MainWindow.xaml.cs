@@ -8,6 +8,7 @@ using InkCanvasForClass_Remastered.ViewModels;
 using Microsoft.Extensions.Logging;
 using Microsoft.Office.Interop.PowerPoint;
 using Microsoft.Win32;
+using Newtonsoft.Json.Linq;
 using OSVersionExtension;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -375,6 +376,8 @@ namespace InkCanvasForClass_Remastered
         {
             SystemEvents.DisplaySettingsChanged -= SystemEventsOnDisplaySettingsChanged;
             _notificationService.NotificationRequested -= OnNotificationRequested;
+            _notificationCts?.Cancel();
+            _notificationCts?.Dispose();
             Logger.LogInformation("MainWindow closed");
         }
 
@@ -2768,29 +2771,27 @@ namespace InkCanvasForClass_Remastered
         #endregion
 
         #region Notification
-        private int lastNotificationShowTime = 0;
+        private CancellationTokenSource? _notificationCts;
 
-        private void OnNotificationRequested(NotificationEventArgs args)
+        private async void OnNotificationRequested(NotificationEventArgs args)
         {
+            // 取消之前的通知任务
+            _notificationCts?.Cancel();
+            _notificationCts = new CancellationTokenSource();
+            var token = _notificationCts.Token;
+
+            TextBlockNotice.Text = args.Message;
+            AnimationsHelper.ShowWithSlideFromBottomAndFade(GridNotifications);
+
             try
             {
-                lastNotificationShowTime = Environment.TickCount;
-                var notificationShowTime = args.DurationMs;
-
-                TextBlockNotice.Text = args.Message;
-                AnimationsHelper.ShowWithSlideFromBottomAndFade(GridNotifications);
-
-                new Thread(() =>
-                {
-                    Thread.Sleep(notificationShowTime + 300);
-                    if (Environment.TickCount - lastNotificationShowTime >= notificationShowTime)
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            AnimationsHelper.HideWithSlideAndFade(GridNotifications);
-                        });
-                }).Start();
+                await Task.Delay(args.DurationMs + 300, token);
+                AnimationsHelper.HideWithSlideAndFade(GridNotifications);
             }
-            catch { }
+            catch (TaskCanceledException)
+            {
+                // 被新通知取消，不执行隐藏操作
+            }
         }
 
         private void ShowNotification(string notice)
