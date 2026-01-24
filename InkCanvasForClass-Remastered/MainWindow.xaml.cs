@@ -95,9 +95,6 @@ namespace InkCanvasForClass_Remastered
                     else
                         ViewboxFloatingBarMarginAnimation(100, true);
                     break;
-                case nameof(Settings.FitToCurve):
-                    drawingAttributes.FitToCurve = Settings.FitToCurve;
-                    break;
                 case nameof(Settings.EraserSize):
                     UpdateEraserShape();
                     break;
@@ -163,36 +160,8 @@ namespace InkCanvasForClass_Remastered
         #endregion
 
         #region Ink Canvas Functions
-
-        private System.Windows.Media.Color Ink_DefaultColor = Colors.Red;
-
-        private DrawingAttributes drawingAttributes;
-
-        private void loadPenCanvas()
-        {
-            try
-            {
-                //drawingAttributes = new DrawingAttributes();
-                drawingAttributes = inkCanvas.DefaultDrawingAttributes;
-                drawingAttributes.Color = Ink_DefaultColor;
-
-
-                drawingAttributes.Height = 2.5;
-                drawingAttributes.Width = 2.5;
-                drawingAttributes.IsHighlighter = false;
-                drawingAttributes.FitToCurve = Settings.FitToCurve;
-
-                inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
-                inkCanvas.Gesture += InkCanvas_Gesture;
-            }
-            catch { }
-        }
-
-        //ApplicationGesture lastApplicationGesture = ApplicationGesture.AllGestures;
-        private DateTime lastGestureTime = DateTime.Now;
-
-        private void InkCanvas_Gesture(object sender, InkCanvasGestureEventArgs e)
-        {
+        //private void InkCanvas_Gesture(object sender, InkCanvasGestureEventArgs e)
+        //{
             //var gestures = e.GetGestureRecognitionResults();
             //try
             //{
@@ -207,23 +176,24 @@ namespace InkCanvasForClass_Remastered
             //        }
             //}
             //catch { }
-        }
+        //}
 
         private void inkCanvas_EditingModeChanged(object? sender, RoutedEventArgs? e)
         {
-            var inkCanvas1 = sender as InkCanvas;
-            if (inkCanvas1 == null) return;
-            if (Settings.IsShowCursor)
-            {
-                if (inkCanvas1.EditingMode == InkCanvasEditingMode.Ink)
-                    inkCanvas1.ForceCursor = true;
-                else
-                    inkCanvas1.ForceCursor = false;
-            }
-            else
-            {
-                inkCanvas1.ForceCursor = false;
-            }
+            //if (sender is not InkCanvas inkCanvas1)
+            //{
+            //    return;
+            //}
+
+            //if (Settings.IsShowCursor
+            //    && inkCanvas1.EditingMode == InkCanvasEditingMode.Ink)
+            //{
+            //    inkCanvas1.ForceCursor = true;
+            //}
+            //else
+            //{
+            //    inkCanvas1.ForceCursor = false;
+            //}
         }
 
         #endregion Ink Canvas
@@ -246,7 +216,6 @@ namespace InkCanvasForClass_Remastered
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             SetWindowMode();
-            loadPenCanvas();
             AppVersionTextBlock.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
             CursorFloatingBarButton_Click(null, null);
@@ -675,29 +644,7 @@ namespace InkCanvasForClass_Remastered
         private void ColorSwitchCheck()
         {
             HideSubPanels("color");
-            if (GridTransparencyFakeBackground.Background == null)
-            {
-                if (_viewModel.AppMode == AppMode.WhiteBoard)
-                {
-                    _viewModel.AppMode = AppMode.Normal;
-                }
 
-                BtnHideInkCanvas_Click(null, null);
-            }
-
-            var strokes = inkCanvas.GetSelectedStrokes();
-            if (strokes.Count != 0)
-            {
-                foreach (var stroke in strokes)
-                    try
-                    {
-                        stroke.DrawingAttributes.Color = inkCanvas.DefaultDrawingAttributes.Color;
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-            }
             if (DrawingAttributesHistory.Count > 0)
             {
                 timeMachine.CommitStrokeDrawingAttributesHistory(DrawingAttributesHistory);
@@ -746,101 +693,101 @@ namespace InkCanvasForClass_Remastered
                 inkColor = lastBoardInkColor;
             }
 
-            double alpha = inkCanvas.DefaultDrawingAttributes.Color.A;
+            double alpha = _viewModel.InkCanvasDrawingAttributes.Color.A;
 
             if (penType == 0)
             {
                 if (inkColor == 0)
                 {
                     // Black
-                    inkCanvas.DefaultDrawingAttributes.Color = Color.FromArgb((byte)alpha, 0, 0, 0);
+                    _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 0, 0, 0);
                 }
                 else if (inkColor == 5)
                 {
                     // White
-                    inkCanvas.DefaultDrawingAttributes.Color = Color.FromArgb((byte)alpha, 255, 255, 255);
+                    _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 255, 255, 255);
                 }
                 else if (isUselightThemeColor)
                 {
                     if (inkColor == 1)
                         // Red
-                        inkCanvas.DefaultDrawingAttributes.Color = Color.FromArgb((byte)alpha, 239, 68, 68);
+                        _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 239, 68, 68);
                     else if (inkColor == 2)
                         // Green
-                        inkCanvas.DefaultDrawingAttributes.Color = Color.FromArgb((byte)alpha, 34, 197, 94);
+                        _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 34, 197, 94);
                     else if (inkColor == 3)
                         // Blue
-                        inkCanvas.DefaultDrawingAttributes.Color = Color.FromArgb((byte)alpha, 59, 130, 246);
+                        _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 59, 130, 246);
                     else if (inkColor == 4)
                         // Yellow
-                        inkCanvas.DefaultDrawingAttributes.Color = Color.FromArgb((byte)alpha, 250, 204, 21);
+                        _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 250, 204, 21);
                     else if (inkColor == 6)
                         // Pink
-                        inkCanvas.DefaultDrawingAttributes.Color = Color.FromArgb((byte)alpha, 236, 72, 153);
+                        _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 236, 72, 153);
                     else if (inkColor == 7)
                         // Teal (亮色)
-                        inkCanvas.DefaultDrawingAttributes.Color = Color.FromArgb((byte)alpha, 20, 184, 166);
+                        _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 20, 184, 166);
                     else if (inkColor == 8)
                         // Orange (亮色)
-                        inkCanvas.DefaultDrawingAttributes.Color = Color.FromArgb((byte)alpha, 249, 115, 22);
+                        _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 249, 115, 22);
                 }
                 else
                 {
                     if (inkColor == 1)
                         // Red
-                        inkCanvas.DefaultDrawingAttributes.Color = Color.FromArgb((byte)alpha, 220, 38, 38);
+                        _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 220, 38, 38);
                     else if (inkColor == 2)
                         // Green
-                        inkCanvas.DefaultDrawingAttributes.Color = Color.FromArgb((byte)alpha, 22, 163, 74);
+                        _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 22, 163, 74);
                     else if (inkColor == 3)
                         // Blue
-                        inkCanvas.DefaultDrawingAttributes.Color = Color.FromArgb((byte)alpha, 37, 99, 235);
+                        _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 37, 99, 235);
                     else if (inkColor == 4)
                         // Yellow
-                        inkCanvas.DefaultDrawingAttributes.Color = Color.FromArgb((byte)alpha, 234, 179, 8);
+                        _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 234, 179, 8);
                     else if (inkColor == 6)
                         // Pink ( Purple )
-                        inkCanvas.DefaultDrawingAttributes.Color = Color.FromArgb((byte)alpha, 147, 51, 234);
+                        _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 147, 51, 234);
                     else if (inkColor == 7)
                         // Teal (暗色)
-                        inkCanvas.DefaultDrawingAttributes.Color = Color.FromArgb((byte)alpha, 13, 148, 136);
+                        _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 13, 148, 136);
                     else if (inkColor == 8)
                         // Orange (暗色)
-                        inkCanvas.DefaultDrawingAttributes.Color = Color.FromArgb((byte)alpha, 234, 88, 12);
+                        _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 234, 88, 12);
                 }
             }
             else if (penType == 1)
             {
                 if (highlighterColor == 100)
                     // Black
-                    inkCanvas.DefaultDrawingAttributes.Color = Color.FromRgb(0, 0, 0);
+                    _viewModel.InkCanvasDrawingAttributes.Color = Color.FromRgb(0, 0, 0);
                 else if (highlighterColor == 101)
                     // White
-                    inkCanvas.DefaultDrawingAttributes.Color = Color.FromRgb(250, 250, 250);
+                    _viewModel.InkCanvasDrawingAttributes.Color = Color.FromRgb(250, 250, 250);
                 else if (highlighterColor == 102)
                     // Red
-                    inkCanvas.DefaultDrawingAttributes.Color = Color.FromRgb(239, 68, 68);
+                    _viewModel.InkCanvasDrawingAttributes.Color = Color.FromRgb(239, 68, 68);
                 else if (highlighterColor == 103)
                     // Yellow
-                    inkCanvas.DefaultDrawingAttributes.Color = Color.FromRgb(253, 224, 71);
+                    _viewModel.InkCanvasDrawingAttributes.Color = Color.FromRgb(253, 224, 71);
                 else if (highlighterColor == 104)
                     // Green
-                    inkCanvas.DefaultDrawingAttributes.Color = Color.FromRgb(74, 222, 128);
+                    _viewModel.InkCanvasDrawingAttributes.Color = Color.FromRgb(74, 222, 128);
                 else if (highlighterColor == 105)
                     // Zinc
-                    inkCanvas.DefaultDrawingAttributes.Color = Color.FromRgb(113, 113, 122);
+                    _viewModel.InkCanvasDrawingAttributes.Color = Color.FromRgb(113, 113, 122);
                 else if (highlighterColor == 106)
                     // Blue
-                    inkCanvas.DefaultDrawingAttributes.Color = Color.FromRgb(59, 130, 246);
+                    _viewModel.InkCanvasDrawingAttributes.Color = Color.FromRgb(59, 130, 246);
                 else if (highlighterColor == 107)
                     // Purple
-                    inkCanvas.DefaultDrawingAttributes.Color = Color.FromRgb(168, 85, 247);
+                    _viewModel.InkCanvasDrawingAttributes.Color = Color.FromRgb(168, 85, 247);
                 else if (highlighterColor == 108)
                     // teal
-                    inkCanvas.DefaultDrawingAttributes.Color = Color.FromRgb(45, 212, 191);
+                    _viewModel.InkCanvasDrawingAttributes.Color = Color.FromRgb(45, 212, 191);
                 else if (highlighterColor == 109)
                     // Orange
-                    inkCanvas.DefaultDrawingAttributes.Color = Color.FromRgb(249, 115, 22);
+                    _viewModel.InkCanvasDrawingAttributes.Color = Color.FromRgb(249, 115, 22);
             }
 
             if (isUselightThemeColor)
@@ -1199,10 +1146,10 @@ namespace InkCanvasForClass_Remastered
             penType = 0;
             CheckPenTypeUIState();
             CheckColorTheme();
-            drawingAttributes.Width = Settings.InkWidth;
-            drawingAttributes.Height = Settings.InkWidth;
-            drawingAttributes.StylusTip = StylusTip.Ellipse;
-            drawingAttributes.IsHighlighter = false;
+            _viewModel.InkCanvasDrawingAttributes.Width = Settings.InkWidth;
+            _viewModel.InkCanvasDrawingAttributes.Height = Settings.InkWidth;
+            _viewModel.InkCanvasDrawingAttributes.StylusTip = StylusTip.Ellipse;
+            _viewModel.InkCanvasDrawingAttributes.IsHighlighter = false;
         }
 
         private void SwitchToHighlighterPen(object sender, MouseButtonEventArgs e)
@@ -1210,10 +1157,10 @@ namespace InkCanvasForClass_Remastered
             penType = 1;
             CheckPenTypeUIState();
             CheckColorTheme();
-            drawingAttributes.Width = Settings.HighlighterWidth / 2;
-            drawingAttributes.Height = Settings.HighlighterWidth;
-            drawingAttributes.StylusTip = StylusTip.Rectangle;
-            drawingAttributes.IsHighlighter = true;
+            _viewModel.InkCanvasDrawingAttributes.Width = Settings.HighlighterWidth / 2;
+            _viewModel.InkCanvasDrawingAttributes.Height = Settings.HighlighterWidth;
+            _viewModel.InkCanvasDrawingAttributes.StylusTip = StylusTip.Rectangle;
+            _viewModel.InkCanvasDrawingAttributes.IsHighlighter = true;
         }
 
         private void BtnColorBlack_Click(object? sender, RoutedEventArgs? e)
@@ -3285,8 +3232,8 @@ namespace InkCanvasForClass_Remastered
 
             foreach (var stroke in inkCanvas.GetSelectedStrokes())
             {
-                stroke.DrawingAttributes.Width = inkCanvas.DefaultDrawingAttributes.Width;
-                stroke.DrawingAttributes.Height = inkCanvas.DefaultDrawingAttributes.Height;
+                stroke.DrawingAttributes.Width = _viewModel.InkCanvasDrawingAttributes.Width;
+                stroke.DrawingAttributes.Height = _viewModel.InkCanvasDrawingAttributes.Height;
             }
         }
 
@@ -3757,8 +3704,8 @@ namespace InkCanvasForClass_Remastered
             if (!isLoaded) return;
             if (sender == BoardInkWidthSlider) InkWidthSlider.Value = ((Slider)sender).Value;
             if (sender == InkWidthSlider) BoardInkWidthSlider.Value = ((Slider)sender).Value;
-            drawingAttributes.Height = ((Slider)sender).Value / 2;
-            drawingAttributes.Width = ((Slider)sender).Value / 2;
+            _viewModel.InkCanvasDrawingAttributes.Height = ((Slider)sender).Value / 2;
+            _viewModel.InkCanvasDrawingAttributes.Width = ((Slider)sender).Value / 2;
             Settings.InkWidth = ((Slider)sender).Value / 2;
             _settingsService.SaveSettings();
         }
@@ -3768,8 +3715,8 @@ namespace InkCanvasForClass_Remastered
             if (!isLoaded) return;
             // if (sender == BoardInkWidthSlider) InkWidthSlider.Value = ((Slider)sender).Value;
             // if (sender == InkWidthSlider) BoardInkWidthSlider.Value = ((Slider)sender).Value;
-            drawingAttributes.Height = ((Slider)sender).Value;
-            drawingAttributes.Width = ((Slider)sender).Value / 2;
+            _viewModel.InkCanvasDrawingAttributes.Height = ((Slider)sender).Value;
+            _viewModel.InkCanvasDrawingAttributes.Width = ((Slider)sender).Value / 2;
             Settings.HighlighterWidth = ((Slider)sender).Value;
             _settingsService.SaveSettings();
         }
@@ -3779,12 +3726,12 @@ namespace InkCanvasForClass_Remastered
             if (!isLoaded) return;
             // if (sender == BoardInkWidthSlider) InkWidthSlider.Value = ((Slider)sender).Value;
             // if (sender == InkWidthSlider) BoardInkWidthSlider.Value = ((Slider)sender).Value;
-            var NowR = drawingAttributes.Color.R;
-            var NowG = drawingAttributes.Color.G;
-            var NowB = drawingAttributes.Color.B;
+            var NowR = _viewModel.InkCanvasDrawingAttributes.Color.R;
+            var NowG = _viewModel.InkCanvasDrawingAttributes.Color.G;
+            var NowB = _viewModel.InkCanvasDrawingAttributes.Color.B;
             // Trace.WriteLine(BitConverter.GetBytes(((Slider)sender).Value));
-            drawingAttributes.Color = Color.FromArgb((byte)((Slider)sender).Value, NowR, NowG, NowB);
-            // drawingAttributes.Width = ((Slider)sender).Value / 2;
+            _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)((Slider)sender).Value, NowR, NowG, NowB);
+            // _viewModel.InkCanvasDrawingAttributes.Width = ((Slider)sender).Value / 2;
             // Settings.InkAlpha = ((Slider)sender).Value;
             // _settingsService.SaveSettings();
         }
@@ -4090,20 +4037,8 @@ namespace InkCanvasForClass_Remastered
 
             CheckEnableTwoFingerGestureBtnColorPrompt();
 
-            drawingAttributes.Height = Settings.InkWidth;
-            drawingAttributes.Width = Settings.InkWidth;
-
             InkWidthSlider.Value = Settings.InkWidth * 2;
             HighlighterWidthSlider.Value = Settings.HighlighterWidth;
-
-            if (Settings.IsShowCursor)
-            {
-                inkCanvas.ForceCursor = true;
-            }
-            else
-            {
-                inkCanvas.ForceCursor = false;
-            }
 
             ComboBoxPenStyle.SelectedIndex = Settings.InkStyle;
             BoardComboBoxPenStyle.SelectedIndex = Settings.InkStyle;
@@ -4111,15 +4046,6 @@ namespace InkCanvasForClass_Remastered
             UpdateEraserShape();
 
             CheckEraserTypeTab();
-
-            if (Settings.FitToCurve)
-            {
-                drawingAttributes.FitToCurve = true;
-            }
-            else
-            {
-                drawingAttributes.FitToCurve = false;
-            }
 
             // Advanced
             ToggleSwitchIsEnableEdgeGestureUtil.IsOn = Settings.IsEnableEdgeGestureUtil;
@@ -4232,14 +4158,14 @@ namespace InkCanvasForClass_Remastered
             }
 
             if (Settings.FitToCurve == true)
-                drawingAttributes.FitToCurve = true;
+                _viewModel.InkCanvasDrawingAttributes.FitToCurve = true;
         }
         #endregion
 
         #region SimulatePressure&InkToShape
         private void inkCanvas_StrokeCollected(object sender, InkCanvasStrokeCollectedEventArgs e)
         {
-            if (Settings.FitToCurve == true) drawingAttributes.FitToCurve = false;
+            if (Settings.FitToCurve == true) _viewModel.InkCanvasDrawingAttributes.FitToCurve = false;
 
             try
             {
@@ -4351,7 +4277,7 @@ namespace InkCanvasForClass_Remastered
             }
             catch { }
 
-            if (Settings.FitToCurve == true) drawingAttributes.FitToCurve = true;
+            if (Settings.FitToCurve == true) _viewModel.InkCanvasDrawingAttributes.FitToCurve = true;
         }
 
         public double GetPointSpeed(Point point1, Point point2, Point point3)
@@ -4982,7 +4908,7 @@ namespace InkCanvasForClass_Remastered
         {
             if (StrokeVisualList.TryGetValue(id, out var visual)) return visual;
 
-            var strokeVisual = new StrokeVisual(inkCanvas.DefaultDrawingAttributes.Clone());
+            var strokeVisual = new StrokeVisual(_viewModel.InkCanvasDrawingAttributes.Clone());
             StrokeVisualList[id] = strokeVisual;
             StrokeVisualList[id] = strokeVisual;
             var visualCanvas = new VisualCanvas(strokeVisual);

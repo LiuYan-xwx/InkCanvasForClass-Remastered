@@ -4,7 +4,10 @@ using InkCanvasForClass_Remastered.Enums;
 using InkCanvasForClass_Remastered.Interfaces;
 using InkCanvasForClass_Remastered.Models;
 using InkCanvasForClass_Remastered.Services;
+using System.ComponentModel;
 using System.Windows.Controls;
+using System.Windows.Ink;
+using System.Windows.Media;
 
 namespace InkCanvasForClass_Remastered.ViewModels
 {
@@ -17,8 +20,18 @@ namespace InkCanvasForClass_Remastered.ViewModels
         {
             _settingsService = settingsService;
             _powerPointService = powerPointService;
+            InkCanvasDrawingAttributes = new DrawingAttributes
+            {
+                Color = Colors.Red,
+                Height = Settings.InkWidth,
+                Width = Settings.InkWidth,
+                IsHighlighter = false,
+                FitToCurve = Settings.FitToCurve,
+            };
+            Settings.PropertyChanged += OnSettingsPropertyChanged;
         }
-        
+
+
         public Settings Settings => _settingsService.Settings;
         public IPowerPointService PowerPointService => _powerPointService;
 
@@ -26,6 +39,10 @@ namespace InkCanvasForClass_Remastered.ViewModels
         private AppMode _appMode = AppMode.Normal;
         [ObservableProperty]
         private InkCanvasEditingMode _appPenMode = InkCanvasEditingMode.None;
+        [ObservableProperty]
+        private DrawingAttributes _inkCanvasDrawingAttributes;
+        [ObservableProperty]
+        private bool _forceCursor = false;
         [ObservableProperty]
         private string _nowTime = string.Empty;
         [ObservableProperty]
@@ -49,6 +66,16 @@ namespace InkCanvasForClass_Remastered.ViewModels
         private bool _canRedo = false;
         [ObservableProperty]
         private bool _isSettingsPanelVisible = false;
+
+        private void OnSettingsPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(Settings.FitToCurve):
+                    InkCanvasDrawingAttributes.FitToCurve = Settings.FitToCurve;
+                    break;
+            }
+        }
 
         [RelayCommand]
         private void OpenSettingsPanel()
