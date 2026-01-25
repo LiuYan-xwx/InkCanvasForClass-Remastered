@@ -1,12 +1,18 @@
+<div align="center">
+
+![logo](https://github.com/LiuYan-xwx/InkCanvasForClass-Remastered/blob/master/ICC-Re.png)
+
 # InkCanvasForClass-Remastered
 
 [![.NET 8](https://img.shields.io/badge/.NET-8.0-blue?logo=dotnet)](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-red.svg)](./LICENSE.txt)
 [![Build](https://img.shields.io/github/actions/workflow/status/LiuYan-xwx/InkCanvasForClass-Remastered/build.yml?logo=github&label=Build)](https://github.com/LiuYan-xwx/InkCanvasForClass-Remastered/actions)
 
+</div>
+
 ## 项目介绍
 
-本项目基于 `icc-0610fix` 进行二次开发，而 `icc-0610fix` 是 **InkCanvasForClass**（简称 **ICC**）的一个衍生版本。
+InkCanvasForClass-Remastered (简称 ICC-Re) 基于 `icc-0610fix` 进行二次开发，而 `icc-0610fix` 是 **InkCanvasForClass**（简称 **ICC**）的一个衍生版本。
 
 > `icc-0610fix` 原仓库: [awesome-iwb/icc-20240610-stable](https://github.com/awesome-iwb/icc-20240610-stable)。  
 > **ICC** 本身源自 [WuChanging/Ink-Canvas](https://github.com/WuChanging/Ink-Canvas)，该项目对原版做了大量改进，包括 UI 美化、新增功能与体验优化。  
