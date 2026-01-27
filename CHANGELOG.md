@@ -51,7 +51,13 @@
 - 支持调节翻页按钮面板宽度
 - 新增无焦点模式
 - 修复“启动后收纳”功能失效
-- 
+- 移除 FullScreenHelper
+- 改动抽人面板布局
+- 新增窗口模式设置(正常全屏和假全屏，这个能解决任务栏问题)
+- 优化设置面板动画
+- 默认保存笔迹、截图等文件到 ./Saves 下
+- 移除 截图分日期文件夹保存 功能
+- 调试功能: 强制显示 PPT 翻页按钮
 
 技术性修改：
 - 移除了所有 COM 引用
@@ -78,3 +84,9 @@
 - 工具面板的元素改成button控件
 - 部分白板的ui也使用数据驱动(根据AppMode)
 - 新增 `FloatingBarButton` 自定义控件
+- mw.cs里连接powerpoint的定时timer的逻辑移动到 PowerPointService 里
+- 新增 CommonDirectories.cs，管理所有路径使用
+- 新增 INotificationService，用于显示弹出通知
+- 抽离 ScreenshotHelper
+- 部分 InkCanvas 属性改为 MVVM 绑定
+- 
