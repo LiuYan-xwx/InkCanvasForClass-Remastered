@@ -67,6 +67,9 @@ namespace InkCanvasForClass_Remastered.ViewModels
         [ObservableProperty]
         private bool _isSettingsPanelVisible = false;
 
+        [ObservableProperty]
+        private bool _forceShowPPTNavigationPanel = false;
+
         private void OnSettingsPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             switch (e.PropertyName)

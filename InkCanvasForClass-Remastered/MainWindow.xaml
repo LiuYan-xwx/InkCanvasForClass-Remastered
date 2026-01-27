@@ -1793,6 +1793,10 @@
                                         Content="崩溃测试"
                                         Margin="0,6,0,0"
                                         Command="{Binding CrashTestCommand}" />
+                                    <controls:SettingsControl
+                                        Header="强制显示 PPT 翻页按钮"
+                                        Description="此设置不会保存"
+                                        IsOn="{Binding ForceShowPPTNavigationPanel}" />
                                 </StackPanel>
                             </GroupBox>
                         </StackPanel>
@@ -6523,6 +6527,11 @@
                 <Style TargetType="controls:PPTNavigationPanel">
                     <Setter Property="Visibility" Value="Collapsed" />
                     <Style.Triggers>
+                        <!--  强制显示 PPT 工具面板  -->
+                        <DataTrigger Binding="{Binding ForceShowPPTNavigationPanel}" Value="True">
+                            <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                        <!--  正常条件下显示  -->
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding PowerPointService.IsInSlideShow}" Value="True" />
