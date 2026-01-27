@@ -14,7 +14,7 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
         <Style x:Key="PPTNavButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Background" Value="#01000000" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -34,7 +34,7 @@
                                 <Setter TargetName="ButtonBorder" Property="Background" Value="#25000000" />
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="ButtonBorder" Property="Background" Value="Transparent" />
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#01000000" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
