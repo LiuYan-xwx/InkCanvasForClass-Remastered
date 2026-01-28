@@ -1515,6 +1515,8 @@
                                         Y2="0" />
                                     <controls:SettingsControl Header="清屏时自动截图" IsOn="{Binding Settings.IsAutoSaveStrokesAtClear}" />
 
+                                    <controls:SettingsControl Header="截图时自动保存墨迹" IsOn="{Binding Settings.IsAutoSaveStrokesAtScreenshot}" />
+
                                     <controls:SettingsControl Header="自动截图最小墨迹量">
                                         <controls:SettingsControl.Switcher>
                                             <StackPanel Orientation="Horizontal">
