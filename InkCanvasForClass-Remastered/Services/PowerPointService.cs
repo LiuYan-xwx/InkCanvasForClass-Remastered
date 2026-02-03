@@ -196,8 +196,7 @@ namespace InkCanvasForClass_Remastered.Services
                 return;
             try
             {
-                // 必须在新线程中调用，否则有时会阻塞UI线程
-                Task.Run(() => ActiveSlideShowWindow?.View?.Previous());
+                App.Current.Dispatcher.Invoke(() => ActiveSlideShowWindow?.View?.Previous());
             }
             catch (Exception ex)
             {
@@ -211,8 +210,7 @@ namespace InkCanvasForClass_Remastered.Services
                 return;
             try
             {
-                // 必须在新线程中调用，否则有时会阻塞UI线程
-                Task.Run(() => ActiveSlideShowWindow?.View?.Next());
+                App.Current.Dispatcher.Invoke(() => ActiveSlideShowWindow?.View?.Next());
             }
             catch (Exception ex)
             {
