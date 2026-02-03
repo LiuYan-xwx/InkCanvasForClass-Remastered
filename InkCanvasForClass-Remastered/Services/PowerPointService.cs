@@ -44,8 +44,7 @@ namespace InkCanvasForClass_Remastered.Services
             {
                 try
                 {
-                    var win = ActiveSlideShowWindow;
-                    return win?.View?.CurrentShowPosition ?? -1;
+                    return ActiveSlideShowWindow?.View?.CurrentShowPosition ?? -1;
                 }
                 catch
                 {
@@ -60,9 +59,7 @@ namespace InkCanvasForClass_Remastered.Services
             {
                 try
                 {
-                    var app = _pptApplication;
-                    var pres = app?.ActivePresentation;
-                    return pres?.Slides?.Count ?? -1;
+                    return _pptApplication?.ActivePresentation?.Slides?.Count ?? -1;
                 }
                 catch
                 {
@@ -77,8 +74,7 @@ namespace InkCanvasForClass_Remastered.Services
             {
                 try
                 {
-                    var app = _pptApplication;
-                    return app?.ActivePresentation?.Name;
+                    return _pptApplication?.ActivePresentation?.Name;
                 }
                 catch
                 {
@@ -108,15 +104,8 @@ namespace InkCanvasForClass_Remastered.Services
             {
                 try
                 {
-                    var app = _pptApplication;
-                    if (app == null)
-                        return null;
-
-                    var windows = app.SlideShowWindows;
-                    if (windows != null && windows.Count > 0)
-                        return windows[1];
-
-                    return null;
+                    var windows = _pptApplication?.SlideShowWindows;
+                    return windows?.Count > 0 ? windows[1] : null;
                 }
                 catch
                 {
