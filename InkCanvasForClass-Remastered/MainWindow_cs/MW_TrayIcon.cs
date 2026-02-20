@@ -13,13 +13,13 @@ namespace InkCanvasForClass_Remastered
         {
             ContextMenu s = (ContextMenu)sender;
             Image FoldFloatingBarTrayIconMenuItemIconEyeOff =
-                (Image)((Grid)((MenuItem)s.Items[^5]).Icon).Children[0];
+                (Image)((Grid)((MenuItem)s.Items[3]).Icon).Children[0];
             Image FoldFloatingBarTrayIconMenuItemIconEyeOn =
-                (Image)((Grid)((MenuItem)s.Items[s.Items.Count - 5]).Icon).Children[1];
+                (Image)((Grid)((MenuItem)s.Items[3]).Icon).Children[1];
             TextBlock FoldFloatingBarTrayIconMenuItemHeaderText =
-                (TextBlock)((SimpleStackPanel)((MenuItem)s.Items[s.Items.Count - 5]).Header).Children[0];
-            MenuItem ResetFloatingBarPositionTrayIconMenuItem = (MenuItem)s.Items[s.Items.Count - 4];
-            MenuItem HideICCMainWindowTrayIconMenuItem = (MenuItem)s.Items[s.Items.Count - 9];
+                (TextBlock)((SimpleStackPanel)((MenuItem)s.Items[3]).Header).Children[0];
+            MenuItem ResetFloatingBarPositionTrayIconMenuItem = (MenuItem)s.Items[4];
+            MenuItem HideICCMainWindowTrayIconMenuItem = (MenuItem)s.Items[0];
             MainWindow mainWin = (MainWindow)Application.Current.MainWindow;
             if (mainWin.IsLoaded)
             {
@@ -64,17 +64,6 @@ namespace InkCanvasForClass_Remastered
                 mainWin.BtnRestart_Click(null, null);
         }
 
-        private void ForceFullScreenTrayIconMenuItem_Clicked(object sender, RoutedEventArgs e)
-        {
-            MainWindow mainWin = (MainWindow)Application.Current.MainWindow;
-            if (mainWin.IsLoaded)
-            {
-                _ = InkCanvasForClass_Remastered.MainWindow.MoveWindow(new WindowInteropHelper(mainWin).Handle, 0, 0,
-                    System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width, System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height, true);
-                _notificationService.ShowNotification($"已强制全屏化：{System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width}x{System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height}（缩放比例为{System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width / SystemParameters.PrimaryScreenWidth}x{System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height / SystemParameters.PrimaryScreenHeight}）");
-            }
-        }
-
         private void FoldFloatingBarTrayIconMenuItem_Clicked(object sender, RoutedEventArgs e)
         {
             MainWindow mainWin = (MainWindow)Application.Current.MainWindow;
@@ -115,15 +104,12 @@ namespace InkCanvasForClass_Remastered
             {
                 mainWin.Hide();
                 ContextMenu s = ((TaskbarIcon)Application.Current.Resources["TaskbarTrayIcon"]).ContextMenu;
-                MenuItem ResetFloatingBarPositionTrayIconMenuItem = (MenuItem)s.Items[s.Items.Count - 4];
-                MenuItem FoldFloatingBarTrayIconMenuItem = (MenuItem)s.Items[s.Items.Count - 5];
-                MenuItem ForceFullScreenTrayIconMenuItem = (MenuItem)s.Items[s.Items.Count - 6];
+                MenuItem ResetFloatingBarPositionTrayIconMenuItem = (MenuItem)s.Items[4];
+                MenuItem FoldFloatingBarTrayIconMenuItem = (MenuItem)s.Items[3];
                 ResetFloatingBarPositionTrayIconMenuItem.IsEnabled = false;
                 FoldFloatingBarTrayIconMenuItem.IsEnabled = false;
-                ForceFullScreenTrayIconMenuItem.IsEnabled = false;
                 ResetFloatingBarPositionTrayIconMenuItem.Opacity = 0.5;
                 FoldFloatingBarTrayIconMenuItem.Opacity = 0.5;
-                ForceFullScreenTrayIconMenuItem.Opacity = 0.5;
             }
             else
             {
@@ -140,15 +126,12 @@ namespace InkCanvasForClass_Remastered
             {
                 mainWin.Show();
                 ContextMenu s = ((TaskbarIcon)Application.Current.Resources["TaskbarTrayIcon"]).ContextMenu;
-                MenuItem ResetFloatingBarPositionTrayIconMenuItem = (MenuItem)s.Items[s.Items.Count - 4];
-                MenuItem FoldFloatingBarTrayIconMenuItem = (MenuItem)s.Items[s.Items.Count - 5];
-                MenuItem ForceFullScreenTrayIconMenuItem = (MenuItem)s.Items[s.Items.Count - 6];
+                MenuItem ResetFloatingBarPositionTrayIconMenuItem = (MenuItem)s.Items[4];
+                MenuItem FoldFloatingBarTrayIconMenuItem = (MenuItem)s.Items[3];
                 ResetFloatingBarPositionTrayIconMenuItem.IsEnabled = true;
                 FoldFloatingBarTrayIconMenuItem.IsEnabled = true;
-                ForceFullScreenTrayIconMenuItem.IsEnabled = true;
                 ResetFloatingBarPositionTrayIconMenuItem.Opacity = 1;
                 FoldFloatingBarTrayIconMenuItem.Opacity = 1;
-                ForceFullScreenTrayIconMenuItem.Opacity = 1;
             }
             else
             {
