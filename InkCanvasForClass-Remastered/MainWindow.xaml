@@ -561,7 +561,7 @@
                                         X2="400"
                                         Y1="0"
                                         Y2="0" />
-                                    <Border
+                                    <!--<Border
                                         Height="50"
                                         Margin="-20,0"
                                         Padding="20,0"
@@ -589,8 +589,11 @@
                                                 Foreground="#fafafa"
                                                 Text="任务栏托盘图标" />
                                         </Grid>
-                                    </Border>
-                                    <controls:SettingsControl Header="启用托盘图标" IsOn="{Binding Settings.EnableTrayIcon}" />
+                                    </Border>-->
+                                    <controls:SettingsControl
+                                        Header="启用托盘图标"
+                                        Description="此设置需要重启"
+                                        IsOn="{Binding Settings.EnableTrayIcon}" />
                                 </ikw:SimpleStackPanel>
                             </GroupBox>
                             <GroupBox>

@@ -247,8 +247,7 @@
                 x:Key="TaskbarTrayIcon"
                 ContextMenu="{StaticResource SysTrayMenu}"
                 IconSource="/Resources/ICC-Re.ico"
-                ToolTipText="InkCanvasForClass-Remastered"
-                Visibility="{Binding Settings.EnableTrayIcon, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                ToolTipText="InkCanvasForClass-Remastered" />
             <ResourceDictionary.MergedDictionaries>
                 <ui:ThemeResources RequestedTheme="Light" />
                 <ui:XamlControlsResources />
