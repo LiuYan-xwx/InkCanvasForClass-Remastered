@@ -30,11 +30,6 @@ namespace InkCanvasForClass_Remastered
 
         public static T GetService<T>() => IAppHost.GetService<T>();
 
-        //public static readonly string AppRootFolderPath = "./";
-        //public static readonly string AppLogFolderPath = Path.Combine(AppRootFolderPath, "Logs");
-        //public static string AppSavesFolderPath = Path.Combine(AppRootFolderPath, "Saves");
-
-
         public App()
         {
             DispatcherUnhandledException += App_DispatcherUnhandledException;
@@ -117,7 +112,8 @@ namespace InkCanvasForClass_Remastered
 
             if (Settings.EnableTrayIcon)
             {
-                _ = (TaskbarIcon)FindResource("TaskbarTrayIcon");
+                var taskbarIcon = (TaskbarIcon)FindResource("TaskbarTrayIcon");
+                taskbarIcon.DataContext = GetService<TrayIconMenuViewModel>();
             }
             
 
@@ -137,6 +133,7 @@ namespace InkCanvasForClass_Remastered
             services.AddTransient<MainViewModel>();
             services.AddTransient<RandViewModel>();
             services.AddTransient<NamesInputViewModel>();
+            services.AddTransient<TrayIconMenuViewModel>();
 
             // 注册窗口
             services.AddSingleton<MainWindow>();
