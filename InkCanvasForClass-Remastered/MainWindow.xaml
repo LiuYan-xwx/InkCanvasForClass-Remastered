@@ -178,11 +178,11 @@
             <Grid.Style>
                 <Style TargetType="Grid">
                     <Setter Property="Background" Value="{x:Null}" />
-                    <!--<Style.Triggers>
+                    <Style.Triggers>
                         <DataTrigger Binding="{Binding IsSettingsPanelVisible}" Value="True">
                             <Setter Property="Background" Value="#01000000" />
                         </DataTrigger>
-                    </Style.Triggers>-->
+                    </Style.Triggers>
                 </Style>
             </Grid.Style>
             <Border
