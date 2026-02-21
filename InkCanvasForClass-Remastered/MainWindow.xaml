@@ -50,6 +50,8 @@
         <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter" />
         <converters:BoolToScaleConverter x:Key="BoolToScaleConverter" />
         <converters:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter" />
+        <converters:OffsetPreviewConverter x:Key="OffsetPreviewConverter" />
+        <converters:PanelWidthPreviewConverter x:Key="PanelWidthPreviewConverter" />
         <RoutedUICommand x:Key="KeyExit" Text=" " />
         <RoutedUICommand x:Key="HotKey_Command_Undo" Text=" " />
         <RoutedUICommand x:Key="HotKey_Command_Redo" Text=" " />
@@ -659,32 +661,26 @@
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Bottom"
                                                 Source="Resources/PresentationExample/toolbar.png" />
-                                            <Image
-                                                Name="PPTBtnPreviewLS"
-                                                Width="10"
-                                                HorizontalAlignment="Left"
-                                                VerticalAlignment="Center"
-                                                RenderTransformOrigin="0.5,0.5"
-                                                Source="Resources/PresentationExample/sidebar-white.png">
-                                                <Image.RenderTransform>
-                                                    <TransformGroup>
-                                                        <TranslateTransform x:Name="PPTBtnPreviewLSTransform" />
-                                                    </TransformGroup>
-                                                </Image.RenderTransform>
-                                            </Image>
-                                            <Image
-                                                Name="PPTBtnPreviewRS"
-                                                Width="10"
-                                                HorizontalAlignment="Right"
-                                                VerticalAlignment="Center"
-                                                RenderTransformOrigin="0.5,0.5"
-                                                Source="Resources/PresentationExample/sidebar-white.png">
-                                                <Image.RenderTransform>
-                                                    <TransformGroup>
-                                                        <TranslateTransform x:Name="PPTBtnPreviewRSTransform" />
-                                                    </TransformGroup>
-                                                </Image.RenderTransform>
-                                            </Image>
+                                            <controls:PPTNavigationPanel
+                                                LeftButtonOffset="{Binding Settings.PPTLSButtonPosition, Converter={StaticResource OffsetPreviewConverter}}"
+                                                LeftButtonVisibility="{Binding Settings.IsLeftSidePPTButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                NextClick="PPTNavigationPanel_NextClick"
+                                                PageClick="PPTNavigationPanel_PageClick"
+                                                PanelWidth="{Binding Settings.PPTNavigationPanelWidth, Converter={StaticResource PanelWidthPreviewConverter}}"
+                                                PreviousClick="PPTNavigationPanel_PreviousClick"
+                                                RightButtonOffset="{Binding Settings.PPTRSButtonPosition, Converter={StaticResource OffsetPreviewConverter}}"
+                                                RightButtonVisibility="{Binding Settings.IsRightSidePPTButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                <controls:PPTNavigationPanel.Style>
+                                                    <Style TargetType="controls:PPTNavigationPanel">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Settings.ShowPPTButton}" Value="True">
+                                                                <Setter Property="Visibility" Value="Visible" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </controls:PPTNavigationPanel.Style>
+                                            </controls:PPTNavigationPanel>
                                         </Grid>
                                     </Border>
 

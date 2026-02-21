@@ -104,9 +104,6 @@ namespace InkCanvasForClass_Remastered
                 case nameof(Settings.FingerModeBoundsWidth) or nameof(Settings.NibModeBoundsWidth):
                     BoundsWidth = Settings.IsEnableNibMode ? Settings.NibModeBoundsWidth : Settings.FingerModeBoundsWidth;
                     break;
-                case nameof(Settings.PPTLSButtonPosition) or nameof(Settings.PPTRSButtonPosition):
-                    UpdatePPTBtnPreview();
-                    break;
                 case nameof(Settings.WindowMode):
                     SetWindowMode();
                     break;
@@ -3567,95 +3564,41 @@ namespace InkCanvasForClass_Remastered
         private void PPTBtnLSPlusBtn_Clicked(object sender, RoutedEventArgs e)
         {
             Settings.PPTLSButtonPosition++;
-            UpdatePPTBtnPreview();
         }
 
         private void PPTBtnLSMinusBtn_Clicked(object sender, RoutedEventArgs e)
         {
             Settings.PPTLSButtonPosition--;
-            UpdatePPTBtnPreview();
         }
 
         private void PPTBtnLSSyncBtn_Clicked(object sender, RoutedEventArgs e)
         {
             Settings.PPTRSButtonPosition = Settings.PPTLSButtonPosition;
-            UpdatePPTBtnPreview();
         }
 
         private void PPTBtnLSResetBtn_Clicked(object sender, RoutedEventArgs e)
         {
             Settings.PPTLSButtonPosition = 0;
-            UpdatePPTBtnPreview();
         }
 
         private void PPTBtnRSPlusBtn_Clicked(object sender, RoutedEventArgs e)
         {
             Settings.PPTRSButtonPosition++;
-            UpdatePPTBtnPreview();
         }
 
         private void PPTBtnRSMinusBtn_Clicked(object sender, RoutedEventArgs e)
         {
             Settings.PPTRSButtonPosition--;
-            UpdatePPTBtnPreview();
         }
 
         private void PPTBtnRSSyncBtn_Clicked(object sender, RoutedEventArgs e)
         {
             Settings.PPTLSButtonPosition = Settings.PPTRSButtonPosition;
-            UpdatePPTBtnPreview();
         }
 
         private void PPTBtnRSResetBtn_Clicked(object sender, RoutedEventArgs e)
         {
             Settings.PPTRSButtonPosition = 0;
-            UpdatePPTBtnPreview();
-        }
-
-        private void UpdatePPTBtnPreview()
-        {
-            if (Settings.IsPPTButtonTranslucent)
-            {
-                PPTBtnPreviewLS.Opacity = 0.5;
-                PPTBtnPreviewRS.Opacity = 0.5;
-            }
-            else
-            {
-                PPTBtnPreviewLS.Opacity = 1;
-                PPTBtnPreviewRS.Opacity = 1;
-            }
-
-            if (Settings.IsPPTButtonBlackBackground)
-            {
-                PPTBtnPreviewLS.Source =
-                    new BitmapImage(
-                        new Uri("pack://application:,,,/Resources/PresentationExample/sidebar-dark.png"));
-                PPTBtnPreviewRS.Source = new BitmapImage(
-                    new Uri("pack://application:,,,/Resources/PresentationExample/sidebar-dark.png"));
-            }
-            else
-            {
-                PPTBtnPreviewLS.Source =
-                    new BitmapImage(
-                        new Uri("pack://application:,,,/Resources/PresentationExample/sidebar-white.png"));
-                PPTBtnPreviewRS.Source = new BitmapImage(
-                    new Uri("pack://application:,,,/Resources/PresentationExample/sidebar-white.png"));
-            }
-
-            if (Settings.ShowPPTButton)
-            {
-                // Only show side buttons
-                PPTBtnPreviewLS.Visibility = Settings.IsLeftSidePPTButtonVisible ? Visibility.Visible : Visibility.Collapsed;
-                PPTBtnPreviewRS.Visibility = Settings.IsRightSidePPTButtonVisible ? Visibility.Visible : Visibility.Collapsed;
-            }
-            else
-            {
-                PPTBtnPreviewLS.Visibility = Visibility.Collapsed;
-                PPTBtnPreviewRS.Visibility = Visibility.Collapsed;
-            }
-
-            PPTBtnPreviewRSTransform.Y = (Settings.PPTRSButtonPosition * 0.2);
-            PPTBtnPreviewLSTransform.Y = (Settings.PPTLSButtonPosition * 0.2);
         }
 
         private void ToggleSwitchShowCursor_Toggled(object sender, RoutedEventArgs e)
@@ -4004,8 +3947,6 @@ namespace InkCanvasForClass_Remastered
             }
 
             // -- new --
-
-            UpdatePPTBtnPreview();
 
             // Gesture
 
