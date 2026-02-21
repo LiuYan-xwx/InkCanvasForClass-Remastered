@@ -871,40 +871,11 @@
                                         X2="400"
                                         Y1="0"
                                         Y2="0" />
-                                    <ikw:SimpleStackPanel
-                                        Name="SettingsShowCanvasAtNewSlideShowStackPanel"
-                                        HorizontalAlignment="Left"
-                                        Orientation="Horizontal">
-                                        <TextBlock
-                                            Margin="0,0,16,0"
-                                            VerticalAlignment="Center"
-                                            FontSize="14"
-                                            Foreground="#fafafa"
-                                            Text="进入 PPT 放映时自动进入批注模式" />
-                                        <ui:ToggleSwitch
-                                            Name="ToggleSwitchShowCanvasAtNewSlideShow"
-                                            FontFamily="Microsoft YaHei UI"
-                                            FontWeight="Bold"
-                                            IsOn="{Binding Settings.IsShowCanvasAtNewSlideShow, Mode=TwoWay}"
-                                            OffContent=""
-                                            OnContent="" />
-                                    </ikw:SimpleStackPanel>
-                                    <Border
-                                        Name="SettingsPPTInkingAndAutoFoldExplictBorder"
-                                        Padding="8"
-                                        Background="#991b1b"
-                                        BorderBrush="#ef4444"
-                                        BorderThickness="2"
-                                        CornerRadius="6">
-                                        <ikw:SimpleStackPanel Orientation="Horizontal" Spacing="4">
-                                            <ui:FontIcon VerticalAlignment="Center" Icon="{x:Static ui:SegoeFluentIcons.Info}" />
-                                            <TextBlock
-                                                Margin="2,0,0,0"
-                                                VerticalAlignment="Center"
-                                                FontSize="13"
-                                                Text="该项与“自动化”中的“播放PPT时自动收纳”选项冲突！" />
-                                        </ikw:SimpleStackPanel>
-                                    </Border>
+
+                                    <controls:SettingsControl
+                                        Header="进入 PPT 放映时自动进入批注模式"
+                                        Description="# 此选项会与“播放PPT时自动收纳”设置冲突！"
+                                        IsOn="{Binding Settings.IsShowCanvasAtNewSlideShow}" />
 
                                     <controls:SettingsControl Header="允许幻灯片模式下的双指手势" IsOn="{Binding Settings.IsEnableTwoFingerGestureInPresentationMode}" />
 
@@ -1198,11 +1169,15 @@
                                             Foreground="#fafafa"
                                             Text="播放PPT时自动收纳" />
                                         <ui:ToggleSwitch
-                                            IsOn="{Binding Settings.IsAutoFoldInPPTSlideShow}"
+                                            IsOn="{Binding Settings.IsAutoFoldInPPTSlideShow, Mode=TwoWay}"
                                             OffContent=""
-                                            OnContent=""
-                                            Toggled="ToggleSwitchAutoFoldInPPTSlideShow_Toggled" />
+                                            OnContent="" />
                                     </ikw:SimpleStackPanel>
+                                    <TextBlock
+                                        FontSize="12"
+                                        Foreground="#a1a1aa"
+                                        Text="# 此选项会与“进入 PPT 放映时自动进入批注模式”设置冲突！"
+                                        TextWrapping="Wrap" />
                                     <Line
                                         Margin="0,4,0,4"
                                         HorizontalAlignment="Center"

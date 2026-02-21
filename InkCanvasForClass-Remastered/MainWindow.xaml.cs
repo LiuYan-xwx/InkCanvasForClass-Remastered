@@ -3698,23 +3698,6 @@ namespace InkCanvasForClass_Remastered
                 timerCheckAutoFold.Stop();
         }
 
-        private void ToggleSwitchAutoFoldInPPTSlideShow_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (Settings.IsAutoFoldInPPTSlideShow)
-            {
-                SettingsPPTInkingAndAutoFoldExplictBorder.Visibility = Visibility.Visible;
-                SettingsShowCanvasAtNewSlideShowStackPanel.Opacity = 0.5;
-                SettingsShowCanvasAtNewSlideShowStackPanel.IsHitTestVisible = false;
-            }
-            else
-            {
-                SettingsPPTInkingAndAutoFoldExplictBorder.Visibility = Visibility.Collapsed;
-                SettingsShowCanvasAtNewSlideShowStackPanel.Opacity = 1;
-                SettingsShowCanvasAtNewSlideShowStackPanel.IsHitTestVisible = true;
-            }
-            StartOrStoptimerCheckAutoFold();
-        }
-
         private void ToggleSwitchAutoKillPptService_Toggled(object sender, RoutedEventArgs e)
         {
             if (Settings.IsAutoKillPptService)
@@ -3935,14 +3918,6 @@ namespace InkCanvasForClass_Remastered
 
             // Automation
             StartOrStoptimerCheckAutoFold();
-
-            SettingsPPTInkingAndAutoFoldExplictBorder.Visibility = Visibility.Collapsed;
-            if (Settings.IsAutoFoldInPPTSlideShow)
-            {
-                SettingsPPTInkingAndAutoFoldExplictBorder.Visibility = Visibility.Visible;
-                SettingsShowCanvasAtNewSlideShowStackPanel.Opacity = 0.5;
-                SettingsShowCanvasAtNewSlideShowStackPanel.IsHitTestVisible = false;
-            }
 
             if (Settings.IsAutoKillPptService)
             {
