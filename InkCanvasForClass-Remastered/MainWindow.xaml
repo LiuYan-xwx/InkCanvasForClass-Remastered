@@ -6521,11 +6521,14 @@
         <!--  // PPT 翻页按钮面板 //  -->
         <controls:PPTNavigationPanel
             x:Name="PPTNavigationPanel"
-            DataContext="{Binding}"
+            LeftButtonOffset="{Binding Settings.PPTLSButtonPosition}"
+            LeftButtonVisibility="{Binding Settings.IsLeftSidePPTButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
             NextClick="PPTNavigationPanel_NextClick"
             PageClick="PPTNavigationPanel_PageClick"
             PanelWidth="{Binding Settings.PPTNavigationPanelWidth}"
-            PreviousClick="PPTNavigationPanel_PreviousClick">
+            PreviousClick="PPTNavigationPanel_PreviousClick"
+            RightButtonOffset="{Binding Settings.PPTRSButtonPosition}"
+            RightButtonVisibility="{Binding Settings.IsRightSidePPTButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
             <controls:PPTNavigationPanel.Style>
                 <Style TargetType="controls:PPTNavigationPanel">
                     <Setter Property="Visibility" Value="Collapsed" />

@@ -20,14 +20,14 @@
             Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=controls:PPTNavigationPanel},Path=PanelWidth}"
             HorizontalAlignment="Left"
             VerticalAlignment="Center"
-            Visibility="{Binding Settings.IsLeftSidePPTButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+            Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=controls:PPTNavigationPanel},Path=LeftButtonVisibility}">
             <controls:PPTNavigationButton
                 DataContext="{Binding}"
                 NextClick="PPTButton_NextClick"
                 PageClick="PPTButton_PageClick"
                 PreviousClick="PPTButton_PreviousClick" />
             <Viewbox.RenderTransform>
-                <TranslateTransform Y="{Binding Settings.PPTLSButtonPosition}"/>
+                <TranslateTransform Y="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=controls:PPTNavigationPanel},Path=LeftButtonOffset}"/>
             </Viewbox.RenderTransform>
         </Viewbox>
 
@@ -36,14 +36,14 @@
             Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=controls:PPTNavigationPanel},Path=PanelWidth}"
             HorizontalAlignment="Right"
             VerticalAlignment="Center"
-            Visibility="{Binding Settings.IsRightSidePPTButtonVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+            Visibility="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=controls:PPTNavigationPanel},Path=RightButtonVisibility}">
             <controls:PPTNavigationButton
                 DataContext="{Binding}"
                 NextClick="PPTButton_NextClick"
                 PageClick="PPTButton_PageClick"
                 PreviousClick="PPTButton_PreviousClick" />
             <Viewbox.RenderTransform>
-                <TranslateTransform Y="{Binding Settings.PPTRSButtonPosition}"/>
+                <TranslateTransform Y="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=controls:PPTNavigationPanel},Path=RightButtonOffset}"/>
             </Viewbox.RenderTransform>
         </Viewbox>
     </Grid>
