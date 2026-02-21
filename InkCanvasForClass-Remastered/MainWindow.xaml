@@ -1084,7 +1084,7 @@
                                     <controls:SettingsControl Header="教学安全模式" Description="启用后，若程序遇到未处理的异常或将崩溃，将按照选择的对应方法进行处理，否则默认忽略并显示通知">
                                         <controls:SettingsControl.Switcher>
                                             <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                                                <controls:SettingsControl Width="60" IsOn="{Binding Settings.IsCriticalSafeMode}" />
+                                                <controls:SettingsControl IsOn="{Binding Settings.IsCriticalSafeMode}" />
                                                 <ComboBox SelectedIndex="{Binding Settings.CriticalSafeModeMethod}" Visibility="{Binding Settings.IsCriticalSafeMode, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                     <ComboBoxItem>关闭应用</ComboBoxItem>
                                                     <ComboBoxItem>静默重启应用</ComboBoxItem>

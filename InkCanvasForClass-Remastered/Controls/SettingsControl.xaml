@@ -10,6 +10,7 @@
         <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
         <ui:ToggleSwitch
             x:Key="ToggleSwitch"
+            MinWidth="0"
             IsOn="{Binding IsOn, ElementName=root, Mode=TwoWay}"
             OffContent=""
             OnContent="" />
