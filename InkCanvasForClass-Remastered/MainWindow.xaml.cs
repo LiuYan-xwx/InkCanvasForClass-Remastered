@@ -223,7 +223,6 @@ namespace InkCanvasForClass_Remastered
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             SetWindowMode();
-            AppVersionTextBlock.Text = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
             CursorFloatingBarButton_Click(null, null);
 

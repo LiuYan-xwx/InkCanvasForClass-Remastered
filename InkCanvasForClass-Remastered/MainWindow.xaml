@@ -1333,9 +1333,9 @@
                                             FontWeight="Bold"
                                             Text="Version：" />
                                         <TextBlock
-                                            x:Name="AppVersionTextBlock"
                                             FontSize="18"
-                                            FontWeight="Bold" />
+                                            FontWeight="Bold"
+                                            Text="{Binding AppVersion}"/>
                                     </ikw:SimpleStackPanel>
                                     <TextBlock
                                         Foreground="#a1a1aa"

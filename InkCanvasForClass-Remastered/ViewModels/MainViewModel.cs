@@ -31,7 +31,7 @@ namespace InkCanvasForClass_Remastered.ViewModels
             Settings.PropertyChanged += OnSettingsPropertyChanged;
         }
 
-
+        public string AppVersion => App.AppVersion;
         public Settings Settings => _settingsService.Settings;
         public IPowerPointService PowerPointService => _powerPointService;
 

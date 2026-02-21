@@ -28,6 +28,12 @@ namespace InkCanvasForClass_Remastered
         private INotificationService _notificationService;
         private Settings Settings = new();
 
+        /// <summary>
+        /// 应用版本
+        /// </summary>
+        public static string AppVersion => Assembly.GetExecutingAssembly().GetName().Version!.ToString();
+
+        /// <inheritdoc cref="IAppHost.GetService"/>
         public static T GetService<T>() => IAppHost.GetService<T>();
 
         public App()
