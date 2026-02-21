@@ -17,13 +17,28 @@
     <StackPanel Orientation="Vertical">
         <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
             <TextBlock
-                Margin="0,0,16,0"
+                Margin="0,0,4,0"
                 VerticalAlignment="Center"
                 FontSize="14"
                 Foreground="#fafafa"
                 Text="{Binding Header, ElementName=root}"
                 Visibility="{Binding Header, ElementName=root, Converter={StaticResource StringToVisibilityConverter}}" />
-            <ContentPresenter Visibility="{Binding HasSwitcher, ElementName=root, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Border
+                Height="20"
+                Margin="2,0,0,0"
+                Padding="4,0"
+                VerticalAlignment="Center"
+                Background="#7f1d1d"
+                CornerRadius="3"
+                Visibility="{Binding ShowExperimentLabel, ElementName=root, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <ui:IconAndText
+                    Content="实验性选项"
+                    FontSize="12"
+                    Foreground="#fca5a5"
+                    Icon="{x:Static ui:FluentSystemIcons.Beaker_16_Regular}"
+                    Spacing="3" />
+            </Border>
+            <ContentPresenter Margin="12,0,0,0" Visibility="{Binding HasSwitcher, ElementName=root, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <ContentPresenter.Style>
                     <Style TargetType="ContentPresenter">
                         <Style.Triggers>

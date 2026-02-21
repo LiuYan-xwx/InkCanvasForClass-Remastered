@@ -72,5 +72,18 @@ namespace InkCanvasForClass_Remastered.Controls
             add => AddHandler(ToggledEvent, value);
             remove => RemoveHandler(ToggledEvent, value);
         }
+
+
+        public bool ShowExperimentLabel
+        {
+            get { return (bool)GetValue(ShowExperimentLabelProperty); }
+            set { SetValue(ShowExperimentLabelProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ShowExperimentLabel.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ShowExperimentLabelProperty =
+            DependencyProperty.Register(nameof(ShowExperimentLabel), typeof(bool), typeof(SettingsControl), new PropertyMetadata(false));
+
+
     }
 }
