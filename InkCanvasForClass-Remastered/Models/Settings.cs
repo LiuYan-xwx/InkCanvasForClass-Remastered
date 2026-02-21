@@ -143,19 +143,32 @@ namespace InkCanvasForClass_Remastered.Models
         private int _pPTNavigationPanelWidth = 60;
         // Automation
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsEnableAutoFold))]
         private bool _isAutoFoldInEasiNote = true;
+
         [ObservableProperty]
         private bool _isAutoFoldInEasiNoteIgnoreDesktopAnno = false;
+
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsEnableAutoFold))]
         private bool _isAutoFoldInEasiCamera = true;
+
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsEnableAutoFold))]
         private bool _isAutoFoldInEasiNote3 = false;
+
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsEnableAutoFold))]
         private bool _isAutoFoldInEasiNote3C = false;
+
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsEnableAutoFold))]
         private bool _isAutoFoldInEasiNote5C = false;
+
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(IsEnableAutoFold))]
         private bool _isAutoFoldInPPTSlideShow = false;
+
         [ObservableProperty]
         private bool _isAutoKillPptService = false;
         [ObservableProperty]

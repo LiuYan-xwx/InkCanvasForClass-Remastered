@@ -111,7 +111,9 @@ namespace InkCanvasForClass_Remastered
                     if (OSVersion.GetOperatingSystem() >= OSVersionExtension.OperatingSystem.Windows10)
                         EdgeGestureUtil.DisableEdgeGestures(new WindowInteropHelper(this).Handle, Settings.IsEnableEdgeGestureUtil);
                     break;
-
+                case nameof(Settings.IsEnableAutoFold):
+                    StartOrStoptimerCheckAutoFold();
+                    break;
             }
         }
 
@@ -3696,46 +3698,6 @@ namespace InkCanvasForClass_Remastered
                 timerCheckAutoFold.Stop();
         }
 
-        private void ToggleSwitchAutoFoldInEasiNote_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            Settings.IsAutoFoldInEasiNote = ToggleSwitchAutoFoldInEasiNote.IsOn;
-            _settingsService.SaveSettings();
-            StartOrStoptimerCheckAutoFold();
-        }
-
-        private void ToggleSwitchAutoFoldInEasiCamera_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            Settings.IsAutoFoldInEasiCamera = ToggleSwitchAutoFoldInEasiCamera.IsOn;
-            _settingsService.SaveSettings();
-            StartOrStoptimerCheckAutoFold();
-        }
-
-        private void ToggleSwitchAutoFoldInEasiNote3_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            Settings.IsAutoFoldInEasiNote3 = ToggleSwitchAutoFoldInEasiNote3.IsOn;
-            _settingsService.SaveSettings();
-            StartOrStoptimerCheckAutoFold();
-        }
-
-        private void ToggleSwitchAutoFoldInEasiNote3C_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            Settings.IsAutoFoldInEasiNote3C = ToggleSwitchAutoFoldInEasiNote3C.IsOn;
-            _settingsService.SaveSettings();
-            StartOrStoptimerCheckAutoFold();
-        }
-
-        private void ToggleSwitchAutoFoldInEasiNote5C_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            Settings.IsAutoFoldInEasiNote5C = ToggleSwitchAutoFoldInEasiNote5C.IsOn;
-            _settingsService.SaveSettings();
-            StartOrStoptimerCheckAutoFold();
-        }
-
         private void ToggleSwitchAutoFoldInPPTSlideShow_Toggled(object sender, RoutedEventArgs e)
         {
             if (Settings.IsAutoFoldInPPTSlideShow)
@@ -3973,15 +3935,6 @@ namespace InkCanvasForClass_Remastered
 
             // Automation
             StartOrStoptimerCheckAutoFold();
-            ToggleSwitchAutoFoldInEasiNote.IsOn = Settings.IsAutoFoldInEasiNote;
-
-            ToggleSwitchAutoFoldInEasiCamera.IsOn = Settings.IsAutoFoldInEasiCamera;
-
-            ToggleSwitchAutoFoldInEasiNote3C.IsOn = Settings.IsAutoFoldInEasiNote3C;
-
-            ToggleSwitchAutoFoldInEasiNote3.IsOn = Settings.IsAutoFoldInEasiNote3;
-
-            ToggleSwitchAutoFoldInEasiNote5C.IsOn = Settings.IsAutoFoldInEasiNote5C;
 
             SettingsPPTInkingAndAutoFoldExplictBorder.Visibility = Visibility.Collapsed;
             if (Settings.IsAutoFoldInPPTSlideShow)

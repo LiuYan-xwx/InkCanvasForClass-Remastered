@@ -178,11 +178,11 @@
             <Grid.Style>
                 <Style TargetType="Grid">
                     <Setter Property="Background" Value="{x:Null}" />
-                    <Style.Triggers>
+                    <!--<Style.Triggers>
                         <DataTrigger Binding="{Binding IsSettingsPanelVisible}" Value="True">
                             <Setter Property="Background" Value="#01000000" />
                         </DataTrigger>
-                    </Style.Triggers>
+                    </Style.Triggers>-->
                 </Style>
             </Grid.Style>
             <Border
@@ -1141,157 +1141,33 @@
                                         FontWeight="Bold"
                                         Foreground="#fafafa"
                                         Text="自动收纳" />
-                                    <Grid Margin="4,0">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition />
-                                            <RowDefinition />
-                                            <RowDefinition />
-                                            <RowDefinition />
-                                        </Grid.RowDefinitions>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition />
-                                            <ColumnDefinition />
-                                            <ColumnDefinition />
-                                            <ColumnDefinition />
-                                        </Grid.ColumnDefinitions>
-                                        <ikw:SimpleStackPanel
-                                            Grid.Row="0"
-                                            Grid.Column="0"
-                                            Orientation="Vertical">
-                                            <Image
-                                                Width="42"
-                                                Height="42"
-                                                Margin="0,0,0,4"
-                                                HorizontalAlignment="Center"
-                                                Source="/Resources/Icons-png/EasiNote.png" />
-                                            <TextBlock
-                                                Margin="0,0,0,4"
-                                                HorizontalAlignment="Center"
-                                                Foreground="#fafafa"
-                                                Text="希沃白板5" />
-                                            <ui:ToggleSwitch
-                                                Name="ToggleSwitchAutoFoldInEasiNote"
-                                                Width="40"
-                                                MinWidth="0"
-                                                HorizontalAlignment="Center"
-                                                FontFamily="Microsoft YaHei UI"
-                                                FontWeight="Bold"
-                                                IsOn="True"
-                                                OffContent=""
-                                                OnContent=""
-                                                Toggled="ToggleSwitchAutoFoldInEasiNote_Toggled" />
-                                        </ikw:SimpleStackPanel>
-                                        <ikw:SimpleStackPanel
-                                            Grid.Row="0"
-                                            Grid.Column="1"
-                                            Orientation="Vertical">
-                                            <Image
-                                                Width="42"
-                                                Height="42"
-                                                Margin="0,0,0,4"
-                                                HorizontalAlignment="Center"
-                                                Source="/Resources/Icons-png/EasiCamera.png" />
-                                            <TextBlock
-                                                Margin="0,0,0,4"
-                                                HorizontalAlignment="Center"
-                                                Foreground="#fafafa"
-                                                Text="希沃展台" />
-                                            <ui:ToggleSwitch
-                                                Name="ToggleSwitchAutoFoldInEasiCamera"
-                                                Width="40"
-                                                MinWidth="0"
-                                                HorizontalAlignment="Center"
-                                                FontFamily="Microsoft YaHei UI"
-                                                FontWeight="Bold"
-                                                IsOn="True"
-                                                OffContent=""
-                                                OnContent=""
-                                                Toggled="ToggleSwitchAutoFoldInEasiCamera_Toggled" />
-                                        </ikw:SimpleStackPanel>
-                                        <ikw:SimpleStackPanel
-                                            Grid.Row="0"
-                                            Grid.Column="2"
-                                            Orientation="Vertical">
-                                            <Image
-                                                Width="42"
-                                                Height="42"
-                                                Margin="0,0,0,4"
-                                                HorizontalAlignment="Center"
-                                                Source="/Resources/Icons-png/EasiNote3.png" />
-                                            <TextBlock
-                                                Margin="0,0,0,4"
-                                                HorizontalAlignment="Center"
-                                                Foreground="#fafafa"
-                                                Text="希沃白板3" />
-                                            <ui:ToggleSwitch
-                                                Name="ToggleSwitchAutoFoldInEasiNote3"
-                                                Width="40"
-                                                MinWidth="0"
-                                                HorizontalAlignment="Center"
-                                                FontFamily="Microsoft YaHei UI"
-                                                FontWeight="Bold"
-                                                IsOn="True"
-                                                OffContent=""
-                                                OnContent=""
-                                                Toggled="ToggleSwitchAutoFoldInEasiNote3_Toggled" />
-                                        </ikw:SimpleStackPanel>
-                                        <ikw:SimpleStackPanel
-                                            Grid.Row="0"
-                                            Grid.Column="3"
-                                            Orientation="Vertical">
-                                            <Image
-                                                Width="42"
-                                                Height="42"
-                                                Margin="0,0,0,4"
-                                                HorizontalAlignment="Center"
-                                                Source="/Resources/Icons-png/EasiNote3C.png" />
-                                            <TextBlock
-                                                Margin="0,0,0,4"
-                                                HorizontalAlignment="Center"
-                                                Foreground="#fafafa"
-                                                Text="希沃轻白板" />
-                                            <ui:ToggleSwitch
-                                                Name="ToggleSwitchAutoFoldInEasiNote3C"
-                                                Width="40"
-                                                MinWidth="0"
-                                                HorizontalAlignment="Center"
-                                                FontFamily="Microsoft YaHei UI"
-                                                FontWeight="Bold"
-                                                IsOn="True"
-                                                OffContent=""
-                                                OnContent=""
-                                                Toggled="ToggleSwitchAutoFoldInEasiNote3C_Toggled" />
-                                        </ikw:SimpleStackPanel>
-                                        <ikw:SimpleStackPanel
-                                            Grid.Row="1"
-                                            Grid.Column="0"
-                                            Margin="0,18,0,0"
-                                            Orientation="Vertical">
-                                            <Image
-                                                Width="42"
-                                                Height="42"
-                                                Margin="0,0,0,4"
-                                                HorizontalAlignment="Center"
-                                                Source="/Resources/Icons-png/EasiNote5C.png" />
-                                            <TextBlock
-                                                Margin="0,0,0,4"
-                                                HorizontalAlignment="Center"
-                                                Foreground="#fafafa"
-                                                Text="希沃轻白板5C" />
-                                            <ui:ToggleSwitch
-                                                Name="ToggleSwitchAutoFoldInEasiNote5C"
-                                                Width="40"
-                                                MinWidth="0"
-                                                HorizontalAlignment="Center"
-                                                FontFamily="Microsoft YaHei UI"
-                                                FontWeight="Bold"
-                                                IsOn="True"
-                                                OffContent=""
-                                                OnContent=""
-                                                Toggled="ToggleSwitchAutoFoldInEasiNote5C_Toggled" />
-                                        </ikw:SimpleStackPanel>
-                                    </Grid>
+                                    <UniformGrid Columns="4">
+                                        <controls:AutoFoldAppToggle
+                                            Title="希沃白板5"
+                                            IconSource="/Resources/Icons-png/EasiNote.png"
+                                            IsOn="{Binding Settings.IsAutoFoldInEasiNote}" />
 
+                                        <controls:AutoFoldAppToggle
+                                            Title="希沃展台"
+                                            IconSource="/Resources/Icons-png/EasiCamera.png"
+                                            IsOn="{Binding Settings.IsAutoFoldInEasiCamera}" />
+
+                                        <controls:AutoFoldAppToggle
+                                            Title="希沃白板3"
+                                            IconSource="/Resources/Icons-png/EasiNote3.png"
+                                            IsOn="{Binding Settings.IsAutoFoldInEasiNote3}" />
+
+                                        <controls:AutoFoldAppToggle
+                                            Title="希沃轻白板"
+                                            IconSource="/Resources/Icons-png/EasiNote3C.png"
+                                            IsOn="{Binding Settings.IsAutoFoldInEasiNote3C}" />
+
+                                        <controls:AutoFoldAppToggle
+                                            Title="希沃轻白板5C"
+                                            Margin="0,18,0,0"
+                                            IconSource="/Resources/Icons-png/EasiNote5C.png"
+                                            IsOn="{Binding Settings.IsAutoFoldInEasiNote5C}" />
+                                    </UniformGrid>
                                     <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
                                         <Image
                                             Width="28"
