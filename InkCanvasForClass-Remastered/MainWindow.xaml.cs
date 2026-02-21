@@ -114,6 +114,9 @@ namespace InkCanvasForClass_Remastered
                 case nameof(Settings.IsEnableAutoFold):
                     StartOrStoptimerCheckAutoFold();
                     break;
+                case nameof(Settings.IsAutoKillPptService):
+                    StartOrStopTimerKillProcess();
+                    break;
             }
         }
 
@@ -3698,7 +3701,7 @@ namespace InkCanvasForClass_Remastered
                 timerCheckAutoFold.Stop();
         }
 
-        private void ToggleSwitchAutoKillPptService_Toggled(object sender, RoutedEventArgs e)
+        private void StartOrStopTimerKillProcess()
         {
             if (Settings.IsAutoKillPptService)
                 timerKillProcess.Start();

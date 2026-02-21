@@ -1139,45 +1139,18 @@
                                             IconSource="/Resources/Icons-png/EasiNote5C.png"
                                             IsOn="{Binding Settings.IsAutoFoldInEasiNote5C}" />
                                     </UniformGrid>
-                                    <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                                        <Image
-                                            Width="28"
-                                            Height="28"
-                                            Margin="0,0,6,0"
-                                            VerticalAlignment="Center"
-                                            Source="/Resources/Icons-png/EasiNote.png" />
-                                        <TextBlock
-                                            Margin="0,0,16,0"
-                                            VerticalAlignment="Center"
-                                            Foreground="#fafafa"
-                                            Text="自动收纳忽略桌面EN5批注窗口" />
-                                        <ui:ToggleSwitch
-                                            IsOn="{Binding Settings.IsAutoFoldInEasiNoteIgnoreDesktopAnno}"
-                                            OffContent=""
-                                            OnContent="" />
-                                    </ikw:SimpleStackPanel>
-                                    <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                                        <Image
-                                            Width="28"
-                                            Height="28"
-                                            Margin="0,0,6,0"
-                                            VerticalAlignment="Center"
-                                            Source="/Resources/Icons-png/Powerpoint.png" />
-                                        <TextBlock
-                                            Margin="0,0,16,0"
-                                            VerticalAlignment="Center"
-                                            Foreground="#fafafa"
-                                            Text="播放PPT时自动收纳" />
-                                        <ui:ToggleSwitch
-                                            IsOn="{Binding Settings.IsAutoFoldInPPTSlideShow, Mode=TwoWay}"
-                                            OffContent=""
-                                            OnContent="" />
-                                    </ikw:SimpleStackPanel>
-                                    <TextBlock
-                                        FontSize="12"
-                                        Foreground="#a1a1aa"
-                                        Text="# 此选项会与“进入 PPT 放映时自动进入批注模式”设置冲突！"
-                                        TextWrapping="Wrap" />
+
+                                    <controls:SettingsControl
+                                        Header="自动收纳忽略桌面EN5批注窗口"
+                                        IconSource="/Resources/Icons-png/EasiNote.png"
+                                        IsOn="{Binding Settings.IsAutoFoldInEasiNoteIgnoreDesktopAnno}" />
+
+                                    <controls:SettingsControl
+                                        Header="播放PPT时自动收纳"
+                                        Description="# 此选项会与“进入 PPT 放映时自动进入批注模式”设置冲突！"
+                                        IconSource="/Resources/Icons-png/Powerpoint.png"
+                                        IsOn="{Binding Settings.IsAutoFoldInPPTSlideShow}" />
+
                                     <Line
                                         Margin="0,4,0,4"
                                         HorizontalAlignment="Center"
@@ -1193,30 +1166,11 @@
                                         FontWeight="Bold"
                                         Foreground="#fafafa"
                                         Text="自动查杀" />
-                                    <!--<ui:ToggleSwitch OnContent="" OffContent="" Name="ToggleSwitchAutoFoldInZySmartBoard" Header="进入“中原新白板（相似鸿合）”时自动收纳至侧边栏" IsOn="False" FontFamily="Microsoft YaHei UI" Toggled="ToggleSwitchAutoFoldInZySmartBoard_Toggled"/>-->
-                                    <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                                        <Image
-                                            Width="28"
-                                            Height="28"
-                                            Margin="0,0,6,0"
-                                            VerticalAlignment="Center"
-                                            Source="/Resources/Icons-png/PPTTools.png" />
-                                        <TextBlock
-                                            Margin="0,0,16,0"
-                                            VerticalAlignment="Center"
-                                            Foreground="#fafafa"
-                                            Text="自动查杀希沃“PPT 小工具”" />
-                                        <ui:ToggleSwitch
-                                            IsOn="{Binding Settings.IsAutoKillPptService}"
-                                            OffContent=""
-                                            OnContent=""
-                                            Toggled="ToggleSwitchAutoKillPptService_Toggled" />
-                                    </ikw:SimpleStackPanel>
-                                    <TextBlock
-                                        FontSize="12"
-                                        Foreground="#a1a1aa"
-                                        Text="# 请注意，查杀 PPT 小工具会导致希沃课堂授课助手无法使用，直接进入希沃课堂授课助手安装目录删除 Office.dll 文件即可进入 PPT 放映时不会启动希沃的 PPT 工具栏。"
-                                        TextWrapping="Wrap" />
+                                    <controls:SettingsControl
+                                        Header="自动查杀希沃“PPT 小工具”"
+                                        Description="# 请注意，查杀 PPT 小工具会导致希沃课堂授课助手无法使用，直接进入希沃课堂授课助手安装目录删除 Office.dll 文件即可进入 PPT 放映时不会启动希沃的 PPT 工具栏。"
+                                        IconSource="/Resources/Icons-png/PPTTools.png"
+                                        IsOn="{Binding Settings.IsAutoKillPptService}" />
                                     <Line
                                         Margin="0,4,0,4"
                                         HorizontalAlignment="Center"

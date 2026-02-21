@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace InkCanvasForClass_Remastered.Controls
 {
@@ -9,6 +10,18 @@ namespace InkCanvasForClass_Remastered.Controls
         {
             InitializeComponent();
         }
+
+
+        public ImageSource IconSource
+        {
+            get { return (ImageSource)GetValue(IconSourceProperty); }
+            set { SetValue(IconSourceProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for IconSource.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty IconSourceProperty =
+            DependencyProperty.Register(nameof(IconSource), typeof(ImageSource), typeof(SettingsControl), new PropertyMetadata(null));
+
 
         public static readonly DependencyProperty HeaderProperty =
             DependencyProperty.Register(nameof(Header), typeof(string), typeof(SettingsControl), new PropertyMetadata(""));
