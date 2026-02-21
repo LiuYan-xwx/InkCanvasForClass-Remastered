@@ -107,6 +107,11 @@ namespace InkCanvasForClass_Remastered
                 case nameof(Settings.WindowMode):
                     SetWindowMode();
                     break;
+                case nameof(Settings.IsEnableEdgeGestureUtil):
+                    if (OSVersion.GetOperatingSystem() >= OSVersionExtension.OperatingSystem.Windows10)
+                        EdgeGestureUtil.DisableEdgeGestures(new WindowInteropHelper(this).Handle, Settings.IsEnableEdgeGestureUtil);
+                    break;
+
             }
         }
 
@@ -3887,35 +3892,6 @@ namespace InkCanvasForClass_Remastered
             TextBlockShowCalculatedMultiplier.Text = (5 / (value * 1.1)).ToString();
         }
 
-        private void ToggleSwitchIsEnableEdgeGestureUtil_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            Settings.IsEnableEdgeGestureUtil = ToggleSwitchIsEnableEdgeGestureUtil.IsOn;
-            if (OSVersion.GetOperatingSystem() >= OSVersionExtension.OperatingSystem.Windows10) EdgeGestureUtil.DisableEdgeGestures(new WindowInteropHelper(this).Handle, ToggleSwitchIsEnableEdgeGestureUtil.IsOn);
-            _settingsService.SaveSettings();
-        }
-
-        private void ToggleSwitchIsEnableForceFullScreen_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            Settings.IsEnableForceFullScreen = ToggleSwitchIsEnableForceFullScreen.IsOn;
-            _settingsService.SaveSettings();
-        }
-
-        private void ToggleSwitchIsEnableDPIChangeDetection_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            Settings.IsEnableDPIChangeDetection = ToggleSwitchIsEnableDPIChangeDetection.IsOn;
-            _settingsService.SaveSettings();
-        }
-
-        private void ToggleSwitchIsEnableResolutionChangeDetection_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            Settings.IsEnableResolutionChangeDetection = ToggleSwitchIsEnableResolutionChangeDetection.IsOn;
-            _settingsService.SaveSettings();
-        }
-
         #endregion
 
         #region RandSettings
@@ -3989,19 +3965,11 @@ namespace InkCanvasForClass_Remastered
             CheckEraserTypeTab();
 
             // Advanced
-            ToggleSwitchIsEnableEdgeGestureUtil.IsOn = Settings.IsEnableEdgeGestureUtil;
             if (Settings.IsEnableEdgeGestureUtil)
             {
                 if (OSVersion.GetOperatingSystem() >= OSVersionExtension.OperatingSystem.Windows10)
                     EdgeGestureUtil.DisableEdgeGestures(new WindowInteropHelper(this).Handle, true);
             }
-
-            ToggleSwitchIsEnableForceFullScreen.IsOn = Settings.IsEnableForceFullScreen;
-
-            ToggleSwitchIsEnableDPIChangeDetection.IsOn = Settings.IsEnableDPIChangeDetection;
-
-            ToggleSwitchIsEnableResolutionChangeDetection.IsOn =
-                Settings.IsEnableResolutionChangeDetection;
 
             // Automation
             StartOrStoptimerCheckAutoFold();

@@ -1103,163 +1103,26 @@
                                         X2="400"
                                         Y1="0"
                                         Y2="0" />
-
-                                    <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                                        <TextBlock
-                                            Margin="0,0,6,0"
-                                            VerticalAlignment="Center"
-                                            Foreground="#fafafa"
-                                            Text="启用EdgeGestureUtil" />
-                                        <Border
-                                            Height="20"
-                                            Margin="0,0,12,0"
-                                            Padding="4,0"
-                                            Background="#7f1d1d"
-                                            CornerRadius="3">
-                                            <ikw:SimpleStackPanel
-                                                VerticalAlignment="Center"
-                                                Orientation="Horizontal"
-                                                Spacing="3">
-                                                <ui:FontIcon Foreground="#fca5a5" Icon="{x:Static ui:FluentSystemIcons.Beaker_16_Regular}" />
-                                                <TextBlock
-                                                    VerticalAlignment="Center"
-                                                    FontSize="12"
-                                                    Foreground="#fca5a5"
-                                                    Text="实验性选项" />
-                                            </ikw:SimpleStackPanel>
-                                        </Border>
-                                        <ui:ToggleSwitch
-                                            Name="ToggleSwitchIsEnableEdgeGestureUtil"
-                                            FontFamily="Microsoft YaHei UI"
-                                            FontWeight="Bold"
-                                            IsOn="True"
-                                            OffContent=""
-                                            OnContent=""
-                                            Toggled="ToggleSwitchIsEnableEdgeGestureUtil_Toggled" />
-                                    </ikw:SimpleStackPanel>
-                                    <TextBlock
-                                        FontSize="12"
-                                        Foreground="#a1a1aa"
-                                        TextWrapping="Wrap">
-                                        <Run Text="# EdgeGestureUtil是icc最新引入的可以暂时阻止在使用触摸时触发边缘手势（如Windows10环境下，屏幕左边缘滑动进入任务视图，右边缘滑动弹出通知中心；Windows11环境下，底部向上滑动打开开始菜单），其原理是使用了" />
-                                        <Run FontFamily="Consolas" Text="System.EdgeGesture.DisableTouchWhenFullscreen" />
-                                        <Run Text="（当应用程序窗口处于活动状态且处于全屏模式 (或拥有的窗口) 处于活动状态时，防止边缘手势行为。）来实现的。如果有异常，请关闭该选项，该选项应该能够实时生效。（Win7和Win8用户该选项无法使用）" />
-                                    </TextBlock>
-                                    <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                                        <TextBlock
-                                            Margin="0,0,6,0"
-                                            VerticalAlignment="Center"
-                                            Foreground="#fafafa"
-                                            Text="启用ForceFullScreen" />
-                                        <Border
-                                            Height="20"
-                                            Margin="0,0,12,0"
-                                            Padding="4,0"
-                                            Background="#7f1d1d"
-                                            CornerRadius="3">
-                                            <ikw:SimpleStackPanel
-                                                VerticalAlignment="Center"
-                                                Orientation="Horizontal"
-                                                Spacing="3">
-                                                <ui:FontIcon Foreground="#fca5a5" Icon="{x:Static ui:FluentSystemIcons.Beaker_16_Regular}" />
-                                                <TextBlock
-                                                    VerticalAlignment="Center"
-                                                    FontSize="12"
-                                                    Foreground="#fca5a5"
-                                                    Text="实验性选项" />
-                                            </ikw:SimpleStackPanel>
-                                        </Border>
-                                        <ui:ToggleSwitch
-                                            Name="ToggleSwitchIsEnableForceFullScreen"
-                                            FontFamily="Microsoft YaHei UI"
-                                            FontWeight="Bold"
-                                            IsOn="True"
-                                            OffContent=""
-                                            OnContent=""
-                                            Toggled="ToggleSwitchIsEnableForceFullScreen_Toggled" />
-                                    </ikw:SimpleStackPanel>
-                                    <TextBlock
-                                        FontSize="12"
-                                        Foreground="#a1a1aa"
-                                        Text="# 当检测到窗口大小变化时，自动使用Win32API将本窗口的大小设置为主显示器大小（设备像素大小），不需要可以关闭，实时生效。"
-                                        TextWrapping="Wrap" />
-                                    <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                                        <TextBlock
-                                            Margin="0,0,6,0"
-                                            VerticalAlignment="Center"
-                                            Foreground="#fafafa"
-                                            Text="启用DPIChangeDetection" />
-                                        <Border
-                                            Height="20"
-                                            Margin="0,0,12,0"
-                                            Padding="4,0"
-                                            Background="#7f1d1d"
-                                            CornerRadius="3">
-                                            <ikw:SimpleStackPanel
-                                                VerticalAlignment="Center"
-                                                Orientation="Horizontal"
-                                                Spacing="3">
-                                                <ui:FontIcon Foreground="#fca5a5" Icon="{x:Static ui:FluentSystemIcons.Beaker_16_Regular}" />
-                                                <TextBlock
-                                                    VerticalAlignment="Center"
-                                                    FontSize="12"
-                                                    Foreground="#fca5a5"
-                                                    Text="实验性选项" />
-                                            </ikw:SimpleStackPanel>
-                                        </Border>
-                                        <ui:ToggleSwitch
-                                            Name="ToggleSwitchIsEnableDPIChangeDetection"
-                                            FontFamily="Microsoft YaHei UI"
-                                            FontWeight="Bold"
-                                            IsOn="True"
-                                            OffContent=""
-                                            OnContent=""
-                                            Toggled="ToggleSwitchIsEnableDPIChangeDetection_Toggled" />
-                                    </ikw:SimpleStackPanel>
-                                    <TextBlock
-                                        FontSize="12"
-                                        Foreground="#a1a1aa"
-                                        Text="# 当检测到系统DPI变化时，会尝试检测FloatingBar是否在屏幕内显示，如果不在屏幕内显示将会尝试移动到屏幕内可见区域（DPI调大会触发，如果DPI调小是不会触发工具栏位置移动的，请您手动调整）。"
-                                        TextWrapping="Wrap" />
-                                    <ikw:SimpleStackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                                        <TextBlock
-                                            Margin="0,0,6,0"
-                                            VerticalAlignment="Center"
-                                            Foreground="#fafafa"
-                                            Text="启用ResolutionChangeDetection" />
-                                        <Border
-                                            Height="20"
-                                            Margin="0,0,12,0"
-                                            Padding="4,0"
-                                            Background="#7f1d1d"
-                                            CornerRadius="3">
-                                            <ikw:SimpleStackPanel
-                                                VerticalAlignment="Center"
-                                                Orientation="Horizontal"
-                                                Spacing="3">
-                                                <ui:FontIcon Foreground="#fca5a5" Icon="{x:Static ui:FluentSystemIcons.Beaker_16_Regular}" />
-                                                <TextBlock
-                                                    VerticalAlignment="Center"
-                                                    FontSize="12"
-                                                    Foreground="#fca5a5"
-                                                    Text="实验性选项" />
-                                            </ikw:SimpleStackPanel>
-                                        </Border>
-                                        <ui:ToggleSwitch
-                                            Name="ToggleSwitchIsEnableResolutionChangeDetection"
-                                            MinWidth="0"
-                                            FontFamily="Microsoft YaHei UI"
-                                            FontWeight="Bold"
-                                            IsOn="True"
-                                            OffContent=""
-                                            OnContent=""
-                                            Toggled="ToggleSwitchIsEnableResolutionChangeDetection_Toggled" />
-                                    </ikw:SimpleStackPanel>
-                                    <TextBlock
-                                        FontSize="12"
-                                        Foreground="#a1a1aa"
-                                        Text="# 当检测到系统分辨率变化时，会尝试检测FloatingBar是否在屏幕内显示，如果不在屏幕内显示将会尝试移动到屏幕内可见区域（分辨率调小可能会触发，如果在屏幕内不会自动调整位置，请手动挡）。"
-                                        TextWrapping="Wrap" />
+                                    <controls:SettingsControl
+                                        Header="启用EdgeGestureUtil"
+                                        Description="# EdgeGestureUtil是icc最新引入的可以暂时阻止在使用触摸时触发边缘手势（如Windows10环境下，屏幕左边缘滑动进入任务视图，右边缘滑动弹出通知中心；Windows11环境下，底部向上滑动打开开始菜单），其原理是使用了 System.EdgeGesture.DisableTouchWhenFullscreen （当应用程序窗口处于活动状态且处于全屏模式 (或拥有的窗口) 处于活动状态时，防止边缘手势行为。）来实现的。如果有异常，请关闭该选项，该选项应该能够实时生效。（Win7和Win8用户该选项无法使用）"
+                                        IsOn="{Binding Settings.IsEnableEdgeGestureUtil}"
+                                        ShowExperimentLabel="True" />
+                                    <controls:SettingsControl
+                                        Header="启用ForceFullScreen"
+                                        Description="# 当检测到窗口大小变化时，自动使用Win32API将本窗口的大小设置为主显示器大小（设备像素大小），不需要可以关闭，实时生效。"
+                                        IsOn="{Binding Settings.IsEnableForceFullScreen}"
+                                        ShowExperimentLabel="True" />
+                                    <controls:SettingsControl
+                                        Header="启用DPIChangeDetection"
+                                        Description="# 当检测到系统DPI变化时，会尝试检测FloatingBar是否在屏幕内显示，如果不在屏幕内显示将会尝试移动到屏幕内可见区域（DPI调大会触发，如果DPI调小是不会触发工具栏位置移动的，请您手动调整）。"
+                                        IsOn="{Binding Settings.IsEnableDPIChangeDetection}"
+                                        ShowExperimentLabel="True" />
+                                    <controls:SettingsControl
+                                        Header="启用ResolutionChangeDetection"
+                                        Description="# 当检测到系统分辨率变化时，会尝试检测FloatingBar是否在屏幕内显示，如果不在屏幕内显示将会尝试移动到屏幕内可见区域（分辨率调小可能会触发，如果在屏幕内不会自动调整位置，请手动挡）。"
+                                        IsOn="{Binding Settings.IsEnableResolutionChangeDetection}"
+                                        ShowExperimentLabel="True" />
                                 </ikw:SimpleStackPanel>
                             </GroupBox>
                             <GroupBox>
