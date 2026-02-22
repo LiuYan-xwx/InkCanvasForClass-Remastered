@@ -2847,6 +2847,7 @@ namespace InkCanvasForClass_Remastered
         private bool isEnteredSlideShowEndEvent = false;
         private int _previousSlideID = 1;
         private Dictionary<int, MemoryStream> _memoryStreams = [];
+        private readonly SemaphoreSlim _pptSlideGate = new(1, 1);
 
         private async void PptApplication_SlideShowBegin(SlideShowWindow Wn)
         {
@@ -3008,39 +3009,47 @@ namespace InkCanvasForClass_Remastered
 
         private async void PptApplication_SlideShowNextSlide(SlideShowWindow Wn)
         {
-            var currentPage = Wn.View.CurrentShowPosition;
-            Logger.LogTrace("幻灯片跳转到第 {currentPage} 页", currentPage);
-
-            if (currentPage == _previousSlideID)
-                return;
-            MemoryStream ms = new();
-            await Application.Current.Dispatcher.InvokeAsync(() =>
-            {
-                if (inkCanvas.Strokes.Count > 0)
-                    inkCanvas.Strokes.Save(ms);
-            });
-
-            if (ms.Length > 0)
-                _memoryStreams[_previousSlideID] = ms;
-            else
-                _memoryStreams.Remove(_previousSlideID);
-
-            ClearStrokes(true);
-            timeMachine.ClearStrokeHistory();
-
+            await _pptSlideGate.WaitAsync();
             try
             {
-                if (_memoryStreams.TryGetValue(currentPage, out MemoryStream? value) && value != null)
+                var currentPage = Wn.View.CurrentShowPosition;
+                Logger.LogTrace("幻灯片跳转到第 {currentPage} 页", currentPage);
+
+                if (currentPage == _previousSlideID)
+                    return;
+                MemoryStream ms = new();
+                await Application.Current.Dispatcher.InvokeAsync(() =>
                 {
-                    value.Position = 0;
-                    await Application.Current.Dispatcher.InvokeAsync(() => inkCanvas.Strokes.Add(new StrokeCollection(value)));
+                    if (inkCanvas.Strokes.Count > 0)
+                        inkCanvas.Strokes.Save(ms);
+                });
+
+                if (ms.Length > 0)
+                    _memoryStreams[_previousSlideID] = ms;
+                else
+                    _memoryStreams.Remove(_previousSlideID);
+
+                ClearStrokes(true);
+                timeMachine.ClearStrokeHistory();
+
+                try
+                {
+                    if (_memoryStreams.TryGetValue(currentPage, out MemoryStream? value) && value != null)
+                    {
+                        value.Position = 0;
+                        await Application.Current.Dispatcher.InvokeAsync(() => inkCanvas.Strokes.Add(new StrokeCollection(value)));
+                    }
                 }
+                catch (Exception ex)
+                {
+                    Logger.LogError(ex, "加载第 {currentPage} 页墨迹失败", currentPage);
+                }
+                _previousSlideID = currentPage;
             }
-            catch (Exception ex)
+            finally
             {
-                Logger.LogError(ex, "加载第 {currentPage} 页墨迹失败", currentPage);
+                _pptSlideGate.Release();
             }
-            _previousSlideID = currentPage;
         }
 
         private void ImagePPTControlEnd_MouseUp(object sender, MouseButtonEventArgs e)
