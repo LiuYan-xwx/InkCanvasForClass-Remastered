@@ -72,7 +72,7 @@ namespace InkCanvasForClass_Remastered.Interfaces
         void GoToNextSlide();
 
         /// <summary>
-        /// 当前幻灯片的页码，没有幻灯片时为 -1。
+        /// 当前幻灯片的页码。
         /// </summary>
         int CurrentSlidePosition { get; }
 

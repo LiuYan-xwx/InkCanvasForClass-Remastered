@@ -11,9 +11,7 @@ using Microsoft.Win32;
 using OSVersionExtension;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -169,20 +167,20 @@ namespace InkCanvasForClass_Remastered
         #region Ink Canvas Functions
         //private void InkCanvas_Gesture(object sender, InkCanvasGestureEventArgs e)
         //{
-            //var gestures = e.GetGestureRecognitionResults();
-            //try
-            //{
-            //    foreach (var gest in gestures)
-            //        //Trace.WriteLine(string.Format("Gesture: {0}, Confidence: {1}", gest.ApplicationGesture, gest.RecognitionConfidence));
-            //        if (StackPanelPPTControls.Visibility == Visibility.Visible)
-            //        {
-            //            if (gest.ApplicationGesture == ApplicationGesture.Left)
-            //                BtnPPTSlidesDown_Click(BtnPPTSlidesDown, null);
-            //            if (gest.ApplicationGesture == ApplicationGesture.Right)
-            //                BtnPPTSlidesUp_Click(BtnPPTSlidesUp, null);
-            //        }
-            //}
-            //catch { }
+        //var gestures = e.GetGestureRecognitionResults();
+        //try
+        //{
+        //    foreach (var gest in gestures)
+        //        //Trace.WriteLine(string.Format("Gesture: {0}, Confidence: {1}", gest.ApplicationGesture, gest.RecognitionConfidence));
+        //        if (StackPanelPPTControls.Visibility == Visibility.Visible)
+        //        {
+        //            if (gest.ApplicationGesture == ApplicationGesture.Left)
+        //                BtnPPTSlidesDown_Click(BtnPPTSlidesDown, null);
+        //            if (gest.ApplicationGesture == ApplicationGesture.Right)
+        //                BtnPPTSlidesUp_Click(BtnPPTSlidesUp, null);
+        //        }
+        //}
+        //catch { }
         //}
 
         private void inkCanvas_EditingModeChanged(object? sender, RoutedEventArgs? e)
@@ -2846,7 +2844,6 @@ namespace InkCanvasForClass_Remastered
         #endregion
 
         #region PPT
-        private string? _pptName = null;
         private bool isEnteredSlideShowEndEvent = false;
         private int _previousSlideID = 1;
         private Dictionary<int, MemoryStream> _memoryStreams = [];
@@ -2895,23 +2892,23 @@ namespace InkCanvasForClass_Remastered
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogWarning(ex, $"加载第 {i} 页墨迹失败");
+                        Logger.LogError(ex, "加载第 {i} 页墨迹失败", i);
                     }
                 }
                 // 加载当前页墨迹到 InkCanvas
-                if (_memoryStreams.ContainsKey(_powerPointService.CurrentSlidePosition) && _memoryStreams[_powerPointService.CurrentSlidePosition] != null)
+                if (_memoryStreams.TryGetValue(_powerPointService.CurrentSlidePosition, out MemoryStream? value) && value != null)
                 {
                     try
                     {
-                        _memoryStreams[_powerPointService.CurrentSlidePosition].Position = 0;
-                        await Application.Current.Dispatcher.InvokeAsync(() => inkCanvas.Strokes.Add(new StrokeCollection(_memoryStreams[_powerPointService.CurrentSlidePosition])));
+                        value.Position = 0;
+                        await Application.Current.Dispatcher.InvokeAsync(() => inkCanvas.Strokes.Add(new StrokeCollection(value)));
                     }
                     catch (Exception ex)
                     {
                         Logger.LogWarning(ex, $"加载墨迹到 InkCanvas 失败");
                     }
                 }
-                Logger.LogInformation($"加载完成，共 {count} 页");
+                Logger.LogInformation("加载完成，共 {count} 页", count);
             }
 
             await Application.Current.Dispatcher.InvokeAsync(() =>
@@ -2935,6 +2932,7 @@ namespace InkCanvasForClass_Remastered
                     ViewboxFloatingBarMarginAnimation(60);
                 }
             });
+            _previousSlideID = _powerPointService.CurrentSlidePosition;
         }
 
         private async void PptApplication_SlideShowEnd(Presentation Pres)
@@ -2968,8 +2966,9 @@ namespace InkCanvasForClass_Remastered
                     {
                         try
                         {
+                            value.Position = 0;
                             byte[] allBytes = value.ToArray();
-                            if (value.Length > 8)
+                            if (value.Length > 0)
                             {
                                 File.WriteAllBytes(folderPath + @"\" + i.ToString("0000") + ".icstk", allBytes);
                                 //Logger.LogTrace(
@@ -2982,7 +2981,7 @@ namespace InkCanvasForClass_Remastered
                         }
                         catch (Exception ex)
                         {
-                            Logger.LogWarning(ex, $"为第 {i} 页保存墨迹失败");
+                            Logger.LogError(ex, "为第 {i} 页保存墨迹失败", i);
                             File.Delete(folderPath + @"\" + i.ToString("0000") + ".icstk");
                         }
                     }
@@ -3007,37 +3006,40 @@ namespace InkCanvasForClass_Remastered
             });
         }
 
-        private void PptApplication_SlideShowNextSlide(SlideShowWindow Wn)
+        private async void PptApplication_SlideShowNextSlide(SlideShowWindow Wn)
         {
-            var currentPage = _powerPointService.CurrentSlidePosition;
-            Logger.LogTrace($"幻灯片跳转到第 {currentPage} 页");
+            var currentPage = Wn.View.CurrentShowPosition;
+            Logger.LogTrace("幻灯片跳转到第 {currentPage} 页", currentPage);
 
             if (currentPage == _previousSlideID)
                 return;
-
-            Application.Current.Dispatcher.Invoke(() =>
+            MemoryStream ms = new();
+            await Application.Current.Dispatcher.InvokeAsync(() =>
             {
-                var ms = new MemoryStream();
-                inkCanvas.Strokes.Save(ms);
-                ms.Position = 0;
-                _memoryStreams[_previousSlideID] = ms;
-
-                ClearStrokes(true);
-                timeMachine.ClearStrokeHistory();
-
-                try
-                {
-                    if (_memoryStreams.ContainsKey(currentPage) && _memoryStreams[currentPage] != null)
-                    {
-                        _memoryStreams[currentPage].Position = 0;
-                        inkCanvas.Strokes.Add(new StrokeCollection(_memoryStreams[currentPage]));
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogWarning(ex, $"加载第 {currentPage} 页墨迹失败");
-                }
+                if (inkCanvas.Strokes.Count > 0)
+                    inkCanvas.Strokes.Save(ms);
             });
+
+            if (ms.Length > 0)
+                _memoryStreams[_previousSlideID] = ms;
+            else
+                _memoryStreams.Remove(_previousSlideID);
+
+            ClearStrokes(true);
+            timeMachine.ClearStrokeHistory();
+
+            try
+            {
+                if (_memoryStreams.TryGetValue(currentPage, out MemoryStream? value) && value != null)
+                {
+                    value.Position = 0;
+                    await Application.Current.Dispatcher.InvokeAsync(() => inkCanvas.Strokes.Add(new StrokeCollection(value)));
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "加载第 {currentPage} 页墨迹失败", currentPage);
+            }
             _previousSlideID = currentPage;
         }
 

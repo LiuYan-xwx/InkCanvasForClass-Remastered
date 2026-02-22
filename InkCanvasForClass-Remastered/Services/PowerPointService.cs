@@ -38,20 +38,8 @@ namespace InkCanvasForClass_Remastered.Services
         [ObservableProperty]
         private bool _isInSlideShow = false;
 
-        public int CurrentSlidePosition
-        {
-            get
-            {
-                try
-                {
-                    return ActiveSlideShowWindow?.View?.CurrentShowPosition ?? -1;
-                }
-                catch
-                {
-                    return -1;
-                }
-            }
-        }
+        [ObservableProperty]
+        private int _currentSlidePosition = -1;
 
         public int CurrentPresentationSlideCount
         {
@@ -185,7 +173,8 @@ namespace InkCanvasForClass_Remastered.Services
                 return;
             try
             {
-                App.Current.Dispatcher.Invoke(() => ActiveSlideShowWindow?.View?.Previous());
+                System.Windows.Application.Current.Dispatcher.Invoke(() => ActiveSlideShowWindow?.View?.Previous());
+                CurrentSlidePosition = ActiveSlideShowWindow?.View?.CurrentShowPosition ?? -1;
             }
             catch (Exception ex)
             {
@@ -199,7 +188,8 @@ namespace InkCanvasForClass_Remastered.Services
                 return;
             try
             {
-                App.Current.Dispatcher.Invoke(() => ActiveSlideShowWindow?.View?.Next());
+                System.Windows.Application.Current.Dispatcher.Invoke(() => ActiveSlideShowWindow?.View?.Next());
+                CurrentSlidePosition = ActiveSlideShowWindow?.View?.CurrentShowPosition ?? -1;
             }
             catch (Exception ex)
             {
@@ -223,7 +213,7 @@ namespace InkCanvasForClass_Remastered.Services
 
         private void OnAutoConnectTimer_Tick(object? sender, EventArgs e)
         {
-            if(IsConnected)
+            if (IsConnected)
             {
                 _autoConnectTimer.Stop();
                 return;
@@ -243,18 +233,17 @@ namespace InkCanvasForClass_Remastered.Services
             PresentationClose?.Invoke(Pres);
             _autoConnectTimer.Start();
         }
-        
+
         private void OnSlideShowBegin(SlideShowWindow Wn)
         {
-            OnPropertyChanged(nameof(CurrentSlidePosition));
+            CurrentSlidePosition = ActiveSlideShowWindow?.View?.CurrentShowPosition ?? -1;
             OnPropertyChanged(nameof(CurrentPresentationSlideCount));
             IsInSlideShow = true;
             SlideShowBegin?.Invoke(Wn);
         }
-        
+
         private void OnSlideShowEnd(Presentation Pres)
         {
-            OnPropertyChanged(nameof(CurrentSlidePosition));
             OnPropertyChanged(nameof(CurrentPresentationSlideCount));
             IsInSlideShow = false;
             SlideShowEnd?.Invoke(Pres);
@@ -262,9 +251,9 @@ namespace InkCanvasForClass_Remastered.Services
 
         private void OnSlideShowNextSlide(SlideShowWindow Wn)
         {
-            OnPropertyChanged(nameof(CurrentSlidePosition));
+            CurrentSlidePosition = ActiveSlideShowWindow?.View?.CurrentShowPosition ?? -1;
             OnPropertyChanged(nameof(CurrentPresentationSlideCount));
             SlideShowNextSlide?.Invoke(Wn);
-        } 
+        }
     }
 }
