@@ -82,6 +82,16 @@ namespace InkCanvasForClass_Remastered
             CheckColorTheme(true);
             CheckPenTypeUIState();
         }
+        private readonly DispatcherTimer topmostRefreshTimer = new()
+        {
+            Interval = TimeSpan.FromMilliseconds(400)
+        };
+
+        private void TopmostRefreshTimer_Tick(object? sender, EventArgs e)
+        {
+            Topmost = false;
+            Topmost = true;
+        }
 
         private void Settings_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
@@ -237,6 +247,11 @@ namespace InkCanvasForClass_Remastered
             {
                 _ = HideFloatingBar();
             }
+            if (Settings.RefreshMainWindowTopmost)
+            {
+                topmostRefreshTimer.Tick += TopmostRefreshTimer_Tick;
+                topmostRefreshTimer.Start();
+        }
         }
 
         private void SetWindowMode()

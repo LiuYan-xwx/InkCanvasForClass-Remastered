@@ -1065,6 +1065,11 @@
                                             </StackPanel>
                                         </controls:SettingsControl.Switcher>
                                     </controls:SettingsControl>
+
+                                    <controls:SettingsControl
+                                        Header="刷新窗口置顶状态"
+                                        IsOn="{Binding Settings.RefreshMainWindowTopmost}"
+                                        Description="每400ms刷新主窗口的置顶状态，需要重启生效"/>
                                     <Line
                                         Margin="0,4,0,4"
                                         HorizontalAlignment="Center"
