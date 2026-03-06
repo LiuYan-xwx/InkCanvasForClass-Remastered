@@ -80,7 +80,7 @@ namespace InkCanvasForClass_Remastered
             inkCanvas.Strokes.StrokesChanged += StrokesOnStrokesChanged;
 
             CheckColorTheme(true);
-            CheckPenTypeUIState();
+            CheckPenTypeUIState();            
         }
         private readonly DispatcherTimer topmostRefreshTimer = new()
         {
@@ -251,7 +251,7 @@ namespace InkCanvasForClass_Remastered
             {
                 topmostRefreshTimer.Tick += TopmostRefreshTimer_Tick;
                 topmostRefreshTimer.Start();
-        }
+            }
         }
 
         private void SetWindowMode()
@@ -2041,12 +2041,14 @@ namespace InkCanvasForClass_Remastered
             AnimationsHelper.HideWithSlideAndFade(BorderTools);
             AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
 
-            var openFileDialog = new OpenFileDialog();
-            openFileDialog.InitialDirectory = CommonDirectories.AppSavesRootFolderPath;
-            openFileDialog.Title = "打开墨迹文件";
-            openFileDialog.Filter = "Ink Canvas Strokes File (*.icstk)|*.icstk";
+            var openFileDialog = new OpenFileDialog
+            {
+                InitialDirectory = Path.GetFullPath(CommonDirectories.AppSavesRootFolderPath),
+                Title = "打开墨迹文件",
+                Filter = "Ink Canvas Strokes File (*.icstk)|*.icstk"
+            };
             if (openFileDialog.ShowDialog() != true) return;
-            Logger.LogInformation($"用户选择打开墨迹文件 {openFileDialog.FileName}");
+            Logger.LogInformation("用户选择打开墨迹文件 {FileName}", openFileDialog.FileName);
             try
             {
                 var fileStreamHasNoStroke = false;
@@ -2059,7 +2061,7 @@ namespace InkCanvasForClass_Remastered
                         ClearStrokes(true);
                         timeMachine.ClearStrokeHistory();
                         inkCanvas.Strokes.Add(strokes);
-                        Logger.LogInformation($"墨迹文件打开成功，墨迹数 {strokes.Count}");
+                        Logger.LogInformation("墨迹文件打开成功，墨迹数 {Count}", strokes.Count);
                     }
                 }
 
@@ -2071,7 +2073,7 @@ namespace InkCanvasForClass_Remastered
                         ClearStrokes(true);
                         timeMachine.ClearStrokeHistory();
                         inkCanvas.Strokes.Add(strokes);
-                        Logger.LogInformation($"墨迹文件打开成功，墨迹数 {strokes.Count}");
+                        Logger.LogInformation("墨迹文件打开成功，墨迹数 {Count}", strokes.Count);
                     }
             }
             catch
