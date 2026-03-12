@@ -3757,7 +3757,7 @@ namespace InkCanvasForClass_Remastered
 
         private void SetAutoSavedStrokesLocationToAppFolderButton_Click(object sender, RoutedEventArgs e)
         {
-            Settings.AutoSaveStrokesPath = Path.Combine(CommonDirectories.AppRootFolderPath, "Saves");
+            Settings.AutoSaveStrokesPath = Path.GetFullPath(Path.Combine(CommonDirectories.AppRootFolderPath, "Saves"));
             CommonDirectories.AppSavesRootFolderPath = Settings.AutoSaveStrokesPath;
         }
 

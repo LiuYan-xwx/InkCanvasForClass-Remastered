@@ -106,7 +106,15 @@ namespace InkCanvasForClass_Remastered
             GetService<SettingsService>().LoadSettings();
             Settings = GetService<SettingsService>().Settings;
 
-            CommonDirectories.AppSavesRootFolderPath = string.IsNullOrEmpty(Settings.AutoSaveStrokesPath) ? Path.Combine(CommonDirectories.AppRootFolderPath, "Saves") : Settings.AutoSaveStrokesPath;
+            if (string.IsNullOrEmpty(Settings.AutoSaveStrokesPath))
+            {
+                CommonDirectories.AppSavesRootFolderPath = Path.GetFullPath(Path.Combine(CommonDirectories.AppRootFolderPath, "Saves"));
+                Settings.AutoSaveStrokesPath = CommonDirectories.AppSavesRootFolderPath;
+            }
+            else
+            {
+                CommonDirectories.AppSavesRootFolderPath = Settings.AutoSaveStrokesPath;
+            }
             FileFolderService.CreateSaveFolders();
 
             _notificationService = GetService<INotificationService>();
