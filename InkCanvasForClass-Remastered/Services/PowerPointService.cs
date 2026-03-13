@@ -174,7 +174,6 @@ namespace InkCanvasForClass_Remastered.Services
             try
             {
                 System.Windows.Application.Current.Dispatcher.Invoke(() => ActiveSlideShowWindow?.View?.Previous());
-                CurrentSlidePosition = ActiveSlideShowWindow?.View?.CurrentShowPosition ?? -1;
             }
             catch (Exception ex)
             {
@@ -189,7 +188,6 @@ namespace InkCanvasForClass_Remastered.Services
             try
             {
                 System.Windows.Application.Current.Dispatcher.Invoke(() => ActiveSlideShowWindow?.View?.Next());
-                CurrentSlidePosition = ActiveSlideShowWindow?.View?.CurrentShowPosition ?? -1;
             }
             catch (Exception ex)
             {
