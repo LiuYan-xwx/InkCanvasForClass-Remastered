@@ -4,7 +4,7 @@
 
 # InkCanvasForClass-Remastered
 
-[![.NET 8](https://img.shields.io/badge/.NET-8.0-blue?logo=dotnet)](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+[![.NET 8](https://img.shields.io/badge/.NET-10.0-blue?logo=dotnet)](https://dotnet.microsoft.com/en-us/download/dotnet/10.0)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-red.svg)](./LICENSE.txt)
 [![Build](https://img.shields.io/github/actions/workflow/status/LiuYan-xwx/InkCanvasForClass-Remastered/build.yml?logo=github&label=Build)](https://github.com/LiuYan-xwx/InkCanvasForClass-Remastered/actions)
 
@@ -156,7 +156,7 @@ ICC 可以支持 WPS，但目前無法同時支持 MSOffice 和 WPS。若要啟�
 </details>
 
 ## 使用
-1. 安装 [.NET 8 桌面运行时](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)  
+1. 安装 [.NET 10 桌面运行时](https://dotnet.microsoft.com/en-us/download/dotnet/10.0)  
 2. 打开 `InkCanvasForClass-Remastered.exe`
 
 ## 下载？
