@@ -80,7 +80,7 @@ namespace InkCanvasForClass_Remastered
             inkCanvas.Strokes.StrokesChanged += StrokesOnStrokesChanged;
 
             CheckColorTheme(true);
-            CheckPenTypeUIState();            
+            CheckPenTypeUIState();
         }
         private readonly DispatcherTimer topmostRefreshTimer = new()
         {

@@ -119,13 +119,14 @@ namespace InkCanvasForClass_Remastered
 
             _notificationService = GetService<INotificationService>();
             await IAppHost.Host.StartAsync();
-
+            Logger.LogInformation("启动 MainWindow");
             var mainWindow = GetService<MainWindow>();
             MainWindow = mainWindow;
             mainWindow.Show();
 
             if (Settings.EnableTrayIcon)
             {
+                Logger.LogInformation("启用系统托盘图标");
                 var taskbarIcon = (TaskbarIcon)FindResource("TaskbarTrayIcon");
                 taskbarIcon.DataContext = GetService<TrayIconMenuViewModel>();
             }
@@ -134,6 +135,7 @@ namespace InkCanvasForClass_Remastered
             await GetService<FileFolderService>().ProcessOldFilesAsync();
 
             base.OnStartup(e);
+            Logger.LogInformation("启动完成");
         }
 
         private void ConfigureServices(IServiceCollection services)
