@@ -36,39 +36,47 @@ namespace InkCanvasForClass_Remastered.ViewModels
         public IPowerPointService PowerPointService => _powerPointService;
 
         [ObservableProperty]
-        private AppMode _appMode = AppMode.Normal;
+        public partial AppMode AppMode { get; set; } = AppMode.Normal;
+
         [ObservableProperty]
-        private InkCanvasEditingMode _appPenMode = InkCanvasEditingMode.None;
+        public partial InkCanvasEditingMode AppPenMode { get; set; } = InkCanvasEditingMode.None;
+
         [ObservableProperty]
-        private DrawingAttributes _inkCanvasDrawingAttributes;
+        public partial DrawingAttributes InkCanvasDrawingAttributes { get; set; }
+
         [ObservableProperty]
-        private bool _forceCursor = false;
+        public partial bool ForceCursor { get; set; } = false;
+
         [ObservableProperty]
-        private string _nowTime = string.Empty;
+        public partial string NowTime { get; set; } = string.Empty;
+
         [ObservableProperty]
-        private string _nowDate = string.Empty;
+        public partial string NowDate { get; set; } = string.Empty;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsWhiteboardPreviousPageButtonEnabled))]
-        private int _whiteboardCurrentPage = 1;
+        public partial int WhiteboardCurrentPage { get; set; } = 1;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsWhiteboardPreviousPageButtonEnabled))]
-        private int _whiteboardTotalPageCount = 1;
+        public partial int WhiteboardTotalPageCount { get; set; } = 1;
 
         public bool IsWhiteboardPreviousPageButtonEnabled => WhiteboardCurrentPage > 1;
 
         [ObservableProperty]
-        private bool _isFloatingBarVisible = true;
-        [ObservableProperty]
-        private bool _canUndo = false;
-        [ObservableProperty]
-        private bool _canRedo = false;
-        [ObservableProperty]
-        private bool _isSettingsPanelVisible = false;
+        public partial bool IsFloatingBarVisible { get; set; } = true;
 
         [ObservableProperty]
-        private bool _forceShowPPTNavigationPanel = false;
+        public partial bool CanUndo { get; set; } = false;
+
+        [ObservableProperty]
+        public partial bool CanRedo { get; set; } = false;
+
+        [ObservableProperty]
+        public partial bool IsSettingsPanelVisible { get; set; } = false;
+
+        [ObservableProperty]
+        public partial bool ForceShowPPTNavigationPanel { get; set; } = false;
 
         private void OnSettingsPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {

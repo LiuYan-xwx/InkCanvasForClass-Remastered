@@ -11,40 +11,57 @@ namespace InkCanvasForClass_Remastered.Models
     {
         // Canvas
         [ObservableProperty]
-        private double _inkWidth = 2.5;
+        public partial double InkWidth { get; set; } = 2.5;
+
         [ObservableProperty]
-        private double _highlighterWidth = 20;
+        public partial double HighlighterWidth { get; set; } = 20;
+
         [ObservableProperty]
-        private double _inkAlpha = 255;
+        public partial double InkAlpha { get; set; } = 255;
+
         [ObservableProperty]
-        private bool _isShowCursor = true;
+        public partial bool IsShowCursor { get; set; } = true;
+
         [ObservableProperty]
-        private int _inkStyle = 0;
+        public partial int InkStyle { get; set; } = 0;
+
         [ObservableProperty]
-        private int _eraserSize = 1;
+        public partial int EraserSize { get; set; } = 1;
+
         [ObservableProperty]
-        private int _eraserShapeType = 1; // 0 - 圆形擦  1 - 黑板擦
+        public partial int EraserShapeType { get; set; } = 1; // 0 - 圆形擦  1 - 黑板擦
+
         [ObservableProperty]
-        private bool _hideStrokeWhenSelecting = false;
+        public partial bool HideStrokeWhenSelecting { get; set; } = false;
+
         [ObservableProperty]
-        private bool _fitToCurve = true;
+        public partial bool FitToCurve { get; set; } = true;
+
         [ObservableProperty]
-        private bool _clearCanvasAndClearTimeMachine = false;
+        public partial bool ClearCanvasAndClearTimeMachine { get; set; } = false;
+
         [ObservableProperty]
-        private bool _usingWhiteboard = false;
+        public partial bool UsingWhiteboard { get; set; } = false;
+
         // Gesture
         [ObservableProperty]
-        private bool _isEnableMultiTouchMode = true;
+        public partial bool IsEnableMultiTouchMode { get; set; } = true;
+
         [ObservableProperty]
-        private bool _isEnableTwoFingerZoom = false;
+        public partial bool IsEnableTwoFingerZoom { get; set; } = false;
+
         [ObservableProperty]
-        private bool _isEnableTwoFingerTranslate = true;
+        public partial bool IsEnableTwoFingerTranslate { get; set; } = true;
+
         [ObservableProperty]
-        private bool _autoSwitchTwoFingerGesture = false;
+        public partial bool AutoSwitchTwoFingerGesture { get; set; } = false;
+
         [ObservableProperty]
-        private bool _isEnableTwoFingerRotation = false;
+        public partial bool IsEnableTwoFingerRotation { get; set; } = false;
+
         [ObservableProperty]
-        private bool _isEnableTwoFingerRotationOnSelection = false;
+        public partial bool IsEnableTwoFingerRotationOnSelection { get; set; } = false;
+
         // Startup
         [JsonIgnore]
         public bool IsAutoStartEnabled
@@ -77,151 +94,203 @@ namespace InkCanvasForClass_Remastered.Models
             }
         }
         [ObservableProperty]
-        private bool _isEnableNibMode = false;
+        public partial bool IsEnableNibMode { get; set; } = false;
+
         [ObservableProperty]
-        private bool _isHideFloatingBarOnStart = false;
+        public partial bool IsHideFloatingBarOnStart { get; set; } = false;
+
         // Appearance
         [ObservableProperty]
-        private bool _isEnableDisPlayNibModeToggler = false;
+        public partial bool IsEnableDisPlayNibModeToggler { get; set; } = false;
+
         [ObservableProperty]
-        private double _viewboxFloatingBarScaleTransformValue = 1;
+        public partial double ViewboxFloatingBarScaleTransformValue { get; set; } = 1;
+
         [ObservableProperty]
-        private int _floatingBarImg = 0;
+        public partial int FloatingBarImg { get; set; } = 0;
+
         [ObservableProperty]
-        private double _viewboxFloatingBarOpacityValue = 1;
+        public partial double ViewboxFloatingBarOpacityValue { get; set; } = 1;
+
         [ObservableProperty]
-        private bool _enableTrayIcon = true;
+        public partial bool EnableTrayIcon { get; set; } = true;
+
         [ObservableProperty]
-        private double _viewboxFloatingBarOpacityInPPTValue = 1;
+        public partial double ViewboxFloatingBarOpacityInPPTValue { get; set; } = 1;
+
         [ObservableProperty]
-        private bool _enableViewboxBlackBoardScaleTransform = false;
+        public partial bool EnableViewboxBlackBoardScaleTransform { get; set; } = false;
+
         [ObservableProperty]
-        private bool _enableTimeDisplayInWhiteboardMode = true;
+        public partial bool EnableTimeDisplayInWhiteboardMode { get; set; } = true;
+
         [ObservableProperty]
-        private int _unFoldButtonImageType = 0;
+        public partial int UnFoldButtonImageType { get; set; } = 0;
+
         [ObservableProperty]
-        private int _theme = 0;
+        public partial int Theme { get; set; } = 0;
+
         // PowerPointSettings
         [ObservableProperty]
-        private bool _showPPTButton = true;
+        public partial bool ShowPPTButton { get; set; } = true;
+
         // 每一个数位代表一个选项，2就是开启，1就是关闭
         [ObservableProperty]
-        private int _pPTButtonsDisplayOption = 2222;
+        public partial int PPTButtonsDisplayOption { get; set; } = 2222;
+
         [ObservableProperty]
-        private bool _isLeftSidePPTButtonVisible = true;
+        public partial bool IsLeftSidePPTButtonVisible { get; set; } = true;
+
         [ObservableProperty]
-        private bool _isRightSidePPTButtonVisible = true;
+        public partial bool IsRightSidePPTButtonVisible { get; set; } = true;
+
         // 0居中，+就是往上，-就是往下
         [ObservableProperty]
-        private int _pPTLSButtonPosition = 0;
+        public partial int PPTLSButtonPosition { get; set; } = 0;
+
         // 0居中，+就是往上，-就是往下
         [ObservableProperty]
-        private int _pPTRSButtonPosition = 0;
+        public partial int PPTRSButtonPosition { get; set; } = 0;
+
         [ObservableProperty]
-        private bool _isShowPPTPageNumbers = true;
+        public partial bool IsShowPPTPageNumbers { get; set; } = true;
+
         [ObservableProperty]
-        private bool _isPPTButtonTranslucent = true;
+        public partial bool IsPPTButtonTranslucent { get; set; } = true;
+
         [ObservableProperty]
-        private bool _isPPTButtonBlackBackground = false;
+        public partial bool IsPPTButtonBlackBackground { get; set; } = false;
+
         [ObservableProperty]
-        private int _pPTSButtonsOption = 221;
+        public partial int PPTSButtonsOption { get; set; } = 221;
+
         [ObservableProperty]
-        private bool _enablePPTButtonPageClickable = true;
+        public partial bool EnablePPTButtonPageClickable { get; set; } = true;
+
         [ObservableProperty]
-        private bool _powerPointSupport = true;
+        public partial bool PowerPointSupport { get; set; } = true;
+
         [ObservableProperty]
-        private bool _isShowCanvasAtNewSlideShow = true;
+        public partial bool IsShowCanvasAtNewSlideShow { get; set; } = true;
+
         [ObservableProperty]
-        private bool _isAutoSaveStrokesInPowerPoint = true;
+        public partial bool IsAutoSaveStrokesInPowerPoint { get; set; } = true;
+
         [ObservableProperty]
-        private bool _isAutoSaveScreenShotInPowerPoint = true;
+        public partial bool IsAutoSaveScreenShotInPowerPoint { get; set; } = true;
+
         [ObservableProperty]
-        private bool _isEnableTwoFingerGestureInPresentationMode = false;
+        public partial bool IsEnableTwoFingerGestureInPresentationMode { get; set; } = false;
+
         [ObservableProperty]
-        private bool _isEnableFingerGestureSlideShowControl = false;
+        public partial bool IsEnableFingerGestureSlideShowControl { get; set; } = false;
         [ObservableProperty]
-        private int _pPTNavigationPanelWidth = 60;
+        public partial int PPTNavigationPanelWidth { get; set; } = 60;
+
         // Automation
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsEnableAutoFold))]
-        private bool _isAutoFoldInEasiNote = true;
+        public partial bool IsAutoFoldInEasiNote { get; set; } = true;
 
         [ObservableProperty]
-        private bool _isAutoFoldInEasiNoteIgnoreDesktopAnno = false;
-
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(IsEnableAutoFold))]
-        private bool _isAutoFoldInEasiCamera = true;
+        public partial bool IsAutoFoldInEasiNoteIgnoreDesktopAnno { get; set; } = false;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsEnableAutoFold))]
-        private bool _isAutoFoldInEasiNote3 = false;
+        public partial bool IsAutoFoldInEasiCamera { get; set; } = true;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsEnableAutoFold))]
-        private bool _isAutoFoldInEasiNote3C = false;
+        public partial bool IsAutoFoldInEasiNote3 { get; set; } = false;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsEnableAutoFold))]
-        private bool _isAutoFoldInEasiNote5C = false;
+        public partial bool IsAutoFoldInEasiNote3C { get; set; } = false;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsEnableAutoFold))]
-        private bool _isAutoFoldInPPTSlideShow = false;
+        public partial bool IsAutoFoldInEasiNote5C { get; set; } = false;
 
         [ObservableProperty]
-        private bool _isAutoKillPptService = false;
+        [NotifyPropertyChangedFor(nameof(IsEnableAutoFold))]
+        public partial bool IsAutoFoldInPPTSlideShow { get; set; } = false;
+
         [ObservableProperty]
-        private bool _isAutoSaveStrokesAtScreenshot = true;
+        public partial bool IsAutoKillPptService { get; set; } = false;
+
         [ObservableProperty]
-        private bool _isAutoSaveStrokesAtClear = true;
+        public partial bool IsAutoSaveStrokesAtScreenshot { get; set; } = true;
+
         [ObservableProperty]
-        private double _minimumAutomationStrokeNumber = 0.3;
+        public partial bool IsAutoSaveStrokesAtClear { get; set; } = true;
+
         [ObservableProperty]
-        private string _autoSaveStrokesPath = string.Empty;
+        public partial double MinimumAutomationStrokeNumber { get; set; } = 0.3;
+
         [ObservableProperty]
-        private bool _autoDelSavedFiles = true;
+        public partial string AutoSaveStrokesPath { get; set; } = string.Empty;
+
         [ObservableProperty]
-        private int _autoDelSavedFilesDays = 15;
+        public partial bool AutoDelSavedFiles { get; set; } = true;
+
+        [ObservableProperty]
+        public partial int AutoDelSavedFilesDays { get; set; } = 15;
+
         // Advanced
         [ObservableProperty]
-        private bool _isSpecialScreen = true;
-        [ObservableProperty]
-        private bool _isQuadIR = false;
-        [ObservableProperty]
-        private double _touchMultiplier = 0.3;
-        [ObservableProperty]
-        private int _nibModeBoundsWidth = 5;
-        [ObservableProperty]
-        private int _fingerModeBoundsWidth = 20;
-        [ObservableProperty]
-        private bool _eraserBindTouchMultiplier = true;
-        [ObservableProperty]
-        private bool _isEnableEdgeGestureUtil = false;
-        [ObservableProperty]
-        private bool _isEnableForceFullScreen = false;
-        [ObservableProperty]
-        private bool _isEnableResolutionChangeDetection = false;
-        [ObservableProperty]
-        private bool _isEnableDPIChangeDetection = false;
-        [ObservableProperty]
-        private bool _isSecondConfirmWhenShutdownApp = false;
-        [ObservableProperty]
-        private bool _isCriticalSafeMode = false;
-        [ObservableProperty]
-        private int _criticalSafeModeMethod = 0;
-        [ObservableProperty]
-        private int _windowMode = 0;
-        [ObservableProperty]
-        private bool _refreshMainWindowTopmost;
-        // RandSettings
-        [ObservableProperty]
-        private bool _displayRandWindowNamesInputBtn = true;
-        [ObservableProperty]
-        private double _randWindowOnceCloseLatency = 2.5;
+        public partial bool IsSpecialScreen { get; set; } = true;
 
         [ObservableProperty]
-        private bool _isWindowNoActivate = false;
+        public partial bool IsQuadIR { get; set; } = false;
+
+        [ObservableProperty]
+        public partial double TouchMultiplier { get; set; } = 0.3;
+
+        [ObservableProperty]
+        public partial int NibModeBoundsWidth { get; set; } = 5;
+
+        [ObservableProperty]
+        public partial int FingerModeBoundsWidth { get; set; } = 20;
+
+        [ObservableProperty]
+        public partial bool EraserBindTouchMultiplier { get; set; } = true;
+
+        [ObservableProperty]
+        public partial bool IsEnableEdgeGestureUtil { get; set; } = false;
+
+        [ObservableProperty]
+        public partial bool IsEnableForceFullScreen { get; set; } = false;
+
+        [ObservableProperty]
+        public partial bool IsEnableResolutionChangeDetection { get; set; } = false;
+
+        [ObservableProperty]
+        public partial bool IsEnableDPIChangeDetection { get; set; } = false;
+
+        [ObservableProperty]
+        public partial bool IsSecondConfirmWhenShutdownApp { get; set; } = false;
+
+        [ObservableProperty]
+        public partial bool IsCriticalSafeMode { get; set; } = false;
+
+        [ObservableProperty]
+        public partial int CriticalSafeModeMethod { get; set; } = 0;
+
+        [ObservableProperty]
+        public partial int WindowMode { get; set; } = 0;
+
+        [ObservableProperty]
+        public partial bool RefreshMainWindowTopmost { get; set; }
+
+        // RandSettings
+        [ObservableProperty]
+        public partial bool DisplayRandWindowNamesInputBtn { get; set; } = true;
+
+        [ObservableProperty]
+        public partial double RandWindowOnceCloseLatency { get; set; } = 2.5;
+
+        [ObservableProperty]
+        public partial bool IsWindowNoActivate { get; set; } = false;
 
         [JsonIgnore]
         public bool IsEnableAutoFold =>

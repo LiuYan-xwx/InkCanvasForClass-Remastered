@@ -36,10 +36,10 @@ namespace InkCanvasForClass_Remastered.Services
         public bool IsConnected => _pptApplication != null;
 
         [ObservableProperty]
-        private bool _isInSlideShow = false;
+        public partial bool IsInSlideShow { get; set; } = false;
 
         [ObservableProperty]
-        private int _currentSlidePosition = -1;
+        public partial int CurrentSlidePosition { get; set; } = -1;
 
         public int CurrentPresentationSlideCount
         {
