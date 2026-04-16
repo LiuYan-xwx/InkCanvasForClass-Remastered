@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 
-namespace randomtest
+namespace InkCanvasForClass_Remastered.Helpers
 {
     /// <summary>
     /// 一个通用的“抽签袋”，实现了手动重置功能。
@@ -12,7 +12,7 @@ namespace randomtest
     public class ShuffleBag<T>
     {
         private readonly List<T> _sourceItems;
-        private readonly List<T> _bag = new List<T>();
+        private readonly List<T> _bag = [];
         private int _currentIndex = 0;
 
         /// <summary>

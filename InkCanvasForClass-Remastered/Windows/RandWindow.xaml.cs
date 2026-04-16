@@ -3,7 +3,6 @@ using InkCanvasForClass_Remastered.Models;
 using InkCanvasForClass_Remastered.Services;
 using InkCanvasForClass_Remastered.ViewModels;
 using iNKORE.UI.WPF.Modern.Controls;
-using randomtest;
 using System.IO;
 using System.Security.Cryptography;
 using System.Windows;
