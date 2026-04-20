@@ -28,12 +28,3 @@ jobs:
         name: InkCanvasForClass-Remastered-${{ github.sha }}
         path: publish/
 
-    - name: Publish (SingleFile + ReadyToRun)
-      run: dotnet publish -c Release -f net10.0-windows7.0 -r win-x64 --self-contained false -o publish-singlefile -p:PublishSingleFile=true -p:ReadyToRun=true
-
-    - name: Upload artifact (SingleFile + ReadyToRun)
-      uses: actions/upload-artifact@v6
-      with:
-        name: InkCanvasForClass-Remastered-SingleFile-ReadyToRun-${{ github.sha }}
-        path: publish-singlefile/
-
