@@ -34,6 +34,6 @@ jobs:
     - name: Upload artifact (SingleFile + ReadyToRun)
       uses: actions/upload-artifact@v6
       with:
-        name: InkCanvasForClass-Remastered-SingleFile-${{ github.sha }}
+        name: InkCanvasForClass-Remastered-SingleFile-ReadyToRun-${{ github.sha }}
         path: publish-singlefile/
 
