@@ -125,6 +125,10 @@ namespace InkCanvasForClass_Remastered
                 case nameof(Settings.IsAutoKillPptService):
                     StartOrStopTimerKillProcess();
                     break;
+                case nameof(Settings.InkWidth):
+                    _viewModel.InkCanvasDrawingAttributes.Width = Settings.InkWidth;
+                    _viewModel.InkCanvasDrawingAttributes.Height = Settings.InkWidth;
+                    break;
             }
         }
 
@@ -3678,18 +3682,6 @@ namespace InkCanvasForClass_Remastered
             UpdateEraserShape();
         }
 
-
-        private void InkWidthSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (!isLoaded) return;
-            if (sender == BoardInkWidthSlider) InkWidthSlider.Value = ((Slider)sender).Value;
-            if (sender == InkWidthSlider) BoardInkWidthSlider.Value = ((Slider)sender).Value;
-            _viewModel.InkCanvasDrawingAttributes.Height = ((Slider)sender).Value / 2;
-            _viewModel.InkCanvasDrawingAttributes.Width = ((Slider)sender).Value / 2;
-            Settings.InkWidth = ((Slider)sender).Value / 2;
-            _settingsService.SaveSettings();
-        }
-
         private void HighlighterWidthSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (!isLoaded) return;
@@ -3929,7 +3921,6 @@ namespace InkCanvasForClass_Remastered
 
             CheckEnableTwoFingerGestureBtnColorPrompt();
 
-            InkWidthSlider.Value = Settings.InkWidth * 2;
             HighlighterWidthSlider.Value = Settings.HighlighterWidth;
 
             ComboBoxPenStyle.SelectedIndex = Settings.InkStyle;

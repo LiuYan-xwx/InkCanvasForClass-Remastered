@@ -2593,18 +2593,17 @@
                                                                     FontFamily="Microsoft YaHei UI"
                                                                     FontSize="20"
                                                                     IsSnapToTickEnabled="True"
-                                                                    Maximum="20"
+                                                                    Maximum="10"
                                                                     Minimum="1"
                                                                     TickFrequency="0.1"
                                                                     TickPlacement="None"
-                                                                    ValueChanged="InkWidthSlider_ValueChanged"
-                                                                    Value="5" />
+                                                                    Value="{Binding Settings.InkWidth, Mode=TwoWay}" />
                                                                 <TextBlock
                                                                     Margin="10,0,0,4.5"
                                                                     VerticalAlignment="Bottom"
                                                                     FontFamily="Consolas"
                                                                     FontSize="15"
-                                                                    Text="{Binding Value, ElementName=InkWidthSlider, StringFormat={}{0:F1}}" />
+                                                                    Text="{Binding Settings.InkWidth, StringFormat={}{0:F1}}" />
                                                             </StackPanel>
                                                             <StackPanel Height="30" Orientation="Horizontal">
                                                                 <Label
@@ -4588,18 +4587,17 @@
                                                                     FontFamily="Microsoft YaHei UI"
                                                                     FontSize="20"
                                                                     IsSnapToTickEnabled="True"
-                                                                    Maximum="20"
+                                                                    Maximum="10"
                                                                     Minimum="1"
                                                                     TickFrequency="0.1"
                                                                     TickPlacement="None"
-                                                                    ValueChanged="InkWidthSlider_ValueChanged"
-                                                                    Value="5" />
+                                                                    Value="{Binding Settings.InkWidth, Mode=TwoWay}" />
                                                                 <TextBlock
                                                                     Margin="10,0,0,4.5"
                                                                     VerticalAlignment="Bottom"
                                                                     FontFamily="Consolas"
                                                                     FontSize="15"
-                                                                    Text="{Binding Value, ElementName=InkWidthSlider, StringFormat={}{0:F1}}" />
+                                                                    Text="{Binding Settings.InkWidth, StringFormat={}{0:F1}}" />
                                                             </StackPanel>
                                                             <StackPanel Height="30" Orientation="Horizontal">
                                                                 <Label
