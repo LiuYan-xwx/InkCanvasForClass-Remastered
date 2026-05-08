@@ -4930,7 +4930,10 @@ namespace InkCanvasForClass_Remastered
         {
             //Logger.LogDebug("Main_Grid_ManipulationCompleted");
             if (e.Manipulators.Count() != 0) return;
-            if (_viewModel.AppPenMode is InkCanvasEditingMode.EraseByPoint or InkCanvasEditingMode.EraseByStroke)
+            if (_viewModel.AppPenMode is InkCanvasEditingMode.EraseByPoint
+                or InkCanvasEditingMode.EraseByStroke
+                or InkCanvasEditingMode.Select
+                or InkCanvasEditingMode.None)
             {
                 return;
             }
