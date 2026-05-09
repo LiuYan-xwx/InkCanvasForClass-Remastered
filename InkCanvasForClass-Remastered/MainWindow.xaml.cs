@@ -1962,7 +1962,7 @@ namespace InkCanvasForClass_Remastered
 
             _viewModel.AppPenMode = InkCanvasEditingMode.Select;
             //BtnSelect_Click
-            inkCanvas.IsManipulationEnabled = false;
+            inkCanvas.IsManipulationEnabled = true;
             if (inkCanvas.EditingMode == InkCanvasEditingMode.Select)
             {
                 if (inkCanvas.GetSelectedStrokes().Count == inkCanvas.Strokes.Count)
