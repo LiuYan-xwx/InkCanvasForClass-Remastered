@@ -4729,7 +4729,7 @@ namespace InkCanvasForClass_Remastered
                 Logger.LogWarning(ex, "Error in StylusUp event");
             }
 
-            inkCanvas.ReleaseStylusCapture();
+            //inkCanvas.ReleaseStylusCapture();
             ViewboxFloatingBar.IsHitTestVisible = true;
             WhiteboardGrid.IsHitTestVisible = true;
             PPTNavigationPanel.IsHitTestVisible = true;
