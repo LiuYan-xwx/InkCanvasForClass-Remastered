@@ -4682,8 +4682,8 @@ namespace InkCanvasForClass_Remastered
 
         private void MainWindow_StylusDown(object sender, StylusDownEventArgs e)
         {
-
-            inkCanvas.CaptureStylus();
+            //不知道为什么但注释之后是把套索选修复了
+            //inkCanvas.CaptureStylus();
             ViewboxFloatingBar.IsHitTestVisible = false;
             WhiteboardGrid.IsHitTestVisible = false;
             PPTNavigationPanel.IsHitTestVisible = false;
