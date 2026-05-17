@@ -45,23 +45,22 @@ https://github.com/3382308510
 
 （后续文档和软件内只会列出本仓库直接贡献者）
 
-## 项目说明
+## bb
 
-社区另有维护更积极的衍生版 [InkCanvasForClass Community Edition](https://github.com/InkCanvasForClass/community)（ICC-CE），推荐各位都去用这个，ICC-Re只是我闲暇之余有兴趣才会开发。  
-不过我不太喜欢 ICC-CE，所以本项目应运而生。
+社区还有维护更积极的衍生版 [InkCanvasForClass Community Edition](https://github.com/InkCanvasForClass/community)（ICC-CE），其功能更多，十分丰富，不过由于大量使用AI编程，而且是继续堆屎山，本人不喜欢，所以本项目应运而生。
 
-还需要说明的是：
+以及：
 
-1. 项目以个人兴趣为主开发，而且用的人肯定是几乎没有，所以更新随缘。
-2. 目前版本应该是可以正常使用，应该是无严重 bug，后续更新会尽量不引入新的屎。
+1. 项目以个人兴趣为主开发，更新随缘。
+2. 目前版本应该是可以正常使用，无严重 bug。
 
 ## 开发
 > [!note]
 > 目前在 **master** 分支开发
 
-关于本项目已经做出的更改，可以查阅更改日志 [CHANGELOG.md](https://github.com/LiuYan-xwx/InkCanvasForClass-Remastered/blob/master/CHANGELOG.md)  
+关于本项目已经做出的修改和优化，可以查阅更改日志 [CHANGELOG.md](https://github.com/LiuYan-xwx/InkCanvasForClass-Remastered/blob/master/CHANGELOG.md)  
 
-关于本项目未来计划的或正在进行的修改，可查阅仓库的 Projects 参考
+关于本项目未来计划的或正在进行的修改，可查阅仓库的 Projects
 
 ---
 
