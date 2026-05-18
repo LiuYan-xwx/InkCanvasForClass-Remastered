@@ -4694,17 +4694,23 @@ namespace InkCanvasForClass_Remastered
             TouchDownPointsList[e.StylusDevice.Id] = InkCanvasEditingMode.None;
         }
 
-        private async void MainWindow_StylusUp(object sender, StylusEventArgs e)
+        private void MainWindow_StylusUp(object sender, StylusEventArgs e)
         {
             //Logger.LogDebug("StylusUp event triggered");
             try
             {
-                inkCanvas.Strokes.Add(GetStrokeVisual(e.StylusDevice.Id).Stroke);
-                await Task.Delay(5); // 避免渲染墨迹完成前预览墨迹被删除导致墨迹闪烁
-                inkCanvas.Children.Remove(GetVisualCanvas(e.StylusDevice.Id));
+                var id = e.StylusDevice.Id;
+                var strokeVisual = GetStrokeVisual(id);
+                var stroke = strokeVisual.Stroke;
+                if (stroke != null)
+                {
+                    inkCanvas.Strokes.Add(stroke);
+                    // 直接移除预览层，避免额外异步调度带来的抬笔尾延时
+                    if (VisualCanvasList.TryGetValue(id, out var visualCanvas))
+                        inkCanvas.Children.Remove(visualCanvas);
 
-                inkCanvas_StrokeCollected(inkCanvas,
-                    new InkCanvasStrokeCollectedEventArgs(GetStrokeVisual(e.StylusDevice.Id).Stroke));
+                    inkCanvas_StrokeCollected(inkCanvas, new InkCanvasStrokeCollectedEventArgs(stroke));
+                }
             }
             catch (Exception ex)
             {
@@ -4751,9 +4757,8 @@ namespace InkCanvasForClass_Remastered
                 //}
 
                 var strokeVisual = GetStrokeVisual(e.StylusDevice.Id);
-                var stylusPointCollection = e.GetStylusPoints(this);
-                foreach (var stylusPoint in stylusPointCollection)
-                    strokeVisual.Add(new StylusPoint(stylusPoint.X, stylusPoint.Y, stylusPoint.PressureFactor));
+                var stylusPointCollection = e.GetStylusPoints(inkCanvas);
+                strokeVisual.AddRange(stylusPointCollection);
                 strokeVisual.Redraw();
             }
             catch (Exception ex)
@@ -4767,7 +4772,6 @@ namespace InkCanvasForClass_Remastered
             if (StrokeVisualList.TryGetValue(id, out var visual)) return visual;
 
             var strokeVisual = new StrokeVisual(_viewModel.InkCanvasDrawingAttributes.Clone());
-            StrokeVisualList[id] = strokeVisual;
             StrokeVisualList[id] = strokeVisual;
             var visualCanvas = new VisualCanvas(strokeVisual);
             VisualCanvasList[id] = visualCanvas;
