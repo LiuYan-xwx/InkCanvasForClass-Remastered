@@ -62,11 +62,28 @@ namespace InkCanvasForClass_Remastered.Helpers
             {
                 StylusPointCollection collection = new() { point };
                 Stroke = new Stroke(collection) { DrawingAttributes = _drawingAttributes };
+                return;
             }
-            else
+
+            Stroke.StylusPoints.Add(point);
+        }
+
+        /// <summary>
+        ///     在笔迹中批量添加点
+        /// </summary>
+        /// <param name="points"></param>
+        public void AddRange(StylusPointCollection points)
+        {
+            if (points.Count == 0)
+                return;
+
+            if (Stroke == null)
             {
-                Stroke.StylusPoints.Add(point);
+                Stroke = new Stroke(points.Clone()) { DrawingAttributes = _drawingAttributes };
+                return;
             }
+
+            Stroke.StylusPoints.Add(points);
         }
 
         /// <summary>
