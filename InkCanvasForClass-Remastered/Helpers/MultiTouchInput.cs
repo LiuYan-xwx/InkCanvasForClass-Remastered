@@ -70,6 +70,24 @@ namespace InkCanvasForClass_Remastered.Helpers
         }
 
         /// <summary>
+        ///     在笔迹中批量添加点，减少逐点处理开销
+        /// </summary>
+        /// <param name="points"></param>
+        public void AddRange(StylusPointCollection points)
+        {
+            if (points == null || points.Count == 0) return;
+
+            if (Stroke == null)
+            {
+                Stroke = new Stroke(points.Clone()) { DrawingAttributes = _drawingAttributes };
+            }
+            else
+            {
+                Stroke.StylusPoints.Add(points);
+            }
+        }
+
+        /// <summary>
         ///     重新画出笔迹
         /// </summary>
         public void Redraw()

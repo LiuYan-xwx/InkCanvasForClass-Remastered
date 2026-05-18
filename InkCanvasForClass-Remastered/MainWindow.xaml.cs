@@ -4700,7 +4700,7 @@ namespace InkCanvasForClass_Remastered
             try
             {
                 inkCanvas.Strokes.Add(GetStrokeVisual(e.StylusDevice.Id).Stroke);
-                await Task.Delay(5); // 避免渲染墨迹完成前预览墨迹被删除导致墨迹闪烁
+                await Task.Delay(1); // 缩短预览转正式笔迹的延迟，降低触笔到显示完成的总延时
                 inkCanvas.Children.Remove(GetVisualCanvas(e.StylusDevice.Id));
 
                 inkCanvas_StrokeCollected(inkCanvas,
@@ -4751,9 +4751,8 @@ namespace InkCanvasForClass_Remastered
                 //}
 
                 var strokeVisual = GetStrokeVisual(e.StylusDevice.Id);
-                var stylusPointCollection = e.GetStylusPoints(this);
-                foreach (var stylusPoint in stylusPointCollection)
-                    strokeVisual.Add(new StylusPoint(stylusPoint.X, stylusPoint.Y, stylusPoint.PressureFactor));
+                var stylusPointCollection = e.GetStylusPoints(inkCanvas);
+                strokeVisual.AddRange(stylusPointCollection);
                 strokeVisual.Redraw();
             }
             catch (Exception ex)
