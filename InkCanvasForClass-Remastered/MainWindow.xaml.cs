@@ -4692,19 +4692,32 @@ namespace InkCanvasForClass_Remastered
                 return;
 
             TouchDownPointsList[e.StylusDevice.Id] = InkCanvasEditingMode.None;
+
+            // 在落笔瞬间就注入首批点，降低“触笔到出墨”的首帧延迟
+            var strokeVisual = GetStrokeVisual(e.StylusDevice.Id);
+            strokeVisual.AddRange(e.GetStylusPoints(inkCanvas));
+            strokeVisual.Redraw();
         }
 
-        private async void MainWindow_StylusUp(object sender, StylusEventArgs e)
+        private void MainWindow_StylusUp(object sender, StylusEventArgs e)
         {
             //Logger.LogDebug("StylusUp event triggered");
             try
             {
-                inkCanvas.Strokes.Add(GetStrokeVisual(e.StylusDevice.Id).Stroke);
-                await Task.Delay(5); // 避免渲染墨迹完成前预览墨迹被删除导致墨迹闪烁
-                inkCanvas.Children.Remove(GetVisualCanvas(e.StylusDevice.Id));
+                var strokeVisual = GetStrokeVisual(e.StylusDevice.Id);
+                if (strokeVisual.Stroke != null)
+                {
+                    inkCanvas.Strokes.Add(strokeVisual.Stroke);
+                    inkCanvas_StrokeCollected(inkCanvas,
+                        new InkCanvasStrokeCollectedEventArgs(strokeVisual.Stroke));
+                }
 
-                inkCanvas_StrokeCollected(inkCanvas,
-                    new InkCanvasStrokeCollectedEventArgs(GetStrokeVisual(e.StylusDevice.Id).Stroke));
+                // 使用 Dispatcher 的低优先级异步移除预览层，避免主路径等待
+                _ = Dispatcher.InvokeAsync(() =>
+                {
+                    var visualCanvas = GetVisualCanvas(e.StylusDevice.Id);
+                    if (visualCanvas != null) inkCanvas.Children.Remove(visualCanvas);
+                }, System.Windows.Threading.DispatcherPriority.Background);
             }
             catch (Exception ex)
             {
@@ -4751,9 +4764,7 @@ namespace InkCanvasForClass_Remastered
                 //}
 
                 var strokeVisual = GetStrokeVisual(e.StylusDevice.Id);
-                var stylusPointCollection = e.GetStylusPoints(this);
-                foreach (var stylusPoint in stylusPointCollection)
-                    strokeVisual.Add(new StylusPoint(stylusPoint.X, stylusPoint.Y, stylusPoint.PressureFactor));
+                strokeVisual.AddRange(e.GetStylusPoints(inkCanvas));
                 strokeVisual.Redraw();
             }
             catch (Exception ex)
@@ -4767,7 +4778,6 @@ namespace InkCanvasForClass_Remastered
             if (StrokeVisualList.TryGetValue(id, out var visual)) return visual;
 
             var strokeVisual = new StrokeVisual(_viewModel.InkCanvasDrawingAttributes.Clone());
-            StrokeVisualList[id] = strokeVisual;
             StrokeVisualList[id] = strokeVisual;
             var visualCanvas = new VisualCanvas(strokeVisual);
             VisualCanvasList[id] = visualCanvas;
