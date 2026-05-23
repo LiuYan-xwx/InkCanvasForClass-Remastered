@@ -22,6 +22,10 @@ namespace InkCanvasForClass_Remastered.Models
         [ObservableProperty]
         public partial bool IsShowCursor { get; set; } = true;
 
+        /// <summary>
+        /// 笔锋设置
+        /// 0 - 基于点集；1 - 基于速率；2 - 无笔锋
+        /// </summary>
         [ObservableProperty]
         public partial int InkStyle { get; set; } = 0;
 

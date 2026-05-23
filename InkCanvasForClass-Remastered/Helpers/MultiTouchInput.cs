@@ -28,19 +28,6 @@ namespace InkCanvasForClass_Remastered.Helpers
         /// <summary>
         ///     创建显示笔迹的类
         /// </summary>
-        public StrokeVisual() : this(new DrawingAttributes()
-        {
-            Color = Colors.Red,
-            //FitToCurve = true,
-            Width = 3,
-            Height = 3
-        })
-        {
-        }
-
-        /// <summary>
-        ///     创建显示笔迹的类
-        /// </summary>
         /// <param name="drawingAttributes"></param>
         public StrokeVisual(DrawingAttributes drawingAttributes)
         {
@@ -60,12 +47,30 @@ namespace InkCanvasForClass_Remastered.Helpers
         {
             if (Stroke == null)
             {
-                StylusPointCollection collection = new() { point };
-                Stroke = new Stroke(collection) { DrawingAttributes = _drawingAttributes };
+                StylusPointCollection collection = [point];
+                Stroke = new Stroke(collection, _drawingAttributes);
             }
             else
             {
                 Stroke.StylusPoints.Add(point);
+            }
+        }
+
+        /// <summary>
+        /// 在笔迹中批量添加点
+        /// </summary>
+        /// <param name="points"></param>
+        public void AddRange(StylusPointCollection points)
+        {
+            if (points == null || points.Count == 0)
+                return;
+            if (Stroke == null)
+            {
+                Stroke = new Stroke(points.Clone(), _drawingAttributes);
+            }
+            else
+            {
+                Stroke.StylusPoints.Add(points);
             }
         }
 

@@ -86,7 +86,7 @@ namespace InkCanvasForClass_Remastered
         {
             Interval = TimeSpan.FromMilliseconds(400)
         };
-
+        private readonly Random sharedRandom = Random.Shared;
         private void TopmostRefreshTimer_Tick(object? sender, EventArgs e)
         {
             Topmost = false;
@@ -4023,122 +4023,86 @@ namespace InkCanvasForClass_Remastered
         #region SimulatePressure&InkToShape
         private void inkCanvas_StrokeCollected(object sender, InkCanvasStrokeCollectedEventArgs e)
         {
-            if (Settings.FitToCurve == true) _viewModel.InkCanvasDrawingAttributes.FitToCurve = false;
-
+            //if (Settings.FitToCurve == true) _viewModel.InkCanvasDrawingAttributes.FitToCurve = false;
             try
             {
-                inkCanvas.Opacity = 1;
+                //inkCanvas.Opacity = 1;
 
-                foreach (var stylusPoint in e.Stroke.StylusPoints)
-                    //LogHelper.WriteLogToFile(stylusPoint.PressureFactor.ToString(), LogHelper.LogType.Info);
-                    // 检查是否是压感笔书写
-                    //if (stylusPoint.PressureFactor != 0.5 && stylusPoint.PressureFactor != 0)
-                    if (stylusPoint.PressureFactor is (> (float)0.501 or < (float)0.5) and not 0)
-                        return;
-                try
+                var originalPoints = e.Stroke.StylusPoints;
+                var count = originalPoints.Count;
+                var n = count - 1;
+                // 仅对签字笔进行书写优化
+                if (penType != 0 || n <= 0) return;
+                // 检查是否是压感笔书写，如果是真实的压感笔则不需要处理
+                for (var i = 0; i < count; i++)
                 {
-                    if (e.Stroke.StylusPoints.Count > 3)
-                    {
-                        var random = new Random();
-                        var _speed = GetPointSpeed(
-                            e.Stroke.StylusPoints[random.Next(0, e.Stroke.StylusPoints.Count - 1)].ToPoint(),
-                            e.Stroke.StylusPoints[random.Next(0, e.Stroke.StylusPoints.Count - 1)].ToPoint(),
-                            e.Stroke.StylusPoints[random.Next(0, e.Stroke.StylusPoints.Count - 1)].ToPoint());
-                    }
+                    if (originalPoints[i].PressureFactor is > 0.501f or < 0.5f and not 0f)
+                        return;
                 }
-                catch { }
+
+                var newPoints = new StylusPointCollection(count);
 
                 switch (Settings.InkStyle)
                 {
                     case 1:
-                        if (penType == 0)
-                            try
-                            {
-                                var stylusPoints = new StylusPointCollection();
-                                var n = e.Stroke.StylusPoints.Count - 1;
-                                var s = "";
+                        for (var i = 0; i <= n; i++)
+                        {
+                            var pPrev = originalPoints[Math.Max(i - 1, 0)];
+                            var pCurr = originalPoints[i];
+                            var pNext = originalPoints[Math.Min(i + 1, n)];
 
-                                for (var i = 0; i <= n; i++)
-                                {
-                                    var speed = GetPointSpeed(e.Stroke.StylusPoints[Math.Max(i - 1, 0)].ToPoint(),
-                                        e.Stroke.StylusPoints[i].ToPoint(),
-                                        e.Stroke.StylusPoints[Math.Min(i + 1, n)].ToPoint());
-                                    s += speed.ToString() + "\t";
-                                    var point = new StylusPoint();
-                                    if (speed >= 0.25)
-                                        point.PressureFactor = (float)(0.5 - 0.3 * (Math.Min(speed, 1.5) - 0.3) / 1.2);
-                                    else if (speed >= 0.05)
-                                        point.PressureFactor = (float)0.5;
-                                    else
-                                        point.PressureFactor = (float)(0.5 + 0.4 * (0.05 - speed) / 0.05);
+                            var speed = (float)GetPointSpeed(pPrev, pCurr, pNext);
 
-                                    point.X = e.Stroke.StylusPoints[i].X;
-                                    point.Y = e.Stroke.StylusPoints[i].Y;
-                                    stylusPoints.Add(point);
-                                }
+                            float pressureFactor;
+                            if (speed >= 0.25)
+                                pressureFactor = 0.5f - 0.3f * (Math.Min(speed, 1.5f) - 0.3f) / 1.2f;
+                            else if (speed >= 0.05f)
+                                pressureFactor = 0.5f;
+                            else
+                                pressureFactor = 0.5f + 0.4f * (0.05f - speed) / 0.05f;
 
-                                e.Stroke.StylusPoints = stylusPoints;
-                            }
-                            catch { }
+                            newPoints.Add(new StylusPoint(originalPoints[i].X, originalPoints[i].Y, pressureFactor));
+                        }
 
+                        e.Stroke.StylusPoints = newPoints;
                         break;
+
                     case 0:
-                        if (penType == 0)
-                            try
+                        const float pressure = 0.1f;
+                        const int x = 10;
+
+                        if (n >= x)
+                        {
+                            for (var i = 0; i < n - x; i++)
                             {
-                                var stylusPoints = new StylusPointCollection();
-                                var n = e.Stroke.StylusPoints.Count - 1;
-                                var pressure = 0.1;
-                                var x = 10;
-                                if (n == 1) return;
-                                if (n >= x)
-                                {
-                                    for (var i = 0; i < n - x; i++)
-                                    {
-                                        var point = new StylusPoint();
-
-                                        point.PressureFactor = (float)0.5;
-                                        point.X = e.Stroke.StylusPoints[i].X;
-                                        point.Y = e.Stroke.StylusPoints[i].Y;
-                                        stylusPoints.Add(point);
-                                    }
-
-                                    for (var i = n - x; i <= n; i++)
-                                    {
-                                        var point = new StylusPoint();
-
-                                        point.PressureFactor = (float)((0.5 - pressure) * (n - i) / x + pressure);
-                                        point.X = e.Stroke.StylusPoints[i].X;
-                                        point.Y = e.Stroke.StylusPoints[i].Y;
-                                        stylusPoints.Add(point);
-                                    }
-                                }
-                                else
-                                {
-                                    for (var i = 0; i <= n; i++)
-                                    {
-                                        var point = new StylusPoint();
-
-                                        point.PressureFactor = (float)(0.4 * (n - i) / n + pressure);
-                                        point.X = e.Stroke.StylusPoints[i].X;
-                                        point.Y = e.Stroke.StylusPoints[i].Y;
-                                        stylusPoints.Add(point);
-                                    }
-                                }
-
-                                e.Stroke.StylusPoints = stylusPoints;
+                                newPoints.Add(new StylusPoint(originalPoints[i].X, originalPoints[i].Y, 0.5f));
                             }
-                            catch { }
 
+                            for (var i = n - x; i <= n; i++)
+                            {
+                                var factor = (0.5f - pressure) * (n - i) / x + pressure;
+                                newPoints.Add(new StylusPoint(originalPoints[i].X, originalPoints[i].Y, factor));
+                            }
+                        }
+                        else
+                        {
+                            for (var i = 0; i <= n; i++)
+                            {
+                                var factor = 0.4f * (n - i) / n + pressure;
+                                newPoints.Add(new StylusPoint(originalPoints[i].X, originalPoints[i].Y, factor));
+                            }
+                        }
+
+                        e.Stroke.StylusPoints = newPoints;
                         break;
                 }
             }
             catch { }
 
-            if (Settings.FitToCurve == true) _viewModel.InkCanvasDrawingAttributes.FitToCurve = true;
+            //if (Settings.FitToCurve == true) _viewModel.InkCanvasDrawingAttributes.FitToCurve = true;
         }
 
-        public double GetPointSpeed(Point point1, Point point2, Point point3)
+        public double GetPointSpeed(StylusPoint point1, StylusPoint point2, StylusPoint point3)
         {
             return (Math.Sqrt((point1.X - point2.X) * (point1.X - point2.X) +
                               (point1.Y - point2.Y) * (point1.Y - point2.Y))
@@ -4629,10 +4593,8 @@ namespace InkCanvasForClass_Remastered
 
         private void MainWindow_TouchDown(object? sender, TouchEventArgs? e)
         {
-            //Logger.LogDebug("Mainwindow_touchdown");
             if (ForceEraser)
             {
-                //Logger.LogDebug("Mainwindow_touchdown return");
                 return;
             }
 
@@ -4699,14 +4661,14 @@ namespace InkCanvasForClass_Remastered
             //Logger.LogDebug("StylusUp event triggered");
             try
             {
-                inkCanvas.Strokes.Add(GetStrokeVisual(e.StylusDevice.Id).Stroke);
-                await Task.Delay(5); // 避免渲染墨迹完成前预览墨迹被删除导致墨迹闪烁
+                Stroke stroke = GetStrokeVisual(e.StylusDevice.Id).Stroke;
+                inkCanvas.Strokes.Add(stroke);
                 inkCanvas.Children.Remove(GetVisualCanvas(e.StylusDevice.Id));
 
                 inkCanvas_StrokeCollected(inkCanvas,
-                    new InkCanvasStrokeCollectedEventArgs(GetStrokeVisual(e.StylusDevice.Id).Stroke));
+                    new InkCanvasStrokeCollectedEventArgs(stroke));
             }
-            catch (Exception ex)
+            catch
             {
                 //Logger.LogWarning(ex, "Error in StylusUp event");
             }
@@ -4751,9 +4713,8 @@ namespace InkCanvasForClass_Remastered
                 //}
 
                 var strokeVisual = GetStrokeVisual(e.StylusDevice.Id);
-                var stylusPointCollection = e.GetStylusPoints(this);
-                foreach (var stylusPoint in stylusPointCollection)
-                    strokeVisual.Add(new StylusPoint(stylusPoint.X, stylusPoint.Y, stylusPoint.PressureFactor));
+                var stylusPointCollection = e.GetStylusPoints(inkCanvas);
+                strokeVisual.AddRange(stylusPointCollection);
                 strokeVisual.Redraw();
             }
             catch (Exception ex)
@@ -4767,7 +4728,6 @@ namespace InkCanvasForClass_Remastered
             if (StrokeVisualList.TryGetValue(id, out var visual)) return visual;
 
             var strokeVisual = new StrokeVisual(_viewModel.InkCanvasDrawingAttributes.Clone());
-            StrokeVisualList[id] = strokeVisual;
             StrokeVisualList[id] = strokeVisual;
             var visualCanvas = new VisualCanvas(strokeVisual);
             VisualCanvasList[id] = visualCanvas;
