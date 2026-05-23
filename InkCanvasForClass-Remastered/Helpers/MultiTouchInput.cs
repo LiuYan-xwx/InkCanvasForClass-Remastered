@@ -31,13 +31,13 @@ namespace InkCanvasForClass_Remastered.Helpers
         /// <param name="drawingAttributes"></param>
         public StrokeVisual(DrawingAttributes drawingAttributes)
         {
-            _drawingAttributes = drawingAttributes;
+            _drawingAttributes = drawingAttributes ?? throw new ArgumentNullException(nameof(drawingAttributes));
         }
 
         /// <summary>
         ///     设置或获取显示的笔迹
         /// </summary>
-        public Stroke Stroke { set; get; }
+        public Stroke Stroke { get; private set; }
 
         /// <summary>
         ///     在笔迹中添加点
@@ -79,19 +79,17 @@ namespace InkCanvasForClass_Remastered.Helpers
         /// </summary>
         public void Redraw()
         {
-            try
-            {
-                using DrawingContext dc = RenderOpen();
-                Stroke.Draw(dc);
-            }
-            catch { }
+            if (Stroke == null)
+                return;
+            using DrawingContext dc = RenderOpen();
+            Stroke.Draw(dc);
         }
 
         private readonly DrawingAttributes _drawingAttributes;
 
-        public static implicit operator Stroke(StrokeVisual v)
+        public static implicit operator Stroke?(StrokeVisual v)
         {
-            throw new NotImplementedException();
+            return v?.Stroke;
         }
     }
 }
