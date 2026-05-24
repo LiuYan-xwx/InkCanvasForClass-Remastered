@@ -15,38 +15,9 @@ namespace InkCanvasForClass_Remastered.Helpers
         {
             Visual = visual;
             AddVisualChild(visual);
-            
-            // GPU优化：启用硬件加速渲染
-            SetGPUOptimizations();
         }
 
         public DrawingVisual Visual { get; }
-        
-        /// <summary>
-        ///     设置GPU优化渲染选项
-        /// </summary>
-        private void SetGPUOptimizations()
-        {
-            try
-            {
-                // GPU关键优化：启用缓存和硬件加速
-                RenderOptions.SetCachingHint(this, CachingHint.Cache);
-                RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.NearestNeighbor);
-                RenderOptions.SetEdgeMode(this, EdgeMode.Aliased);
-                
-                // 布局优化减少GPU计算
-                SnapsToDevicePixels = true;
-                UseLayoutRounding = true;
-                
-                // 缓存呈现的视觉效果
-                CacheMode = new BitmapCache();
-            }
-            catch
-            {
-                // 如果GPU优化失败，静默忽略
-                // 在某些系统上某些设置可能不支持
-            }
-        }
     }
 
     /// <summary>
@@ -139,74 +110,27 @@ namespace InkCanvasForClass_Remastered.Helpers
         private const int RedrawPointsThreshold = 3; // 每N个点重绘一次
         
         /// <summary>
-        ///     创建显示笔迹的类（GPU优化版本）
+        ///     创建显示笔迹的类
         /// </summary>
         /// <param name="drawingAttributes"></param>
         public IncrementalStrokeVisual(DrawingAttributes drawingAttributes)
         {
             _drawingAttributes = drawingAttributes ?? throw new ArgumentNullException(nameof(drawingAttributes));
             
-            // GPU优化：创建并冻结笔刷和画笔，使其可被GPU硬件加速
-            CreateGpuOptimizedDrawingResources(drawingAttributes);
-            
-            // 初始化几何体
-            _geometry = new StreamGeometry();
-        }
-        
-        /// <summary>
-        ///     创建GPU优化的绘制资源
-        /// </summary>
-        private void CreateGpuOptimizedDrawingResources(DrawingAttributes drawingAttributes)
-        {
-            try
-            {
-                // 创建笔刷并启用GPU加速
-                _brush = new SolidColorBrush(drawingAttributes.Color);
-                
-                // GPU优化：设置笔刷的渲染选项
-                RenderOptions.SetCachingHint(_brush, CachingHint.Cache);
-                RenderOptions.SetBitmapScalingMode(_brush, BitmapScalingMode.LowQuality); // 对于笔迹，低质量缩放足够
-                
-                // GPU关键优化：冻结笔刷，使其变为只读且可被GPU缓存
-                _brush.Freeze();
-                
-                // 创建画笔并启用GPU加速
-                _pen = new Pen(_brush, drawingAttributes.Width)
-                {
-                    StartLineCap = PenLineCap.Round,
-                    EndLineCap = PenLineCap.Round,
-                    LineJoin = PenLineJoin.Round
-                };
-                
-                // 对于非常细的线条，使用更适合GPU的笔尖形状
-                if (drawingAttributes.Width < 3)
-                {
-                    _pen.DashCap = PenLineCap.Round;
-                }
-                
-                // GPU优化：冻结画笔
-                _pen.Freeze();
-            }
-            catch (Exception ex)
-            {
-                // 如果GPU优化失败，使用传统创建方法
-                System.Diagnostics.Debug.WriteLine($"GPU优化绘图资源创建失败: {ex.Message}");
-                CreateFallbackDrawingResources(drawingAttributes);
-            }
-        }
-        
-        /// <summary>
-        ///     创建传统绘制资源（GPU加速回退）
-        /// </summary>
-        private void CreateFallbackDrawingResources(DrawingAttributes drawingAttributes)
-        {
+            // 初始化Pen和Brush
             _brush = new SolidColorBrush(drawingAttributes.Color);
+            _brush.Freeze();
+            
             _pen = new Pen(_brush, drawingAttributes.Width)
             {
                 StartLineCap = PenLineCap.Round,
                 EndLineCap = PenLineCap.Round,
                 LineJoin = PenLineJoin.Round
             };
+            _pen.Freeze();
+            
+            // 初始化几何体
+            _geometry = new StreamGeometry();
         }
 
         /// <summary>
@@ -265,75 +189,29 @@ namespace InkCanvasForClass_Remastered.Helpers
         }
         
         /// <summary>
-        ///     增量重绘 - 使用StreamGeometry构建路径（GPU优化版本）
+        ///     增量重绘 - 使用StreamGeometry构建路径
         /// </summary>
         private void RedrawIncremental()
         {
             if (_points.Count == 0)
                 return;
                 
-            try
-            {
-                // 重新构建StreamGeometry
-                _geometry = new StreamGeometry();
-                
-                // GPU优化：将冻结几何体，使其可被GPU缓存
-                _geometry.FillRule = FillRule.Nonzero;
-                
-                using (var context = _geometry.Open())
-                {
-                    // 开始第一个图形
-                    context.BeginFigure(_points[0], false, false);
-                    
-                    // 批量添加所有点
-                    // 优化：批量写入点集，减少上下文切换
-                    for (int i = 1; i < _points.Count; i++)
-                    {
-                        context.LineTo(_points[i], true, false);
-                    }
-                }
-                
-                // GPU优化：冻结几何体，使其可被GPU硬件加速
-                _geometry.Freeze();
-                
-                // 绘制几何体
-                using DrawingContext dc = RenderOpen();
-                
-                // GPU优化：使用缓存的笔刷和画笔
-                dc.DrawGeometry(_brush, _pen, _geometry);
-                
-                _isFigureOpen = true;
-            }
-            catch (Exception ex)
-            {
-                // 如果GPU加速失败，使用传统方法并记录
-                System.Diagnostics.Debug.WriteLine($"GPU加速重绘失败: {ex.Message}");
-                RedrawIncrementalFallback();
-            }
-        }
-        
-        /// <summary>
-        ///     回退重绘方法（不使用GPU加速）
-        /// </summary>
-        private void RedrawIncrementalFallback()
-        {
-            if (_points.Count == 0)
-                return;
-                
-            // 重新构建StreamGeometry但不冻结
+            // 重新构建StreamGeometry
             _geometry = new StreamGeometry();
             
             using (var context = _geometry.Open())
             {
+                // 开始第一个图形
                 context.BeginFigure(_points[0], false, false);
                 
+                // 批量添加所有点
                 for (int i = 1; i < _points.Count; i++)
                 {
                     context.LineTo(_points[i], true, false);
                 }
             }
             
-            // 不使用Freeze
+            // 绘制几何体
             using DrawingContext dc = RenderOpen();
             dc.DrawGeometry(_brush, _pen, _geometry);
             

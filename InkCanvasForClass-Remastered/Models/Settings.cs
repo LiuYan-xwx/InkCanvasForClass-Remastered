@@ -47,13 +47,6 @@ namespace InkCanvasForClass_Remastered.Models
         /// </summary>
         [ObservableProperty]
         public partial bool EnableIncrementalDrawing { get; set; } = true;
-        
-        /// <summary>
-        /// 是否启用GPU加速渲染
-        /// 启用后使用硬件加速渲染笔迹，显著提升绘制性能
-        /// </summary>
-        [ObservableProperty]
-        public partial bool EnableGPUAcceleration { get; set; } = true;
 
         [ObservableProperty]
         public partial bool ClearCanvasAndClearTimeMachine { get; set; } = false;
