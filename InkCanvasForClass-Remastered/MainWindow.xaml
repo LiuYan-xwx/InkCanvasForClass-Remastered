@@ -398,6 +398,8 @@
                                         Y1="0"
                                         Y2="0" />
                                     <controls:SettingsControl Header="让墨迹使用贝塞尔曲线平滑处理" IsOn="{Binding Settings.FitToCurve}" />
+
+                                    <controls:SettingsControl Header="使用增量绘制" IsOn="{Binding Settings.EnableIncrementalDrawing}" />
                                 </ikw:SimpleStackPanel>
                             </GroupBox>
                             <GroupBox>
