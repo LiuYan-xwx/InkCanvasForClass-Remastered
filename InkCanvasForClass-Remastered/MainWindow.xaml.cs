@@ -81,6 +81,9 @@ namespace InkCanvasForClass_Remastered
 
             CheckColorTheme(true);
             CheckPenTypeUIState();
+            
+            // GPU加速优化初始化
+            InitializeGPUOptimizations();
         }
         private readonly DispatcherTimer topmostRefreshTimer = new()
         {
@@ -91,6 +94,148 @@ namespace InkCanvasForClass_Remastered
         {
             Topmost = false;
             Topmost = true;
+        }
+
+        /// <summary>
+        ///     初始化GPU加速优化
+        /// </summary>
+        private void InitializeGPUOptimizations()
+        {
+            try
+            {
+                // 检查用户设置是否启用GPU加速
+                if (!Settings.EnableGPUAcceleration)
+                {
+                    Logger.LogInformation("用户已禁用GPU加速");
+                    ApplyBasicGPUOptimizations();
+                    return;
+                }
+                
+                // 检测GPU加速可用性
+                var renderCapability = RenderCapability.Tier >> 16;
+                bool isHardwareAccelerated = renderCapability >= 2;
+                
+                Logger.LogDebug($"GPU渲染等级: {renderCapability}, 硬件加速: {isHardwareAccelerated}");
+                
+                if (isHardwareAccelerated)
+                {
+                    // 启用高级GPU优化
+                    ApplyAdvancedGPUOptimizations();
+                    Logger.LogInformation("高级GPU加速优化已启用");
+                }
+                else
+                {
+                    // 仅启用基本优化
+                    ApplyBasicGPUOptimizations();
+                    Logger.LogInformation("基本GPU优化已启用（无硬件加速）");
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning(ex, "GPU优化初始化失败");
+            }
+        }
+        
+        /// <summary>
+        ///     应用高级GPU优化（硬件加速可用时）
+        /// </summary>
+        private void ApplyAdvancedGPUOptimizations()
+        {
+            // 为InkCanvas启用高级GPU优化
+            RenderOptions.SetCachingHint(inkCanvas, CachingHint.Cache);
+            RenderOptions.SetBitmapScalingMode(inkCanvas, BitmapScalingMode.NearestNeighbor);
+            RenderOptions.SetEdgeMode(inkCanvas, EdgeMode.Aliased);
+            
+            // 启用位图缓存
+            inkCanvas.CacheMode = new BitmapCache()
+            {
+                EnableClearType = true,
+                SnapsToDevicePixels = true,
+                RenderAtScale = 1.0 // 使用原始分辨率缓存
+            };
+            
+            // 为窗口和其他关键元素启用GPU优化
+            ApplyGPUOptimizationsToWindow();
+        }
+        
+        /// <summary>
+        ///     应用基本GPU优化（无硬件加速时）
+        /// </summary>
+        private void ApplyBasicGPUOptimizations()
+        {
+            // 仅启用基本的布局优化
+            inkCanvas.SnapsToDevicePixels = true;
+            inkCanvas.UseLayoutRounding = true;
+        }
+        
+        /// <summary>
+        ///     为窗口应用GPU优化
+        /// </summary>
+        private void ApplyGPUOptimizationsToWindow()
+        {
+            try
+            {
+                // 窗口级别的GPU优化
+                this.SnapsToDevicePixels = true;
+                this.UseLayoutRounding = true;
+                
+                // 启用透明窗口的硬件加速
+                this.AllowsTransparency = true;
+                
+                // 设置窗口渲染选项
+                RenderOptions.SetCachingHint(this, CachingHint.Cache);
+            }
+            catch
+            {
+                // 某些优化在某些系统上可能不支持
+            }
+        }
+        
+        /// <summary>
+        ///     重新初始化GPU优化（设置变更时调用）
+        /// </summary>
+        private void ReinitializeGPUOptimizations()
+        {
+            try
+            {
+                // 清除现有的GPU优化
+                ClearExistingGPUOptimizations();
+                
+                // 重新初始化GPU优化
+                InitializeGPUOptimizations();
+                
+                Logger.LogInformation($"GPU加速设置已更新: {(Settings.EnableGPUAcceleration ? "启用" : "禁用")}");
+            }
+            catch (Exception ex)
+            {
+                Logger.LogWarning(ex, "重新初始化GPU优化失败");
+            }
+        }
+        
+        /// <summary>
+        ///     清除现有的GPU优化设置
+        /// </summary>
+        private void ClearExistingGPUOptimizations()
+        {
+            try
+            {
+                // 清除InkCanvas的缓存和GPU优化
+                inkCanvas.ClearValue(RenderOptions.CachingHintProperty);
+                inkCanvas.ClearValue(RenderOptions.BitmapScalingModeProperty);
+                inkCanvas.ClearValue(RenderOptions.EdgeModeProperty);
+                inkCanvas.ClearValue(UIElement.CacheModeProperty);
+                
+                // 重置基本设置
+                inkCanvas.SnapsToDevicePixels = false;
+                inkCanvas.UseLayoutRounding = false;
+                
+                // 清除窗口级别的GPU优化
+                this.ClearValue(RenderOptions.CachingHintProperty);
+            }
+            catch
+            {
+                // 清除失败时不中断
+            }
         }
 
         private void Settings_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -128,6 +273,10 @@ namespace InkCanvasForClass_Remastered
                 case nameof(Settings.InkWidth):
                     _viewModel.InkCanvasDrawingAttributes.Width = Settings.InkWidth;
                     _viewModel.InkCanvasDrawingAttributes.Height = Settings.InkWidth;
+                    break;
+                case nameof(Settings.EnableGPUAcceleration):
+                    // GPU加速设置变更时重新初始化
+                    ReinitializeGPUOptimizations();
                     break;
             }
         }
