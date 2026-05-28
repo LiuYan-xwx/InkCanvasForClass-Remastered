@@ -1608,6 +1608,9 @@
                 StrokeCollected="inkCanvas_StrokeCollected"
                 TouchDown="Main_Grid_TouchDown"
                 TouchUp="Main_Grid_TouchUp" />
+            <Canvas
+                x:Name="inkPreviewOverlay"
+                IsHitTestVisible="False" />
         </Grid>
 
         <Grid Visibility="{Binding ElementName=inkCanvas, Path=Visibility}">

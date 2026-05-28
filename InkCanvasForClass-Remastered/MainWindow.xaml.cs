@@ -2618,7 +2618,7 @@ namespace InkCanvasForClass_Remastered
             }
 
             ClearStrokes(false);
-            inkCanvas.Children.Clear();
+            inkPreviewOverlay.Children.Clear();
 
             CancelSingleFingerDragMode();
 
@@ -3787,7 +3787,7 @@ namespace InkCanvasForClass_Remastered
                     inkCanvas.TouchDown -= Main_Grid_TouchDown;
                     inkCanvas.EditingMode = InkCanvasEditingMode.None;
                     inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
-                    inkCanvas.Children.Clear();
+                    inkPreviewOverlay.Children.Clear();
                     isInMultiTouchMode = true;
                 }
             }
@@ -3802,7 +3802,7 @@ namespace InkCanvasForClass_Remastered
                     inkCanvas.TouchDown += Main_Grid_TouchDown;
                     inkCanvas.EditingMode = InkCanvasEditingMode.None;
                     inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
-                    inkCanvas.Children.Clear();
+                    inkPreviewOverlay.Children.Clear();
                     isInMultiTouchMode = false;
                 }
             }
@@ -4663,7 +4663,7 @@ namespace InkCanvasForClass_Remastered
             {
                 Stroke stroke = GetStrokeVisual(e.StylusDevice.Id).Stroke;
                 inkCanvas.Strokes.Add(stroke);
-                inkCanvas.Children.Remove(GetVisualCanvas(e.StylusDevice.Id));
+                inkPreviewOverlay.Children.Remove(GetVisualCanvas(e.StylusDevice.Id));
 
                 inkCanvas_StrokeCollected(inkCanvas,
                     new InkCanvasStrokeCollectedEventArgs(stroke));
@@ -4680,7 +4680,7 @@ namespace InkCanvasForClass_Remastered
                 TouchDownPointsList.Remove(e.StylusDevice.Id);
                 if (StrokeVisualList.Count == 0 || VisualCanvasList.Count == 0 || TouchDownPointsList.Count == 0)
                 {
-                    inkCanvas.Children.Clear();
+                    inkPreviewOverlay.Children.Clear();
                     StrokeVisualList.Clear();
                     VisualCanvasList.Clear();
                     TouchDownPointsList.Clear();
@@ -4731,7 +4731,7 @@ namespace InkCanvasForClass_Remastered
             StrokeVisualList[id] = strokeVisual;
             var visualCanvas = new VisualCanvas(strokeVisual);
             VisualCanvasList[id] = visualCanvas;
-            inkCanvas.Children.Add(visualCanvas);
+            inkPreviewOverlay.Children.Add(visualCanvas);
 
             return strokeVisual;
         }
