@@ -40,13 +40,6 @@ namespace InkCanvasForClass_Remastered.Models
 
         [ObservableProperty]
         public partial bool FitToCurve { get; set; } = true;
-        
-        /// <summary>
-        /// 是否启用增量绘制（性能优化）
-        /// 实时绘制时使用StreamGeometry增量更新，减少CPU占用
-        /// </summary>
-        [ObservableProperty]
-        public partial bool EnableIncrementalDrawing { get; set; } = true;
 
         [ObservableProperty]
         public partial bool ClearCanvasAndClearTimeMachine { get; set; } = false;

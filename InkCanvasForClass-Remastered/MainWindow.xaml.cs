@@ -4661,33 +4661,12 @@ namespace InkCanvasForClass_Remastered
             //Logger.LogDebug("StylusUp event triggered");
             try
             {
-                Stroke? stroke = null;
-                
-                if (Settings.EnableIncrementalDrawing)
-                {
-                    // 从增量绘制获取笔迹
-                    if (IncrementalStrokeVisualList.TryGetValue(e.StylusDevice.Id, out var incrementalVisual))
-                    {
-                        stroke = incrementalVisual.GetStroke();
-                    }
-                }
-                else
-                {
-                    // 从传统绘制获取笔迹
-                    if (StrokeVisualList.TryGetValue(e.StylusDevice.Id, out var strokeVisual))
-                    {
-                        stroke = strokeVisual.Stroke;
-                    }
-                }
-                
-                if (stroke != null)
-                {
-                    inkCanvas.Strokes.Add(stroke);
-                    inkCanvas.Children.Remove(GetVisualCanvas(e.StylusDevice.Id));
+                Stroke stroke = GetStrokeVisual(e.StylusDevice.Id).Stroke;
+                inkCanvas.Strokes.Add(stroke);
+                inkCanvas.Children.Remove(GetVisualCanvas(e.StylusDevice.Id));
 
-                    inkCanvas_StrokeCollected(inkCanvas,
-                        new InkCanvasStrokeCollectedEventArgs(stroke));
-                }
+                inkCanvas_StrokeCollected(inkCanvas,
+                    new InkCanvasStrokeCollectedEventArgs(stroke));
             }
             catch
             {
@@ -4696,18 +4675,13 @@ namespace InkCanvasForClass_Remastered
 
             try
             {
-                // 清理所有字典
                 StrokeVisualList.Remove(e.StylusDevice.Id);
-                IncrementalStrokeVisualList.Remove(e.StylusDevice.Id);
                 VisualCanvasList.Remove(e.StylusDevice.Id);
                 TouchDownPointsList.Remove(e.StylusDevice.Id);
-                
-                if (StrokeVisualList.Count == 0 && IncrementalStrokeVisualList.Count == 0 || 
-                    VisualCanvasList.Count == 0 || TouchDownPointsList.Count == 0)
+                if (StrokeVisualList.Count == 0 || VisualCanvasList.Count == 0 || TouchDownPointsList.Count == 0)
                 {
                     inkCanvas.Children.Clear();
                     StrokeVisualList.Clear();
-                    IncrementalStrokeVisualList.Clear();
                     VisualCanvasList.Clear();
                     TouchDownPointsList.Clear();
                 }
@@ -4729,31 +4703,19 @@ namespace InkCanvasForClass_Remastered
             try
             {
                 if (GetTouchDownPointsList(e.StylusDevice.Id) != InkCanvasEditingMode.None) return;
-                
-                var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+                //try
+                //{
+                //    if (e.StylusDevice.StylusButtons[1].StylusButtonState == StylusButtonState.Down) return;
+                //}
+                //catch (Exception ex)
+                //{
+                //    Logger.LogWarning(ex, "Error checking stylus button state");
+                //}
+
+                var strokeVisual = GetStrokeVisual(e.StylusDevice.Id);
                 var stylusPointCollection = e.GetStylusPoints(inkCanvas);
-                
-                if (Settings.EnableIncrementalDrawing)
-                {
-                    // 使用增量绘制模式
-                    var incrementalVisual = GetIncrementalStrokeVisual(e.StylusDevice.Id);
-                    incrementalVisual.AddRangeIncremental(stylusPointCollection);
-                }
-                else
-                {
-                    // 使用传统绘制模式
-                    var strokeVisual = GetStrokeVisual(e.StylusDevice.Id);
-                    strokeVisual.AddRange(stylusPointCollection);
-                    strokeVisual.Redraw();
-                }
-                
-                stopwatch.Stop();
-                
-                // 记录性能数据（仅调试时）
-                if (stopwatch.ElapsedMilliseconds > 10) // 超过10ms记录警告
-                {
-                    Logger.LogWarning($"StylusMove延迟: {stopwatch.ElapsedMilliseconds}ms, 点数: {stylusPointCollection?.Count}, 模式: {(Settings.EnableIncrementalDrawing ? "增量" : "传统")}");
-                }
+                strokeVisual.AddRange(stylusPointCollection);
+                strokeVisual.Redraw();
             }
             catch (Exception ex)
             {
@@ -4778,22 +4740,6 @@ namespace InkCanvasForClass_Remastered
         {
             return VisualCanvasList.TryGetValue(id, out var visualCanvas) ? visualCanvas : null;
         }
-        
-        /// <summary>
-        ///     获取增量绘制笔迹可视化对象
-        /// </summary>
-        private IncrementalStrokeVisual GetIncrementalStrokeVisual(int id)
-        {
-            if (IncrementalStrokeVisualList.TryGetValue(id, out var visual)) return visual;
-
-            var strokeVisual = new IncrementalStrokeVisual(_viewModel.InkCanvasDrawingAttributes.Clone());
-            IncrementalStrokeVisualList[id] = strokeVisual;
-            var visualCanvas = new VisualCanvas(strokeVisual);
-            VisualCanvasList[id] = visualCanvas;
-            inkCanvas.Children.Add(visualCanvas);
-
-            return strokeVisual;
-        }
 
         private InkCanvasEditingMode GetTouchDownPointsList(int id)
         {
@@ -4805,9 +4751,6 @@ namespace InkCanvasForClass_Remastered
 
         private Dictionary<int, StrokeVisual> StrokeVisualList { get; } = new Dictionary<int, StrokeVisual>();
         private Dictionary<int, VisualCanvas> VisualCanvasList { get; } = new Dictionary<int, VisualCanvas>();
-        
-        // 增量绘制相关
-        private Dictionary<int, IncrementalStrokeVisual> IncrementalStrokeVisualList { get; } = new Dictionary<int, IncrementalStrokeVisual>();
 
         #endregion
 
