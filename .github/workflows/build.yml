@@ -23,7 +23,7 @@ jobs:
       run: dotnet publish -c Release -f net10.0-windows7.0 -r win-x64 --self-contained false -o publish
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: InkCanvasForClass-Remastered-${{ github.sha }}
         path: publish/
