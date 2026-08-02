@@ -1,0 +1,16 @@
+﻿SHGetPropertyStoreForWindow
+GetForegroundWindow
+GetWindowText
+GetClassName
+GetWindowRect
+GetWindowThreadProcessId
+RegisterHotKey
+UnregisterHotKey
+CLSIDFromProgIDEx
+CLSIDFromProgID
+GetActiveObject
+MoveWindow
+GetWindowLong
+GetWindowLongPtr
+SetWindowLong
+SetWindowLongPtr
