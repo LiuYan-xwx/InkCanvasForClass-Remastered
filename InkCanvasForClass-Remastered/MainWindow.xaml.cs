@@ -57,6 +57,12 @@ namespace InkCanvasForClass_Remastered
 
             DataContext = _viewModel;
 
+            _viewModel.EnterWhiteboardRequested += OnEnterWhiteboardRequested;
+            _viewModel.ExitWhiteboardRequested += OnExitWhiteboardRequested;
+            _viewModel.WhiteboardPreviousPageRequested += OnWhiteboardPreviousPageRequested;
+            _viewModel.WhiteboardNextPageRequested += OnWhiteboardNextPageRequested;
+            _viewModel.WhiteboardPageSelectionRequested += OnWhiteboardPageSelectionRequested;
+
             // 挂载PPT服务事件
             _powerPointService.SlideShowBegin += PptApplication_SlideShowBegin;
             _powerPointService.SlideShowEnd += PptApplication_SlideShowEnd;
@@ -362,6 +368,11 @@ namespace InkCanvasForClass_Remastered
         {
             SystemEvents.DisplaySettingsChanged -= SystemEventsOnDisplaySettingsChanged;
             _notificationService.NotificationRequested -= OnNotificationRequested;
+            _viewModel.EnterWhiteboardRequested -= OnEnterWhiteboardRequested;
+            _viewModel.ExitWhiteboardRequested -= OnExitWhiteboardRequested;
+            _viewModel.WhiteboardPreviousPageRequested -= OnWhiteboardPreviousPageRequested;
+            _viewModel.WhiteboardNextPageRequested -= OnWhiteboardNextPageRequested;
+            _viewModel.WhiteboardPageSelectionRequested -= OnWhiteboardPageSelectionRequested;
             _notificationCts?.Cancel();
             _notificationCts?.Dispose();
             Logger.LogInformation("MainWindow closed");
@@ -440,7 +451,7 @@ namespace InkCanvasForClass_Remastered
         #region BoardControls
         private const int MainAnnotationHistorySlot = 0;
         private const int FirstWhiteboardHistorySlot = 1;
-        private const int MaxWhiteboardPageCount = 99;
+        private const int MaxWhiteboardPageCount = MainViewModel.MaxWhiteboardPageCount;
 
         private StrokeCollection[] strokeCollections = new StrokeCollection[MaxWhiteboardPageCount + 1];
 
@@ -632,20 +643,25 @@ namespace InkCanvasForClass_Remastered
             }
         }
 
-        private void BtnWhiteBoardSwitchPrevious_Click(object sender, EventArgs e)
+        private void OnWhiteboardPreviousPageRequested()
         {
-            if (_viewModel.WhiteboardCurrentPage <= 1) return;
+            if (!_viewModel.IsWhiteboardMode || _viewModel.WhiteboardCurrentPage <= 1)
+                return;
 
             SwitchWhiteboardPage(_viewModel.WhiteboardCurrentPage - 1);
         }
 
-        private void BtnWhiteBoardSwitchNext_Click(object sender, EventArgs e)
+        private void OnWhiteboardNextPageRequested()
         {
-            Trace.WriteLine("113223234");
+            if (!_viewModel.IsWhiteboardMode)
+                return;
 
             if (Settings.IsAutoSaveStrokesAtClear &&
                 inkCanvas.Strokes.Count > Settings.MinimumAutomationStrokeNumber)
+            {
                 SaveScreenShot(true);
+            }
+
             if (_viewModel.WhiteboardCurrentPage == _viewModel.WhiteboardTotalPageCount)
             {
                 WhiteBoardAddPage();
@@ -1875,9 +1891,14 @@ namespace InkCanvasForClass_Remastered
 
         #region 白板按鈕和退出白板模式按鈕
 
-        private void OpenWhiteboardFloatingBarButton_Click(object? sender, RoutedEventArgs? e)
+        private void OnEnterWhiteboardRequested()
         {
             EnterWhiteboard();
+        }
+
+        private void OnExitWhiteboardRequested()
+        {
+            ExitWhiteboard();
         }
 
         private WorkspaceMode _workspaceModeBeforeWhiteboard = WorkspaceMode.DesktopAnnotation;
@@ -2897,27 +2918,15 @@ namespace InkCanvasForClass_Remastered
         }
 
 
-        private void BlackBoardLeftSidePageListView_OnMouseUp(object sender, MouseButtonEventArgs e)
+        private void OnWhiteboardPageSelectionRequested(int page)
         {
             AnimationsHelper.HideWithSlideAndFade(BoardBorderLeftPageListView);
             AnimationsHelper.HideWithSlideAndFade(BoardBorderRightPageListView);
-            var item = BlackBoardLeftSidePageListView.SelectedItem;
-            var index = BlackBoardLeftSidePageListView.SelectedIndex;
-            if (item != null && SwitchWhiteboardPage(index + 1))
-            {
-                BlackBoardLeftSidePageListView.SelectedIndex = index;
-            }
-        }
 
-        private void BlackBoardRightSidePageListView_OnMouseUp(object sender, MouseButtonEventArgs e)
-        {
-            AnimationsHelper.HideWithSlideAndFade(BoardBorderLeftPageListView);
-            AnimationsHelper.HideWithSlideAndFade(BoardBorderRightPageListView);
-            var item = BlackBoardRightSidePageListView.SelectedItem;
-            var index = BlackBoardRightSidePageListView.SelectedIndex;
-            if (item != null && SwitchWhiteboardPage(index + 1))
+            if (SwitchWhiteboardPage(page))
             {
-                BlackBoardRightSidePageListView.SelectedIndex = index;
+                BlackBoardLeftSidePageListView.SelectedIndex = page - 1;
+                BlackBoardRightSidePageListView.SelectedIndex = page - 1;
             }
         }
         #endregion
@@ -5075,10 +5084,6 @@ namespace InkCanvasForClass_Remastered
         private void SymbolIconTools_MouseUp(object sender, MouseButtonEventArgs e)
         {
             ToggleToolsPanel();
-        }
-        private void CloseWhiteboardWhiteBoardButton_Click(object sender, MouseButtonEventArgs e)
-        {
-            ExitWhiteboard();
         }
 
         public void HideToolsPanel()

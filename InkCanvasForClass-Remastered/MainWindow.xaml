@@ -7,6 +7,7 @@
     xmlns:controls="clr-namespace:InkCanvasForClass_Remastered.Controls"
     xmlns:converters="clr-namespace:InkCanvasForClass_Remastered.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:ikw="http://schemas.inkore.net/lib/ui/wpf"
     xmlns:local="clr-namespace:InkCanvasForClass_Remastered"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -1866,8 +1867,12 @@
                                 BorderThickness="1,1,0,1"
                                 CornerRadius="5,0,0,5"
                                 IsEnabled="{Binding IsWhiteboardPreviousPageButtonEnabled}"
-                                MouseUp="BtnWhiteBoardSwitchPrevious_Click"
                                 Opacity="0.95">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseUp">
+                                        <i:InvokeCommandAction Command="{Binding RequestWhiteboardPreviousPageCommand}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
                                 <Grid Margin="6,6,6,4">
                                     <ui:FontIcon
                                         Margin="0,0,0,18"
@@ -1938,7 +1943,14 @@
                                             SelectionMode="Single">
                                             <ListView.ItemTemplate>
                                                 <DataTemplate>
-                                                    <ikw:SimpleStackPanel MouseUp="BlackBoardLeftSidePageListView_OnMouseUp" Orientation="Vertical">
+                                                    <ikw:SimpleStackPanel Orientation="Vertical">
+                                                        <i:Interaction.Triggers>
+                                                            <i:EventTrigger EventName="MouseUp">
+                                                                <i:InvokeCommandAction
+                                                                    Command="{Binding DataContext.RequestWhiteboardPageSelectionCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                    CommandParameter="{Binding Index}" />
+                                                            </i:EventTrigger>
+                                                        </i:Interaction.Triggers>
                                                         <Border
                                                             Width="160"
                                                             Margin="0,4"
@@ -1985,8 +1997,12 @@
                                 BorderBrush="#a1a1aa"
                                 BorderThickness="0,1,1,1"
                                 CornerRadius="0,5,5,0"
-                                MouseUp="BtnWhiteBoardSwitchNext_Click"
                                 Opacity="0.95">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseUp">
+                                        <i:InvokeCommandAction Command="{Binding RequestWhiteboardNextPageCommand}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
                                 <Grid Margin="6,6,6,4">
                                     <ui:FontIcon
                                         Margin="0,0,0,18"
@@ -4002,8 +4018,12 @@
                                     BorderThickness="0,1,1,1"
                                     CornerRadius="0,5,5,0"
                                     MouseDown="Border_MouseDown"
-                                    MouseUp="CloseWhiteboardWhiteBoardButton_Click"
                                     Opacity="0.95">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="MouseUp">
+                                            <i:InvokeCommandAction Command="{Binding RequestExitWhiteboardCommand}" />
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
                                     <Grid Margin="6,6,6,4">
                                         <Image
                                             Width="20"
@@ -4060,8 +4080,12 @@
                                 BorderThickness="1,1,0,1"
                                 CornerRadius="5,0,0,5"
                                 IsEnabled="{Binding IsWhiteboardPreviousPageButtonEnabled}"
-                                MouseUp="BtnWhiteBoardSwitchPrevious_Click"
                                 Opacity="0.95">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseUp">
+                                        <i:InvokeCommandAction Command="{Binding RequestWhiteboardPreviousPageCommand}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
                                 <Grid Margin="6,6,6,4">
                                     <ui:FontIcon
                                         Margin="0,0,0,18"
@@ -4132,7 +4156,14 @@
                                             SelectionMode="Single">
                                             <ListView.ItemTemplate>
                                                 <DataTemplate>
-                                                    <ikw:SimpleStackPanel MouseUp="BlackBoardRightSidePageListView_OnMouseUp" Orientation="Vertical">
+                                                    <ikw:SimpleStackPanel Orientation="Vertical">
+                                                        <i:Interaction.Triggers>
+                                                            <i:EventTrigger EventName="MouseUp">
+                                                                <i:InvokeCommandAction
+                                                                    Command="{Binding DataContext.RequestWhiteboardPageSelectionCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                                                                    CommandParameter="{Binding Index}" />
+                                                            </i:EventTrigger>
+                                                        </i:Interaction.Triggers>
                                                         <Border
                                                             Width="160"
                                                             Margin="0,4"
@@ -4179,8 +4210,12 @@
                                 BorderBrush="#a1a1aa"
                                 BorderThickness="0,1,1,1"
                                 CornerRadius="0,5,5,0"
-                                MouseUp="BtnWhiteBoardSwitchNext_Click"
                                 Opacity="0.95">
+                                <i:Interaction.Triggers>
+                                    <i:EventTrigger EventName="MouseUp">
+                                        <i:InvokeCommandAction Command="{Binding RequestWhiteboardNextPageCommand}" />
+                                    </i:EventTrigger>
+                                </i:Interaction.Triggers>
                                 <Grid Margin="6,6,6,4">
                                     <ui:FontIcon
                                         Margin="0,0,0,18"
@@ -5706,7 +5741,7 @@
                                         BorderBrush="#71717a"
                                         BorderThickness="1,0,0,0" />
                                     <controls:FloatingBarButton
-                                        Click="OpenWhiteboardFloatingBarButton_Click"
+                                        Command="{Binding RequestEnterWhiteboardCommand}"
                                         Label="白板"
                                         PathData="F0 M24,24z M0,0z M5,5.875C4.70163,5.875 4.41548,5.99353 4.2045,6.2045 3.99353,6.41548 3.875,6.70163 3.875,7L3.875,17C3.875,17.2984 3.99353,17.5845 4.2045,17.7955 4.41548,18.0065 4.70163,18.125 5,18.125L8,18.125C8.48325,18.125 8.875,18.5168 8.875,19 8.875,19.4832 8.48325,19.875 8,19.875L5,19.875C4.2375,19.875 3.50623,19.5721 2.96707,19.0329 2.4279,18.4938 2.125,17.7625 2.125,17L2.125,7C2.125,6.2375 2.4279,5.50624 2.96707,4.96707 3.50624,4.4279 4.2375,4.125 5,4.125L19,4.125C19.7625,4.125 20.4938,4.4279 21.0329,4.96707 21.5721,5.50623 21.875,6.2375 21.875,7L21.875,18C21.875,18.4973 21.6775,18.9742 21.3258,19.3258 20.9742,19.6775 20.4973,19.875 20,19.875 19.5168,19.875 19.125,19.4832 19.125,19 19.125,18.5168 19.5168,18.125 20,18.125 20.0332,18.125 20.0649,18.1118 20.0884,18.0884 20.1118,18.0649 20.125,18.0332 20.125,18L20.125,7C20.125,6.70163 20.0065,6.41548 19.7955,6.2045 19.5845,5.99353 19.2984,5.875 19,5.875L5,5.875z M10.6742,15.6742C11.0258,15.3225,11.5027,15.125,12,15.125L16,15.125C16.4973,15.125 16.9742,15.3225 17.3258,15.6742 17.6775,16.0258 17.875,16.5027 17.875,17L17.875,18C17.875,18.4973 17.6775,18.9742 17.3258,19.3258 16.9742,19.6775 16.4973,19.875 16,19.875L12,19.875C11.5027,19.875 11.0258,19.6775 10.6742,19.3258 10.3225,18.9742 10.125,18.4973 10.125,18L10.125,17C10.125,16.5027,10.3225,16.0258,10.6742,15.6742z" />
                                     <controls:FloatingBarButton

@@ -8,7 +8,11 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    <Button Name="PART_Button" Cursor="Hand">
+    <Button
+        Name="PART_Button"
+        Command="{Binding Command, RelativeSource={RelativeSource AncestorType=UserControl}}"
+        CommandParameter="{Binding CommandParameter, RelativeSource={RelativeSource AncestorType=UserControl}}"
+        Cursor="Hand">
         <Button.Style>
             <Style TargetType="Button">
                 <Setter Property="Background" Value="Transparent" />
