@@ -2,17 +2,22 @@
     x:Class="InkCanvasForClass_Remastered.Controls.FloatingBarButton"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:InkCanvasForClass_Remastered.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:InkCanvasForClass_Remastered.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
+    <UserControl.Resources>
+        <converters:IsEnabledToOpacityConverter x:Key="IsEnabledToOpacityConverter" />
+    </UserControl.Resources>
     <Button
         Name="PART_Button"
         Command="{Binding Command, RelativeSource={RelativeSource AncestorType=UserControl}}"
         CommandParameter="{Binding CommandParameter, RelativeSource={RelativeSource AncestorType=UserControl}}"
-        Cursor="Hand">
+        Cursor="Hand"
+        Opacity="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource IsEnabledToOpacityConverter}}">
         <Button.Style>
             <Style TargetType="Button">
                 <Setter Property="Background" Value="Transparent" />
@@ -38,17 +43,31 @@
                 </Style.Triggers>
             </Style>
         </Button.Style>
-        <StackPanel Orientation="Vertical">
-            <Viewbox Width="28" Height="17">
-                <Path Data="{Binding PathData, RelativeSource={RelativeSource AncestorType=UserControl}}" Fill="#FF1B1B1B" />
-            </Viewbox>
-            <TextBlock
-                x:Name="PART_Label"
-                Margin="0,1,0,0"
-                FontSize="8"
-                Foreground="Black"
-                Text="{Binding Label, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                TextAlignment="Center" />
-        </StackPanel>
+        <Grid>
+            <ContentPresenter Content="{Binding Content, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+
+            <StackPanel Orientation="Vertical">
+                <StackPanel.Style>
+                    <Style TargetType="StackPanel">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Content, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="{x:Null}">
+                                <Setter Property="Visibility" Value="{x:Static Visibility.Visible}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                        <Setter Property="Visibility" Value="{x:Static Visibility.Collapsed}" />
+                    </Style>
+                </StackPanel.Style>
+                <Viewbox Width="28" Height="17">
+                    <Path Data="{Binding PathData, RelativeSource={RelativeSource AncestorType=UserControl}}" Fill="#FF1B1B1B" />
+                </Viewbox>
+                <TextBlock
+                    x:Name="PART_Label"
+                    Margin="0,1,0,0"
+                    FontSize="8"
+                    Foreground="Black"
+                    Text="{Binding Label, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    TextAlignment="Center" />
+            </StackPanel>
+        </Grid>
     </Button>
 </UserControl>
