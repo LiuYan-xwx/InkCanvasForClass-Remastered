@@ -47,10 +47,6 @@ namespace InkCanvasForClass_Remastered
                           INotificationService notificationService,
                           ILogger<MainWindow> logger)
         {
-            /*
-                处于画板模式内：Topmost == false / _viewModel.AppMode == AppMode.WhiteBoard
-                处于 PPT 放映内：_powerPointService.IsInSlideShow
-            */
             InitializeComponent();
 
             _viewModel = viewModel;
@@ -98,7 +94,7 @@ namespace InkCanvasForClass_Remastered
             switch (e.PropertyName)
             {
                 case nameof(Settings.ViewboxFloatingBarScaleTransformValue):
-                    if (_powerPointService.IsInSlideShow == true)
+                    if (_viewModel.IsPresentationMode)
                         ViewboxFloatingBarMarginAnimation(60);
                     else
                         ViewboxFloatingBarMarginAnimation(100, true);
@@ -236,7 +232,7 @@ namespace InkCanvasForClass_Remastered
         {
             SetWindowMode();
 
-            CursorFloatingBarButton_Click(null, null);
+            SelectTool(InkTool.Cursor);
 
             ApplySettingsToUI();
 
@@ -290,7 +286,7 @@ namespace InkCanvasForClass_Remastered
                 {
                     if (_viewModel.IsFloatingBarVisible)
                     {
-                        if (_powerPointService.IsInSlideShow)
+                        if (_viewModel.IsPresentationMode)
                             ViewboxFloatingBarMarginAnimation(60);
                         else
                             ViewboxFloatingBarMarginAnimation(100, true);
@@ -314,7 +310,7 @@ namespace InkCanvasForClass_Remastered
                     Dispatcher.Invoke(() =>
                     {
                         isFloatingBarOutsideScreen = IsOutsideOfScreenHelper.IsOutsideOfScreen(ViewboxFloatingBar);
-                        isInPPTPresentationMode = _powerPointService.IsInSlideShow;
+                        isInPPTPresentationMode = _viewModel.IsPresentationMode;
                     });
                     if (isFloatingBarOutsideScreen) dpiChangedDelayAction.DebounceAction(3000, null, () =>
                     {
@@ -395,18 +391,19 @@ namespace InkCanvasForClass_Remastered
 
             await Dispatcher.InvokeAsync(() =>
             {
-                if (_viewModel.AppMode == AppMode.WhiteBoard)
-                    CloseWhiteboard();
-                if (_powerPointService.IsInSlideShow)
+                if (_viewModel.IsWhiteboardMode)
+                    ExitWhiteboard();
+                if (_viewModel.IsPresentationMode)
                     if (foldFloatingBarByUser && inkCanvas.Strokes.Count > 2)
                         ShowNotification("正在清空墨迹并收纳至侧边栏，可进入批注模式后通过【撤销】功能来恢复原先墨迹。");
-                ClearAndMouseFloatingbarButton_Click(null, null);
+                DeleteSelectionOrClearCanvas();
+                SelectTool(InkTool.Cursor);
             });
 
             await Dispatcher.InvokeAsync(() =>
             {
                 ViewboxFloatingBarMarginAnimation(-60);
-                HideSubPanels("cursor");
+                HideSubPanels(true);
             });
             isFloatingBarChangingHideMode = false;
         }
@@ -430,7 +427,7 @@ namespace InkCanvasForClass_Remastered
 
             await Dispatcher.InvokeAsync(() =>
             {
-                if (_powerPointService.IsInSlideShow)
+                if (_viewModel.IsPresentationMode)
                     ViewboxFloatingBarMarginAnimation(60);
                 else
                     ViewboxFloatingBarMarginAnimation(100, true);
@@ -607,8 +604,7 @@ namespace InkCanvasForClass_Remastered
 
         private void BoardEraserIcon_Click(object sender, RoutedEventArgs e)
         {
-            if (inkCanvas.EditingMode == InkCanvasEditingMode.EraseByPoint ||
-                inkCanvas.EditingMode == InkCanvasEditingMode.EraseByStroke)
+            if (_viewModel.ActiveInkTool is InkTool.PointEraser or InkTool.StrokeEraser)
             {
                 if (BoardEraserSizePanel.Visibility == Visibility.Collapsed)
                 {
@@ -621,41 +617,24 @@ namespace InkCanvasForClass_Remastered
             }
             else
             {
-                UpdateEraserShape();
-                inkCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
-                inkCanvas_EditingModeChanged(inkCanvas, null);
-                CancelSingleFingerDragMode();
-
-                HideSubPanels("eraser");
+                SelectTool(InkTool.PointEraser);
             }
         }
 
         private void BoardEraserIconByStrokes_Click(object sender, RoutedEventArgs e)
         {
-            //if (BoardEraserByStrokes.Background.ToString() == "#FF679CF4") {
-            //    AnimationsHelper.ShowWithSlideFromBottomAndFade(BoardDeleteIcon);
-            //}
-            //else {
-
-            inkCanvas.EraserShape = new EllipseStylusShape(5, 5);
-            inkCanvas.EditingMode = InkCanvasEditingMode.EraseByStroke;
-
-            inkCanvas_EditingModeChanged(inkCanvas, null);
-            CancelSingleFingerDragMode();
-
-            HideSubPanels("eraserByStrokes");
-            //}
+            SelectTool(InkTool.StrokeEraser);
         }
 
         private void BoardSymbolIconDelete_MouseUp(object sender, RoutedEventArgs e)
         {
-            PenIcon_Click(null, null);
-            SymbolIconDelete_MouseUp(null, null);
+            SelectTool(penType == 1 ? InkTool.Highlighter : InkTool.Pen);
+            DeleteSelectionOrClearCanvas();
         }
         private void BoardSymbolIconDeleteInkAndHistories_MouseUp(object sender, RoutedEventArgs e)
         {
-            PenIcon_Click(null, null);
-            SymbolIconDelete_MouseUp(null, null);
+            SelectTool(penType == 1 ? InkTool.Highlighter : InkTool.Pen);
+            DeleteSelectionOrClearCanvas();
             if (Settings.ClearCanvasAndClearTimeMachine == false) timeMachine.ClearStrokeHistory();
         }
 
@@ -666,7 +645,7 @@ namespace InkCanvasForClass_Remastered
 
         private void ColorSwitchCheck()
         {
-            HideSubPanels("color");
+            HideSubPanels(true);
 
             if (DrawingAttributesHistory.Count > 0)
             {
@@ -694,7 +673,7 @@ namespace InkCanvasForClass_Remastered
         private void CheckColorTheme(bool changeColorTheme = false)
         {
             if (changeColorTheme)
-                if (_viewModel.AppMode == AppMode.WhiteBoard)
+                if (_viewModel.IsWhiteboardMode)
                 {
                     if (Settings.UsingWhiteboard)
                     {
@@ -706,7 +685,7 @@ namespace InkCanvasForClass_Remastered
                     }
                 }
 
-            if (_viewModel.AppMode == AppMode.Normal)
+            if (!_viewModel.IsWhiteboardMode)
             {
                 isUselightThemeColor = isDesktopUselightThemeColor;
                 inkColor = lastDesktopInkColor;
@@ -1020,7 +999,7 @@ namespace InkCanvasForClass_Remastered
             }
             else
             {
-                if (_viewModel.AppMode == AppMode.Normal) lastDesktopInkColor = inkColor;
+                if (!_viewModel.IsWhiteboardMode) lastDesktopInkColor = inkColor;
                 else lastBoardInkColor = inkColor;
             }
         }
@@ -1166,156 +1145,168 @@ namespace InkCanvasForClass_Remastered
 
         private void SwitchToDefaultPen(object? sender, MouseButtonEventArgs? e)
         {
-            penType = 0;
-            CheckPenTypeUIState();
-            CheckColorTheme();
-            _viewModel.InkCanvasDrawingAttributes.Width = Settings.InkWidth;
-            _viewModel.InkCanvasDrawingAttributes.Height = Settings.InkWidth;
-            _viewModel.InkCanvasDrawingAttributes.StylusTip = StylusTip.Ellipse;
-            _viewModel.InkCanvasDrawingAttributes.IsHighlighter = false;
+            SelectPenStyle(InkTool.Pen);
         }
 
         private void SwitchToHighlighterPen(object sender, MouseButtonEventArgs e)
         {
-            penType = 1;
+            SelectPenStyle(InkTool.Highlighter);
+        }
+
+        private void SelectPenStyle(InkTool tool)
+        {
+            ApplyPenStyle(tool);
+            _viewModel.ActiveInkTool = tool;
+            inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
+        }
+
+        private void ApplyPenStyle(InkTool tool)
+        {
+            if (tool is not (InkTool.Pen or InkTool.Highlighter))
+                throw new ArgumentOutOfRangeException(nameof(tool));
+
+            penType = tool == InkTool.Highlighter ? 1 : 0;
             CheckPenTypeUIState();
             CheckColorTheme();
-            _viewModel.InkCanvasDrawingAttributes.Width = Settings.HighlighterWidth / 2;
-            _viewModel.InkCanvasDrawingAttributes.Height = Settings.HighlighterWidth;
-            _viewModel.InkCanvasDrawingAttributes.StylusTip = StylusTip.Rectangle;
-            _viewModel.InkCanvasDrawingAttributes.IsHighlighter = true;
+            ConfigurePenDrawingAttributes(tool);
+        }
+
+        private void ConfigurePenDrawingAttributes(InkTool tool)
+        {
+            if (tool == InkTool.Highlighter)
+            {
+                _viewModel.InkCanvasDrawingAttributes.Width = Settings.HighlighterWidth / 2;
+                _viewModel.InkCanvasDrawingAttributes.Height = Settings.HighlighterWidth;
+                _viewModel.InkCanvasDrawingAttributes.StylusTip = StylusTip.Rectangle;
+                _viewModel.InkCanvasDrawingAttributes.IsHighlighter = true;
+            }
+            else
+            {
+                _viewModel.InkCanvasDrawingAttributes.Width = Settings.InkWidth;
+                _viewModel.InkCanvasDrawingAttributes.Height = Settings.InkWidth;
+                _viewModel.InkCanvasDrawingAttributes.StylusTip = StylusTip.Ellipse;
+                _viewModel.InkCanvasDrawingAttributes.IsHighlighter = false;
+            }
         }
 
         private void BtnColorBlack_Click(object? sender, RoutedEventArgs? e)
         {
-            CheckLastColor(0);
-            ColorSwitchCheck();
+            SelectInkColor(0);
         }
 
         private void BtnColorRed_Click(object sender, RoutedEventArgs e)
         {
-            CheckLastColor(1);
-            ColorSwitchCheck();
+            SelectInkColor(1);
         }
 
         private void BtnColorGreen_Click(object sender, RoutedEventArgs e)
         {
-            CheckLastColor(2);
-            ColorSwitchCheck();
+            SelectInkColor(2);
         }
 
         private void BtnColorBlue_Click(object sender, RoutedEventArgs e)
         {
-            CheckLastColor(3);
-            ColorSwitchCheck();
+            SelectInkColor(3);
         }
 
         private void BtnColorYellow_Click(object sender, RoutedEventArgs e)
         {
-            CheckLastColor(4);
-            ColorSwitchCheck();
+            SelectInkColor(4);
         }
 
         private void BtnColorWhite_Click(object? sender, RoutedEventArgs? e)
         {
-            CheckLastColor(5);
-            ColorSwitchCheck();
+            SelectInkColor(5);
         }
 
         private void BtnColorPink_Click(object sender, RoutedEventArgs e)
         {
-            CheckLastColor(6);
-            ColorSwitchCheck();
+            SelectInkColor(6);
         }
 
         private void BtnColorOrange_Click(object sender, RoutedEventArgs e)
         {
-            CheckLastColor(8);
-            ColorSwitchCheck();
+            SelectInkColor(8);
         }
 
         private void BtnColorTeal_Click(object sender, RoutedEventArgs e)
         {
-            CheckLastColor(7);
+            SelectInkColor(7);
+        }
+
+        private void SelectInkColor(int color)
+        {
+            penType = 0;
+            _viewModel.ActiveInkTool = InkTool.Pen;
+            inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
+            ConfigurePenDrawingAttributes(InkTool.Pen);
+            CheckPenTypeUIState();
+            ApplyInkColor(color);
+        }
+
+        private void ApplyInkColor(int color)
+        {
+            CheckLastColor(color);
             ColorSwitchCheck();
         }
 
         private void BtnHighlighterColorBlack_Click(object sender, RoutedEventArgs e)
         {
-            CheckLastColor(100, true);
-            penType = 1;
-            CheckPenTypeUIState();
-            ColorSwitchCheck();
+            SelectHighlighterColor(100);
         }
 
         private void BtnHighlighterColorWhite_Click(object sender, RoutedEventArgs e)
         {
-            CheckLastColor(101, true);
-            penType = 1;
-            CheckPenTypeUIState();
-            ColorSwitchCheck();
+            SelectHighlighterColor(101);
         }
 
         private void BtnHighlighterColorRed_Click(object sender, RoutedEventArgs e)
         {
-            CheckLastColor(102, true);
-            penType = 1;
-            CheckPenTypeUIState();
-            ColorSwitchCheck();
+            SelectHighlighterColor(102);
         }
 
         private void BtnHighlighterColorYellow_Click(object sender, RoutedEventArgs e)
         {
-            CheckLastColor(103, true);
-            penType = 1;
-            CheckPenTypeUIState();
-            ColorSwitchCheck();
+            SelectHighlighterColor(103);
         }
 
         private void BtnHighlighterColorGreen_Click(object sender, RoutedEventArgs e)
         {
-            CheckLastColor(104, true);
-            penType = 1;
-            CheckPenTypeUIState();
-            ColorSwitchCheck();
+            SelectHighlighterColor(104);
         }
 
         private void BtnHighlighterColorZinc_Click(object sender, RoutedEventArgs e)
         {
-            CheckLastColor(105, true);
-            penType = 1;
-            CheckPenTypeUIState();
-            ColorSwitchCheck();
+            SelectHighlighterColor(105);
         }
 
         private void BtnHighlighterColorBlue_Click(object sender, RoutedEventArgs e)
         {
-            CheckLastColor(106, true);
-            penType = 1;
-            CheckPenTypeUIState();
-            ColorSwitchCheck();
+            SelectHighlighterColor(106);
         }
 
         private void BtnHighlighterColorPurple_Click(object sender, RoutedEventArgs e)
         {
-            CheckLastColor(107, true);
-            penType = 1;
-            CheckPenTypeUIState();
-            ColorSwitchCheck();
+            SelectHighlighterColor(107);
         }
 
         private void BtnHighlighterColorTeal_Click(object sender, RoutedEventArgs e)
         {
-            CheckLastColor(108, true);
-            penType = 1;
-            CheckPenTypeUIState();
-            ColorSwitchCheck();
+            SelectHighlighterColor(108);
         }
 
         private void BtnHighlighterColorOrange_Click(object sender, RoutedEventArgs e)
         {
-            CheckLastColor(109, true);
+            SelectHighlighterColor(109);
+        }
+
+        private void SelectHighlighterColor(int color)
+        {
+            CheckLastColor(color, true);
             penType = 1;
+            _viewModel.ActiveInkTool = InkTool.Highlighter;
+            inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
+            ConfigurePenDrawingAttributes(InkTool.Highlighter);
             CheckPenTypeUIState();
             ColorSwitchCheck();
         }
@@ -1442,7 +1433,7 @@ namespace InkCanvasForClass_Remastered
             }
             else if (isVisible == true)
             {
-                if (_powerPointService.IsInSlideShow)
+                if (_viewModel.IsPresentationMode)
                     EnableTwoFingerGestureBorder.Visibility = Visibility.Collapsed;
                 else EnableTwoFingerGestureBorder.Visibility = Visibility.Visible;
             }
@@ -1471,7 +1462,7 @@ namespace InkCanvasForClass_Remastered
                 ViewboxFloatingBar.Margin = new Thickness(xPos, yPos, -2000, -200);
 
                 pos = e.GetPosition(null);
-                if (_powerPointService.IsInSlideShow)
+                if (_viewModel.IsPresentationMode)
                     pointPPT = new Point(xPos, yPos);
                 else
                     pointDesktop = new Point(xPos, yPos);
@@ -1557,42 +1548,42 @@ namespace InkCanvasForClass_Remastered
         ///             當<c>ToggleSwitchDrawShapeBorderAutoHide</c>開啟時，會自動隱藏白板模式下和浮動工具欄的“形狀”面板
         ///         </item>
         ///         <item>
-        ///             按需高亮指定的浮動工具欄和白板工具欄中的按鈕，通過param：<paramref name="mode"/> 來指定
+        ///             根据 <see cref="MainViewModel.ActiveInkTool"/> 刷新工具栏选中状态
         ///         </item>
         ///         <item>
         ///             將浮動工具欄自動居中，通過param：<paramref name="autoAlignCenter"/>
         ///         </item>
         ///     </list>
         /// </summary>
-        /// <param name="mode">
+        /// <param name="updateToolSelection">
         ///     <para>
         ///         按需高亮指定的浮動工具欄和白板工具欄中的按鈕，有下面幾種情況：
         ///     </para>
         ///     <list type="number">
         ///         <item>
-        ///             當<c><paramref name="mode"/>==null</c>時，不會執行任何有關操作
+        ///             为 false 时只隐藏子面板，不刷新工具选中状态
         ///         </item>
         ///         <item>
-        ///             當<c><paramref name="mode"/>!="clear"</c>時，會先取消高亮所有工具欄按鈕，然後根據下面的情況進行高亮處理
+        ///             为 true 时先清除原有高亮，再根据活动工具刷新
         ///         </item>
         ///         <item>
-        ///             當<c><paramref name="mode"/>=="color" || <paramref name="mode"/>=="pen"</c>時，會高亮浮動工具欄和白板工具欄中的“批註”，“筆”按鈕
+        ///             画笔和荧光笔共用画笔按钮的选中状态
         ///         </item>
         ///         <item>
-        ///             當<c><paramref name="mode"/>=="eraser"</c>時，會高亮白板工具欄中的“橡皮”和浮動工具欄中的“面積擦”按鈕
+        ///             点擦除对应面积擦按钮
         ///         </item>
         ///         <item>
-        ///             當<c><paramref name="mode"/>=="eraserByStrokes"</c>時，會高亮白板工具欄中的“橡皮”和浮動工具欄中的“墨跡擦”按鈕
+        ///             笔划擦除对应墨迹擦按钮
         ///         </item>
         ///         <item>
-        ///             當<c><paramref name="mode"/>=="select"</c>時，會高亮浮動工具欄和白板工具欄中的“選擇”，“套索選”按鈕
+        ///             选择工具对应套索选择按钮
         ///         </item>
         ///     </list>
         /// </param>
         /// <param name="autoAlignCenter">
         ///     是否自動居中浮動工具欄
         /// </param>
-        private async void HideSubPanels(string? mode = null, bool autoAlignCenter = false)
+        private async void HideSubPanels(bool updateToolSelection = false, bool autoAlignCenter = false)
         {
             AnimationsHelper.HideWithSlideAndFade(BorderTools);
             AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
@@ -1607,11 +1598,9 @@ namespace InkCanvasForClass_Remastered
             AnimationsHelper.HideWithSlideAndFade(EraserSizePanel);
             AnimationsHelper.HideWithSlideAndFade(BoardTwoFingerGestureBorder);
 
-            if (mode != null)
+            if (updateToolSelection)
             {
-                if (mode != "clear")
-                {
-                    PenIconGeometry.Brush = new SolidColorBrush(Color.FromRgb(27, 27, 27));
+                PenIconGeometry.Brush = new SolidColorBrush(Color.FromRgb(27, 27, 27));
                     PenIconGeometry.Geometry = Geometry.Parse(XamlGraphicsIconGeometries.LinedPenIcon);
                     StrokeEraserIconGeometry.Brush = new SolidColorBrush(Color.FromRgb(27, 27, 27));
                     StrokeEraserIconGeometry.Geometry =
@@ -1637,12 +1626,11 @@ namespace InkCanvasForClass_Remastered
 
                     FloatingbarSelectionBG.Visibility = Visibility.Hidden;
                     System.Windows.Controls.Canvas.SetLeft(FloatingbarSelectionBG, 0);
-                }
 
-                switch (mode)
+                switch (_viewModel.ActiveInkTool)
                 {
-                    case "pen":
-                    case "color":
+                    case InkTool.Pen:
+                    case InkTool.Highlighter:
                         {
                             PenIconGeometry.Brush = new SolidColorBrush(Color.FromRgb(30, 58, 138));
                             PenIconGeometry.Geometry = Geometry.Parse(XamlGraphicsIconGeometries.SolidPenIcon);
@@ -1655,7 +1643,7 @@ namespace InkCanvasForClass_Remastered
                             System.Windows.Controls.Canvas.SetLeft(FloatingbarSelectionBG, 28);
                             break;
                         }
-                    case "eraser":
+                    case InkTool.PointEraser:
                         {
                             CircleEraserIconGeometry.Brush = new SolidColorBrush(Color.FromRgb(30, 58, 138));
                             CircleEraserIconGeometry.Geometry =
@@ -1669,7 +1657,7 @@ namespace InkCanvasForClass_Remastered
                             System.Windows.Controls.Canvas.SetLeft(FloatingbarSelectionBG, 28 * 3);
                             break;
                         }
-                    case "eraserByStrokes":
+                    case InkTool.StrokeEraser:
                         {
                             StrokeEraserIconGeometry.Brush = new SolidColorBrush(Color.FromRgb(30, 58, 138));
                             StrokeEraserIconGeometry.Geometry =
@@ -1683,7 +1671,7 @@ namespace InkCanvasForClass_Remastered
                             System.Windows.Controls.Canvas.SetLeft(FloatingbarSelectionBG, 28 * 4);
                             break;
                         }
-                    case "select":
+                    case InkTool.Selection:
                         {
                             LassoSelectIconGeometry.Brush = new SolidColorBrush(Color.FromRgb(30, 58, 138));
                             LassoSelectIconGeometry.Geometry =
@@ -1702,12 +1690,12 @@ namespace InkCanvasForClass_Remastered
 
                 if (autoAlignCenter) // 控制居中
                 {
-                    if (_powerPointService.IsInSlideShow)
+                    if (_viewModel.IsPresentationMode)
                     {
                         await Task.Delay(50);
                         ViewboxFloatingBarMarginAnimation(60);
                     }
-                    else if (_viewModel.AppMode == AppMode.Normal) //非黑板
+                    else if (!_viewModel.IsWhiteboardMode) //非黑板
                     {
                         await Task.Delay(50);
                         ViewboxFloatingBarMarginAnimation(100, true);
@@ -1729,12 +1717,15 @@ namespace InkCanvasForClass_Remastered
         #region 撤銷重做按鈕
         private void SymbolIconUndo_MouseUp(object? sender, MouseButtonEventArgs? e)
         {
-            //if (lastBorderMouseDownObject != sender) return;
-
             if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
                 ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
             if (sender == SymbolIconUndo && lastBorderMouseDownObject != SymbolIconUndo) return;
 
+            Undo();
+        }
+
+        private void Undo()
+        {
             if (!_viewModel.CanUndo)
                 return;
 
@@ -1753,12 +1744,15 @@ namespace InkCanvasForClass_Remastered
 
         private void SymbolIconRedo_MouseUp(object? sender, MouseButtonEventArgs? e)
         {
-            //if (lastBorderMouseDownObject != sender) return;
-
             if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
                 ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
             if (sender == SymbolIconRedo && lastBorderMouseDownObject != SymbolIconRedo) return;
 
+            Redo();
+        }
+
+        private void Redo()
+        {
             if (!_viewModel.CanRedo)
                 return;
 
@@ -1779,16 +1773,20 @@ namespace InkCanvasForClass_Remastered
 
         #region 白板按鈕和退出白板模式按鈕
 
-        private async void OpenWhiteboardFloatingBarButton_Click(object? sender, RoutedEventArgs? e)
+        private void OpenWhiteboardFloatingBarButton_Click(object? sender, RoutedEventArgs? e)
         {
-            OpenWhiteboard();
+            EnterWhiteboard();
         }
 
-        /// <summary>
-        /// 打开白板模式
-        /// </summary>
-        private void OpenWhiteboard()
+        private WorkspaceMode _workspaceModeBeforeWhiteboard = WorkspaceMode.DesktopAnnotation;
+
+        private void EnterWhiteboard()
         {
+            if (_viewModel.IsWhiteboardMode)
+                return;
+
+            _workspaceModeBeforeWhiteboard = _viewModel.CurrentWorkspaceMode;
+
             // 如果画布当前是透明的（游标模式），先显示画布
             if (GridTransparencyFakeBackground.Background == null)
             {
@@ -1812,23 +1810,33 @@ namespace InkCanvasForClass_Remastered
                     ToggleSwitchEnableMultiTouchMode.IsOn = false;
             }
 
-            // 切换到白板模式
-            SwitchToWhiteboardMode();
+            SetWorkspaceMode(WorkspaceMode.Whiteboard);
 
-            SwitchToDefaultPen(null, null);
+            inkCanvas.Select(new StrokeCollection());
+            SaveStrokes(true);
+            ClearStrokes(true);
+            RestoreStrokes();
+
+            ApplyInkColor(Settings.UsingWhiteboard ? 0 : 5);
+
+            ApplyPenStyle(InkTool.Pen);
             CheckColorTheme(true);
         }
 
-        /// <summary>
-        /// 关闭白板模式
-        /// </summary>
-        private void CloseWhiteboard()
+        private void ExitWhiteboard(WorkspaceMode? destinationMode = null)
         {
+            if (!_viewModel.IsWhiteboardMode)
+                return;
+
+            var nextMode = destinationMode ?? _workspaceModeBeforeWhiteboard;
+            if (nextMode == WorkspaceMode.Whiteboard)
+                nextMode = WorkspaceMode.DesktopAnnotation;
+
             HideSubPanelsImmediately();
 
             // 动画调整浮动工具栏位置
-            var targetMargin = _powerPointService.IsInSlideShow ? 60 : 100;
-            var useTaskbarHeight = !_powerPointService.IsInSlideShow;
+            var targetMargin = nextMode == WorkspaceMode.Presentation ? 60 : 100;
+            var useTaskbarHeight = nextMode != WorkspaceMode.Presentation;
 
             new Thread(() =>
             {
@@ -1843,48 +1851,39 @@ namespace InkCanvasForClass_Remastered
                 ToggleSwitchEnableTwoFingerTranslate.IsOn = false;
             }
 
-            // 切换回屏幕模式
-            SwitchToScreenMode();
-
-            CursorFloatingBarButton_Click(null, null);
-
-            SwitchToDefaultPen(null, null);
-            CheckColorTheme(true);
-        }
-
-        /// <summary>
-        /// 切换到白板模式（显示黑板/白板UI）
-        /// </summary>
-        private void SwitchToWhiteboardMode()
-        {
-            _viewModel.AppMode = AppMode.WhiteBoard;
+            SetWorkspaceMode(nextMode);
 
             inkCanvas.Select(new StrokeCollection());
-
-            SaveStrokes(true);
-            ClearStrokes(true);
-            RestoreStrokes();
-
-            // 根据设置选择黑板或白板颜色
-            if (Settings.UsingWhiteboard)
-                BtnColorBlack_Click(null, null);
-            else
-                BtnColorWhite_Click(null, null);
-        }
-
-        /// <summary>
-        /// 切换到屏幕模式（隐藏黑板/白板UI）
-        /// </summary>
-        private void SwitchToScreenMode()
-        {
-            _viewModel.AppMode = AppMode.Normal;
-
-            inkCanvas.Select(new StrokeCollection());
-
             SaveStrokes();
             ClearStrokes(true);
             RestoreStrokes(true);
+
+            SelectTool(InkTool.Cursor);
+
+            ApplyPenStyle(InkTool.Pen);
+            CheckColorTheme(true);
         }
+
+        private void EnterPresentationMode()
+        {
+            if (_viewModel.IsWhiteboardMode)
+                ExitWhiteboard(WorkspaceMode.Presentation);
+            else
+                SetWorkspaceMode(WorkspaceMode.Presentation);
+        }
+
+        private void ExitPresentationMode()
+        {
+            if (_viewModel.IsWhiteboardMode)
+            {
+                _workspaceModeBeforeWhiteboard = WorkspaceMode.DesktopAnnotation;
+                return;
+            }
+
+            SetWorkspaceMode(WorkspaceMode.DesktopAnnotation);
+        }
+
+        private void SetWorkspaceMode(WorkspaceMode mode) => _viewModel.CurrentWorkspaceMode = mode;
 
         /// <summary>
         /// 显示墨迹画布（从透明游标模式切换到可见画布）
@@ -1906,7 +1905,7 @@ namespace InkCanvasForClass_Remastered
             inkCanvas.Visibility = Visibility.Visible;
             GridTransparencyFakeBackground.Background = null;
 
-            if (_viewModel.AppMode == AppMode.WhiteBoard)
+            if (_viewModel.IsWhiteboardMode)
             {
                 SaveStrokes();
                 RestoreStrokes(true);
@@ -1919,11 +1918,15 @@ namespace InkCanvasForClass_Remastered
 
         private void SymbolIconDelete_MouseUp(object? sender, MouseButtonEventArgs? e)
         {
-
             if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
                 ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
             if (sender == SymbolIconDelete && lastBorderMouseDownObject != SymbolIconDelete) return;
 
+            DeleteSelectionOrClearCanvas();
+        }
+
+        private void DeleteSelectionOrClearCanvas()
+        {
             if (inkCanvas.GetSelectedStrokes().Count > 0)
             {
                 inkCanvas.Strokes.Remove(inkCanvas.GetSelectedStrokes());
@@ -1937,7 +1940,7 @@ namespace InkCanvasForClass_Remastered
                     SaveScreenShot(true);
                 }
 
-                BtnClear_Click(null, null);
+                ClearCanvas();
             }
         }
 
@@ -1952,16 +1955,18 @@ namespace InkCanvasForClass_Remastered
         /// <param name="e">MouseButtonEventArgs</param>
         private void SymbolIconSelect_MouseUp(object sender, MouseButtonEventArgs e)
         {
-
             if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
                 ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
             if (sender == SymbolIconSelect && lastBorderMouseDownObject != SymbolIconSelect) return;
 
+            SelectTool(InkTool.Selection);
+        }
+
+        private void ActivateSelectionTool()
+        {
             FloatingbarSelectionBG.Visibility = Visibility.Visible;
             System.Windows.Controls.Canvas.SetLeft(FloatingbarSelectionBG, 140);
 
-            _viewModel.AppPenMode = InkCanvasEditingMode.Select;
-            //BtnSelect_Click
             inkCanvas.IsManipulationEnabled = false;
             if (inkCanvas.EditingMode == InkCanvasEditingMode.Select)
             {
@@ -1984,7 +1989,7 @@ namespace InkCanvasForClass_Remastered
                 inkCanvas.EditingMode = InkCanvasEditingMode.Select;
             }
 
-            HideSubPanels("select");
+            HideSubPanels(true);
         }
 
         #endregion
@@ -2156,6 +2161,11 @@ namespace InkCanvasForClass_Remastered
 
         private void ToolsFloatingBarButton_Click(object? sender, RoutedEventArgs? e)
         {
+            ToggleToolsPanel();
+        }
+
+        private void ToggleToolsPanel()
+        {
             if (BorderTools.Visibility == Visibility.Visible)
             {
                 AnimationsHelper.HideWithSlideAndFade(EraserSizePanel);
@@ -2192,7 +2202,7 @@ namespace InkCanvasForClass_Remastered
             if (MarginFromEdge == 60) MarginFromEdge = 55;
             await Dispatcher.InvokeAsync(() =>
             {
-                if (_viewModel.AppMode == AppMode.WhiteBoard)
+                if (_viewModel.IsWhiteboardMode)
                     MarginFromEdge = -60;
                 else
                     ViewboxFloatingBar.Visibility = Visibility.Visible;
@@ -2221,7 +2231,7 @@ namespace InkCanvasForClass_Remastered
 
                 if (MarginFromEdge != -60)
                 {
-                    if (_powerPointService.IsInSlideShow)
+                    if (_viewModel.IsPresentationMode)
                     {
                         if (pointPPT.X != -1 || pointPPT.Y != -1)
                         {
@@ -2258,7 +2268,7 @@ namespace InkCanvasForClass_Remastered
             await Dispatcher.InvokeAsync(() =>
             {
                 ViewboxFloatingBar.Margin = new Thickness(pos.X, pos.Y, -2000, -200);
-                if (_viewModel.AppMode == AppMode.WhiteBoard) ViewboxFloatingBar.Visibility = Visibility.Hidden;
+                if (_viewModel.IsWhiteboardMode) ViewboxFloatingBar.Visibility = Visibility.Hidden;
             });
         }
 
@@ -2356,11 +2366,61 @@ namespace InkCanvasForClass_Remastered
 
         private void CursorFloatingBarButton_Click(object? sender, RoutedEventArgs? e)
         {
+            SelectTool(InkTool.Cursor);
+        }
+
+        private void SelectTool(InkTool tool, bool toggleOptions = false)
+        {
+            var wasActive = _viewModel.ActiveInkTool == tool;
+            _viewModel.ActiveInkTool = tool;
+
+            switch (tool)
+            {
+                case InkTool.Cursor:
+                    ActivateCursorTool();
+                    break;
+                case InkTool.Pen:
+                case InkTool.Highlighter:
+                    ActivatePenTool(toggleOptions && wasActive);
+                    break;
+                case InkTool.PointEraser:
+                    ActivatePointEraserTool(toggleOptions && wasActive);
+                    break;
+                case InkTool.StrokeEraser:
+                    ActivateStrokeEraserTool();
+                    break;
+                case InkTool.Selection:
+                    ActivateSelectionTool();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(tool));
+            }
+        }
+
+        private void RestoreActiveInkToolEditingMode()
+        {
+            inkCanvas.EditingMode = _viewModel.ActiveInkTool switch
+            {
+                InkTool.Cursor => InkCanvasEditingMode.None,
+                InkTool.PointEraser => InkCanvasEditingMode.EraseByPoint,
+                InkTool.StrokeEraser => InkCanvasEditingMode.EraseByStroke,
+                InkTool.Selection => InkCanvasEditingMode.Select,
+                _ => InkCanvasEditingMode.Ink
+            };
+        }
+
+        private void ResetActiveInkToolEditingMode()
+        {
+            inkCanvas.EditingMode = InkCanvasEditingMode.None;
+            RestoreActiveInkToolEditingMode();
+        }
+
+        private void ActivateCursorTool()
+        {
             // 隱藏高亮
             FloatingbarSelectionBG.Visibility = Visibility.Visible;
             System.Windows.Controls.Canvas.SetLeft(FloatingbarSelectionBG, 0);
 
-            _viewModel.AppPenMode = InkCanvasEditingMode.None;
             // 切换前自动截图保存墨迹
             if (inkCanvas.Strokes.Count > 0 &&
                 inkCanvas.Strokes.Count > Settings.MinimumAutomationStrokeNumber)
@@ -2378,17 +2438,10 @@ namespace InkCanvasForClass_Remastered
             }
 
             GridTransparencyFakeBackground.Background = null;
+            RestoreActiveInkToolEditingMode();
 
             // 取消选中的墨迹
             inkCanvas.Select(new StrokeCollection());
-
-            //GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
-
-            //if (_viewModel.AppMode == AppMode.WhiteBoard)
-            //{
-            //    SaveStrokes();
-            //    RestoreStrokes(true);
-            //}
 
             CheckEnableTwoFingerGestureBtnVisibility(false);
 
@@ -2396,9 +2449,9 @@ namespace InkCanvasForClass_Remastered
 
             if (_viewModel.IsFloatingBarVisible)
             {
-                HideSubPanels("cursor", true);
+                HideSubPanels(true, true);
 
-                if (_powerPointService.IsInSlideShow)
+                if (_viewModel.IsPresentationMode)
                     ViewboxFloatingBarMarginAnimation(60);
                 else
                     ViewboxFloatingBarMarginAnimation(100, true);
@@ -2407,16 +2460,19 @@ namespace InkCanvasForClass_Remastered
 
         private void PenIcon_Click(object? sender, RoutedEventArgs? e)
         {
-
             if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
                 ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
             if (sender == Pen_Icon && lastBorderMouseDownObject != Pen_Icon) return;
 
+            SelectTool(penType == 1 ? InkTool.Highlighter : InkTool.Pen, true);
+        }
+
+        private void ActivatePenTool(bool toggleOptions)
+        {
             FloatingbarSelectionBG.Visibility = Visibility.Visible;
             System.Windows.Controls.Canvas.SetLeft(FloatingbarSelectionBG, 28);
 
-            _viewModel.AppPenMode = InkCanvasEditingMode.Ink;
-            if (Pen_Icon.Background == null || StackPanelCanvasControls.Visibility == Visibility.Collapsed)
+            if (!toggleOptions || StackPanelCanvasControls.Visibility == Visibility.Collapsed)
             {
                 inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
 
@@ -2432,7 +2488,7 @@ namespace InkCanvasForClass_Remastered
                 CheckEnableTwoFingerGestureBtnVisibility(true);
                 inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
                 ColorSwitchCheck();
-                HideSubPanels("pen", true);
+                HideSubPanels(true, true);
             }
             else
             {
@@ -2469,7 +2525,7 @@ namespace InkCanvasForClass_Remastered
                 {
                     inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
                     ColorSwitchCheck();
-                    HideSubPanels("pen", true);
+                    HideSubPanels(true, true);
                 }
             }
         }
@@ -2477,24 +2533,27 @@ namespace InkCanvasForClass_Remastered
         private void ColorThemeSwitch_MouseUp(object sender, RoutedEventArgs e)
         {
             isUselightThemeColor = !isUselightThemeColor;
-            if (_viewModel.AppMode == AppMode.Normal) isDesktopUselightThemeColor = isUselightThemeColor;
+            if (!_viewModel.IsWhiteboardMode) isDesktopUselightThemeColor = isUselightThemeColor;
             CheckColorTheme();
         }
 
         private void EraserIcon_Click(object sender, RoutedEventArgs e)
         {
-
             if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
                 ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
             if (sender == Eraser_Icon && lastBorderMouseDownObject != Eraser_Icon) return;
 
+            SelectTool(InkTool.PointEraser, true);
+        }
+
+        private void ActivatePointEraserTool(bool toggleOptions)
+        {
             FloatingbarSelectionBG.Visibility = Visibility.Visible;
             System.Windows.Controls.Canvas.SetLeft(FloatingbarSelectionBG, 84);
 
-            _viewModel.AppPenMode = InkCanvasEditingMode.EraseByPoint;
             UpdateEraserShape();
 
-            if (inkCanvas.EditingMode == InkCanvasEditingMode.EraseByPoint)
+            if (toggleOptions)
             {
                 if (EraserSizePanel.Visibility == Visibility.Collapsed)
                 {
@@ -2523,7 +2582,7 @@ namespace InkCanvasForClass_Remastered
             }
             else
             {
-                HideSubPanels("eraser");
+                HideSubPanels(true);
             }
 
             inkCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
@@ -2534,28 +2593,31 @@ namespace InkCanvasForClass_Remastered
 
         private void EraserIconByStrokes_Click(object sender, RoutedEventArgs e)
         {
-
             if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
                 ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
             if (sender == EraserByStrokes_Icon && lastBorderMouseDownObject != EraserByStrokes_Icon) return;
 
+            SelectTool(InkTool.StrokeEraser);
+        }
+
+        private void ActivateStrokeEraserTool()
+        {
             FloatingbarSelectionBG.Visibility = Visibility.Visible;
             System.Windows.Controls.Canvas.SetLeft(FloatingbarSelectionBG, 112);
 
-            _viewModel.AppPenMode = InkCanvasEditingMode.EraseByStroke;
             inkCanvas.EraserShape = new EllipseStylusShape(5, 5);
             inkCanvas.EditingMode = InkCanvasEditingMode.EraseByStroke;
 
             inkCanvas_EditingModeChanged(inkCanvas, null);
             CancelSingleFingerDragMode();
 
-            HideSubPanels("eraserByStrokes");
+            HideSubPanels(true);
         }
 
         private void ClearAndMouseFloatingbarButton_Click(object? sender, RoutedEventArgs? e)
         {
-            SymbolIconDelete_MouseUp(sender, null);
-            CursorFloatingBarButton_Click(null, null);
+            DeleteSelectionOrClearCanvas();
+            SelectTool(InkTool.Cursor);
         }
 
         private void CloseBordertools_MouseUp(object sender, MouseButtonEventArgs e)
@@ -2597,23 +2659,19 @@ namespace InkCanvasForClass_Remastered
 
         private void BtnClear_Click(object? sender, RoutedEventArgs? e)
         {
-            //BorderClearInDelete.Visibility = Visibility.Collapsed;
+            ClearCanvas();
+        }
 
-            if (_viewModel.AppMode == AppMode.Normal)
-            {
-                // 先回到画笔再清屏，避免 TimeMachine 的相关 bug 影响
-                if (Pen_Icon.Background == null && StackPanelCanvasControls.Visibility == Visibility.Visible)
-                    PenIcon_Click(null, null);
-            }
-            else
-            {
-                if (Pen_Icon.Background == null) PenIcon_Click(null, null);
-            }
+        private void ClearCanvas()
+        {
+            // 先回到画笔再清屏，避免 TimeMachine 的相关 bug 影响。
+            //if (_viewModel.ActiveInkTool is not (InkTool.Pen or InkTool.Highlighter))
+            //    SelectTool(penType == 1 ? InkTool.Highlighter : InkTool.Pen);
 
             if (inkCanvas.Strokes.Count != 0)
             {
                 var whiteboardIndex = _viewModel.WhiteboardCurrentPage;
-                if (_viewModel.AppMode == AppMode.Normal) whiteboardIndex = 0;
+                if (!_viewModel.IsWhiteboardMode) whiteboardIndex = 0;
                 strokeCollections[whiteboardIndex] = inkCanvas.Strokes.Clone();
             }
 
@@ -2651,7 +2709,7 @@ namespace InkCanvasForClass_Remastered
 
                 GridTransparencyFakeBackground.Background = null;
 
-                if (_viewModel.AppMode == AppMode.WhiteBoard)
+                if (_viewModel.IsWhiteboardMode)
                 {
                     SaveStrokes();
                     RestoreStrokes(true);
@@ -2662,7 +2720,7 @@ namespace InkCanvasForClass_Remastered
             {
                 StackPanelCanvasControls.Visibility = Visibility.Collapsed;
                 CheckEnableTwoFingerGestureBtnVisibility(false);
-                HideSubPanels("cursor");
+                HideSubPanels(true);
             }
             else
             {
@@ -2676,7 +2734,7 @@ namespace InkCanvasForClass_Remastered
         #region Hotkeys
         private void Window_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            if (!_powerPointService.IsInSlideShow || _viewModel.AppMode == AppMode.WhiteBoard)
+            if (!_viewModel.IsPresentationMode)
                 return;
             if (e.Delta >= 120)
                 HandlePPTPreviousPage();
@@ -2686,14 +2744,14 @@ namespace InkCanvasForClass_Remastered
 
         private void Main_Grid_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (!_powerPointService.IsInSlideShow || _viewModel.AppMode == AppMode.WhiteBoard)
+            if (!_viewModel.IsPresentationMode)
                 return;
             if (e.Key == Key.Down || e.Key == Key.PageDown || e.Key == Key.Right || e.Key == Key.N || e.Key == Key.Space)
                 HandlePPTNextPage();
             if (e.Key == Key.Up || e.Key == Key.PageUp || e.Key == Key.Left || e.Key == Key.P)
                 HandlePPTPreviousPage();
             if (e.Key == Key.Escape)
-                if (_powerPointService.IsInSlideShow)
+                if (_viewModel.IsPresentationMode)
                     _powerPointService.EndSlideShow();
         }
 
@@ -2713,7 +2771,7 @@ namespace InkCanvasForClass_Remastered
         {
             try
             {
-                SymbolIconUndo_MouseUp(lastBorderMouseDownObject, null);
+                Undo();
             }
             catch { }
         }
@@ -2722,7 +2780,7 @@ namespace InkCanvasForClass_Remastered
         {
             try
             {
-                SymbolIconRedo_MouseUp(lastBorderMouseDownObject, null);
+                Redo();
             }
             catch { }
         }
@@ -2872,6 +2930,8 @@ namespace InkCanvasForClass_Remastered
 
         private async void PptApplication_SlideShowBegin(SlideShowWindow Wn)
         {
+            await Application.Current.Dispatcher.InvokeAsync(EnterPresentationMode);
+
             if (Settings.IsAutoFoldInPPTSlideShow && _viewModel.IsFloatingBarVisible)
                 await HideFloatingBar(true);
             else if (!_viewModel.IsFloatingBarVisible)
@@ -2935,19 +2995,12 @@ namespace InkCanvasForClass_Remastered
 
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
-                if (_viewModel.AppMode == AppMode.WhiteBoard)
-                    CloseWhiteboard();
-
                 if (Settings.IsShowCanvasAtNewSlideShow &&
                     !Settings.IsAutoFoldInPPTSlideShow &&
                     GridTransparencyFakeBackground.Background == null)
                 {
-                    PenIcon_Click(null, null);
+                    SelectTool(penType == 1 ? InkTool.Highlighter : InkTool.Pen);
                 }
-                //if (Settings.IsShowCanvasAtNewSlideShow &&
-                //    !Settings.IsAutoFoldInPPTSlideShow)
-                //    BtnColorRed_Click(null, null);
-
                 isEnteredSlideShowEndEvent = false;
                 if (_viewModel.IsFloatingBarVisible)
                 {
@@ -3020,7 +3073,8 @@ namespace InkCanvasForClass_Remastered
 
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
-                CursorFloatingBarButton_Click(null, null);
+                ExitPresentationMode();
+                SelectTool(InkTool.Cursor);
 
                 inkCanvas.Strokes.Clear();
 
@@ -3114,7 +3168,7 @@ namespace InkCanvasForClass_Remastered
             {
                 return;
             }
-            CursorFloatingBarButton_Click(null, null);
+            SelectTool(InkTool.Cursor);
             try
             {
                 _powerPointService.ActiveSlideShowWindow.SlideNavigation.Visible = true;
@@ -3133,14 +3187,14 @@ namespace InkCanvasForClass_Remastered
             try
             {
                 string savePath = saveByUser
-                    ? _viewModel.AppMode == AppMode.Normal
+                    ? !_viewModel.IsWhiteboardMode
                         ? CommonDirectories.UserSaveAnnotationStrokesFolderPath
                         : CommonDirectories.UserSaveWhiteboardStrokesFolderPath
-                    : _viewModel.AppMode == AppMode.Normal
+                    : !_viewModel.IsWhiteboardMode
                         ? CommonDirectories.AutoSaveAnnotationStrokesFolderPath
                         : CommonDirectories.AutoSaveWhiteboardStrokesFolderPath;
 
-                string savePathWithName = _viewModel.AppMode == AppMode.Normal
+                string savePathWithName = !_viewModel.IsWhiteboardMode
                     ? Path.Combine(savePath, DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff") + ".icstk")
                     : Path.Combine(savePath,
                         DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff") + " Page-" +
@@ -3225,7 +3279,7 @@ namespace InkCanvasForClass_Remastered
         private void BorderStrokeSelectionDelete_MouseUp(object sender, MouseButtonEventArgs e)
         {
             if (lastBorderMouseDownObject != sender) return;
-            SymbolIconDelete_MouseUp(sender, e);
+            DeleteSelectionOrClearCanvas();
         }
 
         private void GridPenWidthDecrease_MouseUp(object sender, MouseButtonEventArgs e)
@@ -3785,8 +3839,7 @@ namespace InkCanvasForClass_Remastered
                     inkCanvas.StylusUp += MainWindow_StylusUp;
                     inkCanvas.TouchDown += MainWindow_TouchDown;
                     inkCanvas.TouchDown -= Main_Grid_TouchDown;
-                    inkCanvas.EditingMode = InkCanvasEditingMode.None;
-                    inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
+                    ResetActiveInkToolEditingMode();
                     inkPreviewOverlay.Children.Clear();
                     isInMultiTouchMode = true;
                 }
@@ -3800,8 +3853,7 @@ namespace InkCanvasForClass_Remastered
                     inkCanvas.StylusUp -= MainWindow_StylusUp;
                     inkCanvas.TouchDown -= MainWindow_TouchDown;
                     inkCanvas.TouchDown += Main_Grid_TouchDown;
-                    inkCanvas.EditingMode = InkCanvasEditingMode.None;
-                    inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
+                    ResetActiveInkToolEditingMode();
                     inkPreviewOverlay.Children.Clear();
                     isInMultiTouchMode = false;
                 }
@@ -3903,7 +3955,7 @@ namespace InkCanvasForClass_Remastered
 
             if (Settings.AutoSwitchTwoFingerGesture)
             {
-                if (_viewModel.AppMode == AppMode.Normal)
+                if (!_viewModel.IsWhiteboardMode)
                 {
                     ToggleSwitchEnableTwoFingerTranslate.IsOn = false;
                     BoardToggleSwitchEnableTwoFingerTranslate.IsOn = false;
@@ -3950,7 +4002,7 @@ namespace InkCanvasForClass_Remastered
             }
 
             // auto align
-            if (_powerPointService.IsInSlideShow)
+            if (_viewModel.IsPresentationMode)
             {
                 ViewboxFloatingBarMarginAnimation(60);
             }
@@ -3965,13 +4017,7 @@ namespace InkCanvasForClass_Remastered
 
         private void Main_Grid_TouchUp(object sender, TouchEventArgs e)
         {
-
-            inkCanvas.ReleaseAllTouchCaptures();
-            ViewboxFloatingBar.IsHitTestVisible = true;
-            WhiteboardGrid.IsHitTestVisible = true;
-            PPTNavigationPanel.IsHitTestVisible = true;
-
-            inkCanvas_MouseUp(sender, null);
+            CompleteInkInteraction();
         }
 
         private void inkCanvas_MouseDown(object sender, MouseButtonEventArgs e)
@@ -3984,7 +4030,13 @@ namespace InkCanvasForClass_Remastered
 
         private void inkCanvas_MouseUp(object? sender, MouseButtonEventArgs? e)
         {
+            CompleteInkInteraction();
+        }
+
+        private void CompleteInkInteraction()
+        {
             inkCanvas.ReleaseMouseCapture();
+            inkCanvas.ReleaseAllTouchCaptures();
             ViewboxFloatingBar.IsHitTestVisible = true;
             WhiteboardGrid.IsHitTestVisible = true;
             PPTNavigationPanel.IsHitTestVisible = true;
@@ -4684,6 +4736,7 @@ namespace InkCanvasForClass_Remastered
                     StrokeVisualList.Clear();
                     VisualCanvasList.Clear();
                     TouchDownPointsList.Clear();
+                    RestoreActiveInkToolEditingMode();
                 }
             }
             catch (Exception ex)
@@ -4799,7 +4852,7 @@ namespace InkCanvasForClass_Remastered
             //    }
             //    else
             //    {
-            //        if (_powerPointService.IsInSlideShow && inkCanvas.Strokes.Count == 0 &&
+            //        if (_viewModel.IsPresentationMode && inkCanvas.Strokes.Count == 0 &&
             //            Settings.IsEnableFingerGestureSlideShowControl)
             //        {
             //            inkCanvas.EditingMode = InkCanvasEditingMode.GestureOnly;
@@ -4834,8 +4887,6 @@ namespace InkCanvasForClass_Remastered
         //记录触摸设备ID
         private List<int> dec = [];
 
-        private InkCanvasEditingMode lastInkCanvasEditingMode = InkCanvasEditingMode.Ink;
-
         private void inkCanvas_PreviewTouchDown(object sender, TouchEventArgs e)
         {
             //Logger.LogDebug("inkCanvas_PreviewTouchDown");
@@ -4856,7 +4907,6 @@ namespace InkCanvasForClass_Remastered
                 if (isInMultiTouchMode || !Settings.IsEnableTwoFingerGesture) return;
                 if (inkCanvas.EditingMode == InkCanvasEditingMode.None ||
                     inkCanvas.EditingMode == InkCanvasEditingMode.Select) return;
-                lastInkCanvasEditingMode = inkCanvas.EditingMode;
                 inkCanvas.EditingMode = InkCanvasEditingMode.None;
             }
         }
@@ -4872,7 +4922,7 @@ namespace InkCanvasForClass_Remastered
             //手势完成后切回之前的状态
             if (dec.Count > 1)
                 if (inkCanvas.EditingMode == InkCanvasEditingMode.None)
-                    inkCanvas.EditingMode = lastInkCanvasEditingMode;
+                    RestoreActiveInkToolEditingMode();
             dec.Remove(e.TouchDevice.Id);
             inkCanvas.Opacity = 1;
 
@@ -4890,11 +4940,7 @@ namespace InkCanvasForClass_Remastered
         {
             //Logger.LogDebug("Main_Grid_ManipulationCompleted");
             if (e.Manipulators.Count() != 0) return;
-            if (_viewModel.AppPenMode is InkCanvasEditingMode.EraseByPoint or InkCanvasEditingMode.EraseByStroke)
-            {
-                return;
-            }
-            inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
+            RestoreActiveInkToolEditingMode();
         }
 
         // -- removed --
@@ -4921,8 +4967,7 @@ namespace InkCanvasForClass_Remastered
         {
             if (isInMultiTouchMode || !Settings.IsEnableTwoFingerGesture) return;
             if (dec.Count >= 2 && (Settings.IsEnableTwoFingerGestureInPresentationMode
-                                    || !_powerPointService.IsInSlideShow
-                                    || _viewModel.AppMode == AppMode.WhiteBoard))
+                                    || !_viewModel.IsPresentationMode))
             {
                 var md = e.DeltaManipulation;
                 var trans = md.Translation; // 获得位移矢量
@@ -5027,11 +5072,11 @@ namespace InkCanvasForClass_Remastered
 
         private void SymbolIconTools_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            ToolsFloatingBarButton_Click(null, null);
+            ToggleToolsPanel();
         }
         private void CloseWhiteboardWhiteBoardButton_Click(object sender, MouseButtonEventArgs e)
         {
-            CloseWhiteboard();
+            ExitWhiteboard();
         }
 
         public void HideToolsPanel()

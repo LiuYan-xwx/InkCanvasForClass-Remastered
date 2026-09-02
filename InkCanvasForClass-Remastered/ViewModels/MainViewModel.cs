@@ -5,7 +5,6 @@ using InkCanvasForClass_Remastered.Interfaces;
 using InkCanvasForClass_Remastered.Models;
 using InkCanvasForClass_Remastered.Services;
 using System.ComponentModel;
-using System.Windows.Controls;
 using System.Windows.Ink;
 using System.Windows.Media;
 
@@ -36,10 +35,17 @@ namespace InkCanvasForClass_Remastered.ViewModels
         public IPowerPointService PowerPointService => _powerPointService;
 
         [ObservableProperty]
-        public partial AppMode AppMode { get; set; } = AppMode.Normal;
+        [NotifyPropertyChangedFor(nameof(IsDesktopAnnotationMode))]
+        [NotifyPropertyChangedFor(nameof(IsWhiteboardMode))]
+        [NotifyPropertyChangedFor(nameof(IsPresentationMode))]
+        public partial WorkspaceMode CurrentWorkspaceMode { get; set; } = WorkspaceMode.DesktopAnnotation;
+
+        public bool IsDesktopAnnotationMode => CurrentWorkspaceMode == WorkspaceMode.DesktopAnnotation;
+        public bool IsWhiteboardMode => CurrentWorkspaceMode == WorkspaceMode.Whiteboard;
+        public bool IsPresentationMode => CurrentWorkspaceMode == WorkspaceMode.Presentation;
 
         [ObservableProperty]
-        public partial InkCanvasEditingMode AppPenMode { get; set; } = InkCanvasEditingMode.None;
+        public partial InkTool ActiveInkTool { get; set; } = InkTool.Cursor;
 
         [ObservableProperty]
         public partial DrawingAttributes InkCanvasDrawingAttributes { get; set; }

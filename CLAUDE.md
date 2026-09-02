@@ -43,7 +43,7 @@ There are no dedicated test projects. `dotnet test` is a validation pass only.
 ### Key Design Decisions
 
 - **Code-behind-heavy**: Most interaction logic lives in `MainWindow.xaml.cs` with partial helpers in `MainWindow_cs/MW_Icons.cs`. Avoid broad refactors unless explicitly requested.
-- **App modes**: Two modes via `AppMode` enum — `Normal` (annotation overlay) and `WhiteBoard` (full-screen whiteboard).
+- **Workspace state**: `WorkspaceMode` is the single UI workspace state (`DesktopAnnotation`, `Whiteboard`, or `Presentation`). `InkTool` is the single active-tool state; temporary `InkCanvas.EditingMode` changes must restore from it.
 - **PowerPoint integration**: `PowerPointService` wraps Microsoft.Office.Interop.PowerPoint COM — connects to running PowerPoint instance, handles slide show events (begin/end/next), and manages ink per slide.
 - **Settings**: JSON file via Newtonsoft.Json. `Settings` class uses `[ObservableProperty]` for property change notifications.
 - **Ink Canvas**: WPF's `System.Windows.Ink` APIs (`Stroke`, `StrokeCollection`, `InkCanvas`). Custom rendering and hit-testing.

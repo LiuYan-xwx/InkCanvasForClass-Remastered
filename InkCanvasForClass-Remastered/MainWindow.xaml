@@ -1534,7 +1534,7 @@
         </Grid>
 
         <!--  // 黑/白 板幕布 //  -->
-        <Grid Name="WhiteBoardBackgroundCover" Visibility="{Binding AppMode, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=WhiteBoard}">
+        <Grid Name="WhiteBoardBackgroundCover" Visibility="{Binding CurrentWorkspaceMode, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Whiteboard}">
             <Grid.Style>
                 <Style TargetType="Grid">
                     <Setter Property="Background" Value="#162924" />
@@ -1839,7 +1839,7 @@
         </Grid>
 
         <!--  // BlackBoard 界面 //  -->
-        <Grid Name="WhiteboardGrid" Visibility="{Binding AppMode, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=WhiteBoard}">
+        <Grid Name="WhiteboardGrid" Visibility="{Binding CurrentWorkspaceMode, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=Whiteboard}">
             <!--  左下角  -->
             <Viewbox
                 x:Name="ViewboxBlackboardLeftSide"
@@ -6211,9 +6211,9 @@
                         <MultiDataTrigger>
                             <MultiDataTrigger.Conditions>
                                 <Condition Binding="{Binding PowerPointService.IsInSlideShow}" Value="True" />
+                                <Condition Binding="{Binding IsPresentationMode}" Value="True" />
                                 <Condition Binding="{Binding Settings.ShowPPTButton}" Value="True" />
                                 <Condition Binding="{Binding IsFloatingBarVisible}" Value="True" />
-                                <Condition Binding="{Binding AppMode}" Value="Normal" />
                             </MultiDataTrigger.Conditions>
                             <MultiDataTrigger.Setters>
                                 <Setter Property="Visibility" Value="Visible" />

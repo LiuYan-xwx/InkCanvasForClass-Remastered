@@ -1,15 +1,13 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using InkCanvasForClass_Remastered.Interfaces;
 using System.Diagnostics;
 using System.Windows;
 
 namespace InkCanvasForClass_Remastered.ViewModels
 {
-    public partial class TrayIconMenuViewModel(MainWindow mainWindow, IPowerPointService powerPointService) : ObservableObject
+    public partial class TrayIconMenuViewModel(MainWindow mainWindow) : ObservableObject
     {
         private readonly MainWindow MainWindow = mainWindow;
-        private readonly IPowerPointService PowerPointService = powerPointService;
 
         [ObservableProperty]
         [NotifyCanExecuteChangedFor(nameof(FoldFloatingBarCommand))]
@@ -42,7 +40,7 @@ namespace InkCanvasForClass_Remastered.ViewModels
         [RelayCommand(CanExecute = nameof(ShowMainWindowChecked))]
         private void ResetFloatingBarPosition()
         {
-            if (PowerPointService.IsInSlideShow)
+            if (MainWindow._viewModel.IsPresentationMode)
             {
                 MainWindow.PureViewboxFloatingBarMarginAnimationInPPTMode();
             }
