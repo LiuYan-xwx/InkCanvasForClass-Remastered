@@ -76,7 +76,7 @@ namespace InkCanvasForClass_Remastered
             inkCanvas.Strokes.StrokesChanged += StrokesOnStrokesChanged;
 
             CheckColorTheme(true);
-            CheckPenTypeUIState();
+            UpdatePenPaletteForSelectedTool();
         }
         private readonly DispatcherTimer topmostRefreshTimer = new()
         {
@@ -628,12 +628,12 @@ namespace InkCanvasForClass_Remastered
 
         private void BoardSymbolIconDelete_MouseUp(object sender, RoutedEventArgs e)
         {
-            SelectTool(penType == 1 ? InkTool.Highlighter : InkTool.Pen);
+            SelectTool(_selectedPenTool);
             DeleteSelectionOrClearCanvas();
         }
         private void BoardSymbolIconDeleteInkAndHistories_MouseUp(object sender, RoutedEventArgs e)
         {
-            SelectTool(penType == 1 ? InkTool.Highlighter : InkTool.Pen);
+            SelectTool(_selectedPenTool);
             DeleteSelectionOrClearCanvas();
             if (Settings.ClearCanvasAndClearTimeMachine == false) timeMachine.ClearStrokeHistory();
         }
@@ -659,14 +659,15 @@ namespace InkCanvasForClass_Remastered
             else
             {
                 inkCanvas.IsManipulationEnabled = true;
-                inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
+                RestoreActiveInkToolEditingMode();
                 CancelSingleFingerDragMode();
                 CheckColorTheme();
             }
         }
 
         private bool isUselightThemeColor = false, isDesktopUselightThemeColor = false;
-        private int penType = 0; // 0是签字笔，1是荧光笔
+        // Remembers which pen variant to restore after using another tool.
+        private InkTool _selectedPenTool = InkTool.Pen;
         private int lastDesktopInkColor = 1, lastBoardInkColor = 5;
         private int highlighterColor = 102;
 
@@ -697,7 +698,7 @@ namespace InkCanvasForClass_Remastered
 
             double alpha = _viewModel.InkCanvasDrawingAttributes.Color.A;
 
-            if (penType == 0)
+            if (_selectedPenTool == InkTool.Pen)
             {
                 if (inkColor == 0)
                 {
@@ -758,7 +759,7 @@ namespace InkCanvasForClass_Remastered
                         _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 234, 88, 12);
                 }
             }
-            else if (penType == 1)
+            else if (_selectedPenTool == InkTool.Highlighter)
             {
                 if (highlighterColor == 100)
                     // Black
@@ -1004,9 +1005,9 @@ namespace InkCanvasForClass_Remastered
             }
         }
 
-        private async void CheckPenTypeUIState()
+        private async void UpdatePenPaletteForSelectedTool()
         {
-            if (penType == 0)
+            if (_selectedPenTool == InkTool.Pen)
             {
                 DefaultPenPropsPanel.Visibility = Visibility.Visible;
                 DefaultPenColorsPanel.Visibility = Visibility.Visible;
@@ -1074,7 +1075,7 @@ namespace InkCanvasForClass_Remastered
 
                 await Dispatcher.InvokeAsync(() => { BoardPenPaletteGrid.Margin = new Thickness(-160, -200, -33, 50); });
             }
-            else if (penType == 1)
+            else if (_selectedPenTool == InkTool.Highlighter)
             {
                 DefaultPenPropsPanel.Visibility = Visibility.Collapsed;
                 DefaultPenColorsPanel.Visibility = Visibility.Collapsed;
@@ -1156,8 +1157,7 @@ namespace InkCanvasForClass_Remastered
         private void SelectPenStyle(InkTool tool)
         {
             ApplyPenStyle(tool);
-            _viewModel.ActiveInkTool = tool;
-            inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
+            SetActiveInkTool(tool);
         }
 
         private void ApplyPenStyle(InkTool tool)
@@ -1165,8 +1165,8 @@ namespace InkCanvasForClass_Remastered
             if (tool is not (InkTool.Pen or InkTool.Highlighter))
                 throw new ArgumentOutOfRangeException(nameof(tool));
 
-            penType = tool == InkTool.Highlighter ? 1 : 0;
-            CheckPenTypeUIState();
+            _selectedPenTool = tool;
+            UpdatePenPaletteForSelectedTool();
             CheckColorTheme();
             ConfigurePenDrawingAttributes(tool);
         }
@@ -1236,11 +1236,9 @@ namespace InkCanvasForClass_Remastered
 
         private void SelectInkColor(int color)
         {
-            penType = 0;
-            _viewModel.ActiveInkTool = InkTool.Pen;
-            inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
+            SetActiveInkTool(InkTool.Pen);
             ConfigurePenDrawingAttributes(InkTool.Pen);
-            CheckPenTypeUIState();
+            UpdatePenPaletteForSelectedTool();
             ApplyInkColor(color);
         }
 
@@ -1303,11 +1301,9 @@ namespace InkCanvasForClass_Remastered
         private void SelectHighlighterColor(int color)
         {
             CheckLastColor(color, true);
-            penType = 1;
-            _viewModel.ActiveInkTool = InkTool.Highlighter;
-            inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
+            SetActiveInkTool(InkTool.Highlighter);
             ConfigurePenDrawingAttributes(InkTool.Highlighter);
-            CheckPenTypeUIState();
+            UpdatePenPaletteForSelectedTool();
             ColorSwitchCheck();
         }
 
@@ -1819,7 +1815,7 @@ namespace InkCanvasForClass_Remastered
 
             ApplyInkColor(Settings.UsingWhiteboard ? 0 : 5);
 
-            ApplyPenStyle(InkTool.Pen);
+            SelectPenStyle(InkTool.Pen);
             CheckColorTheme(true);
         }
 
@@ -1962,13 +1958,13 @@ namespace InkCanvasForClass_Remastered
             SelectTool(InkTool.Selection);
         }
 
-        private void ActivateSelectionTool()
+        private void ActivateSelectionTool(bool wasInSelectionMode)
         {
             FloatingbarSelectionBG.Visibility = Visibility.Visible;
             System.Windows.Controls.Canvas.SetLeft(FloatingbarSelectionBG, 140);
 
             inkCanvas.IsManipulationEnabled = false;
-            if (inkCanvas.EditingMode == InkCanvasEditingMode.Select)
+            if (wasInSelectionMode)
             {
                 if (inkCanvas.GetSelectedStrokes().Count == inkCanvas.Strokes.Count)
                 {
@@ -1984,11 +1980,6 @@ namespace InkCanvasForClass_Remastered
                     inkCanvas.Select(selectedStrokes);
                 }
             }
-            else
-            {
-                inkCanvas.EditingMode = InkCanvasEditingMode.Select;
-            }
-
             HideSubPanels(true);
         }
 
@@ -2372,7 +2363,8 @@ namespace InkCanvasForClass_Remastered
         private void SelectTool(InkTool tool, bool toggleOptions = false)
         {
             var wasActive = _viewModel.ActiveInkTool == tool;
-            _viewModel.ActiveInkTool = tool;
+            var wasInSelectionMode = inkCanvas.EditingMode == InkCanvasEditingMode.Select;
+            SetActiveInkTool(tool);
 
             switch (tool)
             {
@@ -2390,23 +2382,35 @@ namespace InkCanvasForClass_Remastered
                     ActivateStrokeEraserTool();
                     break;
                 case InkTool.Selection:
-                    ActivateSelectionTool();
+                    ActivateSelectionTool(wasInSelectionMode);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(tool));
             }
         }
 
+        private void SetActiveInkTool(InkTool tool)
+        {
+            if (tool is InkTool.Pen or InkTool.Highlighter)
+                _selectedPenTool = tool;
+
+            _viewModel.ActiveInkTool = tool;
+            inkCanvas.EditingMode = GetEditingMode(tool);
+        }
+
+        private static InkCanvasEditingMode GetEditingMode(InkTool tool) => tool switch
+        {
+            InkTool.Cursor => InkCanvasEditingMode.None,
+            InkTool.Pen or InkTool.Highlighter => InkCanvasEditingMode.Ink,
+            InkTool.PointEraser => InkCanvasEditingMode.EraseByPoint,
+            InkTool.StrokeEraser => InkCanvasEditingMode.EraseByStroke,
+            InkTool.Selection => InkCanvasEditingMode.Select,
+            _ => throw new ArgumentOutOfRangeException(nameof(tool))
+        };
+
         private void RestoreActiveInkToolEditingMode()
         {
-            inkCanvas.EditingMode = _viewModel.ActiveInkTool switch
-            {
-                InkTool.Cursor => InkCanvasEditingMode.None,
-                InkTool.PointEraser => InkCanvasEditingMode.EraseByPoint,
-                InkTool.StrokeEraser => InkCanvasEditingMode.EraseByStroke,
-                InkTool.Selection => InkCanvasEditingMode.Select,
-                _ => InkCanvasEditingMode.Ink
-            };
+            inkCanvas.EditingMode = GetEditingMode(_viewModel.ActiveInkTool);
         }
 
         private void ResetActiveInkToolEditingMode()
@@ -2438,7 +2442,6 @@ namespace InkCanvasForClass_Remastered
             }
 
             GridTransparencyFakeBackground.Background = null;
-            RestoreActiveInkToolEditingMode();
 
             // 取消选中的墨迹
             inkCanvas.Select(new StrokeCollection());
@@ -2464,7 +2467,7 @@ namespace InkCanvasForClass_Remastered
                 ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
             if (sender == Pen_Icon && lastBorderMouseDownObject != Pen_Icon) return;
 
-            SelectTool(penType == 1 ? InkTool.Highlighter : InkTool.Pen, true);
+            SelectTool(_selectedPenTool, true);
         }
 
         private void ActivatePenTool(bool toggleOptions)
@@ -2474,8 +2477,6 @@ namespace InkCanvasForClass_Remastered
 
             if (!toggleOptions || StackPanelCanvasControls.Visibility == Visibility.Collapsed)
             {
-                inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
-
                 GridTransparencyFakeBackground.Background = new SolidColorBrush(Color.FromArgb(1, 0, 0, 0));
 
                 inkCanvas.IsHitTestVisible = true;
@@ -2486,46 +2487,36 @@ namespace InkCanvasForClass_Remastered
                 StackPanelCanvasControls.Visibility = Visibility.Visible;
                 //AnimationsHelper.ShowWithSlideFromLeftAndFade(StackPanelCanvasControls);
                 CheckEnableTwoFingerGestureBtnVisibility(true);
-                inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
                 ColorSwitchCheck();
                 HideSubPanels(true, true);
             }
             else
             {
-                if (inkCanvas.EditingMode == InkCanvasEditingMode.Ink)
+                if (PenPalette.Visibility == Visibility.Visible)
                 {
-                    if (PenPalette.Visibility == Visibility.Visible)
-                    {
-                        AnimationsHelper.HideWithSlideAndFade(EraserSizePanel);
-                        AnimationsHelper.HideWithSlideAndFade(BorderTools);
-                        AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
-                        AnimationsHelper.HideWithSlideAndFade(PenPalette);
-                        AnimationsHelper.HideWithSlideAndFade(BoardPenPalette);
-                        AnimationsHelper.HideWithSlideAndFade(BoardEraserSizePanel);
-                        AnimationsHelper.HideWithSlideAndFade(BorderTools);
-                        AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
-                        AnimationsHelper.HideWithSlideAndFade(TwoFingerGestureBorder);
-                        AnimationsHelper.HideWithSlideAndFade(BoardTwoFingerGestureBorder);
-                    }
-                    else
-                    {
-                        AnimationsHelper.HideWithSlideAndFade(EraserSizePanel);
-                        AnimationsHelper.HideWithSlideAndFade(BorderTools);
-                        AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
-                        AnimationsHelper.HideWithSlideAndFade(BoardEraserSizePanel);
-                        AnimationsHelper.HideWithSlideAndFade(BorderTools);
-                        AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
-                        AnimationsHelper.HideWithSlideAndFade(TwoFingerGestureBorder);
-                        AnimationsHelper.HideWithSlideAndFade(BoardTwoFingerGestureBorder);
-                        AnimationsHelper.ShowWithSlideFromBottomAndFade(PenPalette);
-                        AnimationsHelper.ShowWithSlideFromBottomAndFade(BoardPenPalette);
-                    }
+                    AnimationsHelper.HideWithSlideAndFade(EraserSizePanel);
+                    AnimationsHelper.HideWithSlideAndFade(BorderTools);
+                    AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
+                    AnimationsHelper.HideWithSlideAndFade(PenPalette);
+                    AnimationsHelper.HideWithSlideAndFade(BoardPenPalette);
+                    AnimationsHelper.HideWithSlideAndFade(BoardEraserSizePanel);
+                    AnimationsHelper.HideWithSlideAndFade(BorderTools);
+                    AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
+                    AnimationsHelper.HideWithSlideAndFade(TwoFingerGestureBorder);
+                    AnimationsHelper.HideWithSlideAndFade(BoardTwoFingerGestureBorder);
                 }
                 else
                 {
-                    inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
-                    ColorSwitchCheck();
-                    HideSubPanels(true, true);
+                    AnimationsHelper.HideWithSlideAndFade(EraserSizePanel);
+                    AnimationsHelper.HideWithSlideAndFade(BorderTools);
+                    AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
+                    AnimationsHelper.HideWithSlideAndFade(BoardEraserSizePanel);
+                    AnimationsHelper.HideWithSlideAndFade(BorderTools);
+                    AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
+                    AnimationsHelper.HideWithSlideAndFade(TwoFingerGestureBorder);
+                    AnimationsHelper.HideWithSlideAndFade(BoardTwoFingerGestureBorder);
+                    AnimationsHelper.ShowWithSlideFromBottomAndFade(PenPalette);
+                    AnimationsHelper.ShowWithSlideFromBottomAndFade(BoardPenPalette);
                 }
             }
         }
@@ -2585,8 +2576,6 @@ namespace InkCanvasForClass_Remastered
                 HideSubPanels(true);
             }
 
-            inkCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
-
             inkCanvas_EditingModeChanged(inkCanvas, null);
             CancelSingleFingerDragMode();
         }
@@ -2606,7 +2595,6 @@ namespace InkCanvasForClass_Remastered
             System.Windows.Controls.Canvas.SetLeft(FloatingbarSelectionBG, 112);
 
             inkCanvas.EraserShape = new EllipseStylusShape(5, 5);
-            inkCanvas.EditingMode = InkCanvasEditingMode.EraseByStroke;
 
             inkCanvas_EditingModeChanged(inkCanvas, null);
             CancelSingleFingerDragMode();
@@ -2666,7 +2654,7 @@ namespace InkCanvasForClass_Remastered
         {
             // 先回到画笔再清屏，避免 TimeMachine 的相关 bug 影响。
             //if (_viewModel.ActiveInkTool is not (InkTool.Pen or InkTool.Highlighter))
-            //    SelectTool(penType == 1 ? InkTool.Highlighter : InkTool.Pen);
+            //    SelectTool(_selectedPenTool);
 
             if (inkCanvas.Strokes.Count != 0)
             {
@@ -2999,7 +2987,7 @@ namespace InkCanvasForClass_Remastered
                     !Settings.IsAutoFoldInPPTSlideShow &&
                     GridTransparencyFakeBackground.Background == null)
                 {
-                    SelectTool(penType == 1 ? InkTool.Highlighter : InkTool.Pen);
+                    SelectTool(_selectedPenTool);
                 }
                 isEnteredSlideShowEndEvent = false;
                 if (_viewModel.IsFloatingBarVisible)
@@ -4084,7 +4072,7 @@ namespace InkCanvasForClass_Remastered
                 var count = originalPoints.Count;
                 var n = count - 1;
                 // 仅对签字笔进行书写优化
-                if (penType != 0 || n <= 0) return;
+                if (_selectedPenTool != InkTool.Pen || n <= 0) return;
                 // 检查是否是压感笔书写，如果是真实的压感笔则不需要处理
                 for (var i = 0; i < count; i++)
                 {
