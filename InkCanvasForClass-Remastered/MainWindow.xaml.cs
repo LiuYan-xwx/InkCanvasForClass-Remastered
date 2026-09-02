@@ -606,14 +606,7 @@ namespace InkCanvasForClass_Remastered
         {
             if (_viewModel.ActiveInkTool is InkTool.PointEraser or InkTool.StrokeEraser)
             {
-                if (BoardEraserSizePanel.Visibility == Visibility.Collapsed)
-                {
-                    AnimationsHelper.ShowWithSlideFromBottomAndFade(BoardEraserSizePanel);
-                }
-                else
-                {
-                    AnimationsHelper.HideWithSlideAndFade(BoardEraserSizePanel);
-                }
+                ToggleAuxiliaryPanel(AuxiliaryPanel.BoardEraser);
             }
             else
             {
@@ -1329,6 +1322,78 @@ namespace InkCanvasForClass_Remastered
         #endregion
 
         #region FloatingBarIcons
+
+        private enum AuxiliaryPanel
+        {
+            None,
+            Pen,
+            Eraser,
+            BoardEraser,
+            Gesture,
+            Tools
+        }
+
+        private AuxiliaryPanel _activeAuxiliaryPanel;
+
+        private void ToggleAuxiliaryPanel(AuxiliaryPanel panel)
+        {
+            SetAuxiliaryPanel(_activeAuxiliaryPanel == panel ? AuxiliaryPanel.None : panel);
+        }
+
+        private void SetAuxiliaryPanel(AuxiliaryPanel panel)
+        {
+            HideAuxiliaryPanels();
+            _activeAuxiliaryPanel = panel;
+
+            switch (panel)
+            {
+                case AuxiliaryPanel.None:
+                    break;
+                case AuxiliaryPanel.Pen:
+                    ShowAuxiliaryPanel(PenPalette);
+                    ShowAuxiliaryPanel(BoardPenPalette);
+                    break;
+                case AuxiliaryPanel.Eraser:
+                    ShowAuxiliaryPanel(EraserSizePanel);
+                    ShowAuxiliaryPanel(BoardEraserSizePanel);
+                    break;
+                case AuxiliaryPanel.BoardEraser:
+                    ShowAuxiliaryPanel(BoardEraserSizePanel);
+                    break;
+                case AuxiliaryPanel.Gesture:
+                    ShowAuxiliaryPanel(TwoFingerGestureBorder);
+                    ShowAuxiliaryPanel(BoardTwoFingerGestureBorder);
+                    break;
+                case AuxiliaryPanel.Tools:
+                    ShowAuxiliaryPanel(BorderTools);
+                    ShowAuxiliaryPanel(BoardBorderTools);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(panel));
+            }
+        }
+
+        private void HideAuxiliaryPanels()
+        {
+            AnimationsHelper.HideWithSlideAndFade(EraserSizePanel);
+            AnimationsHelper.HideWithSlideAndFade(BoardEraserSizePanel);
+            AnimationsHelper.HideWithSlideAndFade(PenPalette);
+            AnimationsHelper.HideWithSlideAndFade(BoardPenPalette);
+            AnimationsHelper.HideWithSlideAndFade(TwoFingerGestureBorder);
+            AnimationsHelper.HideWithSlideAndFade(BoardTwoFingerGestureBorder);
+            AnimationsHelper.HideWithSlideAndFade(BorderTools);
+            AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
+            _activeAuxiliaryPanel = AuxiliaryPanel.None;
+        }
+
+        private static void ShowAuxiliaryPanel(UIElement panel)
+        {
+            if (panel.Visibility == Visibility.Visible)
+                panel.Visibility = Visibility.Collapsed;
+
+            AnimationsHelper.ShowWithSlideFromBottomAndFade(panel);
+        }
+
         #region “手勢”按鈕
 
         /// <summary>
@@ -1336,32 +1401,7 @@ namespace InkCanvasForClass_Remastered
         /// </summary>
         private void TwoFingerGestureBorder_MouseUp(object sender, RoutedEventArgs e)
         {
-            if (TwoFingerGestureBorder.Visibility == Visibility.Visible)
-            {
-                AnimationsHelper.HideWithSlideAndFade(EraserSizePanel);
-                AnimationsHelper.HideWithSlideAndFade(BorderTools);
-                AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
-                AnimationsHelper.HideWithSlideAndFade(PenPalette);
-                AnimationsHelper.HideWithSlideAndFade(BoardPenPalette);
-                AnimationsHelper.HideWithSlideAndFade(BoardEraserSizePanel);
-                AnimationsHelper.HideWithSlideAndFade(BorderTools);
-                AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
-                AnimationsHelper.HideWithSlideAndFade(TwoFingerGestureBorder);
-                AnimationsHelper.HideWithSlideAndFade(BoardTwoFingerGestureBorder);
-            }
-            else
-            {
-                AnimationsHelper.HideWithSlideAndFade(EraserSizePanel);
-                AnimationsHelper.HideWithSlideAndFade(BorderTools);
-                AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
-                AnimationsHelper.HideWithSlideAndFade(PenPalette);
-                AnimationsHelper.HideWithSlideAndFade(BoardPenPalette);
-                AnimationsHelper.HideWithSlideAndFade(BoardEraserSizePanel);
-                AnimationsHelper.HideWithSlideAndFade(BorderTools);
-                AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
-                AnimationsHelper.ShowWithSlideFromBottomAndFade(TwoFingerGestureBorder);
-                AnimationsHelper.ShowWithSlideFromBottomAndFade(BoardTwoFingerGestureBorder);
-            }
+            ToggleAuxiliaryPanel(AuxiliaryPanel.Gesture);
         }
 
         /// <summary>
@@ -1518,6 +1558,9 @@ namespace InkCanvasForClass_Remastered
             EraserSizePanel.Visibility = Visibility.Collapsed;
             BoardBorderLeftPageListView.Visibility = Visibility.Collapsed;
             BoardBorderRightPageListView.Visibility = Visibility.Collapsed;
+
+            if (_activeAuxiliaryPanel != AuxiliaryPanel.Gesture)
+                _activeAuxiliaryPanel = AuxiliaryPanel.None;
         }
 
         /// <summary>
@@ -1581,18 +1624,9 @@ namespace InkCanvasForClass_Remastered
         /// </param>
         private async void HideSubPanels(bool updateToolSelection = false, bool autoAlignCenter = false)
         {
-            AnimationsHelper.HideWithSlideAndFade(BorderTools);
-            AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
-            AnimationsHelper.HideWithSlideAndFade(PenPalette);
-            AnimationsHelper.HideWithSlideAndFade(BoardPenPalette);
-            AnimationsHelper.HideWithSlideAndFade(BoardEraserSizePanel);
-            AnimationsHelper.HideWithSlideAndFade(EraserSizePanel);
+            HideAuxiliaryPanels();
             AnimationsHelper.HideWithSlideAndFade(BoardBorderLeftPageListView);
             AnimationsHelper.HideWithSlideAndFade(BoardBorderRightPageListView);
-
-            AnimationsHelper.HideWithSlideAndFade(TwoFingerGestureBorder);
-            AnimationsHelper.HideWithSlideAndFade(EraserSizePanel);
-            AnimationsHelper.HideWithSlideAndFade(BoardTwoFingerGestureBorder);
 
             if (updateToolSelection)
             {
@@ -2002,24 +2036,21 @@ namespace InkCanvasForClass_Remastered
 
         private void ImageCountdownTimer_Click(object sender, RoutedEventArgs e)
         {
-            AnimationsHelper.HideWithSlideAndFade(BorderTools);
-            AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
+            HideToolsPanel();
 
             new CountdownTimerWindow().Show();
         }
 
         private void SymbolIconRand_Click(object sender, RoutedEventArgs e)
         {
-            AnimationsHelper.HideWithSlideAndFade(BorderTools);
-            AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
+            HideToolsPanel();
 
             App.GetService<RandWindow>().Show();
         }
 
         private void SymbolIconRandOne_Click(object sender, RoutedEventArgs e)
         {
-            AnimationsHelper.HideWithSlideAndFade(BorderTools);
-            AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
+            HideToolsPanel();
 
             var randWindow = App.GetService<RandWindow>();
             randWindow.IsAutoClose = true;
@@ -2028,8 +2059,7 @@ namespace InkCanvasForClass_Remastered
 
         private void SymbolIconSaveStrokes_Click(object sender, RoutedEventArgs e)
         {
-            AnimationsHelper.HideWithSlideAndFade(BorderTools);
-            AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
+            HideToolsPanel();
 
             GridNotifications.Visibility = Visibility.Collapsed;
 
@@ -2038,8 +2068,7 @@ namespace InkCanvasForClass_Remastered
 
         private void SymbolIconOpenStrokes_Click(object sender, RoutedEventArgs e)
         {
-            AnimationsHelper.HideWithSlideAndFade(BorderTools);
-            AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
+            HideToolsPanel();
 
             var openFileDialog = new OpenFileDialog
             {
@@ -2157,32 +2186,7 @@ namespace InkCanvasForClass_Remastered
 
         private void ToggleToolsPanel()
         {
-            if (BorderTools.Visibility == Visibility.Visible)
-            {
-                AnimationsHelper.HideWithSlideAndFade(EraserSizePanel);
-                AnimationsHelper.HideWithSlideAndFade(BorderTools);
-                AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
-                AnimationsHelper.HideWithSlideAndFade(PenPalette);
-                AnimationsHelper.HideWithSlideAndFade(BoardPenPalette);
-                AnimationsHelper.HideWithSlideAndFade(BoardEraserSizePanel);
-                AnimationsHelper.HideWithSlideAndFade(BorderTools);
-                AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
-                AnimationsHelper.HideWithSlideAndFade(TwoFingerGestureBorder);
-                AnimationsHelper.HideWithSlideAndFade(BoardTwoFingerGestureBorder);
-            }
-            else
-            {
-                AnimationsHelper.HideWithSlideAndFade(EraserSizePanel);
-                AnimationsHelper.HideWithSlideAndFade(BorderTools);
-                AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
-                AnimationsHelper.HideWithSlideAndFade(PenPalette);
-                AnimationsHelper.HideWithSlideAndFade(BoardPenPalette);
-                AnimationsHelper.HideWithSlideAndFade(BoardEraserSizePanel);
-                AnimationsHelper.HideWithSlideAndFade(TwoFingerGestureBorder);
-                AnimationsHelper.HideWithSlideAndFade(BoardTwoFingerGestureBorder);
-                AnimationsHelper.ShowWithSlideFromBottomAndFade(BorderTools);
-                AnimationsHelper.ShowWithSlideFromBottomAndFade(BoardBorderTools);
-            }
+            ToggleAuxiliaryPanel(AuxiliaryPanel.Tools);
         }
 
         private bool isViewboxFloatingBarMarginAnimationRunning = false;
@@ -2492,32 +2496,7 @@ namespace InkCanvasForClass_Remastered
             }
             else
             {
-                if (PenPalette.Visibility == Visibility.Visible)
-                {
-                    AnimationsHelper.HideWithSlideAndFade(EraserSizePanel);
-                    AnimationsHelper.HideWithSlideAndFade(BorderTools);
-                    AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
-                    AnimationsHelper.HideWithSlideAndFade(PenPalette);
-                    AnimationsHelper.HideWithSlideAndFade(BoardPenPalette);
-                    AnimationsHelper.HideWithSlideAndFade(BoardEraserSizePanel);
-                    AnimationsHelper.HideWithSlideAndFade(BorderTools);
-                    AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
-                    AnimationsHelper.HideWithSlideAndFade(TwoFingerGestureBorder);
-                    AnimationsHelper.HideWithSlideAndFade(BoardTwoFingerGestureBorder);
-                }
-                else
-                {
-                    AnimationsHelper.HideWithSlideAndFade(EraserSizePanel);
-                    AnimationsHelper.HideWithSlideAndFade(BorderTools);
-                    AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
-                    AnimationsHelper.HideWithSlideAndFade(BoardEraserSizePanel);
-                    AnimationsHelper.HideWithSlideAndFade(BorderTools);
-                    AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
-                    AnimationsHelper.HideWithSlideAndFade(TwoFingerGestureBorder);
-                    AnimationsHelper.HideWithSlideAndFade(BoardTwoFingerGestureBorder);
-                    AnimationsHelper.ShowWithSlideFromBottomAndFade(PenPalette);
-                    AnimationsHelper.ShowWithSlideFromBottomAndFade(BoardPenPalette);
-                }
+                ToggleAuxiliaryPanel(AuxiliaryPanel.Pen);
             }
         }
 
@@ -2546,30 +2525,7 @@ namespace InkCanvasForClass_Remastered
 
             if (toggleOptions)
             {
-                if (EraserSizePanel.Visibility == Visibility.Collapsed)
-                {
-                    AnimationsHelper.HideWithSlideAndFade(BorderTools);
-                    AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
-                    AnimationsHelper.HideWithSlideAndFade(PenPalette);
-                    AnimationsHelper.HideWithSlideAndFade(BoardPenPalette);
-                    AnimationsHelper.HideWithSlideAndFade(BorderTools);
-                    AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
-                    AnimationsHelper.ShowWithSlideFromBottomAndFade(EraserSizePanel);
-                    AnimationsHelper.ShowWithSlideFromBottomAndFade(BoardEraserSizePanel);
-                }
-                else
-                {
-                    AnimationsHelper.HideWithSlideAndFade(EraserSizePanel);
-                    AnimationsHelper.HideWithSlideAndFade(BorderTools);
-                    AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
-                    AnimationsHelper.HideWithSlideAndFade(PenPalette);
-                    AnimationsHelper.HideWithSlideAndFade(BoardPenPalette);
-                    AnimationsHelper.HideWithSlideAndFade(BoardEraserSizePanel);
-                    AnimationsHelper.HideWithSlideAndFade(BorderTools);
-                    AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
-                    AnimationsHelper.HideWithSlideAndFade(TwoFingerGestureBorder);
-                    AnimationsHelper.HideWithSlideAndFade(BoardTwoFingerGestureBorder);
-                }
+                ToggleAuxiliaryPanel(AuxiliaryPanel.Eraser);
             }
             else
             {
@@ -5071,6 +5027,9 @@ namespace InkCanvasForClass_Remastered
         {
             AnimationsHelper.HideWithSlideAndFade(BorderTools);
             AnimationsHelper.HideWithSlideAndFade(BoardBorderTools);
+
+            if (_activeAuxiliaryPanel == AuxiliaryPanel.Tools)
+                _activeAuxiliaryPanel = AuxiliaryPanel.None;
         }
     }
 }
