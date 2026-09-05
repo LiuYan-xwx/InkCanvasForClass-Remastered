@@ -7,7 +7,6 @@
     xmlns:controls="clr-namespace:InkCanvasForClass_Remastered.Controls"
     xmlns:converters="clr-namespace:InkCanvasForClass_Remastered.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:ikw="http://schemas.inkore.net/lib/ui/wpf"
     xmlns:local="clr-namespace:InkCanvasForClass_Remastered"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -77,6 +76,44 @@
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
                                 <Setter TargetName="border" Property="Background" Value="#1C18181B" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type controls:ToolbarButton}">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Stretch" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type controls:ToolbarButton}">
+                        <Border
+                            x:Name="InteractionSurface"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{TemplateBinding CornerRadius}"
+                            SnapsToDevicePixels="True">
+                            <ContentPresenter
+                                Margin="{TemplateBinding Padding}"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                RecognizesAccessKey="True"
+                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="InteractionSurface" Property="Opacity" Value="0.9" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="InteractionSurface" Property="Opacity" Value="0.72" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="InteractionSurface" Property="BorderBrush" Value="#2563eb" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -1859,20 +1896,16 @@
                         Background="#f4f4f5"
                         CornerRadius="5,5,5,5">
                         <ikw:SimpleStackPanel Orientation="Horizontal">
-                            <Border
+                            <controls:ToolbarButton
                                 Width="60"
                                 Height="50"
                                 Background="#f4f4f5"
                                 BorderBrush="#a1a1aa"
                                 BorderThickness="1,1,0,1"
+                                Click="BtnWhiteBoardSwitchPrevious_Click"
                                 CornerRadius="5,0,0,5"
                                 IsEnabled="{Binding IsWhiteboardPreviousPageButtonEnabled}"
                                 Opacity="0.95">
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="MouseUp">
-                                        <i:InvokeCommandAction Command="{Binding RequestWhiteboardPreviousPageCommand}" />
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
                                 <Grid Margin="6,6,6,4">
                                     <ui:FontIcon
                                         Margin="0,0,0,18"
@@ -1888,15 +1921,15 @@
                                         Opacity="{Binding IsWhiteboardPreviousPageButtonEnabled, Converter={StaticResource BoolToOpacityConverter}}"
                                         Text="上一页" />
                                 </Grid>
-                            </Border>
-                            <Border
-                                Name="BtnLeftPageListWB"
+                            </controls:ToolbarButton>
+                            <controls:ToolbarButton
+                                x:Name="BtnLeftPageListWB"
                                 Width="75"
                                 Height="50"
                                 Background="#f4f4f5"
                                 BorderBrush="#a1a1aa"
                                 BorderThickness="1,1,1,1"
-                                MouseUp="BtnWhiteBoardPageIndex_Click"
+                                Click="BtnWhiteBoardPageIndex_Click"
                                 Opacity="0.95">
                                 <Grid Margin="6,6,6,4">
                                     <TextBlock
@@ -1919,7 +1952,7 @@
                                         Foreground="#18181b"
                                         Text="页面" />
                                 </Grid>
-                            </Border>
+                            </controls:ToolbarButton>
                             <Grid Width="0" Margin="0,0,0,5">
                                 <Border
                                     Name="BoardBorderLeftPageListView"
@@ -1943,14 +1976,12 @@
                                             SelectionMode="Single">
                                             <ListView.ItemTemplate>
                                                 <DataTemplate>
-                                                    <ikw:SimpleStackPanel Orientation="Vertical">
-                                                        <i:Interaction.Triggers>
-                                                            <i:EventTrigger EventName="MouseUp">
-                                                                <i:InvokeCommandAction
-                                                                    Command="{Binding DataContext.RequestWhiteboardPageSelectionCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                                    CommandParameter="{Binding Index}" />
-                                                            </i:EventTrigger>
-                                                        </i:Interaction.Triggers>
+                                                    <controls:ToolbarButton
+                                                        Background="Transparent"
+                                                        BorderThickness="0"
+                                                        Click="WhiteboardPageButton_Click"
+                                                        CommandParameter="{Binding Index}"
+                                                        CornerRadius="0">
                                                         <Border
                                                             Width="160"
                                                             Margin="0,4"
@@ -1983,26 +2014,22 @@
                                                                 </Border>
                                                             </Grid>
                                                         </Border>
-                                                    </ikw:SimpleStackPanel>
+                                                    </controls:ToolbarButton>
                                                 </DataTemplate>
                                             </ListView.ItemTemplate>
                                         </ListView>
                                     </ui:ScrollViewerEx>
                                 </Border>
                             </Grid>
-                            <Border
+                            <controls:ToolbarButton
                                 Width="60"
                                 Height="50"
                                 Background="#f4f4f5"
                                 BorderBrush="#a1a1aa"
                                 BorderThickness="0,1,1,1"
+                                Click="BtnWhiteBoardSwitchNext_Click"
                                 CornerRadius="0,5,5,0"
                                 Opacity="0.95">
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="MouseUp">
-                                        <i:InvokeCommandAction Command="{Binding RequestWhiteboardNextPageCommand}" />
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
                                 <Grid Margin="6,6,6,4">
                                     <ui:FontIcon
                                         Margin="0,0,0,18"
@@ -2016,7 +2043,7 @@
                                         Foreground="Black"
                                         Text="下一页" />
                                 </Grid>
-                            </Border>
+                            </controls:ToolbarButton>
                         </ikw:SimpleStackPanel>
                     </Border>
                 </Grid>
@@ -3687,16 +3714,15 @@
                                             Text="墨迹擦" />
                                     </Grid>
                                 </Border>
-                                <Border
+                                <controls:ToolbarButton
                                     x:Name="BoardUndo"
                                     Width="60"
                                     Height="50"
                                     Background="#f4f4f5"
                                     BorderBrush="#a1a1aa"
                                     BorderThickness="0,1,0,1"
+                                    Click="UndoButton_Click"
                                     IsEnabled="{Binding CanUndo}"
-                                    MouseDown="Border_MouseDown"
-                                    MouseUp="SymbolIconUndo_MouseUp"
                                     Opacity="0.95">
                                     <Grid Margin="6,6,6,4">
                                         <Image
@@ -3722,18 +3748,17 @@
                                             Foreground="Black"
                                             Text="撤销" />
                                     </Grid>
-                                </Border>
-                                <Border
+                                </controls:ToolbarButton>
+                                <controls:ToolbarButton
                                     x:Name="BoardRedo"
                                     Width="60"
                                     Height="50"
                                     Background="#f4f4f5"
                                     BorderBrush="#a1a1aa"
                                     BorderThickness="0,1,1,1"
+                                    Click="RedoButton_Click"
                                     CornerRadius="0,5,5,0"
                                     IsEnabled="{Binding CanRedo}"
-                                    MouseDown="Border_MouseDown"
-                                    MouseUp="SymbolIconRedo_MouseUp"
                                     Opacity="0.95">
                                     <Grid Margin="6,6,6,4">
                                         <Image
@@ -3759,7 +3784,7 @@
                                             Foreground="Black"
                                             Text="重做" />
                                     </Grid>
-                                </Border>
+                                </controls:ToolbarButton>
                             </ikw:SimpleStackPanel>
                         </Border>
 
@@ -4010,20 +4035,15 @@
                                         </Border>
                                     </Grid>
                                 </Border>
-                                <Border
+                                <controls:ToolbarButton
                                     Width="60"
                                     Height="50"
                                     Background="#f4f4f5"
                                     BorderBrush="#a1a1aa"
                                     BorderThickness="0,1,1,1"
+                                    Click="CloseWhiteboardButton_Click"
                                     CornerRadius="0,5,5,0"
-                                    MouseDown="Border_MouseDown"
                                     Opacity="0.95">
-                                    <i:Interaction.Triggers>
-                                        <i:EventTrigger EventName="MouseUp">
-                                            <i:InvokeCommandAction Command="{Binding RequestExitWhiteboardCommand}" />
-                                        </i:EventTrigger>
-                                    </i:Interaction.Triggers>
                                     <Grid Margin="6,6,6,4">
                                         <Image
                                             Width="20"
@@ -4047,7 +4067,7 @@
                                             Foreground="Black"
                                             Text="退出" />
                                     </Grid>
-                                </Border>
+                                </controls:ToolbarButton>
                             </ikw:SimpleStackPanel>
                         </Border>
 
@@ -4072,20 +4092,16 @@
                         Background="#f4f4f5"
                         CornerRadius="5,5,5,5">
                         <ikw:SimpleStackPanel Orientation="Horizontal">
-                            <Border
+                            <controls:ToolbarButton
                                 Width="60"
                                 Height="50"
                                 Background="#f4f4f5"
                                 BorderBrush="#a1a1aa"
                                 BorderThickness="1,1,0,1"
+                                Click="BtnWhiteBoardSwitchPrevious_Click"
                                 CornerRadius="5,0,0,5"
                                 IsEnabled="{Binding IsWhiteboardPreviousPageButtonEnabled}"
                                 Opacity="0.95">
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="MouseUp">
-                                        <i:InvokeCommandAction Command="{Binding RequestWhiteboardPreviousPageCommand}" />
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
                                 <Grid Margin="6,6,6,4">
                                     <ui:FontIcon
                                         Margin="0,0,0,18"
@@ -4101,15 +4117,15 @@
                                         Opacity="{Binding IsWhiteboardPreviousPageButtonEnabled, Converter={StaticResource BoolToOpacityConverter}}"
                                         Text="上一页" />
                                 </Grid>
-                            </Border>
-                            <Border
-                                Name="BtnRightPageListWB"
+                            </controls:ToolbarButton>
+                            <controls:ToolbarButton
+                                x:Name="BtnRightPageListWB"
                                 Width="75"
                                 Height="50"
                                 Background="#f4f4f5"
                                 BorderBrush="#a1a1aa"
                                 BorderThickness="1,1,1,1"
-                                MouseUp="BtnWhiteBoardPageIndex_Click"
+                                Click="BtnWhiteBoardPageIndex_Click"
                                 Opacity="0.95">
                                 <Grid Margin="6,6,6,4">
                                     <TextBlock
@@ -4132,7 +4148,7 @@
                                         Foreground="#18181b"
                                         Text="页面" />
                                 </Grid>
-                            </Border>
+                            </controls:ToolbarButton>
                             <Grid Width="0" Margin="0,0,0,5">
                                 <Border
                                     Name="BoardBorderRightPageListView"
@@ -4156,14 +4172,12 @@
                                             SelectionMode="Single">
                                             <ListView.ItemTemplate>
                                                 <DataTemplate>
-                                                    <ikw:SimpleStackPanel Orientation="Vertical">
-                                                        <i:Interaction.Triggers>
-                                                            <i:EventTrigger EventName="MouseUp">
-                                                                <i:InvokeCommandAction
-                                                                    Command="{Binding DataContext.RequestWhiteboardPageSelectionCommand, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
-                                                                    CommandParameter="{Binding Index}" />
-                                                            </i:EventTrigger>
-                                                        </i:Interaction.Triggers>
+                                                    <controls:ToolbarButton
+                                                        Background="Transparent"
+                                                        BorderThickness="0"
+                                                        Click="WhiteboardPageButton_Click"
+                                                        CommandParameter="{Binding Index}"
+                                                        CornerRadius="0">
                                                         <Border
                                                             Width="160"
                                                             Margin="0,4"
@@ -4196,26 +4210,22 @@
                                                                 </Border>
                                                             </Grid>
                                                         </Border>
-                                                    </ikw:SimpleStackPanel>
+                                                    </controls:ToolbarButton>
                                                 </DataTemplate>
                                             </ListView.ItemTemplate>
                                         </ListView>
                                     </ui:ScrollViewerEx>
                                 </Border>
                             </Grid>
-                            <Border
+                            <controls:ToolbarButton
                                 Width="60"
                                 Height="50"
                                 Background="#f4f4f5"
                                 BorderBrush="#a1a1aa"
                                 BorderThickness="0,1,1,1"
+                                Click="BtnWhiteBoardSwitchNext_Click"
                                 CornerRadius="0,5,5,0"
                                 Opacity="0.95">
-                                <i:Interaction.Triggers>
-                                    <i:EventTrigger EventName="MouseUp">
-                                        <i:InvokeCommandAction Command="{Binding RequestWhiteboardNextPageCommand}" />
-                                    </i:EventTrigger>
-                                </i:Interaction.Triggers>
                                 <Grid Margin="6,6,6,4">
                                     <ui:FontIcon
                                         Margin="0,0,0,18"
@@ -4229,7 +4239,7 @@
                                         Foreground="Black"
                                         Text="下一页" />
                                 </Grid>
-                            </Border>
+                            </controls:ToolbarButton>
                         </ikw:SimpleStackPanel>
                     </Border>
                 </Grid>
@@ -5497,59 +5507,27 @@
                                             Text="套索选"
                                             TextAlignment="Center" />
                                     </ikw:SimpleStackPanel>
-                                    <ikw:SimpleStackPanel
-                                        Name="SymbolIconUndo"
+                                    <controls:FloatingBarButton
+                                        Click="UndoButton_Click"
+                                        Label="撤销"
+                                        PathData="F1 M24,24z M0,0z M9.70711,6.70711C10.0976,6.31658 10.0976,5.68342 9.70711,5.29289 9.31658,4.90237 8.68342,4.90237 8.29289,5.29289L4.29289,9.29289C3.90237,9.68342,3.90237,10.3166,4.29289,10.7071L8.29289,14.7071C8.68342,15.0976 9.31658,15.0976 9.70711,14.7071 10.0976,14.3166 10.0976,13.6834 9.70711,13.2929L7.40633,10.9921 16,11C16.7956,11 17.5587,11.3161 18.1213,11.8787 18.6839,12.4413 19,13.2044 19,14 19,14.7956 18.6839,15.5587 18.1213,16.1213 17.5587,16.6839 16.7956,17 16,17L15,17C14.4477,17 14,17.4477 14,18 14,18.5523 14.4477,19 15,19L16,19C17.3261,19 18.5979,18.4732 19.5355,17.5355 20.4732,16.5979 21,15.3261 21,14 21,12.6739 20.4732,11.4021 19.5355,10.4645 18.5979,9.52678 17.3261,9 16,9L7.40633,9.00789 9.70711,6.70711z"
+                                        IsEnabled="{Binding CanUndo}">
+                                    </controls:FloatingBarButton>
+                                    <controls:ToolbarButton
+                                        x:Name="SymbolIconRedo"
                                         Width="28"
                                         HorizontalAlignment="Center"
                                         Background="Transparent"
-                                        IsEnabled="{Binding CanUndo}"
-                                        MouseDown="FloatingBarToolBtnMouseDownFeedback_Panel"
-                                        MouseLeave="FloatingBarToolBtnMouseLeaveFeedback_Panel"
-                                        MouseUp="SymbolIconUndo_MouseUp"
-                                        Orientation="Vertical">
-                                        <Image
-                                            Height="17"
-                                            Margin="0,3,0,0"
-                                            Opacity="{Binding CanUndo, Converter={StaticResource IsEnabledToOpacityConverter}}"
-                                            RenderOptions.BitmapScalingMode="HighQuality">
-                                            <Image.Source>
-                                                <DrawingImage>
-                                                    <DrawingImage.Drawing>
-                                                        <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
-                                                            <GeometryDrawing
-                                                                x:Name="UndoIconGeometry"
-                                                                Brush="#1b1b1b"
-                                                                Geometry="F1 M24,24z M0,0z M9.70711,6.70711C10.0976,6.31658 10.0976,5.68342 9.70711,5.29289 9.31658,4.90237 8.68342,4.90237 8.29289,5.29289L4.29289,9.29289C3.90237,9.68342,3.90237,10.3166,4.29289,10.7071L8.29289,14.7071C8.68342,15.0976 9.31658,15.0976 9.70711,14.7071 10.0976,14.3166 10.0976,13.6834 9.70711,13.2929L7.40633,10.9921 16,11C16.7956,11 17.5587,11.3161 18.1213,11.8787 18.6839,12.4413 19,13.2044 19,14 19,14.7956 18.6839,15.5587 18.1213,16.1213 17.5587,16.6839 16.7956,17 16,17L15,17C14.4477,17 14,17.4477 14,18 14,18.5523 14.4477,19 15,19L16,19C17.3261,19 18.5979,18.4732 19.5355,17.5355 20.4732,16.5979 21,15.3261 21,14 21,12.6739 20.4732,11.4021 19.5355,10.4645 18.5979,9.52678 17.3261,9 16,9L7.40633,9.00789 9.70711,6.70711z" />
-                                                        </DrawingGroup>
-                                                    </DrawingImage.Drawing>
-                                                </DrawingImage>
-                                            </Image.Source>
-                                        </Image>
-                                        <TextBlock
-                                            x:Name="UndoToolbarTextBlock"
-                                            Margin="0,1,0,0"
-                                            FontSize="8"
-                                            Foreground="Black"
-                                            Opacity="{Binding CanUndo, Converter={StaticResource IsEnabledToOpacityConverter}}"
-                                            Text="撤销"
-                                            TextAlignment="Center" />
-                                    </ikw:SimpleStackPanel>
-                                    <ikw:SimpleStackPanel
-                                        Name="SymbolIconRedo"
-                                        Width="28"
-                                        HorizontalAlignment="Center"
-                                        Background="Transparent"
-                                        IsEnabled="{Binding CanRedo}"
-                                        MouseDown="FloatingBarToolBtnMouseDownFeedback_Panel"
-                                        MouseLeave="FloatingBarToolBtnMouseLeaveFeedback_Panel"
-                                        MouseUp="SymbolIconRedo_MouseUp"
-                                        Orientation="Vertical">
-                                        <Image
-                                            Height="17"
-                                            Margin="0,3,0,0"
-                                            Opacity="{Binding CanRedo, Converter={StaticResource IsEnabledToOpacityConverter}}"
-                                            RenderOptions.BitmapScalingMode="HighQuality">
-                                            <Image.Source>
+                                        BorderThickness="0"
+                                        Click="RedoButton_Click"
+                                        IsEnabled="{Binding CanRedo}">
+                                        <StackPanel Orientation="Vertical">
+                                            <Image
+                                                Height="17"
+                                                Margin="0,3,0,0"
+                                                Opacity="{Binding CanRedo, Converter={StaticResource IsEnabledToOpacityConverter}}"
+                                                RenderOptions.BitmapScalingMode="HighQuality">
+                                                <Image.Source>
                                                 <DrawingImage>
                                                     <DrawingImage.Drawing>
                                                         <DrawingGroup ClipGeometry="M0,0 V24 H24 V0 H0 Z">
@@ -5560,17 +5538,18 @@
                                                         </DrawingGroup>
                                                     </DrawingImage.Drawing>
                                                 </DrawingImage>
-                                            </Image.Source>
-                                        </Image>
-                                        <TextBlock
-                                            x:Name="RedoToolbarTextBlock"
-                                            Margin="0,1,0,0"
-                                            FontSize="8"
-                                            Foreground="Black"
-                                            Opacity="{Binding CanRedo, Converter={StaticResource IsEnabledToOpacityConverter}}"
-                                            Text="重做"
-                                            TextAlignment="Center" />
-                                    </ikw:SimpleStackPanel>
+                                                </Image.Source>
+                                            </Image>
+                                            <TextBlock
+                                                x:Name="RedoToolbarTextBlock"
+                                                Margin="0,1,0,0"
+                                                FontSize="8"
+                                                Foreground="Black"
+                                                Opacity="{Binding CanRedo, Converter={StaticResource IsEnabledToOpacityConverter}}"
+                                                Text="重做"
+                                                TextAlignment="Center" />
+                                        </StackPanel>
+                                    </controls:ToolbarButton>
                                     <controls:FloatingBarButton
                                         Click="ClearAndMouseFloatingbarButton_Click"
                                         Label="清并鼠"
@@ -5741,7 +5720,7 @@
                                         BorderBrush="#71717a"
                                         BorderThickness="1,0,0,0" />
                                     <controls:FloatingBarButton
-                                        Command="{Binding RequestEnterWhiteboardCommand}"
+                                        Click="OpenWhiteboardFloatingBarButton_Click"
                                         Label="白板"
                                         PathData="F0 M24,24z M0,0z M5,5.875C4.70163,5.875 4.41548,5.99353 4.2045,6.2045 3.99353,6.41548 3.875,6.70163 3.875,7L3.875,17C3.875,17.2984 3.99353,17.5845 4.2045,17.7955 4.41548,18.0065 4.70163,18.125 5,18.125L8,18.125C8.48325,18.125 8.875,18.5168 8.875,19 8.875,19.4832 8.48325,19.875 8,19.875L5,19.875C4.2375,19.875 3.50623,19.5721 2.96707,19.0329 2.4279,18.4938 2.125,17.7625 2.125,17L2.125,7C2.125,6.2375 2.4279,5.50624 2.96707,4.96707 3.50624,4.4279 4.2375,4.125 5,4.125L19,4.125C19.7625,4.125 20.4938,4.4279 21.0329,4.96707 21.5721,5.50623 21.875,6.2375 21.875,7L21.875,18C21.875,18.4973 21.6775,18.9742 21.3258,19.3258 20.9742,19.6775 20.4973,19.875 20,19.875 19.5168,19.875 19.125,19.4832 19.125,19 19.125,18.5168 19.5168,18.125 20,18.125 20.0332,18.125 20.0649,18.1118 20.0884,18.0884 20.1118,18.0649 20.125,18.0332 20.125,18L20.125,7C20.125,6.70163 20.0065,6.41548 19.7955,6.2045 19.5845,5.99353 19.2984,5.875 19,5.875L5,5.875z M10.6742,15.6742C11.0258,15.3225,11.5027,15.125,12,15.125L16,15.125C16.4973,15.125 16.9742,15.3225 17.3258,15.6742 17.6775,16.0258 17.875,16.5027 17.875,17L17.875,18C17.875,18.4973 17.6775,18.9742 17.3258,19.3258 16.9742,19.6775 16.4973,19.875 16,19.875L12,19.875C11.5027,19.875 11.0258,19.6775 10.6742,19.3258 10.3225,18.9742 10.125,18.4973 10.125,18L10.125,17C10.125,16.5027,10.3225,16.0258,10.6742,15.6742z" />
                                     <controls:FloatingBarButton

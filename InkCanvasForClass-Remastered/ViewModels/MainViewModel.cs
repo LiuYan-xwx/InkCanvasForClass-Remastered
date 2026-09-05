@@ -12,18 +12,8 @@ namespace InkCanvasForClass_Remastered.ViewModels
 {
     public partial class MainViewModel : ObservableObject
     {
-        public const int MaxWhiteboardPageCount = 99;
-
         private readonly SettingsService _settingsService;
         private readonly IPowerPointService _powerPointService;
-
-        // The view owns InkCanvas/history/animation details. These events carry only user intent
-        // so those details do not leak into the view model while the migration is incremental.
-        public event Action? EnterWhiteboardRequested;
-        public event Action? ExitWhiteboardRequested;
-        public event Action? WhiteboardPreviousPageRequested;
-        public event Action? WhiteboardNextPageRequested;
-        public event Action<int>? WhiteboardPageSelectionRequested;
         
         public MainViewModel(SettingsService settingsService, IPowerPointService powerPointService)
         {
@@ -48,10 +38,6 @@ namespace InkCanvasForClass_Remastered.ViewModels
         [NotifyPropertyChangedFor(nameof(IsDesktopAnnotationMode))]
         [NotifyPropertyChangedFor(nameof(IsWhiteboardMode))]
         [NotifyPropertyChangedFor(nameof(IsPresentationMode))]
-        [NotifyCanExecuteChangedFor(nameof(RequestEnterWhiteboardCommand))]
-        [NotifyCanExecuteChangedFor(nameof(RequestExitWhiteboardCommand))]
-        [NotifyCanExecuteChangedFor(nameof(RequestWhiteboardPreviousPageCommand))]
-        [NotifyCanExecuteChangedFor(nameof(RequestWhiteboardNextPageCommand))]
         public partial WorkspaceMode CurrentWorkspaceMode { get; set; } = WorkspaceMode.DesktopAnnotation;
 
         public bool IsDesktopAnnotationMode => CurrentWorkspaceMode == WorkspaceMode.DesktopAnnotation;
@@ -75,65 +61,13 @@ namespace InkCanvasForClass_Remastered.ViewModels
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsWhiteboardPreviousPageButtonEnabled))]
-        [NotifyCanExecuteChangedFor(nameof(RequestWhiteboardPreviousPageCommand))]
-        [NotifyCanExecuteChangedFor(nameof(RequestWhiteboardNextPageCommand))]
         public partial int WhiteboardCurrentPage { get; set; } = 1;
 
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsWhiteboardPreviousPageButtonEnabled))]
-        [NotifyCanExecuteChangedFor(nameof(RequestWhiteboardNextPageCommand))]
         public partial int WhiteboardTotalPageCount { get; set; } = 1;
 
         public bool IsWhiteboardPreviousPageButtonEnabled => WhiteboardCurrentPage > 1;
-
-        [RelayCommand(CanExecute = nameof(CanRequestEnterWhiteboard))]
-        private void RequestEnterWhiteboard()
-        {
-            EnterWhiteboardRequested?.Invoke();
-        }
-
-        private bool CanRequestEnterWhiteboard() => !IsWhiteboardMode;
-
-        [RelayCommand(CanExecute = nameof(CanRequestExitWhiteboard))]
-        private void RequestExitWhiteboard()
-        {
-            ExitWhiteboardRequested?.Invoke();
-        }
-
-        private bool CanRequestExitWhiteboard() => IsWhiteboardMode;
-
-        [RelayCommand(CanExecute = nameof(CanRequestPreviousWhiteboardPage))]
-        private void RequestWhiteboardPreviousPage()
-        {
-            WhiteboardPreviousPageRequested?.Invoke();
-        }
-
-        private bool CanRequestPreviousWhiteboardPage() =>
-            IsWhiteboardMode && WhiteboardCurrentPage > 1;
-
-        [RelayCommand(CanExecute = nameof(CanRequestNextWhiteboardPage))]
-        private void RequestWhiteboardNextPage()
-        {
-            WhiteboardNextPageRequested?.Invoke();
-        }
-
-        private bool CanRequestNextWhiteboardPage() =>
-            IsWhiteboardMode &&
-            (WhiteboardCurrentPage < WhiteboardTotalPageCount ||
-             WhiteboardTotalPageCount < MaxWhiteboardPageCount);
-
-        [RelayCommand]
-        private void RequestWhiteboardPageSelection(int page)
-        {
-            if (!IsWhiteboardMode ||
-                page < 1 ||
-                page > WhiteboardTotalPageCount)
-            {
-                return;
-            }
-
-            WhiteboardPageSelectionRequested?.Invoke(page);
-        }
 
         [ObservableProperty]
         public partial bool IsFloatingBarVisible { get; set; } = true;

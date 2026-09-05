@@ -57,12 +57,6 @@ namespace InkCanvasForClass_Remastered
 
             DataContext = _viewModel;
 
-            _viewModel.EnterWhiteboardRequested += OnEnterWhiteboardRequested;
-            _viewModel.ExitWhiteboardRequested += OnExitWhiteboardRequested;
-            _viewModel.WhiteboardPreviousPageRequested += OnWhiteboardPreviousPageRequested;
-            _viewModel.WhiteboardNextPageRequested += OnWhiteboardNextPageRequested;
-            _viewModel.WhiteboardPageSelectionRequested += OnWhiteboardPageSelectionRequested;
-
             // 挂载PPT服务事件
             _powerPointService.SlideShowBegin += PptApplication_SlideShowBegin;
             _powerPointService.SlideShowEnd += PptApplication_SlideShowEnd;
@@ -368,11 +362,6 @@ namespace InkCanvasForClass_Remastered
         {
             SystemEvents.DisplaySettingsChanged -= SystemEventsOnDisplaySettingsChanged;
             _notificationService.NotificationRequested -= OnNotificationRequested;
-            _viewModel.EnterWhiteboardRequested -= OnEnterWhiteboardRequested;
-            _viewModel.ExitWhiteboardRequested -= OnExitWhiteboardRequested;
-            _viewModel.WhiteboardPreviousPageRequested -= OnWhiteboardPreviousPageRequested;
-            _viewModel.WhiteboardNextPageRequested -= OnWhiteboardNextPageRequested;
-            _viewModel.WhiteboardPageSelectionRequested -= OnWhiteboardPageSelectionRequested;
             _notificationCts?.Cancel();
             _notificationCts?.Dispose();
             Logger.LogInformation("MainWindow closed");
@@ -451,7 +440,7 @@ namespace InkCanvasForClass_Remastered
         #region BoardControls
         private const int MainAnnotationHistorySlot = 0;
         private const int FirstWhiteboardHistorySlot = 1;
-        private const int MaxWhiteboardPageCount = MainViewModel.MaxWhiteboardPageCount;
+        private const int MaxWhiteboardPageCount = 99;
 
         private StrokeCollection[] strokeCollections = new StrokeCollection[MaxWhiteboardPageCount + 1];
 
@@ -575,7 +564,7 @@ namespace InkCanvasForClass_Remastered
             }
         }
 
-        private async void BtnWhiteBoardPageIndex_Click(object sender, EventArgs e)
+        private async void BtnWhiteBoardPageIndex_Click(object sender, RoutedEventArgs e)
         {
             if (sender == BtnLeftPageListWB)
             {
@@ -643,7 +632,7 @@ namespace InkCanvasForClass_Remastered
             }
         }
 
-        private void OnWhiteboardPreviousPageRequested()
+        private void BtnWhiteBoardSwitchPrevious_Click(object sender, RoutedEventArgs e)
         {
             if (!_viewModel.IsWhiteboardMode || _viewModel.WhiteboardCurrentPage <= 1)
                 return;
@@ -651,7 +640,7 @@ namespace InkCanvasForClass_Remastered
             SwitchWhiteboardPage(_viewModel.WhiteboardCurrentPage - 1);
         }
 
-        private void OnWhiteboardNextPageRequested()
+        private void BtnWhiteBoardSwitchNext_Click(object sender, RoutedEventArgs e)
         {
             if (!_viewModel.IsWhiteboardMode)
                 return;
@@ -1833,12 +1822,8 @@ namespace InkCanvasForClass_Remastered
         #endregion
 
         #region 撤銷重做按鈕
-        private void SymbolIconUndo_MouseUp(object? sender, MouseButtonEventArgs? e)
+        private void UndoButton_Click(object sender, RoutedEventArgs e)
         {
-            if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
-                ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
-            if (sender == SymbolIconUndo && lastBorderMouseDownObject != SymbolIconUndo) return;
-
             Undo();
         }
 
@@ -1860,12 +1845,8 @@ namespace InkCanvasForClass_Remastered
             HideSubPanels();
         }
 
-        private void SymbolIconRedo_MouseUp(object? sender, MouseButtonEventArgs? e)
+        private void RedoButton_Click(object sender, RoutedEventArgs e)
         {
-            if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
-                ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
-            if (sender == SymbolIconRedo && lastBorderMouseDownObject != SymbolIconRedo) return;
-
             Redo();
         }
 
@@ -1891,12 +1872,12 @@ namespace InkCanvasForClass_Remastered
 
         #region 白板按鈕和退出白板模式按鈕
 
-        private void OnEnterWhiteboardRequested()
+        private void OpenWhiteboardFloatingBarButton_Click(object sender, RoutedEventArgs e)
         {
             EnterWhiteboard();
         }
 
-        private void OnExitWhiteboardRequested()
+        private void CloseWhiteboardButton_Click(object sender, RoutedEventArgs e)
         {
             ExitWhiteboard();
         }
@@ -2918,8 +2899,11 @@ namespace InkCanvasForClass_Remastered
         }
 
 
-        private void OnWhiteboardPageSelectionRequested(int page)
+        private void WhiteboardPageButton_Click(object sender, RoutedEventArgs e)
         {
+            if (sender is not Button { CommandParameter: int page })
+                return;
+
             AnimationsHelper.HideWithSlideAndFade(BoardBorderLeftPageListView);
             AnimationsHelper.HideWithSlideAndFade(BoardBorderRightPageListView);
 
