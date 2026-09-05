@@ -43,31 +43,17 @@
                 </Style.Triggers>
             </Style>
         </Button.Style>
-        <Grid>
-            <ContentPresenter Content="{Binding Content, RelativeSource={RelativeSource AncestorType=UserControl}}" />
-
-            <StackPanel Orientation="Vertical">
-                <StackPanel.Style>
-                    <Style TargetType="StackPanel">
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Content, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="{x:Null}">
-                                <Setter Property="Visibility" Value="{x:Static Visibility.Visible}" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                        <Setter Property="Visibility" Value="{x:Static Visibility.Collapsed}" />
-                    </Style>
-                </StackPanel.Style>
-                <Viewbox Width="28" Height="17">
-                    <Path Data="{Binding PathData, RelativeSource={RelativeSource AncestorType=UserControl}}" Fill="#FF1B1B1B" />
-                </Viewbox>
-                <TextBlock
-                    x:Name="PART_Label"
-                    Margin="0,1,0,0"
-                    FontSize="8"
-                    Foreground="Black"
-                    Text="{Binding Label, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                    TextAlignment="Center" />
-            </StackPanel>
-        </Grid>
+        <StackPanel Orientation="Vertical">
+            <Viewbox Width="28" Height="17">
+                <Path Data="{Binding PathData, RelativeSource={RelativeSource AncestorType=UserControl}}" Fill="#FF1B1B1B" />
+            </Viewbox>
+            <TextBlock
+                x:Name="PART_Label"
+                Margin="0,1,0,0"
+                FontSize="8"
+                Foreground="Black"
+                Text="{Binding Label, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                TextAlignment="Center" />
+        </StackPanel>
     </Button>
 </UserControl>
