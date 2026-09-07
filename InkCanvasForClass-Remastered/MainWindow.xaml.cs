@@ -411,7 +411,7 @@ namespace InkCanvasForClass_Remastered
             isFloatingBarChangingHideMode = false;
         }
 
-        private async void SidePanelUnFoldButton_MouseUp(object sender, MouseButtonEventArgs e)
+        private async void SidePanelUnFoldButton_Click(object sender, RoutedEventArgs e)
         {
             await ShowFloatingBar(true);
         }
@@ -494,7 +494,7 @@ namespace InkCanvasForClass_Remastered
             }
         }
 
-        private async void BtnWhiteBoardPageIndex_Click(object sender, EventArgs e)
+        private async void BtnWhiteBoardPageIndex_Click(object sender, RoutedEventArgs e)
         {
             if (sender == BtnLeftPageListWB)
             {
@@ -555,7 +555,7 @@ namespace InkCanvasForClass_Remastered
             }
         }
 
-        private void BtnWhiteBoardSwitchPrevious_Click(object sender, EventArgs e)
+        private void BtnWhiteBoardSwitchPrevious_Click(object sender, RoutedEventArgs e)
         {
             if (_viewModel.WhiteboardCurrentPage <= 1) return;
 
@@ -567,7 +567,7 @@ namespace InkCanvasForClass_Remastered
             RestoreStrokes();
         }
 
-        private void BtnWhiteBoardSwitchNext_Click(object sender, EventArgs e)
+        private void BtnWhiteBoardSwitchNext_Click(object sender, RoutedEventArgs e)
         {
             Trace.WriteLine("113223234");
 
@@ -588,7 +588,7 @@ namespace InkCanvasForClass_Remastered
         #endregion
 
         #region BoardIcons
-        private void BoardChangeBackgroundColorBtn_MouseUp(object sender, RoutedEventArgs e)
+        private void BoardChangeBackgroundColorBtn_Click(object sender, RoutedEventArgs e)
         {
             if (!isLoaded) return;
             Settings.UsingWhiteboard = !Settings.UsingWhiteboard;
@@ -647,15 +647,15 @@ namespace InkCanvasForClass_Remastered
             //}
         }
 
-        private void BoardSymbolIconDelete_MouseUp(object sender, RoutedEventArgs e)
+        private void BoardSymbolIconDelete_Click(object sender, RoutedEventArgs e)
         {
             PenIcon_Click(null, null);
-            SymbolIconDelete_MouseUp(null, null);
+            SymbolIconDelete_Click(null, null);
         }
-        private void BoardSymbolIconDeleteInkAndHistories_MouseUp(object sender, RoutedEventArgs e)
+        private void BoardSymbolIconDeleteInkAndHistories_Click(object sender, RoutedEventArgs e)
         {
             PenIcon_Click(null, null);
-            SymbolIconDelete_MouseUp(null, null);
+            SymbolIconDelete_Click(null, null);
             if (Settings.ClearCanvasAndClearTimeMachine == false) timeMachine.ClearStrokeHistory();
         }
 
@@ -886,130 +886,26 @@ namespace InkCanvasForClass_Remastered
                 BoardColorThemeSwitchTextBlock.Text = "亮系";
             }
 
-            // 改变选中提示
-            ViewboxBtnColorBlackContent.Visibility = Visibility.Collapsed;
-            ViewboxBtnColorBlueContent.Visibility = Visibility.Collapsed;
-            ViewboxBtnColorGreenContent.Visibility = Visibility.Collapsed;
-            ViewboxBtnColorRedContent.Visibility = Visibility.Collapsed;
-            ViewboxBtnColorYellowContent.Visibility = Visibility.Collapsed;
-            ViewboxBtnColorWhiteContent.Visibility = Visibility.Collapsed;
-            ViewboxBtnColorPinkContent.Visibility = Visibility.Collapsed;
-            ViewboxBtnColorTealContent.Visibility = Visibility.Collapsed;
-            ViewboxBtnColorOrangeContent.Visibility = Visibility.Collapsed;
+            BorderPenColorBlack.IsSelected = BoardBorderPenColorBlack.IsSelected = inkColor == 0;
+            BorderPenColorRed.IsSelected = BoardBorderPenColorRed.IsSelected = inkColor == 1;
+            BorderPenColorGreen.IsSelected = BoardBorderPenColorGreen.IsSelected = inkColor == 2;
+            BorderPenColorBlue.IsSelected = BoardBorderPenColorBlue.IsSelected = inkColor == 3;
+            BorderPenColorYellow.IsSelected = BoardBorderPenColorYellow.IsSelected = inkColor == 4;
+            BorderPenColorWhite.IsSelected = BoardBorderPenColorWhite.IsSelected = inkColor == 5;
+            BorderPenColorPink.IsSelected = BoardBorderPenColorPink.IsSelected = inkColor == 6;
+            BorderPenColorTeal.IsSelected = BoardBorderPenColorTeal.IsSelected = inkColor == 7;
+            BorderPenColorOrange.IsSelected = BoardBorderPenColorOrange.IsSelected = inkColor == 8;
 
-            BoardViewboxBtnColorBlackContent.Visibility = Visibility.Collapsed;
-            BoardViewboxBtnColorBlueContent.Visibility = Visibility.Collapsed;
-            BoardViewboxBtnColorGreenContent.Visibility = Visibility.Collapsed;
-            BoardViewboxBtnColorRedContent.Visibility = Visibility.Collapsed;
-            BoardViewboxBtnColorYellowContent.Visibility = Visibility.Collapsed;
-            BoardViewboxBtnColorWhiteContent.Visibility = Visibility.Collapsed;
-            BoardViewboxBtnColorPinkContent.Visibility = Visibility.Collapsed;
-            BoardViewboxBtnColorTealContent.Visibility = Visibility.Collapsed;
-            BoardViewboxBtnColorOrangeContent.Visibility = Visibility.Collapsed;
-
-            HighlighterPenViewboxBtnColorBlackContent.Visibility = Visibility.Collapsed;
-            HighlighterPenViewboxBtnColorBlueContent.Visibility = Visibility.Collapsed;
-            HighlighterPenViewboxBtnColorGreenContent.Visibility = Visibility.Collapsed;
-            HighlighterPenViewboxBtnColorOrangeContent.Visibility = Visibility.Collapsed;
-            HighlighterPenViewboxBtnColorPurpleContent.Visibility = Visibility.Collapsed;
-            HighlighterPenViewboxBtnColorRedContent.Visibility = Visibility.Collapsed;
-            HighlighterPenViewboxBtnColorTealContent.Visibility = Visibility.Collapsed;
-            HighlighterPenViewboxBtnColorWhiteContent.Visibility = Visibility.Collapsed;
-            HighlighterPenViewboxBtnColorYellowContent.Visibility = Visibility.Collapsed;
-            HighlighterPenViewboxBtnColorZincContent.Visibility = Visibility.Collapsed;
-
-            BoardHighlighterPenViewboxBtnColorBlackContent.Visibility = Visibility.Collapsed;
-            BoardHighlighterPenViewboxBtnColorBlueContent.Visibility = Visibility.Collapsed;
-            BoardHighlighterPenViewboxBtnColorGreenContent.Visibility = Visibility.Collapsed;
-            BoardHighlighterPenViewboxBtnColorOrangeContent.Visibility = Visibility.Collapsed;
-            BoardHighlighterPenViewboxBtnColorPurpleContent.Visibility = Visibility.Collapsed;
-            BoardHighlighterPenViewboxBtnColorRedContent.Visibility = Visibility.Collapsed;
-            BoardHighlighterPenViewboxBtnColorTealContent.Visibility = Visibility.Collapsed;
-            BoardHighlighterPenViewboxBtnColorWhiteContent.Visibility = Visibility.Collapsed;
-            BoardHighlighterPenViewboxBtnColorYellowContent.Visibility = Visibility.Collapsed;
-            BoardHighlighterPenViewboxBtnColorZincContent.Visibility = Visibility.Collapsed;
-
-            switch (inkColor)
-            {
-                case 0:
-                    ViewboxBtnColorBlackContent.Visibility = Visibility.Visible;
-                    BoardViewboxBtnColorBlackContent.Visibility = Visibility.Visible;
-                    break;
-                case 1:
-                    ViewboxBtnColorRedContent.Visibility = Visibility.Visible;
-                    BoardViewboxBtnColorRedContent.Visibility = Visibility.Visible;
-                    break;
-                case 2:
-                    ViewboxBtnColorGreenContent.Visibility = Visibility.Visible;
-                    BoardViewboxBtnColorGreenContent.Visibility = Visibility.Visible;
-                    break;
-                case 3:
-                    ViewboxBtnColorBlueContent.Visibility = Visibility.Visible;
-                    BoardViewboxBtnColorBlueContent.Visibility = Visibility.Visible;
-                    break;
-                case 4:
-                    ViewboxBtnColorYellowContent.Visibility = Visibility.Visible;
-                    BoardViewboxBtnColorYellowContent.Visibility = Visibility.Visible;
-                    break;
-                case 5:
-                    ViewboxBtnColorWhiteContent.Visibility = Visibility.Visible;
-                    BoardViewboxBtnColorWhiteContent.Visibility = Visibility.Visible;
-                    break;
-                case 6:
-                    ViewboxBtnColorPinkContent.Visibility = Visibility.Visible;
-                    BoardViewboxBtnColorPinkContent.Visibility = Visibility.Visible;
-                    break;
-                case 7:
-                    ViewboxBtnColorTealContent.Visibility = Visibility.Visible;
-                    break;
-                case 8:
-                    ViewboxBtnColorOrangeContent.Visibility = Visibility.Visible;
-                    break;
-            }
-
-            switch (highlighterColor)
-            {
-                case 100:
-                    HighlighterPenViewboxBtnColorBlackContent.Visibility = Visibility.Visible;
-                    BoardHighlighterPenViewboxBtnColorBlackContent.Visibility = Visibility.Visible;
-                    break;
-                case 101:
-                    HighlighterPenViewboxBtnColorWhiteContent.Visibility = Visibility.Visible;
-                    BoardHighlighterPenViewboxBtnColorWhiteContent.Visibility = Visibility.Visible;
-                    break;
-                case 102:
-                    HighlighterPenViewboxBtnColorRedContent.Visibility = Visibility.Visible;
-                    BoardHighlighterPenViewboxBtnColorRedContent.Visibility = Visibility.Visible;
-                    break;
-                case 103:
-                    HighlighterPenViewboxBtnColorYellowContent.Visibility = Visibility.Visible;
-                    BoardHighlighterPenViewboxBtnColorYellowContent.Visibility = Visibility.Visible;
-                    break;
-                case 104:
-                    HighlighterPenViewboxBtnColorGreenContent.Visibility = Visibility.Visible;
-                    BoardHighlighterPenViewboxBtnColorGreenContent.Visibility = Visibility.Visible;
-                    break;
-                case 105:
-                    HighlighterPenViewboxBtnColorZincContent.Visibility = Visibility.Visible;
-                    BoardHighlighterPenViewboxBtnColorZincContent.Visibility = Visibility.Visible;
-                    break;
-                case 106:
-                    HighlighterPenViewboxBtnColorBlueContent.Visibility = Visibility.Visible;
-                    BoardHighlighterPenViewboxBtnColorBlueContent.Visibility = Visibility.Visible;
-                    break;
-                case 107:
-                    HighlighterPenViewboxBtnColorPurpleContent.Visibility = Visibility.Visible;
-                    BoardHighlighterPenViewboxBtnColorPurpleContent.Visibility = Visibility.Visible;
-                    break;
-                case 108:
-                    HighlighterPenViewboxBtnColorTealContent.Visibility = Visibility.Visible;
-                    BoardHighlighterPenViewboxBtnColorTealContent.Visibility = Visibility.Visible;
-                    break;
-                case 109:
-                    HighlighterPenViewboxBtnColorOrangeContent.Visibility = Visibility.Visible;
-                    BoardHighlighterPenViewboxBtnColorOrangeContent.Visibility = Visibility.Visible;
-                    break;
-            }
+            HighlighterPenColorBlack.IsSelected = BoardHighlighterPenColorBlack.IsSelected = highlighterColor == 100;
+            HighlighterPenColorWhite.IsSelected = BoardHighlighterPenColorWhite.IsSelected = highlighterColor == 101;
+            HighlighterPenColorRed.IsSelected = BoardHighlighterPenColorRed.IsSelected = highlighterColor == 102;
+            HighlighterPenColorYellow.IsSelected = BoardHighlighterPenColorYellow.IsSelected = highlighterColor == 103;
+            HighlighterPenColorGreen.IsSelected = BoardHighlighterPenColorGreen.IsSelected = highlighterColor == 104;
+            HighlighterPenColorZinc.IsSelected = BoardHighlighterPenColorZinc.IsSelected = highlighterColor == 105;
+            HighlighterPenColorBlue.IsSelected = BoardHighlighterPenColorBlue.IsSelected = highlighterColor == 106;
+            HighlighterPenPenColorPurple.IsSelected = BoardHighlighterPenPenColorPurple.IsSelected = highlighterColor == 107;
+            HighlighterPenColorTeal.IsSelected = BoardHighlighterPenColorTeal.IsSelected = highlighterColor == 108;
+            HighlighterPenColorOrange.IsSelected = BoardHighlighterPenColorOrange.IsSelected = highlighterColor == 109;
         }
 
         private void CheckLastColor(int inkColor, bool isHighlighter = false)
@@ -1164,7 +1060,7 @@ namespace InkCanvasForClass_Remastered
             }
         }
 
-        private void SwitchToDefaultPen(object? sender, MouseButtonEventArgs? e)
+        private void SwitchToDefaultPen(object? sender, RoutedEventArgs? e)
         {
             penType = 0;
             CheckPenTypeUIState();
@@ -1175,7 +1071,7 @@ namespace InkCanvasForClass_Remastered
             _viewModel.InkCanvasDrawingAttributes.IsHighlighter = false;
         }
 
-        private void SwitchToHighlighterPen(object sender, MouseButtonEventArgs e)
+        private void SwitchToHighlighterPen(object sender, RoutedEventArgs e)
         {
             penType = 1;
             CheckPenTypeUIState();
@@ -1186,137 +1082,29 @@ namespace InkCanvasForClass_Remastered
             _viewModel.InkCanvasDrawingAttributes.IsHighlighter = true;
         }
 
-        private void BtnColorBlack_Click(object? sender, RoutedEventArgs? e)
+        private void PenColor_Click(object sender, RoutedEventArgs e)
         {
-            CheckLastColor(0);
-            ColorSwitchCheck();
+            if (sender is Button { CommandParameter: string value } && int.TryParse(value, out var color))
+                SelectPenColor(color);
         }
 
-        private void BtnColorRed_Click(object sender, RoutedEventArgs e)
+        private void SelectPenColor(int color)
         {
-            CheckLastColor(1);
-            ColorSwitchCheck();
-        }
+            if (color is >= 100 and <= 109)
+            {
+                CheckLastColor(color, true);
+                penType = 1;
+                CheckPenTypeUIState();
+            }
+            else if (color is >= 0 and <= 8)
+            {
+                CheckLastColor(color);
+            }
+            else
+            {
+                return;
+            }
 
-        private void BtnColorGreen_Click(object sender, RoutedEventArgs e)
-        {
-            CheckLastColor(2);
-            ColorSwitchCheck();
-        }
-
-        private void BtnColorBlue_Click(object sender, RoutedEventArgs e)
-        {
-            CheckLastColor(3);
-            ColorSwitchCheck();
-        }
-
-        private void BtnColorYellow_Click(object sender, RoutedEventArgs e)
-        {
-            CheckLastColor(4);
-            ColorSwitchCheck();
-        }
-
-        private void BtnColorWhite_Click(object? sender, RoutedEventArgs? e)
-        {
-            CheckLastColor(5);
-            ColorSwitchCheck();
-        }
-
-        private void BtnColorPink_Click(object sender, RoutedEventArgs e)
-        {
-            CheckLastColor(6);
-            ColorSwitchCheck();
-        }
-
-        private void BtnColorOrange_Click(object sender, RoutedEventArgs e)
-        {
-            CheckLastColor(8);
-            ColorSwitchCheck();
-        }
-
-        private void BtnColorTeal_Click(object sender, RoutedEventArgs e)
-        {
-            CheckLastColor(7);
-            ColorSwitchCheck();
-        }
-
-        private void BtnHighlighterColorBlack_Click(object sender, RoutedEventArgs e)
-        {
-            CheckLastColor(100, true);
-            penType = 1;
-            CheckPenTypeUIState();
-            ColorSwitchCheck();
-        }
-
-        private void BtnHighlighterColorWhite_Click(object sender, RoutedEventArgs e)
-        {
-            CheckLastColor(101, true);
-            penType = 1;
-            CheckPenTypeUIState();
-            ColorSwitchCheck();
-        }
-
-        private void BtnHighlighterColorRed_Click(object sender, RoutedEventArgs e)
-        {
-            CheckLastColor(102, true);
-            penType = 1;
-            CheckPenTypeUIState();
-            ColorSwitchCheck();
-        }
-
-        private void BtnHighlighterColorYellow_Click(object sender, RoutedEventArgs e)
-        {
-            CheckLastColor(103, true);
-            penType = 1;
-            CheckPenTypeUIState();
-            ColorSwitchCheck();
-        }
-
-        private void BtnHighlighterColorGreen_Click(object sender, RoutedEventArgs e)
-        {
-            CheckLastColor(104, true);
-            penType = 1;
-            CheckPenTypeUIState();
-            ColorSwitchCheck();
-        }
-
-        private void BtnHighlighterColorZinc_Click(object sender, RoutedEventArgs e)
-        {
-            CheckLastColor(105, true);
-            penType = 1;
-            CheckPenTypeUIState();
-            ColorSwitchCheck();
-        }
-
-        private void BtnHighlighterColorBlue_Click(object sender, RoutedEventArgs e)
-        {
-            CheckLastColor(106, true);
-            penType = 1;
-            CheckPenTypeUIState();
-            ColorSwitchCheck();
-        }
-
-        private void BtnHighlighterColorPurple_Click(object sender, RoutedEventArgs e)
-        {
-            CheckLastColor(107, true);
-            penType = 1;
-            CheckPenTypeUIState();
-            ColorSwitchCheck();
-        }
-
-        private void BtnHighlighterColorTeal_Click(object sender, RoutedEventArgs e)
-        {
-            CheckLastColor(108, true);
-            penType = 1;
-            CheckPenTypeUIState();
-            ColorSwitchCheck();
-        }
-
-        private void BtnHighlighterColorOrange_Click(object sender, RoutedEventArgs e)
-        {
-            CheckLastColor(109, true);
-            penType = 1;
-            CheckPenTypeUIState();
             ColorSwitchCheck();
         }
 
@@ -1347,7 +1135,7 @@ namespace InkCanvasForClass_Remastered
         /// <summary>
         /// 用於浮動工具欄的“手勢”按鈕和白板工具欄的“手勢”按鈕的點擊事件
         /// </summary>
-        private void TwoFingerGestureBorder_MouseUp(object sender, RoutedEventArgs e)
+        private void TwoFingerGestureBorder_Click(object sender, RoutedEventArgs e)
         {
             if (TwoFingerGestureBorder.Visibility == Visibility.Visible)
             {
@@ -1386,7 +1174,7 @@ namespace InkCanvasForClass_Remastered
             {
                 TwoFingerGestureSimpleStackPanel.Opacity = 0.5;
                 TwoFingerGestureSimpleStackPanel.IsHitTestVisible = false;
-                EnableTwoFingerGestureBtn.Source =
+                EnableTwoFingerGestureBtn.IconSource =
                     new BitmapImage(new Uri("/Resources/new-icons/gesture.png", UriKind.Relative));
 
                 BoardGesture.Background = new SolidColorBrush(Color.FromRgb(244, 244, 245));
@@ -1403,7 +1191,7 @@ namespace InkCanvasForClass_Remastered
                 TwoFingerGestureSimpleStackPanel.IsHitTestVisible = true;
                 if (Settings.IsEnableTwoFingerGesture)
                 {
-                    EnableTwoFingerGestureBtn.Source =
+                    EnableTwoFingerGestureBtn.IconSource =
                         new BitmapImage(new Uri("/Resources/new-icons/gesture-enabled.png", UriKind.Relative));
 
                     BoardGesture.Background = new SolidColorBrush(Color.FromRgb(37, 99, 235));
@@ -1416,7 +1204,7 @@ namespace InkCanvasForClass_Remastered
                 }
                 else
                 {
-                    EnableTwoFingerGestureBtn.Source =
+                    EnableTwoFingerGestureBtn.IconSource =
                         new BitmapImage(new Uri("/Resources/new-icons/gesture.png", UriKind.Relative));
 
                     BoardGesture.Background = new SolidColorBrush(Color.FromRgb(244, 244, 245));
@@ -1611,16 +1399,16 @@ namespace InkCanvasForClass_Remastered
             {
                 if (mode != "clear")
                 {
-                    PenIconGeometry.Brush = new SolidColorBrush(Color.FromRgb(27, 27, 27));
-                    PenIconGeometry.Geometry = Geometry.Parse(XamlGraphicsIconGeometries.LinedPenIcon);
-                    StrokeEraserIconGeometry.Brush = new SolidColorBrush(Color.FromRgb(27, 27, 27));
-                    StrokeEraserIconGeometry.Geometry =
+                    Pen_Icon.IconBrush = new SolidColorBrush(Color.FromRgb(27, 27, 27));
+                    Pen_Icon.PathData = Geometry.Parse(XamlGraphicsIconGeometries.LinedPenIcon);
+                    EraserByStrokes_Icon.IconBrush = new SolidColorBrush(Color.FromRgb(27, 27, 27));
+                    EraserByStrokes_Icon.PathData =
                         Geometry.Parse(XamlGraphicsIconGeometries.LinedEraserStrokeIcon);
-                    CircleEraserIconGeometry.Brush = new SolidColorBrush(Color.FromRgb(27, 27, 27));
-                    CircleEraserIconGeometry.Geometry =
+                    Eraser_Icon.IconBrush = new SolidColorBrush(Color.FromRgb(27, 27, 27));
+                    Eraser_Icon.PathData =
                         Geometry.Parse(XamlGraphicsIconGeometries.LinedEraserCircleIcon);
-                    LassoSelectIconGeometry.Brush = new SolidColorBrush(Color.FromRgb(27, 27, 27));
-                    LassoSelectIconGeometry.Geometry = Geometry.Parse(XamlGraphicsIconGeometries.LinedLassoSelectIcon);
+                    SymbolIconSelect.IconBrush = new SolidColorBrush(Color.FromRgb(27, 27, 27));
+                    SymbolIconSelect.PathData = Geometry.Parse(XamlGraphicsIconGeometries.LinedLassoSelectIcon);
 
                     BoardPen.Background = new SolidColorBrush(Color.FromRgb(244, 244, 245));
                     BoardSelect.Background = new SolidColorBrush(Color.FromRgb(244, 244, 245));
@@ -1644,8 +1432,8 @@ namespace InkCanvasForClass_Remastered
                     case "pen":
                     case "color":
                         {
-                            PenIconGeometry.Brush = new SolidColorBrush(Color.FromRgb(30, 58, 138));
-                            PenIconGeometry.Geometry = Geometry.Parse(XamlGraphicsIconGeometries.SolidPenIcon);
+                            Pen_Icon.IconBrush = new SolidColorBrush(Color.FromRgb(30, 58, 138));
+                            Pen_Icon.PathData = Geometry.Parse(XamlGraphicsIconGeometries.SolidPenIcon);
                             BoardPen.Background = new SolidColorBrush(Color.FromRgb(37, 99, 235));
                             BoardPen.BorderBrush = new SolidColorBrush(Color.FromRgb(37, 99, 235));
                             BoardPenGeometry.Brush = new SolidColorBrush(Colors.GhostWhite);
@@ -1657,8 +1445,8 @@ namespace InkCanvasForClass_Remastered
                         }
                     case "eraser":
                         {
-                            CircleEraserIconGeometry.Brush = new SolidColorBrush(Color.FromRgb(30, 58, 138));
-                            CircleEraserIconGeometry.Geometry =
+                            Eraser_Icon.IconBrush = new SolidColorBrush(Color.FromRgb(30, 58, 138));
+                            Eraser_Icon.PathData =
                                 Geometry.Parse(XamlGraphicsIconGeometries.SolidEraserCircleIcon);
                             BoardEraser.Background = new SolidColorBrush(Color.FromRgb(37, 99, 235));
                             BoardEraser.BorderBrush = new SolidColorBrush(Color.FromRgb(37, 99, 235));
@@ -1671,8 +1459,8 @@ namespace InkCanvasForClass_Remastered
                         }
                     case "eraserByStrokes":
                         {
-                            StrokeEraserIconGeometry.Brush = new SolidColorBrush(Color.FromRgb(30, 58, 138));
-                            StrokeEraserIconGeometry.Geometry =
+                            EraserByStrokes_Icon.IconBrush = new SolidColorBrush(Color.FromRgb(30, 58, 138));
+                            EraserByStrokes_Icon.PathData =
                                 Geometry.Parse(XamlGraphicsIconGeometries.SolidEraserStrokeIcon);
                             BoardEraser.Background = new SolidColorBrush(Color.FromRgb(37, 99, 235));
                             BoardEraser.BorderBrush = new SolidColorBrush(Color.FromRgb(37, 99, 235));
@@ -1685,8 +1473,8 @@ namespace InkCanvasForClass_Remastered
                         }
                     case "select":
                         {
-                            LassoSelectIconGeometry.Brush = new SolidColorBrush(Color.FromRgb(30, 58, 138));
-                            LassoSelectIconGeometry.Geometry =
+                            SymbolIconSelect.IconBrush = new SolidColorBrush(Color.FromRgb(30, 58, 138));
+                            SymbolIconSelect.PathData =
                                 Geometry.Parse(XamlGraphicsIconGeometries.SolidLassoSelectIcon);
                             BoardSelect.Background = new SolidColorBrush(Color.FromRgb(37, 99, 235));
                             BoardSelect.BorderBrush = new SolidColorBrush(Color.FromRgb(37, 99, 235));
@@ -1727,14 +1515,8 @@ namespace InkCanvasForClass_Remastered
         #endregion
 
         #region 撤銷重做按鈕
-        private void SymbolIconUndo_MouseUp(object? sender, MouseButtonEventArgs? e)
+        private void SymbolIconUndo_Click(object? sender, RoutedEventArgs? e)
         {
-            //if (lastBorderMouseDownObject != sender) return;
-
-            if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
-                ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
-            if (sender == SymbolIconUndo && lastBorderMouseDownObject != SymbolIconUndo) return;
-
             if (!_viewModel.CanUndo)
                 return;
 
@@ -1751,14 +1533,8 @@ namespace InkCanvasForClass_Remastered
             HideSubPanels();
         }
 
-        private void SymbolIconRedo_MouseUp(object? sender, MouseButtonEventArgs? e)
+        private void SymbolIconRedo_Click(object? sender, RoutedEventArgs? e)
         {
-            //if (lastBorderMouseDownObject != sender) return;
-
-            if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
-                ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
-            if (sender == SymbolIconRedo && lastBorderMouseDownObject != SymbolIconRedo) return;
-
             if (!_viewModel.CanRedo)
                 return;
 
@@ -1867,9 +1643,9 @@ namespace InkCanvasForClass_Remastered
 
             // 根据设置选择黑板或白板颜色
             if (Settings.UsingWhiteboard)
-                BtnColorBlack_Click(null, null);
+                SelectPenColor(0);
             else
-                BtnColorWhite_Click(null, null);
+                SelectPenColor(5);
         }
 
         /// <summary>
@@ -1917,13 +1693,8 @@ namespace InkCanvasForClass_Remastered
 
         #region 清空畫布按鈕
 
-        private void SymbolIconDelete_MouseUp(object? sender, MouseButtonEventArgs? e)
+        private void SymbolIconDelete_Click(object? sender, RoutedEventArgs? e)
         {
-
-            if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
-                ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
-            if (sender == SymbolIconDelete && lastBorderMouseDownObject != SymbolIconDelete) return;
-
             if (inkCanvas.GetSelectedStrokes().Count > 0)
             {
                 inkCanvas.Strokes.Remove(inkCanvas.GetSelectedStrokes());
@@ -1949,14 +1720,9 @@ namespace InkCanvasForClass_Remastered
         ///     浮動工具欄的“套索選”按鈕事件，重定向到舊UI的<c>BtnSelect_Click</c>方法
         /// </summary>
         /// <param name="sender">sender</param>
-        /// <param name="e">MouseButtonEventArgs</param>
-        private void SymbolIconSelect_MouseUp(object sender, MouseButtonEventArgs e)
+        /// <param name="e">RoutedEventArgs</param>
+        private void SymbolIconSelect_Click(object sender, RoutedEventArgs e)
         {
-
-            if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
-                ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
-            if (sender == SymbolIconSelect && lastBorderMouseDownObject != SymbolIconSelect) return;
-
             FloatingbarSelectionBG.Visibility = Visibility.Visible;
             System.Windows.Controls.Canvas.SetLeft(FloatingbarSelectionBG, 140);
 
@@ -1988,21 +1754,6 @@ namespace InkCanvasForClass_Remastered
         }
 
         #endregion
-
-        private void FloatingBarToolBtnMouseDownFeedback_Panel(object sender, MouseButtonEventArgs e)
-        {
-            var s = (Panel)sender;
-            lastBorderMouseDownObject = sender;
-            if (s == SymbolIconDelete) s.Background = new SolidColorBrush(Color.FromArgb(28, 127, 29, 29));
-            else s.Background = new SolidColorBrush(Color.FromArgb(28, 24, 24, 27));
-        }
-
-        private void FloatingBarToolBtnMouseLeaveFeedback_Panel(object sender, MouseEventArgs e)
-        {
-            var s = (Panel)sender;
-            lastBorderMouseDownObject = null;
-            s.Background = new SolidColorBrush(Colors.Transparent);
-        }
 
         private void ImageCountdownTimer_Click(object sender, RoutedEventArgs e)
         {
@@ -2407,11 +2158,6 @@ namespace InkCanvasForClass_Remastered
 
         private void PenIcon_Click(object? sender, RoutedEventArgs? e)
         {
-
-            if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
-                ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
-            if (sender == Pen_Icon && lastBorderMouseDownObject != Pen_Icon) return;
-
             FloatingbarSelectionBG.Visibility = Visibility.Visible;
             System.Windows.Controls.Canvas.SetLeft(FloatingbarSelectionBG, 28);
 
@@ -2474,7 +2220,7 @@ namespace InkCanvasForClass_Remastered
             }
         }
 
-        private void ColorThemeSwitch_MouseUp(object sender, RoutedEventArgs e)
+        private void ColorThemeSwitch_Click(object sender, RoutedEventArgs e)
         {
             isUselightThemeColor = !isUselightThemeColor;
             if (_viewModel.AppMode == AppMode.Normal) isDesktopUselightThemeColor = isUselightThemeColor;
@@ -2483,10 +2229,6 @@ namespace InkCanvasForClass_Remastered
 
         private void EraserIcon_Click(object sender, RoutedEventArgs e)
         {
-
-            if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
-                ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
-            if (sender == Eraser_Icon && lastBorderMouseDownObject != Eraser_Icon) return;
 
             FloatingbarSelectionBG.Visibility = Visibility.Visible;
             System.Windows.Controls.Canvas.SetLeft(FloatingbarSelectionBG, 84);
@@ -2535,10 +2277,6 @@ namespace InkCanvasForClass_Remastered
         private void EraserIconByStrokes_Click(object sender, RoutedEventArgs e)
         {
 
-            if (lastBorderMouseDownObject != null && lastBorderMouseDownObject is Panel)
-                ((Panel)lastBorderMouseDownObject).Background = new SolidColorBrush(Colors.Transparent);
-            if (sender == EraserByStrokes_Icon && lastBorderMouseDownObject != EraserByStrokes_Icon) return;
-
             FloatingbarSelectionBG.Visibility = Visibility.Visible;
             System.Windows.Controls.Canvas.SetLeft(FloatingbarSelectionBG, 112);
 
@@ -2554,11 +2292,11 @@ namespace InkCanvasForClass_Remastered
 
         private void ClearAndMouseFloatingbarButton_Click(object? sender, RoutedEventArgs? e)
         {
-            SymbolIconDelete_MouseUp(sender, null);
+            SymbolIconDelete_Click(sender, null);
             CursorFloatingBarButton_Click(null, null);
         }
 
-        private void CloseBordertools_MouseUp(object sender, MouseButtonEventArgs e)
+        private void CloseBordertools_Click(object sender, RoutedEventArgs e)
         {
             HideSubPanels();
         }
@@ -2713,7 +2451,7 @@ namespace InkCanvasForClass_Remastered
         {
             try
             {
-                SymbolIconUndo_MouseUp(lastBorderMouseDownObject, null);
+                SymbolIconUndo_Click(sender, e);
             }
             catch { }
         }
@@ -2722,7 +2460,7 @@ namespace InkCanvasForClass_Remastered
         {
             try
             {
-                SymbolIconRedo_MouseUp(lastBorderMouseDownObject, null);
+                SymbolIconRedo_Click(sender, e);
             }
             catch { }
         }
@@ -2831,36 +2569,21 @@ namespace InkCanvasForClass_Remastered
         }
 
 
-        private void BlackBoardLeftSidePageListView_OnMouseUp(object sender, MouseButtonEventArgs e)
+        private void WhiteboardPage_Click(object sender, RoutedEventArgs e)
         {
-            AnimationsHelper.HideWithSlideAndFade(BoardBorderLeftPageListView);
-            AnimationsHelper.HideWithSlideAndFade(BoardBorderRightPageListView);
-            var item = BlackBoardLeftSidePageListView.SelectedItem;
-            var index = BlackBoardLeftSidePageListView.SelectedIndex;
-            if (item != null)
-            {
-                SaveStrokes();
-                ClearStrokes(true);
-                _viewModel.WhiteboardCurrentPage = index + 1;
-                RestoreStrokes();
-                BlackBoardLeftSidePageListView.SelectedIndex = index;
-            }
-        }
+            if (sender is not Button { CommandParameter: PageListViewItem page }) return;
+            if (page.Index < 1 || page.Index > _viewModel.WhiteboardTotalPageCount) return;
 
-        private void BlackBoardRightSidePageListView_OnMouseUp(object sender, MouseButtonEventArgs e)
-        {
             AnimationsHelper.HideWithSlideAndFade(BoardBorderLeftPageListView);
             AnimationsHelper.HideWithSlideAndFade(BoardBorderRightPageListView);
-            var item = BlackBoardRightSidePageListView.SelectedItem;
-            var index = BlackBoardRightSidePageListView.SelectedIndex;
-            if (item != null)
-            {
-                SaveStrokes();
-                ClearStrokes(true);
-                _viewModel.WhiteboardCurrentPage = index + 1;
-                RestoreStrokes();
-                BlackBoardRightSidePageListView.SelectedIndex = index;
-            }
+            if (page.Index == _viewModel.WhiteboardCurrentPage) return;
+
+            SaveStrokes();
+            ClearStrokes(true);
+            _viewModel.WhiteboardCurrentPage = page.Index;
+            RestoreStrokes();
+            BlackBoardLeftSidePageListView.SelectedIndex = page.Index - 1;
+            BlackBoardRightSidePageListView.SelectedIndex = page.Index - 1;
         }
         #endregion
 
@@ -2944,10 +2667,6 @@ namespace InkCanvasForClass_Remastered
                 {
                     PenIcon_Click(null, null);
                 }
-                //if (Settings.IsShowCanvasAtNewSlideShow &&
-                //    !Settings.IsAutoFoldInPPTSlideShow)
-                //    BtnColorRed_Click(null, null);
-
                 isEnteredSlideShowEndEvent = false;
                 if (_viewModel.IsFloatingBarVisible)
                 {
@@ -3073,7 +2792,7 @@ namespace InkCanvasForClass_Remastered
             }
         }
 
-        private void ImagePPTControlEnd_MouseUp(object sender, MouseButtonEventArgs e)
+        private void ImagePPTControlEnd_Click(object sender, RoutedEventArgs e)
         {
             _powerPointService.EndSlideShow();
         }
@@ -3184,59 +2903,25 @@ namespace InkCanvasForClass_Remastered
         #region SelectionGestures
         #region Floating Control
 
-        private object? lastBorderMouseDownObject;
-
-        private void Border_MouseDown(object sender, MouseButtonEventArgs e)
+        private void BorderStrokeSelectionCloneToNewBoard_Click(object sender, RoutedEventArgs e)
         {
-            lastBorderMouseDownObject = sender;
-        }
-
-        private bool isStrokeSelectionCloneOn = false;
-
-        private void BorderStrokeSelectionClone_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (lastBorderMouseDownObject != sender) return;
-
-            if (isStrokeSelectionCloneOn)
-            {
-                BorderStrokeSelectionClone.Background = Brushes.Transparent;
-
-                isStrokeSelectionCloneOn = false;
-            }
-            else
-            {
-                BorderStrokeSelectionClone.Background = new SolidColorBrush(StringToColor("#FF1ED760"));
-
-                isStrokeSelectionCloneOn = true;
-            }
-        }
-
-        private void BorderStrokeSelectionCloneToNewBoard_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (lastBorderMouseDownObject != sender) return;
+            if (_viewModel.WhiteboardTotalPageCount >= 99) return;
 
             var strokes = inkCanvas.GetSelectedStrokes();
+            if (strokes.Count == 0) return;
             inkCanvas.Select(new StrokeCollection());
             strokes = strokes.Clone();
             WhiteBoardAddPage();
             inkCanvas.Strokes.Add(strokes);
         }
 
-        private void BorderStrokeSelectionDelete_MouseUp(object sender, MouseButtonEventArgs e)
+        private void GridPenWidthDecrease_Click(object sender, RoutedEventArgs e)
         {
-            if (lastBorderMouseDownObject != sender) return;
-            SymbolIconDelete_MouseUp(sender, e);
-        }
-
-        private void GridPenWidthDecrease_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (lastBorderMouseDownObject != sender) return;
             ChangeStrokeThickness(0.8);
         }
 
-        private void GridPenWidthIncrease_MouseUp(object sender, MouseButtonEventArgs e)
+        private void GridPenWidthIncrease_Click(object sender, RoutedEventArgs e)
         {
-            if (lastBorderMouseDownObject != sender) return;
             ChangeStrokeThickness(1.25);
         }
 
@@ -3252,159 +2937,61 @@ namespace InkCanvasForClass_Remastered
                 stroke.DrawingAttributes.Width = newWidth;
                 stroke.DrawingAttributes.Height = newHeight;
             }
-            if (DrawingAttributesHistory.Count > 0)
-            {
-
-                timeMachine.CommitStrokeDrawingAttributesHistory(DrawingAttributesHistory);
-                DrawingAttributesHistory = new Dictionary<Stroke, Tuple<DrawingAttributes, DrawingAttributes>>();
-                foreach (var item in DrawingAttributesHistoryFlag)
-                {
-                    item.Value.Clear();
-                }
-            }
+            CommitPendingDrawingAttributes();
         }
 
-        private void GridPenWidthRestore_MouseUp(object sender, MouseButtonEventArgs e)
+        private void GridPenWidthRestore_Click(object sender, RoutedEventArgs e)
         {
-            if (lastBorderMouseDownObject != sender) return;
-
             foreach (var stroke in inkCanvas.GetSelectedStrokes())
             {
                 stroke.DrawingAttributes.Width = _viewModel.InkCanvasDrawingAttributes.Width;
                 stroke.DrawingAttributes.Height = _viewModel.InkCanvasDrawingAttributes.Height;
             }
+            CommitPendingDrawingAttributes();
         }
 
-        private void ImageFlipHorizontal_MouseUp(object sender, MouseButtonEventArgs e)
+        private void ImageFlipHorizontal_Click(object sender, RoutedEventArgs e)
         {
-            if (lastBorderMouseDownObject != sender) return;
-
-            var m = new Matrix();
-
-            // Find center of element and then transform to get current location of center
-            var fe = e.Source as FrameworkElement;
-            var center = new Point(fe.ActualWidth / 2, fe.ActualHeight / 2);
-            center = new Point(inkCanvas.GetSelectionBounds().Left + inkCanvas.GetSelectionBounds().Width / 2,
-                inkCanvas.GetSelectionBounds().Top + inkCanvas.GetSelectionBounds().Height / 2);
-            center = m.Transform(center); // 转换为矩阵缩放和旋转的中心点
-
-            // Update matrix to reflect translation/rotation
-            m.ScaleAt(-1, 1, center.X, center.Y); // 缩放
-
-            var targetStrokes = inkCanvas.GetSelectedStrokes();
-            foreach (var stroke in targetStrokes) stroke.Transform(m, false);
-
-            if (DrawingAttributesHistory.Count > 0)
-            {
-                //var collecion = new StrokeCollection();
-                //foreach (var item in DrawingAttributesHistory)
-                //{
-                //    collecion.Add(item.Key);
-                //}
-                timeMachine.CommitStrokeDrawingAttributesHistory(DrawingAttributesHistory);
-                DrawingAttributesHistory = new Dictionary<Stroke, Tuple<DrawingAttributes, DrawingAttributes>>();
-                foreach (var item in DrawingAttributesHistoryFlag)
-                {
-                    item.Value.Clear();
-                }
-            }
-
-            //updateBorderStrokeSelectionControlLocation();
+            TransformSelectedStrokes(scaleX: -1);
         }
 
-        private void ImageFlipVertical_MouseUp(object sender, MouseButtonEventArgs e)
+        private void ImageFlipVertical_Click(object sender, RoutedEventArgs e)
         {
-            if (lastBorderMouseDownObject != sender) return;
-
-            var m = new Matrix();
-
-            // Find center of element and then transform to get current location of center
-            var fe = e.Source as FrameworkElement;
-            var center = new Point(fe.ActualWidth / 2, fe.ActualHeight / 2);
-            center = new Point(inkCanvas.GetSelectionBounds().Left + inkCanvas.GetSelectionBounds().Width / 2,
-                inkCanvas.GetSelectionBounds().Top + inkCanvas.GetSelectionBounds().Height / 2);
-            center = m.Transform(center); // 转换为矩阵缩放和旋转的中心点
-
-            // Update matrix to reflect translation/rotation
-            m.ScaleAt(1, -1, center.X, center.Y); // 缩放
-
-            var targetStrokes = inkCanvas.GetSelectedStrokes();
-            foreach (var stroke in targetStrokes) stroke.Transform(m, false);
-
-            if (DrawingAttributesHistory.Count > 0)
-            {
-                timeMachine.CommitStrokeDrawingAttributesHistory(DrawingAttributesHistory);
-                DrawingAttributesHistory = new Dictionary<Stroke, Tuple<DrawingAttributes, DrawingAttributes>>();
-                foreach (var item in DrawingAttributesHistoryFlag)
-                {
-                    item.Value.Clear();
-                }
-            }
+            TransformSelectedStrokes(scaleY: -1);
         }
 
-        private void ImageRotate45_MouseUp(object sender, MouseButtonEventArgs e)
+        private void ImageRotate45_Click(object sender, RoutedEventArgs e)
         {
-            if (lastBorderMouseDownObject != sender) return;
-
-            var m = new Matrix();
-
-            // Find center of element and then transform to get current location of center
-            var fe = e.Source as FrameworkElement;
-            var center = new Point(fe.ActualWidth / 2, fe.ActualHeight / 2);
-            center = new Point(inkCanvas.GetSelectionBounds().Left + inkCanvas.GetSelectionBounds().Width / 2,
-                inkCanvas.GetSelectionBounds().Top + inkCanvas.GetSelectionBounds().Height / 2);
-            center = m.Transform(center); // 转换为矩阵缩放和旋转的中心点
-
-            // Update matrix to reflect translation/rotation
-            m.RotateAt(45, center.X, center.Y); // 旋转
-
-            var targetStrokes = inkCanvas.GetSelectedStrokes();
-            foreach (var stroke in targetStrokes) stroke.Transform(m, false);
-
-            if (DrawingAttributesHistory.Count > 0)
-            {
-                timeMachine.CommitStrokeDrawingAttributesHistory(DrawingAttributesHistory);
-                DrawingAttributesHistory = new Dictionary<Stroke, Tuple<DrawingAttributes, DrawingAttributes>>();
-                foreach (var item in DrawingAttributesHistoryFlag)
-                {
-                    item.Value.Clear();
-                }
-            }
+            TransformSelectedStrokes(rotation: 45);
         }
 
-        private void ImageRotate90_MouseUp(object sender, MouseButtonEventArgs e)
+        private void ImageRotate90_Click(object sender, RoutedEventArgs e)
         {
-            if (lastBorderMouseDownObject != sender) return;
+            TransformSelectedStrokes(rotation: 90);
+        }
 
-            var m = new Matrix();
+        private void TransformSelectedStrokes(double rotation = 0, double scaleX = 1, double scaleY = 1)
+        {
+            var strokes = inkCanvas.GetSelectedStrokes();
+            if (strokes.Count == 0) return;
 
-            // Find center of element and then transform to get current location of center
-            var fe = e.Source as FrameworkElement;
-            var center = new Point(fe.ActualWidth / 2, fe.ActualHeight / 2);
-            center = new Point(inkCanvas.GetSelectionBounds().Left + inkCanvas.GetSelectionBounds().Width / 2,
-                inkCanvas.GetSelectionBounds().Top + inkCanvas.GetSelectionBounds().Height / 2);
-            center = m.Transform(center); // 转换为矩阵缩放和旋转的中心点
+            var bounds = inkCanvas.GetSelectionBounds();
+            var center = new Point(bounds.Left + bounds.Width / 2, bounds.Top + bounds.Height / 2);
+            var transform = Matrix.Identity;
+            transform.ScaleAt(scaleX, scaleY, center.X, center.Y);
+            transform.RotateAt(rotation, center.X, center.Y);
 
-            // Update matrix to reflect translation/rotation
-            m.RotateAt(90, center.X, center.Y); // 旋转
+            foreach (var stroke in strokes) stroke.Transform(transform, false);
+            CommitPendingDrawingAttributes();
+        }
 
-            var targetStrokes = inkCanvas.GetSelectedStrokes();
-            foreach (var stroke in targetStrokes) stroke.Transform(m, false);
+        private void CommitPendingDrawingAttributes()
+        {
+            if (DrawingAttributesHistory.Count == 0) return;
 
-            if (DrawingAttributesHistory.Count > 0)
-            {
-                var collecion = new StrokeCollection();
-                foreach (var item in DrawingAttributesHistory)
-                {
-                    collecion.Add(item.Key);
-                }
-                timeMachine.CommitStrokeDrawingAttributesHistory(DrawingAttributesHistory);
-                DrawingAttributesHistory = new Dictionary<Stroke, Tuple<DrawingAttributes, DrawingAttributes>>();
-                foreach (var item in DrawingAttributesHistoryFlag)
-                {
-                    item.Value.Clear();
-                }
-            }
+            timeMachine.CommitStrokeDrawingAttributesHistory(DrawingAttributesHistory);
+            DrawingAttributesHistory = new Dictionary<Stroke, Tuple<DrawingAttributes, DrawingAttributes>>();
+            foreach (var flags in DrawingAttributesHistoryFlag.Values) flags.Clear();
         }
 
         #endregion
@@ -3438,8 +3025,7 @@ namespace InkCanvasForClass_Remastered
             else
             {
                 GridInkCanvasSelectionCover.Visibility = Visibility.Visible;
-                BorderStrokeSelectionClone.Background = Brushes.Transparent;
-                isStrokeSelectionCloneOn = false;
+                _viewModel.IsSelectionCloneEnabled = false;
                 updateBorderStrokeSelectionControlLocation();
             }
         }
@@ -3549,7 +3135,7 @@ namespace InkCanvasForClass_Remastered
                 var touchPoint = e.GetTouchPoint(null);
                 lastTouchPointOnGridInkCanvasCover = touchPoint.Position;
 
-                if (isStrokeSelectionCloneOn)
+                if (_viewModel.IsSelectionCloneEnabled)
                 {
                     var strokes = inkCanvas.GetSelectedStrokes();
                     isProgramChangeStrokeSelection = true;
@@ -3668,14 +3254,14 @@ namespace InkCanvasForClass_Remastered
             _settingsService.SaveSettings();
         }
 
-        private void SwitchToCircleEraser(object sender, MouseButtonEventArgs e)
+        private void SwitchToCircleEraser(object sender, RoutedEventArgs e)
         {
             Settings.EraserShapeType = 0;
             CheckEraserTypeTab();
             UpdateEraserShape();
         }
 
-        private void SwitchToRectangleEraser(object sender, MouseButtonEventArgs e)
+        private void SwitchToRectangleEraser(object sender, RoutedEventArgs e)
         {
             Settings.EraserShapeType = 1;
             CheckEraserTypeTab();
@@ -5025,11 +4611,7 @@ namespace InkCanvasForClass_Remastered
 
         #endregion
 
-        private void SymbolIconTools_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            ToolsFloatingBarButton_Click(null, null);
-        }
-        private void CloseWhiteboardWhiteBoardButton_Click(object sender, MouseButtonEventArgs e)
+        private void CloseWhiteboardWhiteBoardButton_Click(object sender, RoutedEventArgs e)
         {
             CloseWhiteboard();
         }

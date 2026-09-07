@@ -1,0 +1,79 @@
+<Button
+    x:Class="InkCanvasForClass_Remastered.Controls.ColorSwatchButton"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:InkCanvasForClass_Remastered.Controls"
+    Width="45"
+    Height="45"
+    Background="Black"
+    BorderBrush="Black"
+    BorderThickness="1.5"
+    Cursor="Hand"
+    FocusVisualStyle="{x:Null}"
+    Focusable="False"
+    IsTabStop="False">
+    <Button.Template>
+        <ControlTemplate TargetType="{x:Type local:ColorSwatchButton}">
+            <Border
+                x:Name="frame"
+                Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                CornerRadius="100">
+                <Grid>
+                    <Ellipse x:Name="transparencyGrid" Visibility="Collapsed">
+                        <Ellipse.Fill>
+                            <ImageBrush ImageSource="/Resources/Icons-png/transparent-grid.png" />
+                        </Ellipse.Fill>
+                    </Ellipse>
+                    <Ellipse
+                        x:Name="highlighterFill"
+                        Fill="{TemplateBinding Background}"
+                        Opacity="0.75"
+                        Visibility="Collapsed" />
+                    <Border
+                        x:Name="feedback"
+                        Background="Transparent"
+                        CornerRadius="100"
+                        IsHitTestVisible="False" />
+                    <Viewbox
+                        x:Name="selectionMark"
+                        Margin="8"
+                        IsHitTestVisible="False"
+                        Visibility="Collapsed">
+                        <Image
+                            x:Name="checkImage"
+                            Width="24"
+                            Height="24"
+                            RenderOptions.BitmapScalingMode="HighQuality"
+                            Source="/Resources/new-icons/checked-white.png" />
+                    </Viewbox>
+                </Grid>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsHighlighter" Value="True">
+                    <Setter TargetName="frame" Property="Background" Value="Transparent" />
+                    <Setter TargetName="transparencyGrid" Property="Visibility" Value="Visible" />
+                    <Setter TargetName="highlighterFill" Property="Visibility" Value="Visible" />
+                    <Setter TargetName="selectionMark" Property="Margin" Value="9" />
+                </Trigger>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter TargetName="selectionMark" Property="Visibility" Value="Visible" />
+                </Trigger>
+                <Trigger Property="UseDarkCheckMark" Value="True">
+                    <Setter TargetName="checkImage" Property="Source" Value="/Resources/new-icons/checked-black.png" />
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="feedback" Property="Background" Value="#11000000" />
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter TargetName="feedback" Property="Background" Value="#1C18181B" />
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter TargetName="frame" Property="Opacity" Value="0.5" />
+                    <Setter TargetName="feedback" Property="Background" Value="Transparent" />
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+    </Button.Template>
+</Button>

@@ -15,7 +15,7 @@ namespace InkCanvasForClass_Remastered.ViewModels
     {
         private readonly SettingsService _settingsService;
         private readonly IPowerPointService _powerPointService;
-        
+
         public MainViewModel(SettingsService settingsService, IPowerPointService powerPointService)
         {
             _settingsService = settingsService;
@@ -71,6 +71,9 @@ namespace InkCanvasForClass_Remastered.ViewModels
 
         [ObservableProperty]
         public partial bool CanRedo { get; set; } = false;
+
+        [ObservableProperty]
+        public partial bool IsSelectionCloneEnabled { get; set; } = false;
 
         [ObservableProperty]
         public partial bool IsSettingsPanelVisible { get; set; } = false;
