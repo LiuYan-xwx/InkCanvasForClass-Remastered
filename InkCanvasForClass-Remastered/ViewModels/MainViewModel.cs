@@ -43,7 +43,38 @@ namespace InkCanvasForClass_Remastered.ViewModels
         public partial InkCanvasEditingMode AppPenMode { get; set; } = InkCanvasEditingMode.None;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(InkAlpha))]
         public partial DrawingAttributes InkCanvasDrawingAttributes { get; set; }
+
+        public byte InkAlpha
+        {
+            get => InkCanvasDrawingAttributes.Color.A;
+            set
+            {
+                var color = InkCanvasDrawingAttributes.Color;
+                if (color.A == value) return;
+                color.A = value;
+                InkCanvasDrawingAttributes.Color = color;
+            }
+        }
+
+        partial void OnInkCanvasDrawingAttributesChanged(DrawingAttributes oldValue, DrawingAttributes newValue)
+        {
+            if (oldValue != null) oldValue.AttributeChanged -= OnDrawingAttributeChanged;
+            newValue.AttributeChanged += OnDrawingAttributeChanged;
+        }
+
+        private void OnDrawingAttributeChanged(object? sender, PropertyDataChangedEventArgs e)
+        {
+            if (e.PropertyGuid == DrawingAttributeIds.Color)
+                OnPropertyChanged(nameof(InkAlpha));
+        }
+
+        [ObservableProperty]
+        public partial int SelectedPenColor { get; set; } = 1;
+
+        [ObservableProperty]
+        public partial int SelectedHighlighterColor { get; set; } = 102;
 
         [ObservableProperty]
         public partial bool ForceCursor { get; set; } = false;
@@ -88,6 +119,14 @@ namespace InkCanvasForClass_Remastered.ViewModels
             {
                 case nameof(Settings.FitToCurve):
                     InkCanvasDrawingAttributes.FitToCurve = Settings.FitToCurve;
+                    break;
+                case nameof(Settings.InkWidth) when !InkCanvasDrawingAttributes.IsHighlighter:
+                    InkCanvasDrawingAttributes.Width = Settings.InkWidth;
+                    InkCanvasDrawingAttributes.Height = Settings.InkWidth;
+                    break;
+                case nameof(Settings.HighlighterWidth) when InkCanvasDrawingAttributes.IsHighlighter:
+                    InkCanvasDrawingAttributes.Width = Settings.HighlighterWidth / 2;
+                    InkCanvasDrawingAttributes.Height = Settings.HighlighterWidth;
                     break;
             }
         }

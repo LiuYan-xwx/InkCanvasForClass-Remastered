@@ -80,7 +80,6 @@ namespace InkCanvasForClass_Remastered
             inkCanvas.Strokes.StrokesChanged += StrokesOnStrokesChanged;
 
             CheckColorTheme(true);
-            CheckPenTypeUIState();
         }
         private readonly DispatcherTimer topmostRefreshTimer = new()
         {
@@ -104,6 +103,7 @@ namespace InkCanvasForClass_Remastered
                         ViewboxFloatingBarMarginAnimation(100, true);
                     break;
                 case nameof(Settings.EraserSize):
+                case nameof(Settings.EraserShapeType):
                     UpdateEraserShape();
                     break;
                 case nameof(Settings.IsEnableTwoFingerRotationOnSelection) or nameof(Settings.IsEnableTwoFingerRotation):
@@ -125,9 +125,9 @@ namespace InkCanvasForClass_Remastered
                 case nameof(Settings.IsAutoKillPptService):
                     StartOrStopTimerKillProcess();
                     break;
-                case nameof(Settings.InkWidth):
-                    _viewModel.InkCanvasDrawingAttributes.Width = Settings.InkWidth;
-                    _viewModel.InkCanvasDrawingAttributes.Height = Settings.InkWidth;
+                case nameof(Settings.InkStyle):
+                case nameof(Settings.HighlighterWidth):
+                    if (isLoaded) _settingsService.SaveSettings();
                     break;
             }
         }
@@ -595,11 +595,11 @@ namespace InkCanvasForClass_Remastered
             _settingsService.SaveSettings();
             if (Settings.UsingWhiteboard)
             {
-                if (inkColor == 5) lastBoardInkColor = 0;
+                if (_viewModel.SelectedPenColor == 5) lastBoardInkColor = 0;
             }
             else
             {
-                if (inkColor == 0) lastBoardInkColor = 5;
+                if (_viewModel.SelectedPenColor == 0) lastBoardInkColor = 5;
             }
 
             CheckColorTheme(true);
@@ -650,8 +650,6 @@ namespace InkCanvasForClass_Remastered
         #endregion
 
         #region Colors
-        private int inkColor = 1;
-
         private void ColorSwitchCheck()
         {
             HideSubPanels();
@@ -676,9 +674,7 @@ namespace InkCanvasForClass_Remastered
         }
 
         private bool isUselightThemeColor = false, isDesktopUselightThemeColor = false;
-        private int penType = 0; // 0是签字笔，1是荧光笔
         private int lastDesktopInkColor = 1, lastBoardInkColor = 5;
-        private int highlighterColor = 102;
 
         private void CheckColorTheme(bool changeColorTheme = false)
         {
@@ -698,106 +694,106 @@ namespace InkCanvasForClass_Remastered
             if (_viewModel.AppMode == AppMode.Normal)
             {
                 isUselightThemeColor = isDesktopUselightThemeColor;
-                inkColor = lastDesktopInkColor;
+                _viewModel.SelectedPenColor = lastDesktopInkColor;
             }
             else
             {
-                inkColor = lastBoardInkColor;
+                _viewModel.SelectedPenColor = lastBoardInkColor;
             }
 
             double alpha = _viewModel.InkCanvasDrawingAttributes.Color.A;
 
-            if (penType == 0)
+            if (!_viewModel.InkCanvasDrawingAttributes.IsHighlighter)
             {
-                if (inkColor == 0)
+                if (_viewModel.SelectedPenColor == 0)
                 {
                     // Black
                     _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 0, 0, 0);
                 }
-                else if (inkColor == 5)
+                else if (_viewModel.SelectedPenColor == 5)
                 {
                     // White
                     _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 255, 255, 255);
                 }
                 else if (isUselightThemeColor)
                 {
-                    if (inkColor == 1)
+                    if (_viewModel.SelectedPenColor == 1)
                         // Red
                         _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 239, 68, 68);
-                    else if (inkColor == 2)
+                    else if (_viewModel.SelectedPenColor == 2)
                         // Green
                         _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 34, 197, 94);
-                    else if (inkColor == 3)
+                    else if (_viewModel.SelectedPenColor == 3)
                         // Blue
                         _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 59, 130, 246);
-                    else if (inkColor == 4)
+                    else if (_viewModel.SelectedPenColor == 4)
                         // Yellow
                         _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 250, 204, 21);
-                    else if (inkColor == 6)
+                    else if (_viewModel.SelectedPenColor == 6)
                         // Pink
                         _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 236, 72, 153);
-                    else if (inkColor == 7)
+                    else if (_viewModel.SelectedPenColor == 7)
                         // Teal (亮色)
                         _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 20, 184, 166);
-                    else if (inkColor == 8)
+                    else if (_viewModel.SelectedPenColor == 8)
                         // Orange (亮色)
                         _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 249, 115, 22);
                 }
                 else
                 {
-                    if (inkColor == 1)
+                    if (_viewModel.SelectedPenColor == 1)
                         // Red
                         _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 220, 38, 38);
-                    else if (inkColor == 2)
+                    else if (_viewModel.SelectedPenColor == 2)
                         // Green
                         _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 22, 163, 74);
-                    else if (inkColor == 3)
+                    else if (_viewModel.SelectedPenColor == 3)
                         // Blue
                         _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 37, 99, 235);
-                    else if (inkColor == 4)
+                    else if (_viewModel.SelectedPenColor == 4)
                         // Yellow
                         _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 234, 179, 8);
-                    else if (inkColor == 6)
+                    else if (_viewModel.SelectedPenColor == 6)
                         // Pink ( Purple )
                         _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 147, 51, 234);
-                    else if (inkColor == 7)
+                    else if (_viewModel.SelectedPenColor == 7)
                         // Teal (暗色)
                         _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 13, 148, 136);
-                    else if (inkColor == 8)
+                    else if (_viewModel.SelectedPenColor == 8)
                         // Orange (暗色)
                         _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 234, 88, 12);
                 }
             }
-            else if (penType == 1)
+            else
             {
-                if (highlighterColor == 100)
+                if (_viewModel.SelectedHighlighterColor == 100)
                     // Black
                     _viewModel.InkCanvasDrawingAttributes.Color = Color.FromRgb(0, 0, 0);
-                else if (highlighterColor == 101)
+                else if (_viewModel.SelectedHighlighterColor == 101)
                     // White
                     _viewModel.InkCanvasDrawingAttributes.Color = Color.FromRgb(250, 250, 250);
-                else if (highlighterColor == 102)
+                else if (_viewModel.SelectedHighlighterColor == 102)
                     // Red
                     _viewModel.InkCanvasDrawingAttributes.Color = Color.FromRgb(239, 68, 68);
-                else if (highlighterColor == 103)
+                else if (_viewModel.SelectedHighlighterColor == 103)
                     // Yellow
                     _viewModel.InkCanvasDrawingAttributes.Color = Color.FromRgb(253, 224, 71);
-                else if (highlighterColor == 104)
+                else if (_viewModel.SelectedHighlighterColor == 104)
                     // Green
                     _viewModel.InkCanvasDrawingAttributes.Color = Color.FromRgb(74, 222, 128);
-                else if (highlighterColor == 105)
+                else if (_viewModel.SelectedHighlighterColor == 105)
                     // Zinc
                     _viewModel.InkCanvasDrawingAttributes.Color = Color.FromRgb(113, 113, 122);
-                else if (highlighterColor == 106)
+                else if (_viewModel.SelectedHighlighterColor == 106)
                     // Blue
                     _viewModel.InkCanvasDrawingAttributes.Color = Color.FromRgb(59, 130, 246);
-                else if (highlighterColor == 107)
+                else if (_viewModel.SelectedHighlighterColor == 107)
                     // Purple
                     _viewModel.InkCanvasDrawingAttributes.Color = Color.FromRgb(168, 85, 247);
-                else if (highlighterColor == 108)
+                else if (_viewModel.SelectedHighlighterColor == 108)
                     // teal
                     _viewModel.InkCanvasDrawingAttributes.Color = Color.FromRgb(45, 212, 191);
-                else if (highlighterColor == 109)
+                else if (_viewModel.SelectedHighlighterColor == 109)
                     // Orange
                     _viewModel.InkCanvasDrawingAttributes.Color = Color.FromRgb(249, 115, 22);
             }
@@ -874,201 +870,40 @@ namespace InkCanvasForClass_Remastered
                 ColorThemeSwitchTextBlock.Text = "亮系";
                 BoardColorThemeSwitchTextBlock.Text = "亮系";
             }
-
-            BorderPenColorBlack.IsSelected = BoardBorderPenColorBlack.IsSelected = inkColor == 0;
-            BorderPenColorRed.IsSelected = BoardBorderPenColorRed.IsSelected = inkColor == 1;
-            BorderPenColorGreen.IsSelected = BoardBorderPenColorGreen.IsSelected = inkColor == 2;
-            BorderPenColorBlue.IsSelected = BoardBorderPenColorBlue.IsSelected = inkColor == 3;
-            BorderPenColorYellow.IsSelected = BoardBorderPenColorYellow.IsSelected = inkColor == 4;
-            BorderPenColorWhite.IsSelected = BoardBorderPenColorWhite.IsSelected = inkColor == 5;
-            BorderPenColorPink.IsSelected = BoardBorderPenColorPink.IsSelected = inkColor == 6;
-            BorderPenColorTeal.IsSelected = BoardBorderPenColorTeal.IsSelected = inkColor == 7;
-            BorderPenColorOrange.IsSelected = BoardBorderPenColorOrange.IsSelected = inkColor == 8;
-
-            HighlighterPenColorBlack.IsSelected = BoardHighlighterPenColorBlack.IsSelected = highlighterColor == 100;
-            HighlighterPenColorWhite.IsSelected = BoardHighlighterPenColorWhite.IsSelected = highlighterColor == 101;
-            HighlighterPenColorRed.IsSelected = BoardHighlighterPenColorRed.IsSelected = highlighterColor == 102;
-            HighlighterPenColorYellow.IsSelected = BoardHighlighterPenColorYellow.IsSelected = highlighterColor == 103;
-            HighlighterPenColorGreen.IsSelected = BoardHighlighterPenColorGreen.IsSelected = highlighterColor == 104;
-            HighlighterPenColorZinc.IsSelected = BoardHighlighterPenColorZinc.IsSelected = highlighterColor == 105;
-            HighlighterPenColorBlue.IsSelected = BoardHighlighterPenColorBlue.IsSelected = highlighterColor == 106;
-            HighlighterPenPenColorPurple.IsSelected = BoardHighlighterPenPenColorPurple.IsSelected = highlighterColor == 107;
-            HighlighterPenColorTeal.IsSelected = BoardHighlighterPenColorTeal.IsSelected = highlighterColor == 108;
-            HighlighterPenColorOrange.IsSelected = BoardHighlighterPenColorOrange.IsSelected = highlighterColor == 109;
         }
 
-        private void CheckLastColor(int inkColor, bool isHighlighter = false)
+        private void CheckLastColor(int color, bool isHighlighter = false)
         {
-            if (isHighlighter == true)
+            if (isHighlighter)
             {
-                highlighterColor = inkColor;
+                _viewModel.SelectedHighlighterColor = color;
             }
             else
             {
-                if (_viewModel.AppMode == AppMode.Normal) lastDesktopInkColor = inkColor;
-                else lastBoardInkColor = inkColor;
-            }
-        }
-
-        private async void CheckPenTypeUIState()
-        {
-            if (penType == 0)
-            {
-                DefaultPenPropsPanel.Visibility = Visibility.Visible;
-                DefaultPenColorsPanel.Visibility = Visibility.Visible;
-                HighlighterPenColorsPanel.Visibility = Visibility.Collapsed;
-                HighlighterPenPropsPanel.Visibility = Visibility.Collapsed;
-                DefaultPenTabButton.Opacity = 1;
-                DefaultPenTabButtonText.FontWeight = FontWeights.Bold;
-                DefaultPenTabButtonText.Margin = new Thickness(2, 0.5, 0, 0);
-                DefaultPenTabButtonText.FontSize = 9.5;
-                DefaultPenTabButton.Background = new SolidColorBrush(Color.FromArgb(72, 219, 234, 254));
-                DefaultPenTabButtonIndicator.Visibility = Visibility.Visible;
-                HighlightPenTabButton.Opacity = 0.9;
-                HighlightPenTabButtonText.FontWeight = FontWeights.Normal;
-                HighlightPenTabButtonText.FontSize = 9;
-                HighlightPenTabButtonText.Margin = new Thickness(2, 1, 0, 0);
-                HighlightPenTabButton.Background = new SolidColorBrush(Colors.Transparent);
-                HighlightPenTabButtonIndicator.Visibility = Visibility.Collapsed;
-
-                BoardDefaultPenPropsPanel.Visibility = Visibility.Visible;
-                BoardDefaultPenColorsPanel.Visibility = Visibility.Visible;
-                BoardHighlighterPenColorsPanel.Visibility = Visibility.Collapsed;
-                BoardHighlighterPenPropsPanel.Visibility = Visibility.Collapsed;
-                BoardDefaultPenTabButton.Opacity = 1;
-                BoardDefaultPenTabButtonText.FontWeight = FontWeights.Bold;
-                BoardDefaultPenTabButtonText.Margin = new Thickness(2, 0.5, 0, 0);
-                BoardDefaultPenTabButtonText.FontSize = 9.5;
-                BoardDefaultPenTabButton.Background = new SolidColorBrush(Color.FromArgb(72, 219, 234, 254));
-                BoardDefaultPenTabButtonIndicator.Visibility = Visibility.Visible;
-                BoardHighlightPenTabButton.Opacity = 0.9;
-                BoardHighlightPenTabButtonText.FontWeight = FontWeights.Normal;
-                BoardHighlightPenTabButtonText.FontSize = 9;
-                BoardHighlightPenTabButtonText.Margin = new Thickness(2, 1, 0, 0);
-                BoardHighlightPenTabButton.Background = new SolidColorBrush(Colors.Transparent);
-                BoardHighlightPenTabButtonIndicator.Visibility = Visibility.Collapsed;
-
-                // PenPalette.Margin = new Thickness(-160, -200, -33, 32);
-                await Dispatcher.InvokeAsync(() =>
-                {
-                    var marginAnimation = new ThicknessAnimation
-                    {
-                        Duration = TimeSpan.FromSeconds(0.1),
-                        From = PenPalette.Margin,
-                        To = new Thickness(-160, -200, -33, 32),
-                        EasingFunction = new CubicEase()
-                    };
-                    PenPalette.BeginAnimation(MarginProperty, marginAnimation);
-                });
-
-                await Dispatcher.InvokeAsync(() =>
-                {
-                    var marginAnimation = new ThicknessAnimation
-                    {
-                        Duration = TimeSpan.FromSeconds(0.1),
-                        From = PenPalette.Margin,
-                        To = new Thickness(-160, -200, -33, 50),
-                        EasingFunction = new CubicEase()
-                    };
-                    BoardPenPaletteGrid.BeginAnimation(MarginProperty, marginAnimation);
-                });
-
-
-                await Task.Delay(100);
-
-                await Dispatcher.InvokeAsync(() => { PenPalette.Margin = new Thickness(-160, -200, -33, 32); });
-
-                await Dispatcher.InvokeAsync(() => { BoardPenPaletteGrid.Margin = new Thickness(-160, -200, -33, 50); });
-            }
-            else if (penType == 1)
-            {
-                DefaultPenPropsPanel.Visibility = Visibility.Collapsed;
-                DefaultPenColorsPanel.Visibility = Visibility.Collapsed;
-                HighlighterPenColorsPanel.Visibility = Visibility.Visible;
-                HighlighterPenPropsPanel.Visibility = Visibility.Visible;
-                DefaultPenTabButton.Opacity = 0.9;
-                DefaultPenTabButtonText.FontWeight = FontWeights.Normal;
-                DefaultPenTabButtonText.FontSize = 9;
-                DefaultPenTabButtonText.Margin = new Thickness(2, 1, 0, 0);
-                DefaultPenTabButton.Background = new SolidColorBrush(Colors.Transparent);
-                DefaultPenTabButtonIndicator.Visibility = Visibility.Collapsed;
-                HighlightPenTabButton.Opacity = 1;
-                HighlightPenTabButtonText.FontWeight = FontWeights.Bold;
-                HighlightPenTabButtonText.FontSize = 9.5;
-                HighlightPenTabButtonText.Margin = new Thickness(2, 0.5, 0, 0);
-                HighlightPenTabButton.Background = new SolidColorBrush(Color.FromArgb(72, 219, 234, 254));
-                HighlightPenTabButtonIndicator.Visibility = Visibility.Visible;
-
-                BoardDefaultPenPropsPanel.Visibility = Visibility.Collapsed;
-                BoardDefaultPenColorsPanel.Visibility = Visibility.Collapsed;
-                BoardHighlighterPenColorsPanel.Visibility = Visibility.Visible;
-                BoardHighlighterPenPropsPanel.Visibility = Visibility.Visible;
-                BoardDefaultPenTabButton.Opacity = 0.9;
-                BoardDefaultPenTabButtonText.FontWeight = FontWeights.Normal;
-                BoardDefaultPenTabButtonText.FontSize = 9;
-                BoardDefaultPenTabButtonText.Margin = new Thickness(2, 1, 0, 0);
-                BoardDefaultPenTabButton.Background = new SolidColorBrush(Colors.Transparent);
-                BoardDefaultPenTabButtonIndicator.Visibility = Visibility.Collapsed;
-                BoardHighlightPenTabButton.Opacity = 1;
-                BoardHighlightPenTabButtonText.FontWeight = FontWeights.Bold;
-                BoardHighlightPenTabButtonText.FontSize = 9.5;
-                BoardHighlightPenTabButtonText.Margin = new Thickness(2, 0.5, 0, 0);
-                BoardHighlightPenTabButton.Background = new SolidColorBrush(Color.FromArgb(72, 219, 234, 254));
-                BoardHighlightPenTabButtonIndicator.Visibility = Visibility.Visible;
-
-                // PenPalette.Margin = new Thickness(-160, -157, -33, 32);
-                await Dispatcher.InvokeAsync(() =>
-                {
-                    var marginAnimation = new ThicknessAnimation
-                    {
-                        Duration = TimeSpan.FromSeconds(0.1),
-                        From = PenPalette.Margin,
-                        To = new Thickness(-160, -157, -33, 32),
-                        EasingFunction = new CubicEase()
-                    };
-                    PenPalette.BeginAnimation(MarginProperty, marginAnimation);
-                });
-
-                await Dispatcher.InvokeAsync(() =>
-                {
-                    var marginAnimation = new ThicknessAnimation
-                    {
-                        Duration = TimeSpan.FromSeconds(0.1),
-                        From = PenPalette.Margin,
-                        To = new Thickness(-160, -154, -33, 50),
-                        EasingFunction = new CubicEase()
-                    };
-                    BoardPenPaletteGrid.BeginAnimation(MarginProperty, marginAnimation);
-                });
-
-                await Task.Delay(100);
-
-                await Dispatcher.InvokeAsync(() => { PenPalette.Margin = new Thickness(-160, -157, -33, 32); });
-
-                await Dispatcher.InvokeAsync(() => { BoardPenPaletteGrid.Margin = new Thickness(-160, -154, -33, 50); });
+                if (_viewModel.AppMode == AppMode.Normal) lastDesktopInkColor = color;
+                else lastBoardInkColor = color;
             }
         }
 
         private void SwitchToDefaultPen(object? sender, RoutedEventArgs? e)
         {
-            penType = 0;
-            CheckPenTypeUIState();
+            SetPenType(false);
             CheckColorTheme();
-            _viewModel.InkCanvasDrawingAttributes.Width = Settings.InkWidth;
-            _viewModel.InkCanvasDrawingAttributes.Height = Settings.InkWidth;
-            _viewModel.InkCanvasDrawingAttributes.StylusTip = StylusTip.Ellipse;
-            _viewModel.InkCanvasDrawingAttributes.IsHighlighter = false;
         }
 
         private void SwitchToHighlighterPen(object sender, RoutedEventArgs e)
         {
-            penType = 1;
-            CheckPenTypeUIState();
+            SetPenType(true);
             CheckColorTheme();
-            _viewModel.InkCanvasDrawingAttributes.Width = Settings.HighlighterWidth / 2;
-            _viewModel.InkCanvasDrawingAttributes.Height = Settings.HighlighterWidth;
-            _viewModel.InkCanvasDrawingAttributes.StylusTip = StylusTip.Rectangle;
-            _viewModel.InkCanvasDrawingAttributes.IsHighlighter = true;
+        }
+
+        private void SetPenType(bool isHighlighter)
+        {
+            var attributes = _viewModel.InkCanvasDrawingAttributes;
+            attributes.IsHighlighter = isHighlighter;
+            attributes.Width = isHighlighter ? Settings.HighlighterWidth / 2 : Settings.InkWidth;
+            attributes.Height = isHighlighter ? Settings.HighlighterWidth : Settings.InkWidth;
+            attributes.StylusTip = isHighlighter ? StylusTip.Rectangle : StylusTip.Ellipse;
         }
 
         private void PenColor_Click(object sender, RoutedEventArgs e)
@@ -1082,12 +917,13 @@ namespace InkCanvasForClass_Remastered
             if (color is >= 100 and <= 109)
             {
                 CheckLastColor(color, true);
-                penType = 1;
-                CheckPenTypeUIState();
+                SetPenType(true);
             }
             else if (color is >= 0 and <= 8)
             {
                 CheckLastColor(color);
+                if (_viewModel.InkCanvasDrawingAttributes.IsHighlighter)
+                    SetPenType(false);
             }
             else
             {
@@ -1633,65 +1469,6 @@ namespace InkCanvasForClass_Remastered
             SaveScreenShotToDesktop();
         }
 
-        public void CheckEraserTypeTab()
-        {
-            if (Settings.EraserShapeType == 0)
-            {
-                CircleEraserTabButton.Background = new SolidColorBrush(Color.FromArgb(85, 59, 130, 246));
-                CircleEraserTabButton.Opacity = 1;
-                CircleEraserTabButtonText.FontWeight = FontWeights.Bold;
-                CircleEraserTabButtonText.Margin = new Thickness(2, 0.5, 0, 0);
-                CircleEraserTabButtonText.FontSize = 9.5;
-                CircleEraserTabButtonIndicator.Visibility = Visibility.Visible;
-                RectangleEraserTabButton.Background = new SolidColorBrush(Colors.Transparent);
-                RectangleEraserTabButton.Opacity = 0.75;
-                RectangleEraserTabButtonText.FontWeight = FontWeights.Normal;
-                RectangleEraserTabButtonText.FontSize = 9;
-                RectangleEraserTabButtonText.Margin = new Thickness(2, 1, 0, 0);
-                RectangleEraserTabButtonIndicator.Visibility = Visibility.Collapsed;
-
-                BoardCircleEraserTabButton.Background = new SolidColorBrush(Color.FromArgb(85, 59, 130, 246));
-                BoardCircleEraserTabButton.Opacity = 1;
-                BoardCircleEraserTabButtonText.FontWeight = FontWeights.Bold;
-                BoardCircleEraserTabButtonText.Margin = new Thickness(2, 0.5, 0, 0);
-                BoardCircleEraserTabButtonText.FontSize = 9.5;
-                BoardCircleEraserTabButtonIndicator.Visibility = Visibility.Visible;
-                BoardRectangleEraserTabButton.Background = new SolidColorBrush(Colors.Transparent);
-                BoardRectangleEraserTabButton.Opacity = 0.75;
-                BoardRectangleEraserTabButtonText.FontWeight = FontWeights.Normal;
-                BoardRectangleEraserTabButtonText.FontSize = 9;
-                BoardRectangleEraserTabButtonText.Margin = new Thickness(2, 1, 0, 0);
-                BoardRectangleEraserTabButtonIndicator.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                RectangleEraserTabButton.Background = new SolidColorBrush(Color.FromArgb(85, 59, 130, 246));
-                RectangleEraserTabButton.Opacity = 1;
-                RectangleEraserTabButtonText.FontWeight = FontWeights.Bold;
-                RectangleEraserTabButtonText.Margin = new Thickness(2, 0.5, 0, 0);
-                RectangleEraserTabButtonText.FontSize = 9.5;
-                RectangleEraserTabButtonIndicator.Visibility = Visibility.Visible;
-                CircleEraserTabButton.Background = new SolidColorBrush(Colors.Transparent);
-                CircleEraserTabButton.Opacity = 0.75;
-                CircleEraserTabButtonText.FontWeight = FontWeights.Normal;
-                CircleEraserTabButtonText.FontSize = 9;
-                CircleEraserTabButtonText.Margin = new Thickness(2, 1, 0, 0);
-                CircleEraserTabButtonIndicator.Visibility = Visibility.Collapsed;
-
-                BoardRectangleEraserTabButton.Background = new SolidColorBrush(Color.FromArgb(85, 59, 130, 246));
-                BoardRectangleEraserTabButton.Opacity = 1;
-                BoardRectangleEraserTabButtonText.FontWeight = FontWeights.Bold;
-                BoardRectangleEraserTabButtonText.Margin = new Thickness(2, 0.5, 0, 0);
-                BoardRectangleEraserTabButtonText.FontSize = 9.5;
-                BoardRectangleEraserTabButtonIndicator.Visibility = Visibility.Visible;
-                BoardCircleEraserTabButton.Background = new SolidColorBrush(Colors.Transparent);
-                BoardCircleEraserTabButton.Opacity = 0.75;
-                BoardCircleEraserTabButtonText.FontWeight = FontWeights.Normal;
-                BoardCircleEraserTabButtonText.FontSize = 9;
-                BoardCircleEraserTabButtonText.Margin = new Thickness(2, 1, 0, 0);
-                BoardCircleEraserTabButtonIndicator.Visibility = Visibility.Collapsed;
-            }
-        }
 
 
         private void ToolsFloatingBarButton_Click(object? sender, RoutedEventArgs? e)
@@ -2883,61 +2660,14 @@ namespace InkCanvasForClass_Remastered
 
         #region Canvas
 
-        private void ComboBoxPenStyle_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (!isLoaded) return;
-            if (sender == ComboBoxPenStyle)
-            {
-                Settings.InkStyle = ComboBoxPenStyle.SelectedIndex;
-                BoardComboBoxPenStyle.SelectedIndex = ComboBoxPenStyle.SelectedIndex;
-            }
-            else
-            {
-                Settings.InkStyle = BoardComboBoxPenStyle.SelectedIndex;
-                ComboBoxPenStyle.SelectedIndex = BoardComboBoxPenStyle.SelectedIndex;
-            }
-
-            _settingsService.SaveSettings();
-        }
-
         private void SwitchToCircleEraser(object sender, RoutedEventArgs e)
         {
             Settings.EraserShapeType = 0;
-            CheckEraserTypeTab();
-            UpdateEraserShape();
         }
 
         private void SwitchToRectangleEraser(object sender, RoutedEventArgs e)
         {
             Settings.EraserShapeType = 1;
-            CheckEraserTypeTab();
-            UpdateEraserShape();
-        }
-
-        private void HighlighterWidthSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (!isLoaded) return;
-            // if (sender == BoardInkWidthSlider) InkWidthSlider.Value = ((Slider)sender).Value;
-            // if (sender == InkWidthSlider) BoardInkWidthSlider.Value = ((Slider)sender).Value;
-            _viewModel.InkCanvasDrawingAttributes.Height = ((Slider)sender).Value;
-            _viewModel.InkCanvasDrawingAttributes.Width = ((Slider)sender).Value / 2;
-            Settings.HighlighterWidth = ((Slider)sender).Value;
-            _settingsService.SaveSettings();
-        }
-
-        private void InkAlphaSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (!isLoaded) return;
-            // if (sender == BoardInkWidthSlider) InkWidthSlider.Value = ((Slider)sender).Value;
-            // if (sender == InkWidthSlider) BoardInkWidthSlider.Value = ((Slider)sender).Value;
-            var NowR = _viewModel.InkCanvasDrawingAttributes.Color.R;
-            var NowG = _viewModel.InkCanvasDrawingAttributes.Color.G;
-            var NowB = _viewModel.InkCanvasDrawingAttributes.Color.B;
-            // Trace.WriteLine(BitConverter.GetBytes(((Slider)sender).Value));
-            _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)((Slider)sender).Value, NowR, NowG, NowB);
-            // _viewModel.InkCanvasDrawingAttributes.Width = ((Slider)sender).Value / 2;
-            // Settings.InkAlpha = ((Slider)sender).Value;
-            // _settingsService.SaveSettings();
         }
 
         #endregion
@@ -3153,14 +2883,7 @@ namespace InkCanvasForClass_Remastered
 
             CheckEnableTwoFingerGestureBtnColorPrompt();
 
-            HighlighterWidthSlider.Value = Settings.HighlighterWidth;
-
-            ComboBoxPenStyle.SelectedIndex = Settings.InkStyle;
-            BoardComboBoxPenStyle.SelectedIndex = Settings.InkStyle;
-
             UpdateEraserShape();
-
-            CheckEraserTypeTab();
 
             // Advanced
             if (Settings.IsEnableEdgeGestureUtil)
@@ -3264,7 +2987,7 @@ namespace InkCanvasForClass_Remastered
                 var count = originalPoints.Count;
                 var n = count - 1;
                 // 仅对签字笔进行书写优化
-                if (penType != 0 || n <= 0) return;
+                if (_viewModel.InkCanvasDrawingAttributes.IsHighlighter || n <= 0) return;
                 // 检查是否是压感笔书写，如果是真实的压感笔则不需要处理
                 for (var i = 0; i < count; i++)
                 {

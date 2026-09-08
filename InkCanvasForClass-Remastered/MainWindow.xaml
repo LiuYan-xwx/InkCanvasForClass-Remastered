@@ -47,6 +47,7 @@
         <converters:IntNumberToString2 x:Key="IntNumberToString2" />
         <converters:BoolToScaleConverter x:Key="BoolToScaleConverter" />
         <converters:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter" />
+        <converters:ValueEqualsConverter x:Key="ValueEqualsConverter" />
         <converters:OffsetPreviewConverter x:Key="OffsetPreviewConverter" />
         <converters:PanelWidthPreviewConverter x:Key="PanelWidthPreviewConverter" />
         <RoutedUICommand x:Key="KeyExit" Text=" " />
@@ -99,6 +100,62 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+        </Style>
+
+        <Style
+            x:Key="PenTypeTabButtonStyle"
+            BasedOn="{StaticResource ToolbarButtonStyle}"
+            TargetType="RadioButton">
+            <Setter Property="Opacity" Value="0.9" />
+            <Setter Property="FontWeight" Value="Normal" />
+            <Setter Property="FontSize" Value="9" />
+            <Style.Triggers>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="Background" Value="#48dbeafe" />
+                    <Setter Property="Opacity" Value="1" />
+                    <Setter Property="FontWeight" Value="Bold" />
+                    <Setter Property="FontSize" Value="9.5" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style
+            x:Key="EraserTypeTabButtonStyle"
+            BasedOn="{StaticResource PenTypeTabButtonStyle}"
+            TargetType="RadioButton">
+            <Setter Property="Opacity" Value="0.75" />
+            <Style.Triggers>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="Background" Value="#553b82f6" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="OptionTabLabelStyle" TargetType="TextBlock">
+            <Setter Property="Margin" Value="2,1,0,0" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=RadioButton}}" Value="True">
+                    <Setter Property="Margin" Value="2,0.5,0,0" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="DefaultPenOptionsStyle" TargetType="Viewbox">
+            <Setter Property="Visibility" Value="Visible" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding InkCanvasDrawingAttributes.IsHighlighter}" Value="True">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="HighlighterPenOptionsStyle" TargetType="Viewbox">
+            <Setter Property="Visibility" Value="Collapsed" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding InkCanvasDrawingAttributes.IsHighlighter}" Value="True">
+                    <Setter Property="Visibility" Value="Visible" />
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
 
         <Style
@@ -2508,10 +2565,44 @@
                                 </Button>
                                 <Border>
                                     <Grid Width="0" Margin="0,5,0,5">
-                                        <Grid
-                                            Name="BoardPenPaletteGrid"
-                                            Margin="-160,-200,-33,50"
-                                            RenderTransformOrigin="0,1">
+                                        <Grid Name="BoardPenPaletteGrid" RenderTransformOrigin="0,1">
+                                            <Grid.Style>
+                                                <Style TargetType="Grid">
+                                                    <Setter Property="Margin" Value="-160,-200,-33,50" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding InkCanvasDrawingAttributes.IsHighlighter}" Value="True">
+                                                            <DataTrigger.EnterActions>
+                                                                <BeginStoryboard>
+                                                                    <Storyboard>
+                                                                        <ThicknessAnimation
+                                                                            Storyboard.TargetProperty="Margin"
+                                                                            To="-160,-154,-33,50"
+                                                                            Duration="0:0:0.1">
+                                                                            <ThicknessAnimation.EasingFunction>
+                                                                                <CubicEase />
+                                                                            </ThicknessAnimation.EasingFunction>
+                                                                        </ThicknessAnimation>
+                                                                    </Storyboard>
+                                                                </BeginStoryboard>
+                                                            </DataTrigger.EnterActions>
+                                                            <DataTrigger.ExitActions>
+                                                                <BeginStoryboard>
+                                                                    <Storyboard>
+                                                                        <ThicknessAnimation
+                                                                            Storyboard.TargetProperty="Margin"
+                                                                            To="-160,-200,-33,50"
+                                                                            Duration="0:0:0.1">
+                                                                            <ThicknessAnimation.EasingFunction>
+                                                                                <CubicEase />
+                                                                            </ThicknessAnimation.EasingFunction>
+                                                                        </ThicknessAnimation>
+                                                                    </Storyboard>
+                                                                </BeginStoryboard>
+                                                            </DataTrigger.ExitActions>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Grid.Style>
                                             <Grid.RenderTransform>
                                                 <TransformGroup>
                                                     <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
@@ -2543,14 +2634,15 @@
                                                                 HorizontalAlignment="Stretch"
                                                                 Orientation="Horizontal"
                                                                 Spacing="2">
-                                                                <Button
+                                                                <RadioButton
                                                                     x:Name="BoardDefaultPenTabButton"
                                                                     Width="36"
                                                                     Height="20"
                                                                     ui:ControlHelper.CornerRadius="3"
-                                                                    Background="#48dbeafe"
                                                                     Click="SwitchToDefaultPen"
-                                                                    Style="{StaticResource ToolbarButtonStyle}"
+                                                                    GroupName="BoardPenType"
+                                                                    IsChecked="{Binding InkCanvasDrawingAttributes.IsHighlighter, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=False}"
+                                                                    Style="{StaticResource PenTypeTabButtonStyle}"
                                                                     ToolTip="笔">
                                                                     <Canvas>
                                                                         <ikw:SimpleStackPanel
@@ -2559,7 +2651,7 @@
                                                                             Canvas.Right="9"
                                                                             Canvas.Bottom="0"
                                                                             Orientation="Horizontal"
-                                                                            Visibility="Visible">
+                                                                            Visibility="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=RadioButton}, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                                             <Border
                                                                                 Width="18"
                                                                                 Height="2"
@@ -2582,24 +2674,23 @@
                                                                                     Source="/Resources/new-icons/pen-white.png" />
                                                                                 <TextBlock
                                                                                     x:Name="BoardDefaultPenTabButtonText"
-                                                                                    Margin="2,1,0,0"
-                                                                                    FontSize="9"
-                                                                                    FontWeight="Medium"
                                                                                     Foreground="White"
+                                                                                    Style="{StaticResource OptionTabLabelStyle}"
                                                                                     Text="笔"
                                                                                     TextAlignment="Center" />
                                                                             </ikw:SimpleStackPanel>
                                                                         </ikw:SimpleStackPanel>
                                                                     </Canvas>
-                                                                </Button>
-                                                                <Button
+                                                                </RadioButton>
+                                                                <RadioButton
                                                                     x:Name="BoardHighlightPenTabButton"
                                                                     Width="52"
                                                                     Height="20"
                                                                     ui:ControlHelper.CornerRadius="3"
-                                                                    Background="Transparent"
                                                                     Click="SwitchToHighlighterPen"
-                                                                    Style="{StaticResource ToolbarButtonStyle}"
+                                                                    GroupName="BoardPenType"
+                                                                    IsChecked="{Binding InkCanvasDrawingAttributes.IsHighlighter, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=True}"
+                                                                    Style="{StaticResource PenTypeTabButtonStyle}"
                                                                     ToolTip="荧光笔">
                                                                     <Canvas>
                                                                         <ikw:SimpleStackPanel
@@ -2608,7 +2699,7 @@
                                                                             Canvas.Right="14"
                                                                             Canvas.Bottom="0"
                                                                             Orientation="Horizontal"
-                                                                            Visibility="Collapsed">
+                                                                            Visibility="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=RadioButton}, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                                             <Border
                                                                                 Width="24"
                                                                                 Height="2"
@@ -2631,16 +2722,14 @@
                                                                                     Source="/Resources/new-icons/highlighter-white.png" />
                                                                                 <TextBlock
                                                                                     x:Name="BoardHighlightPenTabButtonText"
-                                                                                    Margin="2,1,0,0"
-                                                                                    FontSize="9"
-                                                                                    FontWeight="Medium"
                                                                                     Foreground="White"
+                                                                                    Style="{StaticResource OptionTabLabelStyle}"
                                                                                     Text="荧光笔"
                                                                                     TextAlignment="Center" />
                                                                             </ikw:SimpleStackPanel>
                                                                         </ikw:SimpleStackPanel>
                                                                     </Canvas>
-                                                                </Button>
+                                                                </RadioButton>
                                                                 <Button
                                                                     Width="16"
                                                                     Height="16"
@@ -2664,7 +2753,7 @@
                                                         HorizontalAlignment="Center"
                                                         VerticalAlignment="Center"
                                                         Stretch="Fill"
-                                                        Visibility="Collapsed">
+                                                        Style="{StaticResource DefaultPenOptionsStyle}">
                                                         <ikw:SimpleStackPanel>
                                                             <Controls:UniformGrid
                                                                 Width="300"
@@ -2683,8 +2772,7 @@
                                                                         Height="30"
                                                                         VerticalAlignment="Center"
                                                                         FontFamily="Microsoft YaHei UI"
-                                                                        SelectedIndex="0"
-                                                                        SelectionChanged="ComboBoxPenStyle_SelectionChanged">
+                                                                        SelectedIndex="{Binding Settings.InkStyle, Mode=TwoWay}">
                                                                         <ComboBoxItem Content="基于点集" FontFamily="Microsoft YaHei UI" />
                                                                         <ComboBoxItem Content="基于速率" FontFamily="Microsoft YaHei UI" />
                                                                         <ComboBoxItem Content="关闭笔锋" FontFamily="Microsoft YaHei UI" />
@@ -2758,14 +2846,13 @@
                                                                     Minimum="1"
                                                                     TickFrequency="1"
                                                                     TickPlacement="None"
-                                                                    ValueChanged="InkAlphaSlider_ValueChanged"
-                                                                    Value="255" />
+                                                                    Value="{Binding InkAlpha, Mode=TwoWay}" />
                                                                 <TextBlock
                                                                     Margin="10,0,0,4.5"
                                                                     VerticalAlignment="Bottom"
                                                                     FontFamily="Consolas"
                                                                     FontSize="15"
-                                                                    Text="{Binding Value, ElementName=InkAlphaSlider, Mode=OneWay}" />
+                                                                    Text="{Binding InkAlpha}" />
                                                             </StackPanel>
                                                         </ikw:SimpleStackPanel>
                                                     </Viewbox>
@@ -2774,7 +2861,8 @@
                                                         Margin="12,8,12,0"
                                                         HorizontalAlignment="Center"
                                                         VerticalAlignment="Center"
-                                                        Stretch="Fill">
+                                                        Stretch="Fill"
+                                                        Style="{StaticResource HighlighterPenOptionsStyle}">
                                                         <ikw:SimpleStackPanel>
                                                             <StackPanel Height="30" Orientation="Horizontal">
                                                                 <Label
@@ -2794,8 +2882,7 @@
                                                                     Minimum="15"
                                                                     TickFrequency="1"
                                                                     TickPlacement="None"
-                                                                    ValueChanged="HighlighterWidthSlider_ValueChanged"
-                                                                    Value="20" />
+                                                                    Value="{Binding Settings.HighlighterWidth, Mode=TwoWay}" />
                                                                 <TextBlock
                                                                     Margin="10,0,0,4.5"
                                                                     VerticalAlignment="Bottom"
@@ -2809,7 +2896,7 @@
                                                         x:Name="BoardDefaultPenColorsPanel"
                                                         Margin="0,8,0,0"
                                                         Stretch="Fill"
-                                                        Visibility="Collapsed">
+                                                        Style="{StaticResource DefaultPenOptionsStyle}">
                                                         <ikw:SimpleStackPanel Width="300" Margin="0,0,0,0">
                                                             <!--<TextBlock FontSize="25">画笔颜色</TextBlock>-->
                                                             <Border
@@ -2859,6 +2946,7 @@
                                                                                 BorderBrush="Black"
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="0"
+                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=0}"
                                                                                 ToolTip="黑色" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BoardBorderPenColorWhite"
@@ -2866,6 +2954,7 @@
                                                                                 BorderBrush="#71717a"
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="5"
+                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=5}"
                                                                                 ToolTip="白色"
                                                                                 UseDarkCheckMark="True" />
                                                                             <controls:ColorSwatchButton
@@ -2874,6 +2963,7 @@
                                                                                 BorderBrush="#7f1d1d"
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="1"
+                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=1}"
                                                                                 ToolTip="红色" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BoardBorderPenColorYellow"
@@ -2881,6 +2971,7 @@
                                                                                 BorderBrush="#713f12"
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="4"
+                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=4}"
                                                                                 ToolTip="黄色" />
                                                                         </Controls:UniformGrid>
                                                                     </ikw:SimpleStackPanel>
@@ -2899,6 +2990,7 @@
                                                                                 BorderBrush="#14532d"
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="2"
+                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=2}"
                                                                                 ToolTip="绿色" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BoardBorderPenColorBlue"
@@ -2906,6 +2998,7 @@
                                                                                 BorderBrush="#1e3a8a"
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="3"
+                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=3}"
                                                                                 ToolTip="蓝色" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BoardBorderPenColorPink"
@@ -2913,6 +3006,7 @@
                                                                                 BorderBrush="#831843"
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="6"
+                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=6}"
                                                                                 ToolTip="粉色" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BoardBorderPenColorTeal"
@@ -2920,6 +3014,7 @@
                                                                                 BorderBrush="#134e4a"
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="7"
+                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=7}"
                                                                                 ToolTip="青色" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BoardBorderPenColorOrange"
@@ -2927,6 +3022,7 @@
                                                                                 BorderBrush="#7c2d12"
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="8"
+                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=8}"
                                                                                 ToolTip="橙色" />
                                                                         </Controls:UniformGrid>
                                                                     </ikw:SimpleStackPanel>
@@ -2938,7 +3034,7 @@
                                                         x:Name="BoardHighlighterPenColorsPanel"
                                                         Margin="0,8,0,0"
                                                         Stretch="Fill"
-                                                        Visibility="Visible">
+                                                        Style="{StaticResource HighlighterPenOptionsStyle}">
                                                         <ikw:SimpleStackPanel Width="300" Margin="0,0,0,0">
                                                             <!--<TextBlock FontSize="25">画笔颜色</TextBlock>-->
                                                             <Border
@@ -2963,6 +3059,7 @@
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="100"
                                                                                 IsHighlighter="True"
+                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=100}"
                                                                                 ToolTip="荧光笔 · 黑色" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BoardHighlighterPenColorWhite"
@@ -2971,6 +3068,7 @@
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="101"
                                                                                 IsHighlighter="True"
+                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=101}"
                                                                                 ToolTip="荧光笔 · 白色"
                                                                                 UseDarkCheckMark="True" />
                                                                             <controls:ColorSwatchButton
@@ -2980,6 +3078,7 @@
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="102"
                                                                                 IsHighlighter="True"
+                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=102}"
                                                                                 ToolTip="荧光笔 · 红色" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BoardHighlighterPenColorYellow"
@@ -2988,6 +3087,7 @@
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="103"
                                                                                 IsHighlighter="True"
+                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=103}"
                                                                                 ToolTip="荧光笔 · 黄色"
                                                                                 UseDarkCheckMark="True" />
                                                                             <controls:ColorSwatchButton
@@ -2997,6 +3097,7 @@
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="104"
                                                                                 IsHighlighter="True"
+                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=104}"
                                                                                 ToolTip="荧光笔 · 绿色"
                                                                                 UseDarkCheckMark="True" />
                                                                         </Controls:UniformGrid>
@@ -3016,6 +3117,7 @@
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="105"
                                                                                 IsHighlighter="True"
+                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=105}"
                                                                                 ToolTip="荧光笔 · 灰色" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BoardHighlighterPenColorBlue"
@@ -3024,6 +3126,7 @@
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="106"
                                                                                 IsHighlighter="True"
+                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=106}"
                                                                                 ToolTip="荧光笔 · 蓝色" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BoardHighlighterPenPenColorPurple"
@@ -3032,6 +3135,7 @@
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="107"
                                                                                 IsHighlighter="True"
+                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=107}"
                                                                                 ToolTip="荧光笔 · 紫色" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BoardHighlighterPenColorTeal"
@@ -3040,6 +3144,7 @@
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="108"
                                                                                 IsHighlighter="True"
+                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=108}"
                                                                                 ToolTip="荧光笔 · 青色"
                                                                                 UseDarkCheckMark="True" />
                                                                             <controls:ColorSwatchButton
@@ -3049,6 +3154,7 @@
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="109"
                                                                                 IsHighlighter="True"
+                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=109}"
                                                                                 ToolTip="荧光笔 · 橙色" />
                                                                         </Controls:UniformGrid>
                                                                     </ikw:SimpleStackPanel>
@@ -3192,14 +3298,15 @@
                                                     HorizontalAlignment="Center"
                                                     Orientation="Horizontal"
                                                     Spacing="4">
-                                                    <Button
+                                                    <RadioButton
                                                         x:Name="BoardCircleEraserTabButton"
                                                         Width="40"
                                                         Height="20"
                                                         ui:ControlHelper.CornerRadius="3"
-                                                        Background="#553b82f6"
                                                         Click="SwitchToCircleEraser"
-                                                        Style="{StaticResource ToolbarButtonStyle}"
+                                                        GroupName="BoardEraserType"
+                                                        IsChecked="{Binding Settings.EraserShapeType, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=0}"
+                                                        Style="{StaticResource EraserTypeTabButtonStyle}"
                                                         ToolTip="圆形擦">
                                                         <Canvas>
                                                             <ikw:SimpleStackPanel
@@ -3208,7 +3315,7 @@
                                                                 Canvas.Right="11"
                                                                 Canvas.Bottom="0"
                                                                 Orientation="Horizontal"
-                                                                Visibility="Visible">
+                                                                Visibility="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=RadioButton}, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                                 <Border
                                                                     Width="18"
                                                                     Height="2"
@@ -3226,24 +3333,23 @@
                                                                     Orientation="Horizontal">
                                                                     <TextBlock
                                                                         x:Name="BoardCircleEraserTabButtonText"
-                                                                        Margin="2,1,0,0"
-                                                                        FontSize="9"
-                                                                        FontWeight="Medium"
                                                                         Foreground="#172554"
+                                                                        Style="{StaticResource OptionTabLabelStyle}"
                                                                         Text="圆形擦"
                                                                         TextAlignment="Center" />
                                                                 </ikw:SimpleStackPanel>
                                                             </ikw:SimpleStackPanel>
                                                         </Canvas>
-                                                    </Button>
-                                                    <Button
+                                                    </RadioButton>
+                                                    <RadioButton
                                                         x:Name="BoardRectangleEraserTabButton"
                                                         Width="40"
                                                         Height="20"
                                                         ui:ControlHelper.CornerRadius="3"
-                                                        Background="Transparent"
                                                         Click="SwitchToRectangleEraser"
-                                                        Style="{StaticResource ToolbarButtonStyle}"
+                                                        GroupName="BoardEraserType"
+                                                        IsChecked="{Binding Settings.EraserShapeType, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=1}"
+                                                        Style="{StaticResource EraserTypeTabButtonStyle}"
                                                         ToolTip="黑板擦">
                                                         <Canvas>
                                                             <ikw:SimpleStackPanel
@@ -3252,7 +3358,7 @@
                                                                 Canvas.Right="11"
                                                                 Canvas.Bottom="0"
                                                                 Orientation="Horizontal"
-                                                                Visibility="Collapsed">
+                                                                Visibility="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=RadioButton}, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                                 <Border
                                                                     Width="18"
                                                                     Height="2"
@@ -3270,16 +3376,14 @@
                                                                     Orientation="Horizontal">
                                                                     <TextBlock
                                                                         x:Name="BoardRectangleEraserTabButtonText"
-                                                                        Margin="2,1,0,0"
-                                                                        FontSize="9"
-                                                                        FontWeight="Medium"
                                                                         Foreground="#172554"
+                                                                        Style="{StaticResource OptionTabLabelStyle}"
                                                                         Text="黑板擦"
                                                                         TextAlignment="Center" />
                                                                 </ikw:SimpleStackPanel>
                                                             </ikw:SimpleStackPanel>
                                                         </Canvas>
-                                                    </Button>
+                                                    </RadioButton>
                                                 </ikw:SimpleStackPanel>
                                                 <Button
                                                     Margin="0,6,0,0"
@@ -4100,13 +4204,49 @@
                                             RenderTransformOrigin="0.5,0.5">
                                             <Border
                                                 x:Name="PenPalette"
-                                                Margin="-160,-200,-33,32"
                                                 Background="#fafafa"
                                                 BorderBrush="#2563eb"
                                                 BorderThickness="1"
                                                 CornerRadius="8"
                                                 Opacity="1"
                                                 Visibility="Visible">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="Margin" Value="-160,-200,-33,32" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding InkCanvasDrawingAttributes.IsHighlighter}" Value="True">
+                                                                <DataTrigger.EnterActions>
+                                                                    <BeginStoryboard>
+                                                                        <Storyboard>
+                                                                            <ThicknessAnimation
+                                                                                Storyboard.TargetProperty="Margin"
+                                                                                To="-160,-157,-33,32"
+                                                                                Duration="0:0:0.1">
+                                                                                <ThicknessAnimation.EasingFunction>
+                                                                                    <CubicEase />
+                                                                                </ThicknessAnimation.EasingFunction>
+                                                                            </ThicknessAnimation>
+                                                                        </Storyboard>
+                                                                    </BeginStoryboard>
+                                                                </DataTrigger.EnterActions>
+                                                                <DataTrigger.ExitActions>
+                                                                    <BeginStoryboard>
+                                                                        <Storyboard>
+                                                                            <ThicknessAnimation
+                                                                                Storyboard.TargetProperty="Margin"
+                                                                                To="-160,-200,-33,32"
+                                                                                Duration="0:0:0.1">
+                                                                                <ThicknessAnimation.EasingFunction>
+                                                                                    <CubicEase />
+                                                                                </ThicknessAnimation.EasingFunction>
+                                                                            </ThicknessAnimation>
+                                                                        </Storyboard>
+                                                                    </BeginStoryboard>
+                                                                </DataTrigger.ExitActions>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
                                                 <ikw:SimpleStackPanel>
                                                     <Border
                                                         Height="32"
@@ -4122,14 +4262,15 @@
                                                                 HorizontalAlignment="Stretch"
                                                                 Orientation="Horizontal"
                                                                 Spacing="2">
-                                                                <Button
+                                                                <RadioButton
                                                                     x:Name="DefaultPenTabButton"
                                                                     Width="36"
                                                                     Height="20"
                                                                     ui:ControlHelper.CornerRadius="3"
-                                                                    Background="#48dbeafe"
                                                                     Click="SwitchToDefaultPen"
-                                                                    Style="{StaticResource ToolbarButtonStyle}"
+                                                                    GroupName="PenType"
+                                                                    IsChecked="{Binding InkCanvasDrawingAttributes.IsHighlighter, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=False}"
+                                                                    Style="{StaticResource PenTypeTabButtonStyle}"
                                                                     ToolTip="笔">
                                                                     <Canvas>
                                                                         <ikw:SimpleStackPanel
@@ -4138,7 +4279,7 @@
                                                                             Canvas.Right="9"
                                                                             Canvas.Bottom="0"
                                                                             Orientation="Horizontal"
-                                                                            Visibility="Visible">
+                                                                            Visibility="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=RadioButton}, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                                             <Border
                                                                                 Width="18"
                                                                                 Height="2"
@@ -4161,24 +4302,23 @@
                                                                                     Source="/Resources/new-icons/pen-white.png" />
                                                                                 <TextBlock
                                                                                     x:Name="DefaultPenTabButtonText"
-                                                                                    Margin="2,1,0,0"
-                                                                                    FontSize="9"
-                                                                                    FontWeight="Medium"
                                                                                     Foreground="White"
+                                                                                    Style="{StaticResource OptionTabLabelStyle}"
                                                                                     Text="笔"
                                                                                     TextAlignment="Center" />
                                                                             </ikw:SimpleStackPanel>
                                                                         </ikw:SimpleStackPanel>
                                                                     </Canvas>
-                                                                </Button>
-                                                                <Button
+                                                                </RadioButton>
+                                                                <RadioButton
                                                                     x:Name="HighlightPenTabButton"
                                                                     Width="52"
                                                                     Height="20"
                                                                     ui:ControlHelper.CornerRadius="3"
-                                                                    Background="Transparent"
                                                                     Click="SwitchToHighlighterPen"
-                                                                    Style="{StaticResource ToolbarButtonStyle}"
+                                                                    GroupName="PenType"
+                                                                    IsChecked="{Binding InkCanvasDrawingAttributes.IsHighlighter, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=True}"
+                                                                    Style="{StaticResource PenTypeTabButtonStyle}"
                                                                     ToolTip="荧光笔">
                                                                     <Canvas>
                                                                         <ikw:SimpleStackPanel
@@ -4187,7 +4327,7 @@
                                                                             Canvas.Right="14"
                                                                             Canvas.Bottom="0"
                                                                             Orientation="Horizontal"
-                                                                            Visibility="Collapsed">
+                                                                            Visibility="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=RadioButton}, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                                             <Border
                                                                                 Width="24"
                                                                                 Height="2"
@@ -4210,16 +4350,14 @@
                                                                                     Source="/Resources/new-icons/highlighter-white.png" />
                                                                                 <TextBlock
                                                                                     x:Name="HighlightPenTabButtonText"
-                                                                                    Margin="2,1,0,0"
-                                                                                    FontSize="9"
-                                                                                    FontWeight="Medium"
                                                                                     Foreground="White"
+                                                                                    Style="{StaticResource OptionTabLabelStyle}"
                                                                                     Text="荧光笔"
                                                                                     TextAlignment="Center" />
                                                                             </ikw:SimpleStackPanel>
                                                                         </ikw:SimpleStackPanel>
                                                                     </Canvas>
-                                                                </Button>
+                                                                </RadioButton>
                                                                 <Button
                                                                     Width="16"
                                                                     Height="16"
@@ -4243,7 +4381,7 @@
                                                         HorizontalAlignment="Center"
                                                         VerticalAlignment="Center"
                                                         Stretch="Fill"
-                                                        Visibility="Collapsed">
+                                                        Style="{StaticResource DefaultPenOptionsStyle}">
                                                         <ikw:SimpleStackPanel>
                                                             <Controls:UniformGrid
                                                                 Width="300"
@@ -4262,8 +4400,7 @@
                                                                         Height="30"
                                                                         VerticalAlignment="Center"
                                                                         FontFamily="Microsoft YaHei UI"
-                                                                        SelectedIndex="0"
-                                                                        SelectionChanged="ComboBoxPenStyle_SelectionChanged">
+                                                                        SelectedIndex="{Binding Settings.InkStyle, Mode=TwoWay}">
                                                                         <ComboBoxItem Content="基于点集" FontFamily="Microsoft YaHei UI" />
                                                                         <ComboBoxItem Content="基于速率" FontFamily="Microsoft YaHei UI" />
                                                                         <ComboBoxItem Content="关闭笔锋" FontFamily="Microsoft YaHei UI" />
@@ -4337,14 +4474,13 @@
                                                                     Minimum="1"
                                                                     TickFrequency="1"
                                                                     TickPlacement="None"
-                                                                    ValueChanged="InkAlphaSlider_ValueChanged"
-                                                                    Value="255" />
+                                                                    Value="{Binding InkAlpha, Mode=TwoWay}" />
                                                                 <TextBlock
                                                                     Margin="10,0,0,4.5"
                                                                     VerticalAlignment="Bottom"
                                                                     FontFamily="Consolas"
                                                                     FontSize="15"
-                                                                    Text="{Binding Value, ElementName=InkAlphaSlider, Mode=OneWay}" />
+                                                                    Text="{Binding InkAlpha}" />
                                                             </StackPanel>
                                                         </ikw:SimpleStackPanel>
                                                     </Viewbox>
@@ -4353,7 +4489,8 @@
                                                         Margin="12,8,12,0"
                                                         HorizontalAlignment="Center"
                                                         VerticalAlignment="Center"
-                                                        Stretch="Fill">
+                                                        Stretch="Fill"
+                                                        Style="{StaticResource HighlighterPenOptionsStyle}">
                                                         <ikw:SimpleStackPanel>
                                                             <StackPanel Height="30" Orientation="Horizontal">
                                                                 <Label
@@ -4373,8 +4510,7 @@
                                                                     Minimum="15"
                                                                     TickFrequency="1"
                                                                     TickPlacement="None"
-                                                                    ValueChanged="HighlighterWidthSlider_ValueChanged"
-                                                                    Value="20" />
+                                                                    Value="{Binding Settings.HighlighterWidth, Mode=TwoWay}" />
                                                                 <TextBlock
                                                                     Margin="10,0,0,4.5"
                                                                     VerticalAlignment="Bottom"
@@ -4388,7 +4524,7 @@
                                                         x:Name="DefaultPenColorsPanel"
                                                         Margin="0,8,0,0"
                                                         Stretch="Fill"
-                                                        Visibility="Collapsed">
+                                                        Style="{StaticResource DefaultPenOptionsStyle}">
                                                         <ikw:SimpleStackPanel Width="300" Margin="0,0,0,0">
                                                             <!--<TextBlock FontSize="25">画笔颜色</TextBlock>-->
                                                             <Border
@@ -4438,6 +4574,7 @@
                                                                                 BorderBrush="Black"
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="0"
+                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=0}"
                                                                                 ToolTip="黑色" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BorderPenColorWhite"
@@ -4445,6 +4582,7 @@
                                                                                 BorderBrush="#71717a"
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="5"
+                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=5}"
                                                                                 ToolTip="白色"
                                                                                 UseDarkCheckMark="True" />
                                                                             <controls:ColorSwatchButton
@@ -4453,6 +4591,7 @@
                                                                                 BorderBrush="#7f1d1d"
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="1"
+                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=1}"
                                                                                 ToolTip="红色" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BorderPenColorYellow"
@@ -4460,6 +4599,7 @@
                                                                                 BorderBrush="#713f12"
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="4"
+                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=4}"
                                                                                 ToolTip="黄色" />
                                                                         </Controls:UniformGrid>
                                                                     </ikw:SimpleStackPanel>
@@ -4478,6 +4618,7 @@
                                                                                 BorderBrush="#14532d"
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="2"
+                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=2}"
                                                                                 ToolTip="绿色" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BorderPenColorBlue"
@@ -4485,6 +4626,7 @@
                                                                                 BorderBrush="#1e3a8a"
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="3"
+                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=3}"
                                                                                 ToolTip="蓝色" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BorderPenColorPink"
@@ -4492,6 +4634,7 @@
                                                                                 BorderBrush="#831843"
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="6"
+                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=6}"
                                                                                 ToolTip="粉色" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BorderPenColorTeal"
@@ -4499,6 +4642,7 @@
                                                                                 BorderBrush="#134e4a"
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="7"
+                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=7}"
                                                                                 ToolTip="青色" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BorderPenColorOrange"
@@ -4506,6 +4650,7 @@
                                                                                 BorderBrush="#7c2d12"
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="8"
+                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=8}"
                                                                                 ToolTip="橙色" />
                                                                         </Controls:UniformGrid>
                                                                     </ikw:SimpleStackPanel>
@@ -4517,7 +4662,7 @@
                                                         x:Name="HighlighterPenColorsPanel"
                                                         Margin="0,8,0,0"
                                                         Stretch="Fill"
-                                                        Visibility="Visible">
+                                                        Style="{StaticResource HighlighterPenOptionsStyle}">
                                                         <ikw:SimpleStackPanel Width="300" Margin="0,0,0,0">
                                                             <!--<TextBlock FontSize="25">画笔颜色</TextBlock>-->
                                                             <Border
@@ -4542,6 +4687,7 @@
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="100"
                                                                                 IsHighlighter="True"
+                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=100}"
                                                                                 ToolTip="荧光笔 · 黑色" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="HighlighterPenColorWhite"
@@ -4550,6 +4696,7 @@
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="101"
                                                                                 IsHighlighter="True"
+                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=101}"
                                                                                 ToolTip="荧光笔 · 白色"
                                                                                 UseDarkCheckMark="True" />
                                                                             <controls:ColorSwatchButton
@@ -4559,6 +4706,7 @@
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="102"
                                                                                 IsHighlighter="True"
+                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=102}"
                                                                                 ToolTip="荧光笔 · 红色" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="HighlighterPenColorYellow"
@@ -4567,6 +4715,7 @@
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="103"
                                                                                 IsHighlighter="True"
+                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=103}"
                                                                                 ToolTip="荧光笔 · 黄色"
                                                                                 UseDarkCheckMark="True" />
                                                                             <controls:ColorSwatchButton
@@ -4576,6 +4725,7 @@
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="104"
                                                                                 IsHighlighter="True"
+                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=104}"
                                                                                 ToolTip="荧光笔 · 绿色"
                                                                                 UseDarkCheckMark="True" />
                                                                         </Controls:UniformGrid>
@@ -4595,6 +4745,7 @@
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="105"
                                                                                 IsHighlighter="True"
+                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=105}"
                                                                                 ToolTip="荧光笔 · 灰色" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="HighlighterPenColorBlue"
@@ -4603,6 +4754,7 @@
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="106"
                                                                                 IsHighlighter="True"
+                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=106}"
                                                                                 ToolTip="荧光笔 · 蓝色" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="HighlighterPenPenColorPurple"
@@ -4611,6 +4763,7 @@
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="107"
                                                                                 IsHighlighter="True"
+                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=107}"
                                                                                 ToolTip="荧光笔 · 紫色" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="HighlighterPenColorTeal"
@@ -4619,6 +4772,7 @@
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="108"
                                                                                 IsHighlighter="True"
+                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=108}"
                                                                                 ToolTip="荧光笔 · 青色"
                                                                                 UseDarkCheckMark="True" />
                                                                             <controls:ColorSwatchButton
@@ -4628,6 +4782,7 @@
                                                                                 Click="PenColor_Click"
                                                                                 CommandParameter="109"
                                                                                 IsHighlighter="True"
+                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=109}"
                                                                                 ToolTip="荧光笔 · 橙色" />
                                                                         </Controls:UniformGrid>
                                                                     </ikw:SimpleStackPanel>
@@ -4786,14 +4941,15 @@
                                                 HorizontalAlignment="Center"
                                                 Orientation="Horizontal"
                                                 Spacing="4">
-                                                <Button
+                                                <RadioButton
                                                     x:Name="CircleEraserTabButton"
                                                     Width="40"
                                                     Height="20"
                                                     ui:ControlHelper.CornerRadius="3"
-                                                    Background="#553b82f6"
                                                     Click="SwitchToCircleEraser"
-                                                    Style="{StaticResource ToolbarButtonStyle}"
+                                                    GroupName="EraserType"
+                                                    IsChecked="{Binding Settings.EraserShapeType, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=0}"
+                                                    Style="{StaticResource EraserTypeTabButtonStyle}"
                                                     ToolTip="圆形擦">
                                                     <Canvas>
                                                         <ikw:SimpleStackPanel
@@ -4802,7 +4958,7 @@
                                                             Canvas.Right="11"
                                                             Canvas.Bottom="0"
                                                             Orientation="Horizontal"
-                                                            Visibility="Visible">
+                                                            Visibility="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=RadioButton}, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                             <Border
                                                                 Width="18"
                                                                 Height="2"
@@ -4820,24 +4976,23 @@
                                                                 Orientation="Horizontal">
                                                                 <TextBlock
                                                                     x:Name="CircleEraserTabButtonText"
-                                                                    Margin="2,1,0,0"
-                                                                    FontSize="9"
-                                                                    FontWeight="Medium"
                                                                     Foreground="#172554"
+                                                                    Style="{StaticResource OptionTabLabelStyle}"
                                                                     Text="圆形擦"
                                                                     TextAlignment="Center" />
                                                             </ikw:SimpleStackPanel>
                                                         </ikw:SimpleStackPanel>
                                                     </Canvas>
-                                                </Button>
-                                                <Button
+                                                </RadioButton>
+                                                <RadioButton
                                                     x:Name="RectangleEraserTabButton"
                                                     Width="40"
                                                     Height="20"
                                                     ui:ControlHelper.CornerRadius="3"
-                                                    Background="Transparent"
                                                     Click="SwitchToRectangleEraser"
-                                                    Style="{StaticResource ToolbarButtonStyle}"
+                                                    GroupName="EraserType"
+                                                    IsChecked="{Binding Settings.EraserShapeType, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=1}"
+                                                    Style="{StaticResource EraserTypeTabButtonStyle}"
                                                     ToolTip="黑板擦">
                                                     <Canvas>
                                                         <ikw:SimpleStackPanel
@@ -4846,7 +5001,7 @@
                                                             Canvas.Right="11"
                                                             Canvas.Bottom="0"
                                                             Orientation="Horizontal"
-                                                            Visibility="Collapsed">
+                                                            Visibility="{Binding IsChecked, RelativeSource={RelativeSource AncestorType=RadioButton}, Converter={StaticResource BooleanToVisibilityConverter}}">
                                                             <Border
                                                                 Width="18"
                                                                 Height="2"
@@ -4864,16 +5019,14 @@
                                                                 Orientation="Horizontal">
                                                                 <TextBlock
                                                                     x:Name="RectangleEraserTabButtonText"
-                                                                    Margin="2,1,0,0"
-                                                                    FontSize="9"
-                                                                    FontWeight="Medium"
                                                                     Foreground="#172554"
+                                                                    Style="{StaticResource OptionTabLabelStyle}"
                                                                     Text="黑板擦"
                                                                     TextAlignment="Center" />
                                                             </ikw:SimpleStackPanel>
                                                         </ikw:SimpleStackPanel>
                                                     </Canvas>
-                                                </Button>
+                                                </RadioButton>
                                             </ikw:SimpleStackPanel>
                                         </ikw:SimpleStackPanel>
                                     </Border>
