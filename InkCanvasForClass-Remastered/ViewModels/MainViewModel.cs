@@ -4,6 +4,7 @@ using InkCanvasForClass_Remastered.Enums;
 using InkCanvasForClass_Remastered.Interfaces;
 using InkCanvasForClass_Remastered.Models;
 using InkCanvasForClass_Remastered.Services;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Controls;
 using System.Windows.Ink;
@@ -85,15 +86,31 @@ namespace InkCanvasForClass_Remastered.ViewModels
         [ObservableProperty]
         public partial string NowDate { get; set; } = string.Empty;
 
+        public const int MaxWhiteboardPageCount = 99;
+
+        public ObservableCollection<WhiteboardPage> WhiteboardPages { get; } = [new WhiteboardPage(1)];
+
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(IsWhiteboardPreviousPageButtonEnabled))]
+        [NotifyPropertyChangedFor(nameof(IsWhiteboardNextPageButtonEnabled))]
         public partial int WhiteboardCurrentPage { get; set; } = 1;
 
         [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(IsWhiteboardPreviousPageButtonEnabled))]
+        [NotifyPropertyChangedFor(nameof(IsWhiteboardNextPageButtonEnabled))]
         public partial int WhiteboardTotalPageCount { get; set; } = 1;
 
         public bool IsWhiteboardPreviousPageButtonEnabled => WhiteboardCurrentPage > 1;
+
+        public bool IsWhiteboardNextPageButtonEnabled =>
+            WhiteboardCurrentPage < WhiteboardTotalPageCount || WhiteboardTotalPageCount < MaxWhiteboardPageCount;
+
+        partial void OnWhiteboardTotalPageCountChanged(int value)
+        {
+            while (WhiteboardPages.Count < value)
+                WhiteboardPages.Add(new WhiteboardPage(WhiteboardPages.Count + 1));
+            while (WhiteboardPages.Count > value)
+                WhiteboardPages.RemoveAt(WhiteboardPages.Count - 1);
+        }
 
         [ObservableProperty]
         public partial bool IsFloatingBarVisible { get; set; } = true;

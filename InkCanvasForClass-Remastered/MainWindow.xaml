@@ -158,6 +158,75 @@
             </Style.Triggers>
         </Style>
 
+        <DataTemplate x:Key="WhiteboardPageTemplate">
+            <Button
+                Click="WhiteboardPage_Click"
+                CommandParameter="{Binding}"
+                Style="{StaticResource ToolbarButtonStyle}"
+                ToolTip="切换页面">
+                <Border
+                    Width="160"
+                    Margin="0,4"
+                    BorderBrush="#a1a1aa"
+                    BorderThickness="1">
+                    <Grid>
+                        <Viewbox Width="160">
+                            <InkCanvas
+                                Width="{Binding ElementName=inkCanvas, Path=ActualWidth}"
+                                Height="{Binding ElementName=inkCanvas, Path=ActualHeight}"
+                                Background="{Binding ElementName=WhiteBoardBackgroundCover, Path=Background}"
+                                EditingMode="None"
+                                IsHitTestVisible="False"
+                                Strokes="{Binding Strokes}" />
+                        </Viewbox>
+                        <Border
+                            Width="36"
+                            Height="20"
+                            Margin="4"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Top"
+                            Background="#cc09090b"
+                            CornerRadius="3">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontFamily="Consolas"
+                                FontSize="14"
+                                Foreground="White"
+                                Text="{Binding Index}" />
+                        </Border>
+                    </Grid>
+                </Border>
+            </Button>
+        </DataTemplate>
+
+        <Style
+            x:Key="WhiteboardPageListStyle"
+            BasedOn="{StaticResource {x:Type ListView}}"
+            TargetType="ListView">
+            <Setter Property="ItemsSource" Value="{Binding WhiteboardPages}" />
+            <Setter Property="SelectedValuePath" Value="Index" />
+            <Setter Property="SelectedValue" Value="{Binding WhiteboardCurrentPage, Mode=OneWay}" />
+            <Setter Property="SelectionMode" Value="Single" />
+            <Setter Property="IsSynchronizedWithCurrentItem" Value="False" />
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="IsTabStop" Value="False" />
+            <Setter Property="KeyboardNavigation.TabNavigation" Value="None" />
+            <Setter Property="KeyboardNavigation.DirectionalNavigation" Value="None" />
+            <Setter Property="ScrollViewer.CanContentScroll" Value="False" />
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled" />
+            <Setter Property="ItemTemplate" Value="{StaticResource WhiteboardPageTemplate}" />
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+                    <Style BasedOn="{StaticResource {x:Type ListViewItem}}" TargetType="ListViewItem">
+                        <Setter Property="Focusable" Value="False" />
+                        <Setter Property="IsTabStop" Value="False" />
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <Style
             x:Key="BoardToolButtonStyle"
             BasedOn="{StaticResource ToolbarButtonStyle}"
@@ -2084,56 +2153,7 @@
                                         Height="460"
                                         ForceUseSmoothScroll="True"
                                         VerticalScrollBarVisibility="Hidden">
-                                        <ListView
-                                            Name="BlackBoardLeftSidePageListView"
-                                            ScrollViewer.CanContentScroll="False"
-                                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                            ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                                            SelectionMode="Single">
-                                            <ListView.ItemTemplate>
-                                                <DataTemplate>
-                                                    <Button
-                                                        Click="WhiteboardPage_Click"
-                                                        CommandParameter="{Binding}"
-                                                        Style="{StaticResource ToolbarButtonStyle}"
-                                                        ToolTip="切换页面">
-                                                        <Border
-                                                            Width="160"
-                                                            Margin="0,4"
-                                                            BorderBrush="#a1a1aa"
-                                                            BorderThickness="1">
-                                                            <Grid>
-                                                                <Viewbox Width="160">
-                                                                    <InkCanvas
-                                                                        Width="{Binding ElementName=inkCanvas, Path=ActualWidth}"
-                                                                        Height="{Binding ElementName=inkCanvas, Path=ActualHeight}"
-                                                                        Background="{Binding ElementName=WhiteBoardBackgroundCover, Path=Background}"
-                                                                        EditingMode="None"
-                                                                        IsHitTestVisible="False"
-                                                                        Strokes="{Binding Strokes}" />
-                                                                </Viewbox>
-                                                                <Border
-                                                                    Width="36"
-                                                                    Height="20"
-                                                                    Margin="4"
-                                                                    HorizontalAlignment="Left"
-                                                                    VerticalAlignment="Top"
-                                                                    Background="#cc09090b"
-                                                                    CornerRadius="3">
-                                                                    <TextBlock
-                                                                        HorizontalAlignment="Center"
-                                                                        VerticalAlignment="Center"
-                                                                        FontFamily="Consolas"
-                                                                        FontSize="14"
-                                                                        Foreground="White"
-                                                                        Text="{Binding Index}" />
-                                                                </Border>
-                                                            </Grid>
-                                                        </Border>
-                                                    </Button>
-                                                </DataTemplate>
-                                            </ListView.ItemTemplate>
-                                        </ListView>
+                                        <ListView Name="BlackBoardLeftSidePageListView" Style="{StaticResource WhiteboardPageListStyle}" />
                                     </ui:ScrollViewerEx>
                                 </Border>
                             </Grid>
@@ -2145,6 +2165,7 @@
                                 BorderBrush="#a1a1aa"
                                 BorderThickness="0,1,1,1"
                                 Click="BtnWhiteBoardSwitchNext_Click"
+                                IsEnabled="{Binding IsWhiteboardNextPageButtonEnabled}"
                                 Opacity="0.95"
                                 Style="{StaticResource ToolbarButtonStyle}"
                                 ToolTip="下一页">
@@ -3949,56 +3970,7 @@
                                         Height="460"
                                         ForceUseSmoothScroll="True"
                                         VerticalScrollBarVisibility="Hidden">
-                                        <ListView
-                                            Name="BlackBoardRightSidePageListView"
-                                            ScrollViewer.CanContentScroll="False"
-                                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                            ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                                            SelectionMode="Single">
-                                            <ListView.ItemTemplate>
-                                                <DataTemplate>
-                                                    <Button
-                                                        Click="WhiteboardPage_Click"
-                                                        CommandParameter="{Binding}"
-                                                        Style="{StaticResource ToolbarButtonStyle}"
-                                                        ToolTip="切换页面">
-                                                        <Border
-                                                            Width="160"
-                                                            Margin="0,4"
-                                                            BorderBrush="#a1a1aa"
-                                                            BorderThickness="1">
-                                                            <Grid>
-                                                                <Viewbox Width="160">
-                                                                    <InkCanvas
-                                                                        Width="{Binding ElementName=inkCanvas, Path=ActualWidth}"
-                                                                        Height="{Binding ElementName=inkCanvas, Path=ActualHeight}"
-                                                                        Background="{Binding ElementName=WhiteBoardBackgroundCover, Path=Background}"
-                                                                        EditingMode="None"
-                                                                        IsHitTestVisible="False"
-                                                                        Strokes="{Binding Strokes}" />
-                                                                </Viewbox>
-                                                                <Border
-                                                                    Width="36"
-                                                                    Height="20"
-                                                                    Margin="4"
-                                                                    HorizontalAlignment="Left"
-                                                                    VerticalAlignment="Top"
-                                                                    Background="#cc09090b"
-                                                                    CornerRadius="3">
-                                                                    <TextBlock
-                                                                        HorizontalAlignment="Center"
-                                                                        VerticalAlignment="Center"
-                                                                        FontFamily="Consolas"
-                                                                        FontSize="14"
-                                                                        Foreground="White"
-                                                                        Text="{Binding Index}" />
-                                                                </Border>
-                                                            </Grid>
-                                                        </Border>
-                                                    </Button>
-                                                </DataTemplate>
-                                            </ListView.ItemTemplate>
-                                        </ListView>
+                                        <ListView Name="BlackBoardRightSidePageListView" Style="{StaticResource WhiteboardPageListStyle}" />
                                     </ui:ScrollViewerEx>
                                 </Border>
                             </Grid>
@@ -4010,6 +3982,7 @@
                                 BorderBrush="#a1a1aa"
                                 BorderThickness="0,1,1,1"
                                 Click="BtnWhiteBoardSwitchNext_Click"
+                                IsEnabled="{Binding IsWhiteboardNextPageButtonEnabled}"
                                 Opacity="0.95"
                                 Style="{StaticResource ToolbarButtonStyle}"
                                 ToolTip="下一页">

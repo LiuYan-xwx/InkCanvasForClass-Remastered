@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Office.Interop.PowerPoint;
 using Microsoft.Win32;
 using OSVersionExtension;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -243,9 +242,6 @@ namespace InkCanvasForClass_Remastered
             Logger.LogInformation("MainWindow Loaded");
 
             isLoaded = true;
-
-            BlackBoardLeftSidePageListView.ItemsSource = blackBoardSidePageListViewObservableCollection;
-            BlackBoardRightSidePageListView.ItemsSource = blackBoardSidePageListViewObservableCollection;
 
             if (Settings.IsHideFloatingBarOnStart)
             {
@@ -496,46 +492,33 @@ namespace InkCanvasForClass_Remastered
 
         private async void BtnWhiteBoardPageIndex_Click(object sender, RoutedEventArgs e)
         {
-            if (sender == BtnLeftPageListWB)
+            if (sender != BtnLeftPageListWB && sender != BtnRightPageListWB) return;
+
+            var (panel, otherPanel, list, scrollViewer) = sender == BtnLeftPageListWB
+                ? (BoardBorderLeftPageListView, BoardBorderRightPageListView,
+                    BlackBoardLeftSidePageListView, BlackBoardLeftSidePageListScrollViewer)
+                : (BoardBorderRightPageListView, BoardBorderLeftPageListView,
+                    BlackBoardRightSidePageListView, BlackBoardRightSidePageListScrollViewer);
+
+            if (panel.Visibility == Visibility.Visible)
             {
-                if (BoardBorderLeftPageListView.Visibility == Visibility.Visible)
-                {
-                    AnimationsHelper.HideWithSlideAndFade(BoardBorderLeftPageListView);
-                }
-                else
-                {
-                    AnimationsHelper.HideWithSlideAndFade(BoardBorderRightPageListView);
-                    RefreshBlackBoardSidePageListView();
-                    AnimationsHelper.ShowWithSlideFromBottomAndFade(BoardBorderLeftPageListView);
-                    await Task.Delay(1);
-                    ScrollViewToVerticalTop(
-                        (ListViewItem)BlackBoardLeftSidePageListView.ItemContainerGenerator.ContainerFromIndex(
-                            _viewModel.WhiteboardCurrentPage - 1), BlackBoardLeftSidePageListScrollViewer);
-                }
-            }
-            else if (sender == BtnRightPageListWB)
-            {
-                if (BoardBorderRightPageListView.Visibility == Visibility.Visible)
-                {
-                    AnimationsHelper.HideWithSlideAndFade(BoardBorderRightPageListView);
-                }
-                else
-                {
-                    AnimationsHelper.HideWithSlideAndFade(BoardBorderLeftPageListView);
-                    RefreshBlackBoardSidePageListView();
-                    AnimationsHelper.ShowWithSlideFromBottomAndFade(BoardBorderRightPageListView);
-                    await Task.Delay(1);
-                    ScrollViewToVerticalTop(
-                        (ListViewItem)BlackBoardRightSidePageListView.ItemContainerGenerator.ContainerFromIndex(
-                            _viewModel.WhiteboardCurrentPage - 1), BlackBoardRightSidePageListScrollViewer);
-                }
+                AnimationsHelper.HideWithSlideAndFade(panel);
+                return;
             }
 
+            AnimationsHelper.HideWithSlideAndFade(otherPanel);
+            RefreshWhiteboardPagePreviews();
+            AnimationsHelper.ShowWithSlideFromBottomAndFade(panel);
+            await Dispatcher.InvokeAsync(() =>
+            {
+                if (panel.Visibility == Visibility.Visible)
+                    ScrollToCurrentWhiteboardPage(list, scrollViewer);
+            }, DispatcherPriority.Loaded);
         }
 
         private void WhiteBoardAddPage()
         {
-            if (_viewModel.WhiteboardTotalPageCount >= 99) return;
+            if (_viewModel.WhiteboardTotalPageCount >= MainViewModel.MaxWhiteboardPageCount) return;
             if (Settings.IsAutoSaveStrokesAtClear &&
                 inkCanvas.Strokes.Count > Settings.MinimumAutomationStrokeNumber)
                 SaveScreenShot(true);
@@ -549,41 +532,41 @@ namespace InkCanvasForClass_Remastered
                 for (var i = _viewModel.WhiteboardTotalPageCount; i > _viewModel.WhiteboardCurrentPage; i--)
                     TimeMachineHistories[i] = TimeMachineHistories[i - 1];
 
-            if (BlackBoardLeftSidePageListView.Visibility == Visibility.Visible)
-            {
-                RefreshBlackBoardSidePageListView();
-            }
+            RefreshWhiteboardPagePreviewsIfVisible();
         }
 
         private void BtnWhiteBoardSwitchPrevious_Click(object sender, RoutedEventArgs e)
         {
-            if (_viewModel.WhiteboardCurrentPage <= 1) return;
-
-            SaveStrokes();
-
-            ClearStrokes(true);
-            _viewModel.WhiteboardCurrentPage--;
-
-            RestoreStrokes();
+            SwitchWhiteboardPage(_viewModel.WhiteboardCurrentPage - 1);
         }
 
         private void BtnWhiteBoardSwitchNext_Click(object sender, RoutedEventArgs e)
         {
-            Trace.WriteLine("113223234");
+            if (!_viewModel.IsWhiteboardNextPageButtonEnabled) return;
 
-            if (Settings.IsAutoSaveStrokesAtClear &&
-                inkCanvas.Strokes.Count > Settings.MinimumAutomationStrokeNumber)
-                SaveScreenShot(true);
             if (_viewModel.WhiteboardCurrentPage == _viewModel.WhiteboardTotalPageCount)
             {
                 WhiteBoardAddPage();
                 return;
             }
 
+            if (Settings.IsAutoSaveStrokesAtClear &&
+                inkCanvas.Strokes.Count > Settings.MinimumAutomationStrokeNumber)
+                SaveScreenShot(true);
+
+            SwitchWhiteboardPage(_viewModel.WhiteboardCurrentPage + 1);
+        }
+
+        private void SwitchWhiteboardPage(int pageIndex)
+        {
+            if (pageIndex < 1 || pageIndex > _viewModel.WhiteboardTotalPageCount ||
+                pageIndex == _viewModel.WhiteboardCurrentPage) return;
+
             SaveStrokes();
             ClearStrokes(true);
-            _viewModel.WhiteboardCurrentPage++;
+            _viewModel.WhiteboardCurrentPage = pageIndex;
             RestoreStrokes();
+            RefreshWhiteboardPagePreviewsIfVisible();
         }
         #endregion
 
@@ -1927,86 +1910,44 @@ namespace InkCanvasForClass_Remastered
         #endregion
 
         #region PageListView
-        private class PageListViewItem
+        private void RefreshWhiteboardPagePreviews()
         {
-            public int Index { get; set; }
-            public StrokeCollection? Strokes { get; set; }
-        }
-
-        ObservableCollection<PageListViewItem> blackBoardSidePageListViewObservableCollection = new ObservableCollection<PageListViewItem>();
-
-        /// <summary>
-        /// <para>刷新白板的缩略图页面列表。</para>
-        /// </summary>
-        private void RefreshBlackBoardSidePageListView()
-        {
-            if (blackBoardSidePageListViewObservableCollection.Count == _viewModel.WhiteboardTotalPageCount)
+            var bounds = new Rect(0, 0, (int)inkCanvas.ActualWidth, (int)inkCanvas.ActualHeight);
+            foreach (var page in _viewModel.WhiteboardPages)
             {
-                foreach (int index in Enumerable.Range(1, _viewModel.WhiteboardTotalPageCount))
-                {
-                    var st = ApplyHistoriesToNewStrokeCollection(TimeMachineHistories[index]);
-                    st.Clip(new Rect(0, 0, (int)inkCanvas.ActualWidth, (int)inkCanvas.ActualHeight));
-                    var pitem = new PageListViewItem()
-                    {
-                        Index = index,
-                        Strokes = st,
-                    };
-                    blackBoardSidePageListViewObservableCollection[index - 1] = pitem;
-                }
+                var strokes = page.Index == _viewModel.WhiteboardCurrentPage
+                    ? inkCanvas.Strokes.Clone()
+                    : ApplyHistoriesToNewStrokeCollection(TimeMachineHistories[page.Index]);
+                strokes.Clip(bounds);
+                page.Strokes = strokes;
             }
-            else
-            {
-                blackBoardSidePageListViewObservableCollection.Clear();
-                foreach (int index in Enumerable.Range(1, _viewModel.WhiteboardTotalPageCount))
-                {
-                    var st = ApplyHistoriesToNewStrokeCollection(TimeMachineHistories[index]);
-                    st.Clip(new Rect(0, 0, (int)inkCanvas.ActualWidth, (int)inkCanvas.ActualHeight));
-                    var pitem = new PageListViewItem()
-                    {
-                        Index = index,
-                        Strokes = st,
-                    };
-                    blackBoardSidePageListViewObservableCollection.Add(pitem);
-                }
-            }
-
-            var _st = inkCanvas.Strokes.Clone();
-            _st.Clip(new Rect(0, 0, (int)inkCanvas.ActualWidth, (int)inkCanvas.ActualHeight));
-            var _pitem = new PageListViewItem()
-            {
-                Index = _viewModel.WhiteboardCurrentPage,
-                Strokes = _st,
-            };
-            blackBoardSidePageListViewObservableCollection[_viewModel.WhiteboardCurrentPage - 1] = _pitem;
-
-            BlackBoardLeftSidePageListView.SelectedIndex = _viewModel.WhiteboardCurrentPage - 1;
-            BlackBoardRightSidePageListView.SelectedIndex = _viewModel.WhiteboardCurrentPage - 1;
         }
 
-        public static void ScrollViewToVerticalTop(FrameworkElement element, ScrollViewer scrollViewer)
+        private void RefreshWhiteboardPagePreviewsIfVisible()
         {
-            var scrollViewerOffset = scrollViewer.VerticalOffset;
-            var point = new Point(0, scrollViewerOffset);
-            var tarPos = element.TransformToVisual(scrollViewer).Transform(point);
-            scrollViewer.ScrollToVerticalOffset(tarPos.Y);
+            if (BoardBorderLeftPageListView.Visibility == Visibility.Visible ||
+                BoardBorderRightPageListView.Visibility == Visibility.Visible)
+                RefreshWhiteboardPagePreviews();
         }
 
+        private void ScrollToCurrentWhiteboardPage(ListView list, ScrollViewer scrollViewer)
+        {
+            list.UpdateLayout();
+            if (list.ItemContainerGenerator.ContainerFromIndex(_viewModel.WhiteboardCurrentPage - 1)
+                is not ListViewItem item) return;
+
+            var offset = item.TranslatePoint(new Point(), scrollViewer).Y + scrollViewer.VerticalOffset;
+            scrollViewer.ScrollToVerticalOffset(offset);
+        }
 
         private void WhiteboardPage_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is not Button { CommandParameter: PageListViewItem page }) return;
+            if (sender is not Button { CommandParameter: WhiteboardPage page }) return;
             if (page.Index < 1 || page.Index > _viewModel.WhiteboardTotalPageCount) return;
 
             AnimationsHelper.HideWithSlideAndFade(BoardBorderLeftPageListView);
             AnimationsHelper.HideWithSlideAndFade(BoardBorderRightPageListView);
-            if (page.Index == _viewModel.WhiteboardCurrentPage) return;
-
-            SaveStrokes();
-            ClearStrokes(true);
-            _viewModel.WhiteboardCurrentPage = page.Index;
-            RestoreStrokes();
-            BlackBoardLeftSidePageListView.SelectedIndex = page.Index - 1;
-            BlackBoardRightSidePageListView.SelectedIndex = page.Index - 1;
+            SwitchWhiteboardPage(page.Index);
         }
         #endregion
 
@@ -2328,7 +2269,7 @@ namespace InkCanvasForClass_Remastered
 
         private void BorderStrokeSelectionCloneToNewBoard_Click(object sender, RoutedEventArgs e)
         {
-            if (_viewModel.WhiteboardTotalPageCount >= 99) return;
+            if (_viewModel.WhiteboardTotalPageCount >= MainViewModel.MaxWhiteboardPageCount) return;
 
             var strokes = inkCanvas.GetSelectedStrokes();
             if (strokes.Count == 0) return;
@@ -2336,6 +2277,7 @@ namespace InkCanvasForClass_Remastered
             strokes = strokes.Clone();
             WhiteBoardAddPage();
             inkCanvas.Strokes.Add(strokes);
+            RefreshWhiteboardPagePreviewsIfVisible();
         }
 
         private void GridPenWidthDecrease_Click(object sender, RoutedEventArgs e)
