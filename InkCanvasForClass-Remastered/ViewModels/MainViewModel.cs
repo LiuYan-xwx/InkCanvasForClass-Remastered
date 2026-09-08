@@ -38,6 +38,7 @@ namespace InkCanvasForClass_Remastered.ViewModels
         [ObservableProperty]
         public partial AppMode AppMode { get; set; } = AppMode.Normal;
 
+        // 用户选定的工具；触摸擦除和手势中的临时 EditingMode 不改变它。
         [ObservableProperty]
         public partial InkCanvasEditingMode AppPenMode { get; set; } = InkCanvasEditingMode.None;
 
