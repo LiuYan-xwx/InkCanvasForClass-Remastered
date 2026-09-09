@@ -20,13 +20,11 @@ namespace InkCanvasForClass_Remastered
             InitializeComponent();
             ViewModel = viewModel;
             DataContext = ViewModel;
-            AnimationsHelper.ShowWithSlideFromBottomAndFade(this, 0.25);
         }
-
-        
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            AnimationsHelper.ShowWithSlideFromBottomAndFade(this, 0.25);
             if (File.Exists(_path))
             {
                 string names = File.ReadAllText(_path);

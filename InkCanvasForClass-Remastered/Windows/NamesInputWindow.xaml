@@ -25,7 +25,7 @@
             Name="TextBoxNames"
             Margin="10,40,10,50"
             AcceptsReturn="True"
-            Text="{Binding NameText}"
+            Text="{Binding NameText, UpdateSourceTrigger=PropertyChanged}"
             VerticalScrollBarVisibility="Auto" />
         <Button
             Content="关闭"

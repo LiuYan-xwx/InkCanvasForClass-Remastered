@@ -1,208 +1,101 @@
 ﻿using InkCanvasForClass_Remastered.Helpers;
 using InkCanvasForClass_Remastered.Models;
-using InkCanvasForClass_Remastered.Services;
 using InkCanvasForClass_Remastered.ViewModels;
-using iNKORE.UI.WPF.Modern.Controls;
 using System.IO;
-using System.Security.Cryptography;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Threading;
 using MessageBox = iNKORE.UI.WPF.Modern.Controls.MessageBox;
 
 namespace InkCanvasForClass_Remastered
 {
-    /// <summary>
-    /// Interaction logic for RandWindow.xaml
-    /// </summary>
     public partial class RandWindow : Window
     {
-        private ShuffleBag<string> ShuffleBag;
-        public bool IsAutoClose = false;
-        private List<string> NameList = [];
-        private readonly string _namesFilePath = Path.Combine(CommonDirectories.AppRootFolderPath, "Names.txt");
-
-        private readonly SettingsService SettingsService;
         private readonly RandViewModel ViewModel;
+        private readonly string _namesFilePath = Path.Combine(CommonDirectories.AppRootFolderPath, "Names.txt");
+        private readonly DispatcherTimer _autoCloseTimer = new();
+        private bool _isClosed;
 
-        public Settings Settings => SettingsService.Settings;
+        public bool IsAutoClose
+        {
+            get => ViewModel.IsAutoClose;
+            set => ViewModel.IsAutoClose = value;
+        }
 
-        public RandWindow(SettingsService settingsService, RandViewModel viewModel)
+        public RandWindow(RandViewModel viewModel)
         {
             InitializeComponent();
-            SettingsService = settingsService;
             ViewModel = viewModel;
             DataContext = ViewModel;
+            _autoCloseTimer.Tick += AutoCloseTimer_Tick;
+        }
+
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        {
             AnimationsHelper.ShowWithSlideFromBottomAndFade(this, 0.25);
             ReloadNamesFromFile();
-            ShuffleBag = new(NameList);
-        }
-
-        private void BorderBtnAdd_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (ViewModel.DrawCount >= NameList.Count || ViewModel.DrawCount >= 10) return;
-            ViewModel.DrawCount++;
-            SymbolIconStart.Symbol = Symbol.People;
-            BorderBtnAdd.Opacity = 1;
-            BorderBtnMinus.Opacity = 1;
-        }
-
-        private void BorderBtnMinus_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (ViewModel.DrawCount == 1)
-            {
-                SymbolIconStart.Symbol = Symbol.Contact;
-                return;
-            }
-            ViewModel.DrawCount--;
-        }
-
-        private async void BorderBtnRand_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (NameList.Count == 0)
+            if (ViewModel.NameCount == 0)
             {
                 MessageBox.Show("名单为空，请先导入名单！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
-                return;
-            }
-            if (ViewModel.IsNoDuplicate && ViewModel.DrawCount > ShuffleBag.RemainingCount)
-            {
-                MessageBox.Show("没有足够的未被抽过的人！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
-                return;
-            }
-
-            List<string> outputs = [];
-
-            // 生成动画阶段
-            await Task.Run(async () =>
-            {
-                // 动画持续时间（毫秒）
-                int animationDuration = 600;
-                // 名字切换间隔（毫秒）
-                int switchInterval = 50;
-                int elapsed = 0;
-
-                while (elapsed < animationDuration)
+                OpenNamesEditor();
+                if (ViewModel.NameCount == 0)
                 {
-                    int animationIndex = Random.Shared.Next(0, NameList.Count);
-
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        ViewModel.SelectedNames.Clear();
-                        ViewModel.SelectedNames.Add(NameList[animationIndex]);
-                    });
-                    await Task.Delay(switchInterval);
-                    elapsed += switchInterval;
-                }
-            });
-
-            // 最终结果生成阶段
-            if (ViewModel.IsNoDuplicate)
-            {
-                while (outputs.Count < ViewModel.DrawCount)
-                {
-                    outputs.Add(ShuffleBag.Next());
-                }
-            }
-            else
-            {
-                while (outputs.Count < ViewModel.DrawCount)
-                {
-                    int i = RandomNumberGenerator.GetInt32(0, NameList.Count);
-                    outputs.Add(NameList[i]);
+                    IsAutoClose = false;
+                    return;
                 }
             }
 
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                ViewModel.SelectedNames.Clear();
-                foreach (var name in outputs)
-                {
-                    ViewModel.SelectedNames.Add(name);
-                }
-            });
-
-            //if (IsAutoClose)
-            //{
-            //    await Task.Delay(RandDoneAutoCloseWaitTime);
-            //    Application.Current.Dispatcher.Invoke(() =>
-            //    {
-            //        PeopleControlPane.Opacity = 1;
-            //        PeopleControlPane.IsHitTestVisible = true;
-            //        Close();
-            //    });
-            //}
+            if (IsAutoClose) await DrawOnceAndCloseAsync();
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private async Task DrawOnceAndCloseAsync()
         {
-            if (NameList.Count == 0)
+            if (!ViewModel.DrawCommand.CanExecute(null)) return;
+            if (!ViewModel.HasEnoughNames)
             {
-                MessageBox.Show("名单为空，请先导入名单！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
-                BorderBtnHelp_MouseUp(null, null);
+                ShowInsufficientNamesMessage();
+                return;
             }
-            if (IsAutoClose)
-            {
-                PeopleControlPane.Opacity = 0.4;
-                PeopleControlPane.IsHitTestVisible = false;
 
-                BorderBtnRand_MouseUp(null, null);
+            await ViewModel.DrawCommand.ExecuteAsync(null);
+            if (_isClosed) return;
 
-                var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(Settings.RandWindowOnceCloseLatency) };
-                timer.Tick += (s, e) =>
-                {
-                    timer.Stop();
-                    Close();
-                };
-                timer.Start();
-            }
-            ReloadNamesFromFile();
+            _autoCloseTimer.Interval = TimeSpan.FromSeconds(ViewModel.Settings.RandWindowOnceCloseLatency);
+            _autoCloseTimer.Start();
         }
 
         private void ReloadNamesFromFile()
         {
-            NameList.Clear();
-            if (File.Exists(_namesFilePath))
-            {
-                string[] nameArray = File.ReadAllLines(_namesFilePath);
-                NameList.AddRange(
-                    from string s in nameArray
-                    where s != "" // 过滤掉空行
-                    select s);
-                TextBlockPeopleCount.Text = NameList.Count.ToString();
-                if (NameList.Count == 0)
-                {
-                    //TextBlockPeopleCount.Text = "点击此处以导入名单";
-                    MessageBox.Show("名单为空，请先导入名单！", "提示", MessageBoxButton.OK, MessageBoxImage.Information);
-                    BorderBtnHelp_MouseUp(null, null);
-                }
-            }
+            ViewModel.SetNames(File.Exists(_namesFilePath) ? File.ReadAllLines(_namesFilePath) : []);
         }
 
-        private void BorderBtnHelp_MouseUp(object sender, MouseButtonEventArgs e)
+        private void OpenNamesEditor()
         {
             App.GetService<NamesInputWindow>().ShowDialog();
             ReloadNamesFromFile();
-            ShuffleBag = new(NameList);
         }
 
-        private void BtnClose_MouseUp(object sender, MouseButtonEventArgs e)
+        private void ImportNames_Click(object sender, RoutedEventArgs e) => OpenNamesEditor();
+        private void DrawButton_Click(object sender, RoutedEventArgs e)
         {
-            Close();
+            if (!ViewModel.HasEnoughNames)
+                ShowInsufficientNamesMessage();
+        }
+
+        private static void ShowInsufficientNamesMessage() => MessageBox.Show(
+            "没有足够的未被抽过的人！\n请减少抽取人数、重新导入名单，或关闭“不重复抽取”。",
+            "提示",
+            MessageBoxButton.OK,
+            MessageBoxImage.Information);
+
+        private void Close_Click(object sender, RoutedEventArgs e) => Close();
+        private void AutoCloseTimer_Tick(object? sender, EventArgs e) => Close();
+
+        protected override void OnClosed(EventArgs e)
+        {
+            _isClosed = true;
+            _autoCloseTimer.Stop();
+            ViewModel.DrawCommand.Cancel();
+            base.OnClosed(e);
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

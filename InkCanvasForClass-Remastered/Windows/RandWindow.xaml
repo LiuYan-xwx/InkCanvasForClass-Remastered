@@ -26,6 +26,23 @@
     </WindowChrome.WindowChrome>
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <Style
+            x:Key="RandButtonStyle"
+            BasedOn="{StaticResource {x:Type Button}}"
+            TargetType="Button">
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Focusable" Value="False" />
+            <Setter Property="IsTabStop" Value="False" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Stretch" />
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.5" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
     <Border
         Background="#F0F3F9"
@@ -79,27 +96,29 @@
                     Margin="0,0,48,0"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
+                    IsEnabled="{Binding CanEditOptions}"
                     Spacing="16">
                     <!--  抽取数量控制  -->
                     <ikw:SimpleStackPanel
                         HorizontalAlignment="Center"
                         Orientation="Horizontal"
                         Spacing="12">
-                        <Border
-                            x:Name="BorderBtnMinus"
+                        <Button
+                            x:Name="DecreaseDrawCountButton"
                             Width="64"
                             Height="64"
+                            ui:ControlHelper.CornerRadius="32"
                             Background="#FBFBFD"
-                            CornerRadius="32"
-                            Cursor="Hand"
-                            MouseUp="BorderBtnMinus_MouseUp">
-                            <Border.Effect>
+                            Command="{Binding DecreaseDrawCountCommand}"
+                            Style="{StaticResource RandButtonStyle}"
+                            ToolTip="减少抽取人数">
+                            <Button.Effect>
                                 <DropShadowEffect
                                     BlurRadius="3"
                                     Direction="0"
                                     Opacity="0.15"
                                     ShadowDepth="0" />
-                            </Border.Effect>
+                            </Button.Effect>
                             <Viewbox Margin="18">
                                 <Image Width="18" Height="18">
                                     <Image.Source>
@@ -121,7 +140,7 @@
                                     </Image.Source>
                                 </Image>
                             </Viewbox>
-                        </Border>
+                        </Button>
 
                         <TextBlock
                             Name="LabelNumberCount"
@@ -134,21 +153,22 @@
                             Text="{Binding DrawCount}"
                             TextAlignment="Center" />
 
-                        <Border
-                            x:Name="BorderBtnAdd"
+                        <Button
+                            x:Name="IncreaseDrawCountButton"
                             Width="64"
                             Height="64"
+                            ui:ControlHelper.CornerRadius="32"
                             Background="#FBFBFD"
-                            CornerRadius="32"
-                            Cursor="Hand"
-                            MouseUp="BorderBtnAdd_MouseUp">
-                            <Border.Effect>
+                            Command="{Binding IncreaseDrawCountCommand}"
+                            Style="{StaticResource RandButtonStyle}"
+                            ToolTip="增加抽取人数">
+                            <Button.Effect>
                                 <DropShadowEffect
                                     BlurRadius="3"
                                     Direction="0"
                                     Opacity="0.15"
                                     ShadowDepth="0" />
-                            </Border.Effect>
+                            </Button.Effect>
                             <Viewbox Margin="18">
                                 <Image Width="18" Height="18">
                                     <Image.Source>
@@ -170,7 +190,7 @@
                                     </Image.Source>
                                 </Image>
                             </Viewbox>
-                        </Border>
+                        </Button>
                     </ikw:SimpleStackPanel>
 
                     <!--  选项复选框  -->
@@ -181,22 +201,30 @@
                         IsChecked="{Binding IsNoDuplicate, Mode=TwoWay}" />
 
                     <!--  开抽按钮  -->
-                    <Border
-                        x:Name="BorderBtnRand"
+                    <Button
+                        x:Name="DrawButton"
                         Height="64"
                         MinWidth="200"
                         Padding="20,0"
+                        ui:ControlHelper.CornerRadius="32"
                         Background="#0066BF"
-                        CornerRadius="32"
-                        Cursor="Hand"
-                        MouseUp="BorderBtnRand_MouseUp">
-                        <Border.Effect>
+                        Click="DrawButton_Click"
+                        Command="{Binding DrawCommand}"
+                        Style="{StaticResource RandButtonStyle}"
+                        ToolTip="{Binding DrawHint}"
+                        ToolTipService.ShowOnDisabled="True">
+                        <Button.Resources>
+                            <SolidColorBrush x:Key="{x:Static ui:ThemeKeys.ButtonBackgroundPointerOverKey}" Color="#005AAA" />
+                            <SolidColorBrush x:Key="{x:Static ui:ThemeKeys.ButtonBackgroundPressedKey}" Color="#004D91" />
+                            <SolidColorBrush x:Key="{x:Static ui:ThemeKeys.ButtonBackgroundDisabledKey}" Color="#0066BF" />
+                        </Button.Resources>
+                        <Button.Effect>
                             <DropShadowEffect
                                 BlurRadius="4"
                                 Direction="0"
                                 Opacity="0.2"
                                 ShadowDepth="0" />
-                        </Border.Effect>
+                        </Button.Effect>
                         <ikw:SimpleStackPanel
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
@@ -205,8 +233,18 @@
                             <ui:SymbolIcon
                                 Name="SymbolIconStart"
                                 FontSize="24"
-                                Foreground="White"
-                                Symbol="Contact" />
+                                Foreground="White">
+                                <ui:SymbolIcon.Style>
+                                    <Style TargetType="ui:SymbolIcon">
+                                        <Setter Property="Symbol" Value="People" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding DrawCount}" Value="1">
+                                                <Setter Property="Symbol" Value="Contact" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ui:SymbolIcon.Style>
+                            </ui:SymbolIcon>
                             <TextBlock
                                 VerticalAlignment="Center"
                                 FontSize="28"
@@ -214,7 +252,7 @@
                                 Foreground="White"
                                 Text="开抽" />
                         </ikw:SimpleStackPanel>
-                    </Border>
+                    </Button>
                 </ikw:SimpleStackPanel>
             </Grid>
 
@@ -226,23 +264,25 @@
                     Orientation="Horizontal"
                     Spacing="16">
                     <!--  名单导入按钮  -->
-                    <Border
-                        x:Name="BorderBtnHelp"
+                    <Button
+                        x:Name="ImportNamesButton"
                         Height="40"
                         Padding="12,0"
+                        ui:ControlHelper.CornerRadius="20"
                         Background="#FBFBFD"
-                        CornerRadius="20"
-                        Cursor="Hand"
-                        MouseUp="BorderBtnHelp_MouseUp"
+                        Click="ImportNames_Click"
+                        IsEnabled="{Binding CanEditOptions}"
+                        Style="{StaticResource RandButtonStyle}"
+                        ToolTip="导入名单"
                         UseLayoutRounding="True"
                         Visibility="{Binding Settings.DisplayRandWindowNamesInputBtn, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <Border.Effect>
+                        <Button.Effect>
                             <DropShadowEffect
                                 BlurRadius="3"
                                 Direction="0"
                                 Opacity="0.15"
                                 ShadowDepth="0" />
-                        </Border.Effect>
+                        </Button.Effect>
                         <ikw:SimpleStackPanel
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
@@ -256,32 +296,38 @@
                                 Name="TextBlockPeopleCount"
                                 VerticalAlignment="Center"
                                 FontSize="14"
-                                Text="点击此处以导入名单" />
+                                Text="{Binding NamesButtonText}" />
                         </ikw:SimpleStackPanel>
-                    </Border>
+                    </Button>
 
                     <!--  关闭按钮  -->
-                    <Border
-                        x:Name="BtnClose"
+                    <Button
+                        x:Name="CloseButton"
                         Width="40"
                         Height="40"
+                        ui:ControlHelper.CornerRadius="20"
                         Background="#E32A34"
-                        CornerRadius="20"
-                        Cursor="Hand"
-                        MouseUp="BtnClose_MouseUp"
+                        Click="Close_Click"
+                        Style="{StaticResource RandButtonStyle}"
+                        ToolTip="关闭"
                         UseLayoutRounding="True">
-                        <Border.Effect>
+                        <Button.Resources>
+                            <SolidColorBrush x:Key="{x:Static ui:ThemeKeys.ButtonBackgroundPointerOverKey}" Color="#C9232C" />
+                            <SolidColorBrush x:Key="{x:Static ui:ThemeKeys.ButtonBackgroundPressedKey}" Color="#AF1E26" />
+                            <SolidColorBrush x:Key="{x:Static ui:ThemeKeys.ButtonBackgroundDisabledKey}" Color="#E32A34" />
+                        </Button.Resources>
+                        <Button.Effect>
                             <DropShadowEffect
                                 BlurRadius="3"
                                 Direction="0"
                                 Opacity="0.15"
                                 ShadowDepth="0" />
-                        </Border.Effect>
+                        </Button.Effect>
                         <ui:SymbolIcon
                             FontSize="16"
                             Foreground="White"
                             Symbol="Clear" />
-                    </Border>
+                    </Button>
                 </ikw:SimpleStackPanel>
             </Grid>
         </Grid>

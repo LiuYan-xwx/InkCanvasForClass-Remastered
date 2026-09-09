@@ -1,15 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace InkCanvasForClass_Remastered.ViewModels
 {
     public partial class NamesInputViewModel : ObservableRecipient
     {
         [ObservableProperty]
-        private string _nameText = string.Empty;
+        public partial string NameText { get; set; } = string.Empty;
     }
 }
