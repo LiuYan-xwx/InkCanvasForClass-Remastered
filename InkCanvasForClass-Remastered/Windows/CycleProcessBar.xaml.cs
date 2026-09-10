@@ -4,52 +4,39 @@ using System.Windows.Media;
 
 namespace InkCanvasForClass_Remastered.ProcessBars
 {
-    /// <summary>
-    /// CycleProcessBar1.xaml 的交互逻辑
-    /// </summary>
     public partial class CycleProcessBar : UserControl
     {
+        public static readonly DependencyProperty CurrentValueProperty = DependencyProperty.Register(
+            nameof(CurrentValue), typeof(double), typeof(CycleProcessBar),
+            new PropertyMetadata(0d, (d, e) => ((CycleProcessBar)d).UpdateProgress((double)e.NewValue),
+                (_, value) => double.IsFinite((double)value) ? Math.Clamp((double)value, 0, 1) : 0d));
+
+        public static readonly DependencyProperty IsPausedProperty = DependencyProperty.Register(
+            nameof(IsPaused), typeof(bool), typeof(CycleProcessBar), new PropertyMetadata(false));
+
         public CycleProcessBar()
         {
             InitializeComponent();
-            IsPaused = false;
+            UpdateProgress(CurrentValue);
         }
 
         public bool IsPaused
-        { set => SetRingColor(value);
-        }
-
-        private void SetRingColor(bool isPaused) => myCycleProcessBar.Stroke = isPaused ? new SolidColorBrush(StringToColor("#FF1A71C8")) : new SolidColorBrush(StringToColor("#FF0067C1"));
-
-        private Color StringToColor(string colorStr)
         {
-            byte[] argb = new byte[4];
-            for (int i = 0; i < 4; i++)
-            {
-                char[] charArray = colorStr.Substring((i * 2) + 1, 2).ToCharArray();
-                //string str = "11";
-                byte b1 = toByte(charArray[0]);
-                byte b2 = toByte(charArray[1]);
-                argb[i] = (byte)(b2 | (b1 << 4));
-            }
-            return Color.FromArgb(argb[0], argb[1], argb[2], argb[3]);//#FFFFFFFF
-        }
-
-        private static byte toByte(char c)
-        {
-            byte b = (byte)"0123456789ABCDEF".IndexOf(c);
-            return b;
+            get => (bool)GetValue(IsPausedProperty);
+            set => SetValue(IsPausedProperty, value);
         }
 
         public double CurrentValue
-        { set => SetValue(value);
+        {
+            get => (double)GetValue(CurrentValueProperty);
+            set => SetValue(CurrentValueProperty, value);
         }
 
         /// <summary>
         /// 设置百分百，输入小数，自动乘100
         /// </summary>
         /// <param name="percentValue"></param>
-        private void SetValue(double percentValue)
+        private void UpdateProgress(double percentValue)
         {
             /*****************************************
               方形矩阵边长为34，半长为17

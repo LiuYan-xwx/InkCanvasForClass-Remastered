@@ -25,10 +25,20 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Data="M17,3 A14,14 0 0 1 16,3 "
-                Stroke="#0066BF"
                 StrokeEndLineCap="Round"
                 StrokeStartLineCap="Round"
-                StrokeThickness="1.5" />
+                StrokeThickness="1.5">
+                <Path.Style>
+                    <Style TargetType="Path">
+                        <Setter Property="Stroke" Value="#0067C1" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsPaused, RelativeSource={RelativeSource AncestorType=local:CycleProcessBar}}" Value="True">
+                                <Setter Property="Stroke" Value="#1A71C8" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Path.Style>
+            </Path>
             <Label
                 Name="lbValue"
                 Content="50%"

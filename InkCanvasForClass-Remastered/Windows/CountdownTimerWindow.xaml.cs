@@ -1,388 +1,68 @@
-﻿using InkCanvasForClass_Remastered.Helpers;
+using InkCanvasForClass_Remastered.ViewModels;
 using System.Media;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
-using System.Windows.Threading;
 
 namespace InkCanvasForClass_Remastered
 {
-    /// <summary>
-    /// Interaction logic for StopwatchWindow.xaml
-    /// </summary>
     public partial class CountdownTimerWindow : Window
     {
+        private readonly CountdownTimerViewModel _viewModel = new();
+        private readonly SoundPlayer _player = new();
+        private bool _isCompact;
+
         public CountdownTimerWindow()
         {
             InitializeComponent();
-            AnimationsHelper.ShowWithSlideFromBottomAndFade(this, 0.25);
-
-            timer.Tick += Timer_Tick;
-            timer.Interval = TimeSpan.FromMilliseconds(50);
+            DataContext = _viewModel;
+            _viewModel.Completed += Countdown_Completed;
         }
 
-        private void Timer_Tick(object sender, EventArgs? e)
+        private void Countdown_Completed(object? sender, EventArgs e)
         {
-            if (!isTimerRunning || isPaused)
-            {
-                timer.Stop();
-                return;
-            }
-
-            TimeSpan timeSpan = DateTime.Now - startTime;
-            TimeSpan totalTimeSpan = new(hour, minute, second);
-            TimeSpan leftTimeSpan = totalTimeSpan - timeSpan;
-            if (leftTimeSpan.Milliseconds > 0)
-                leftTimeSpan += new TimeSpan(0, 0, 1);
-            double spentTimePercent = timeSpan.TotalMilliseconds / (totalSeconds * 1000.0);
-
-            ProcessBarTime.CurrentValue = 1 - spentTimePercent;
-            TextBlockHour.Text = leftTimeSpan.Hours.ToString("00");
-            TextBlockMinute.Text = leftTimeSpan.Minutes.ToString("00");
-            TextBlockSecond.Text = leftTimeSpan.Seconds.ToString("00");
-            TbCurrentTime.Text = leftTimeSpan.ToString(@"hh\:mm\:ss");
-
-            if (spentTimePercent >= 1)
-            {
-                ProcessBarTime.CurrentValue = 0;
-                TextBlockHour.Text = "00";
-                TextBlockMinute.Text = "00";
-                TextBlockSecond.Text = "00";
-                timer.Stop();
-                isTimerRunning = false;
-                SymbolIconStart.Symbol = iNKORE.UI.WPF.Modern.Controls.Symbol.Play;
-                BtnStartCover.Visibility = Visibility.Visible;
-                TextBlockHour.Foreground = new SolidColorBrush(StringToColor("#FF5B5D5F"));
-                BorderStopTime.Visibility = Visibility.Collapsed;
-
-                //Play sound
-                player.Stream = Properties.Resources.TimerDownNotice;
-                player.Play();
-            }
+            _player.Stream = Properties.Resources.TimerDownNotice;
+            _player.Play();
         }
 
-        SoundPlayer player = new();
+        private void FullscreenButton_Click(object sender, RoutedEventArgs e) =>
+            WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
 
-        int hour = 0;
-        int minute = 1;
-        int second = 0;
-        int totalSeconds = 60;
-
-        DateTime startTime = DateTime.Now;
-        DateTime pauseTime = DateTime.Now;
-
-        bool isTimerRunning = false;
-        bool isPaused = false;
-
-        DispatcherTimer timer = new();
-
-        private void Grid_MouseUp(object sender, MouseButtonEventArgs e)
+        private void CompactButton_Click(object sender, RoutedEventArgs e)
         {
-            if (isTimerRunning)
-                return;
-            if (ProcessBarTime.Visibility == Visibility.Visible && isTimerRunning == false)
-            {
-                ProcessBarTime.Visibility = Visibility.Collapsed;
-                GridAdjustHour.Visibility = Visibility.Visible;
-                TextBlockHour.Foreground = Brushes.Black;
-            }
-            else
-            {
-                ProcessBarTime.Visibility = Visibility.Visible;
-                GridAdjustHour.Visibility = Visibility.Collapsed;
-                TextBlockHour.Foreground = new SolidColorBrush(StringToColor("#FF5B5D5F"));
-
-                if (hour == 0 && minute == 0 && second == 0)
-                {
-                    second = 1;
-                    TextBlockSecond.Text = second.ToString("00");
-                }
-            }
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            hour++;
-            if (hour >= 100)
-                hour = 0;
-            TextBlockHour.Text = hour.ToString("00");
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            hour += 5;
-            if (hour >= 100)
-                hour = 0;
-            TextBlockHour.Text = hour.ToString("00");
-        }
-
-        private void Button_Click_2(object sender, RoutedEventArgs e)
-        {
-            hour--;
-            if (hour < 0)
-                hour = 99;
-            TextBlockHour.Text = hour.ToString("00");
-        }
-
-        private void Button_Click_3(object sender, RoutedEventArgs e)
-        {
-            hour -= 5;
-            if (hour < 0)
-                hour = 99;
-            TextBlockHour.Text = hour.ToString("00");
-        }
-
-        private void Button_Click_4(object sender, RoutedEventArgs e)
-        {
-            minute++;
-            if (minute >= 60)
-                minute = 0;
-            TextBlockMinute.Text = minute.ToString("00");
-        }
-
-        private void Button_Click_5(object sender, RoutedEventArgs e)
-        {
-            minute += 5;
-            if (minute >= 60)
-                minute = 0;
-            TextBlockMinute.Text = minute.ToString("00");
-        }
-
-        private void Button_Click_6(object sender, RoutedEventArgs e)
-        {
-            minute--;
-            if (minute < 0)
-                minute = 59;
-            TextBlockMinute.Text = minute.ToString("00");
-        }
-
-        private void Button_Click_7(object sender, RoutedEventArgs e)
-        {
-            minute -= 5;
-            if (minute < 0)
-                minute = 59;
-            TextBlockMinute.Text = minute.ToString("00");
-        }
-
-        private void Button_Click_8(object sender, RoutedEventArgs e)
-        {
-            second += 5;
-            if (second >= 60)
-                second = 0;
-            TextBlockSecond.Text = second.ToString("00");
-        }
-
-        private void Button_Click_9(object sender, RoutedEventArgs e)
-        {
-            second++;
-            if (second >= 60)
-                second = 0;
-            TextBlockSecond.Text = second.ToString("00");
-        }
-
-        private void Button_Click_10(object sender, RoutedEventArgs e)
-        {
-            second--;
-            if (second < 0)
-                second = 59;
-            TextBlockSecond.Text = second.ToString("00");
-        }
-
-        private void Button_Click_11(object sender, RoutedEventArgs e)
-        {
-            second -= 5;
-            if (second < 0)
-                second = 59;
-            TextBlockSecond.Text = second.ToString("00");
-        }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            ProcessBarTime.Visibility = Visibility.Visible;
-            GridAdjustHour.Visibility = Visibility.Collapsed;
-            BorderStopTime.Visibility = Visibility.Collapsed;
-        }
-
-        private void BtnFullscreen_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (WindowState == WindowState.Normal)
-            {
-                WindowState = WindowState.Maximized;
-                SymbolIconFullscreen.Symbol = iNKORE.UI.WPF.Modern.Controls.Symbol.BackToWindow;
-            }
-            else
-            {
+            _isCompact = !_isCompact;
+            if (_isCompact && WindowState == WindowState.Maximized)
                 WindowState = WindowState.Normal;
-                SymbolIconFullscreen.Symbol = iNKORE.UI.WPF.Modern.Controls.Symbol.FullScreen;
-            }
+
+            Width = _isCompact ? 400 : 1100;
+            Height = _isCompact ? 250 : 700;
+            BigViewController.Visibility = _isCompact ? Visibility.Collapsed : Visibility.Visible;
+            CompactTimeButton.Visibility = _isCompact ? Visibility.Visible : Visibility.Collapsed;
+
+            if (!_isCompact) CenterWindowOnCurrentScreen();
         }
 
-        private void BtnReset_MouseUp(object sender, MouseButtonEventArgs e)
+        private void CenterWindowOnCurrentScreen()
         {
-            if (!isTimerRunning)
-            {
-                TextBlockHour.Text = hour.ToString("00");
-                TextBlockMinute.Text = minute.ToString("00");
-                TextBlockSecond.Text = second.ToString("00");
-                BtnResetCover.Visibility = Visibility.Visible;
-                BtnStartCover.Visibility = Visibility.Collapsed;
-                BorderStopTime.Visibility = Visibility.Collapsed;
-                TextBlockHour.Foreground = new SolidColorBrush(StringToColor("#FF5B5D5F"));
-                return;
-            }
-            else if (isTimerRunning && isPaused)
-            {
-                TextBlockHour.Text = hour.ToString("00");
-                TextBlockMinute.Text = minute.ToString("00");
-                TextBlockSecond.Text = second.ToString("00");
-                BtnResetCover.Visibility = Visibility.Visible;
-                BtnStartCover.Visibility = Visibility.Collapsed;
-                BorderStopTime.Visibility = Visibility.Collapsed;
-                TextBlockHour.Foreground = new SolidColorBrush(StringToColor("#FF5B5D5F"));
-                SymbolIconStart.Symbol = iNKORE.UI.WPF.Modern.Controls.Symbol.Play;
-                isTimerRunning = false;
-                timer.Stop();
-                isPaused = false;
-                ProcessBarTime.CurrentValue = 0;
-                ProcessBarTime.IsPaused = false;
-            }
-            else
-            {
-                UpdateStopTime();
-                startTime = DateTime.Now;
-                Timer_Tick(timer, null);
-            }
+            var dpi = VisualTreeHelper.GetDpi(this);
+            var screen = System.Windows.Forms.Screen.FromHandle(new WindowInteropHelper(this).Handle);
+            Left = screen.Bounds.Left / dpi.DpiScaleX + (screen.Bounds.Width / dpi.DpiScaleX - Width) / 2;
+            Top = screen.Bounds.Top / dpi.DpiScaleY + (screen.Bounds.Height / dpi.DpiScaleY - Height) / 2;
         }
 
-        void UpdateStopTime()
+        protected override void OnClosed(EventArgs e)
         {
-            TimeSpan totalTimeSpan = new(hour, minute, second);
-            TextBlockStopTime.Text = (startTime + totalTimeSpan).ToString("t");
+            _viewModel.Completed -= Countdown_Completed;
+            _viewModel.Dispose();
+            _player.Stop();
+            _player.Dispose();
+            base.OnClosed(e);
         }
 
-        private Color StringToColor(string colorStr)
-        {
-            byte[] argb = new byte[4];
-            for (int i = 0; i < 4; i++)
-            {
-                char[] charArray = colorStr.Substring((i * 2) + 1, 2).ToCharArray();
-                //string str = "11";
-                byte b1 = toByte(charArray[0]);
-                byte b2 = toByte(charArray[1]);
-                argb[i] = (byte)(b2 | (b1 << 4));
-            }
+        private void CloseButton_Click(object sender, RoutedEventArgs e) => Close();
 
-            return Color.FromArgb(argb[0], argb[1], argb[2], argb[3]); //#FFFFFFFF
-        }
-
-        private static byte toByte(char c)
-        {
-            byte b = (byte)"0123456789ABCDEF".IndexOf(c);
-            return b;
-        }
-
-        private void BtnStart_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (isPaused && isTimerRunning)
-            {
-                //继续
-                startTime += DateTime.Now - pauseTime;
-                ProcessBarTime.IsPaused = false;
-                TextBlockHour.Foreground = Brushes.Black;
-                SymbolIconStart.Symbol = iNKORE.UI.WPF.Modern.Controls.Symbol.Pause;
-                isPaused = false;
-                timer.Start();
-                UpdateStopTime();
-                BorderStopTime.Visibility = Visibility.Visible;
-            }
-            else if (isTimerRunning)
-            {
-                //暂停
-                pauseTime = DateTime.Now;
-                ProcessBarTime.IsPaused = true;
-                TextBlockHour.Foreground = new SolidColorBrush(StringToColor("#FF5B5D5F"));
-                SymbolIconStart.Symbol = iNKORE.UI.WPF.Modern.Controls.Symbol.Play;
-                BorderStopTime.Visibility = Visibility.Collapsed;
-                isPaused = true;
-                timer.Stop();
-            }
-            else
-            {
-                //从头开始
-                startTime = DateTime.Now;
-                totalSeconds = (((hour * 60) + minute) * 60) + second;
-                ProcessBarTime.IsPaused = false;
-                TextBlockHour.Foreground = Brushes.Black;
-                SymbolIconStart.Symbol = iNKORE.UI.WPF.Modern.Controls.Symbol.Pause;
-                BtnResetCover.Visibility = Visibility.Collapsed;
-
-                if (totalSeconds <= 10)
-                {
-                    timer.Interval = TimeSpan.FromMilliseconds(20);
-                }
-                else if (totalSeconds <= 60)
-                {
-                    timer.Interval = TimeSpan.FromMilliseconds(30);
-                }
-                else
-                {
-                    timer.Interval = totalSeconds <= 120 ? TimeSpan.FromMilliseconds(50) : TimeSpan.FromMilliseconds(100);
-                }
-
-                isPaused = false;
-                isTimerRunning = true;
-                timer.Start();
-                UpdateStopTime();
-                BorderStopTime.Visibility = Visibility.Visible;
-            }
-        }
-
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) => isTimerRunning = false;
-
-        private void BtnClose_MouseUp(object sender, MouseButtonEventArgs e) => Close();
-
-        private bool _isInCompact = false;
-
-        private void BtnMinimal_OnMouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (_isInCompact)
-            {
-                Width = 1100;
-                Height = 700;
-                BigViewController.Visibility = Visibility.Visible;
-                TbCurrentTime.Visibility = Visibility.Collapsed;
-
-                // Set to center
-                double dpiScaleX = 1, dpiScaleY = 1;
-                PresentationSource source = PresentationSource.FromVisual(this);
-                if (source != null)
-                {
-                    dpiScaleX = source.CompositionTarget.TransformToDevice.M11;
-                    dpiScaleY = source.CompositionTarget.TransformToDevice.M22;
-                }
-                IntPtr windowHandle = new WindowInteropHelper(this).Handle;
-                System.Windows.Forms.Screen screen = System.Windows.Forms.Screen.FromHandle(windowHandle);
-                double screenWidth = screen.Bounds.Width / dpiScaleX, screenHeight = screen.Bounds.Height / dpiScaleY;
-                Left = (screenWidth / 2) - (Width / 2);
-                Top = (screenHeight / 2) - (Height / 2);
-                Left = (screenWidth / 2) - (Width / 2);
-                Top = (screenHeight / 2) - (Height / 2);
-            }
-            else
-            {
-                if (WindowState == WindowState.Maximized)
-                    WindowState = WindowState.Normal;
-                Width = 400;
-                Height = 250;
-                BigViewController.Visibility = Visibility.Collapsed;
-                TbCurrentTime.Visibility = Visibility.Visible;
-            }
-
-            _isInCompact = !_isInCompact;
-        }
-
-        private void WindowDragMove(object sender, MouseEventArgs e)
+        private void WindowDragMove(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
                 DragMove();
