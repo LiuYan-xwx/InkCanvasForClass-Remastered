@@ -538,10 +538,7 @@
                                         Text="画板和墨迹" />
                                 </GroupBox.Header>
                                 <ikw:SimpleStackPanel Spacing="6">
-                                    <controls:SettingsControl
-                                        Header="显示画笔光标"
-                                        IsOn="{Binding Settings.IsShowCursor}"
-                                        Toggled="ToggleSwitchShowCursor_Toggled" />
+                                    <controls:SettingsControl Header="显示画笔光标" IsOn="{Binding Settings.IsShowCursor}" />
 
                                     <controls:SettingsControl Header="橡皮大小" Description="# 非实时切换，下一次使用面积擦时生效。">
                                         <controls:SettingsControl.Switcher>
@@ -1777,12 +1774,10 @@
                 Background="Transparent"
                 ClipToBounds="False"
                 DefaultDrawingAttributes="{Binding InkCanvasDrawingAttributes, Mode=TwoWay}"
-                EditingModeChanged="inkCanvas_EditingModeChanged"
                 ForceCursor="{Binding ForceCursor}"
                 IsManipulationEnabled="True"
                 ManipulationCompleted="Main_Grid_ManipulationCompleted"
                 ManipulationDelta="Main_Grid_ManipulationDelta"
-                ManipulationInertiaStarting="inkCanvas_ManipulationInertiaStarting"
                 ManipulationStarting="inkCanvas_ManipulationStarting"
                 MouseDown="inkCanvas_MouseDown"
                 MouseUp="inkCanvas_MouseUp"
@@ -1809,8 +1804,6 @@
                 Opacity="0.01"
                 PreviewTouchDown="GridInkCanvasSelectionCover_PreviewTouchDown"
                 PreviewTouchUp="GridInkCanvasSelectionCover_PreviewTouchUp"
-                TouchDown="GridInkCanvasSelectionCover_TouchDown"
-                TouchUp="GridInkCanvasSelectionCover_TouchUp"
                 Visibility="Collapsed" />
             <Border
                 Name="BorderStrokeSelectionControl"

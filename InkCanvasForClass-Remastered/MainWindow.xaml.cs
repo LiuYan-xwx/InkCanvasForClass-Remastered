@@ -84,7 +84,6 @@ namespace InkCanvasForClass_Remastered
         {
             Interval = TimeSpan.FromMilliseconds(400)
         };
-        private readonly Random sharedRandom = Random.Shared;
         private void TopmostRefreshTimer_Tick(object? sender, EventArgs e)
         {
             Topmost = false;
@@ -195,24 +194,6 @@ namespace InkCanvasForClass_Remastered
         //}
         //catch { }
         //}
-
-        private void inkCanvas_EditingModeChanged(object? sender, RoutedEventArgs? e)
-        {
-            //if (sender is not InkCanvas inkCanvas1)
-            //{
-            //    return;
-            //}
-
-            //if (Settings.IsShowCursor
-            //    && inkCanvas1.EditingMode == InkCanvasEditingMode.Ink)
-            //{
-            //    inkCanvas1.ForceCursor = true;
-            //}
-            //else
-            //{
-            //    inkCanvas1.ForceCursor = false;
-            //}
-        }
 
         #endregion Ink Canvas
 
@@ -437,24 +418,13 @@ namespace InkCanvasForClass_Remastered
         #endregion
 
         #region BoardControls
-        private StrokeCollection[] strokeCollections = new StrokeCollection[101];
-
         private TimeMachineHistory[][] TimeMachineHistories = new TimeMachineHistory[101][]; //最多99页，0用来存储非白板时的墨迹以便还原
 
         private void SaveStrokes(bool isBackupMain = false)
         {
-            if (isBackupMain)
-            {
-                var timeMachineHistory = timeMachine.ExportTimeMachineHistory();
-                TimeMachineHistories[0] = timeMachineHistory;
-                timeMachine.ClearStrokeHistory();
-            }
-            else
-            {
-                var timeMachineHistory = timeMachine.ExportTimeMachineHistory();
-                TimeMachineHistories[_viewModel.WhiteboardCurrentPage] = timeMachineHistory;
-                timeMachine.ClearStrokeHistory();
-            }
+            var pageIndex = isBackupMain ? 0 : _viewModel.WhiteboardCurrentPage;
+            TimeMachineHistories[pageIndex] = timeMachine.ExportTimeMachineHistory();
+            timeMachine.ClearStrokeHistory();
         }
 
         private void ClearStrokes(bool isErasedByCode)
@@ -472,21 +442,16 @@ namespace InkCanvasForClass_Remastered
         {
             try
             {
-                if (TimeMachineHistories[_viewModel.WhiteboardCurrentPage] == null) return; //防止白板打开后不居中
-                if (isBackupMain)
-                {
-                    timeMachine.ImportTimeMachineHistory(TimeMachineHistories[0]);
-                    foreach (var item in TimeMachineHistories[0]) ApplyHistoryToCanvas(item);
-                }
-                else
-                {
-                    timeMachine.ImportTimeMachineHistory(TimeMachineHistories[_viewModel.WhiteboardCurrentPage]);
-                    foreach (var item in TimeMachineHistories[_viewModel.WhiteboardCurrentPage]) ApplyHistoryToCanvas(item);
-                }
+                var pageIndex = isBackupMain ? 0 : _viewModel.WhiteboardCurrentPage;
+                var histories = TimeMachineHistories[pageIndex];
+                if (histories == null) return; //防止白板打开后不居中
+
+                timeMachine.ImportTimeMachineHistory(histories);
+                foreach (var item in histories) ApplyHistoryToCanvas(item);
             }
-            catch
+            catch (Exception ex)
             {
-                // ignored
+                Logger.LogWarning(ex, "恢复第 {PageIndex} 页墨迹历史失败", isBackupMain ? 0 : _viewModel.WhiteboardCurrentPage);
             }
         }
 
@@ -519,9 +484,7 @@ namespace InkCanvasForClass_Remastered
         private void WhiteBoardAddPage()
         {
             if (_viewModel.WhiteboardTotalPageCount >= MainViewModel.MaxWhiteboardPageCount) return;
-            if (Settings.IsAutoSaveStrokesAtClear &&
-                inkCanvas.Strokes.Count > Settings.MinimumAutomationStrokeNumber)
-                SaveScreenShot(true);
+
             SaveStrokes();
             ClearStrokes(true);
 
@@ -549,10 +512,6 @@ namespace InkCanvasForClass_Remastered
                 WhiteBoardAddPage();
                 return;
             }
-
-            if (Settings.IsAutoSaveStrokesAtClear &&
-                inkCanvas.Strokes.Count > Settings.MinimumAutomationStrokeNumber)
-                SaveScreenShot(true);
 
             SwitchWhiteboardPage(_viewModel.WhiteboardCurrentPage + 1);
         }
@@ -606,7 +565,6 @@ namespace InkCanvasForClass_Remastered
                 _viewModel.AppPenMode = InkCanvasEditingMode.EraseByPoint;
                 UpdateEraserShape();
                 inkCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
-                inkCanvas_EditingModeChanged(inkCanvas, null);
                 CancelSingleFingerDragMode();
 
                 HideSubPanels();
@@ -916,25 +874,6 @@ namespace InkCanvasForClass_Remastered
             ColorSwitchCheck();
         }
 
-        private Color StringToColor(string colorStr)
-        {
-            var argb = new byte[4];
-            for (var i = 0; i < 4; i++)
-            {
-                var charArray = colorStr.Substring(i * 2 + 1, 2).ToCharArray();
-                var b1 = toByte(charArray[0]);
-                var b2 = toByte(charArray[1]);
-                argb[i] = (byte)(b2 | (b1 << 4));
-            }
-
-            return Color.FromArgb(argb[0], argb[1], argb[2], argb[3]); //#FFFFFFFF
-        }
-
-        private static byte toByte(char c)
-        {
-            var b = (byte)"0123456789ABCDEF".IndexOf(c);
-            return b;
-        }
         #endregion
 
         #region FloatingBarIcons
@@ -1309,21 +1248,17 @@ namespace InkCanvasForClass_Remastered
 
         private void SymbolIconDelete_Click(object? sender, RoutedEventArgs? e)
         {
-            var selectedStrokes = inkCanvas.GetSelectedStrokes();
+            var selectedStrokes = GetSelectedStrokes();
             if (selectedStrokes.Count > 0)
             {
                 inkCanvas.Strokes.Remove(selectedStrokes);
                 ClearInkCanvasSelection();
+                RefreshWhiteboardPagePreviewsIfVisible();
             }
-            else if (inkCanvas.Strokes.Count > 0)
+            else if (inkCanvas.Strokes.Count != 0)
             {
-                if (Settings.IsAutoSaveStrokesAtClear &&
-                    inkCanvas.Strokes.Count > Settings.MinimumAutomationStrokeNumber)
-                {
-                    SaveScreenShot(true);
-                }
-
-                BtnClear_Click(null, null);
+                SaveScreenshotBeforeClearIfNeeded();
+                ClearCanvas();
             }
         }
 
@@ -1405,35 +1340,30 @@ namespace InkCanvasForClass_Remastered
             Logger.LogInformation("用户选择打开墨迹文件 {FileName}", openFileDialog.FileName);
             try
             {
-                var fileStreamHasNoStroke = false;
-                using (var fs = new FileStream(openFileDialog.FileName, FileMode.Open, FileAccess.Read))
-                {
-                    var strokes = new StrokeCollection(fs);
-                    fileStreamHasNoStroke = strokes.Count == 0;
-                    if (!fileStreamHasNoStroke)
-                    {
-                        ClearStrokes(true);
-                        timeMachine.ClearStrokeHistory();
-                        inkCanvas.Strokes.Add(strokes);
-                        Logger.LogInformation("墨迹文件打开成功，墨迹数 {Count}", strokes.Count);
-                    }
-                }
-
-                if (fileStreamHasNoStroke)
-                    using (var ms = new MemoryStream(File.ReadAllBytes(openFileDialog.FileName)))
-                    {
-                        ms.Seek(0, SeekOrigin.Begin);
-                        var strokes = new StrokeCollection(ms);
-                        ClearStrokes(true);
-                        timeMachine.ClearStrokeHistory();
-                        inkCanvas.Strokes.Add(strokes);
-                        Logger.LogInformation("墨迹文件打开成功，墨迹数 {Count}", strokes.Count);
-                    }
+                var strokes = LoadStrokesFromFile(openFileDialog.FileName);
+                ReplaceCanvasStrokes(strokes);
+                Logger.LogInformation("墨迹文件打开成功，墨迹数 {Count}", strokes.Count);
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.LogError(ex, "墨迹文件打开失败 {FileName}", openFileDialog.FileName);
                 ShowNotification("墨迹打开失败");
             }
+        }
+
+        private static StrokeCollection LoadStrokesFromFile(string filePath)
+        {
+            using var stream = File.OpenRead(filePath);
+            return new StrokeCollection(stream);
+        }
+
+        private void ReplaceCanvasStrokes(StrokeCollection strokes)
+        {
+            ClearStrokes(true);
+            timeMachine.ClearStrokeHistory();
+            ClearInkCanvasSelection();
+            inkCanvas.Strokes.Add(strokes);
+            RefreshWhiteboardPagePreviewsIfVisible();
         }
 
         private async void SymbolIconScreenshot_Click(object sender, RoutedEventArgs e)
@@ -1623,12 +1553,7 @@ namespace InkCanvasForClass_Remastered
         private void CursorFloatingBarButton_Click(object? sender, RoutedEventArgs? e)
         {
             _viewModel.AppPenMode = InkCanvasEditingMode.None;
-            // 切换前自动截图保存墨迹
-            if (inkCanvas.Strokes.Count > 0 &&
-                inkCanvas.Strokes.Count > Settings.MinimumAutomationStrokeNumber)
-            {
-                SaveScreenShot(true);
-            }
+
             if (Settings.HideStrokeWhenSelecting)
             {
                 inkCanvas.Visibility = Visibility.Collapsed;
@@ -1715,7 +1640,6 @@ namespace InkCanvasForClass_Remastered
 
             inkCanvas.EditingMode = InkCanvasEditingMode.EraseByPoint;
 
-            inkCanvas_EditingModeChanged(inkCanvas, null);
             CancelSingleFingerDragMode();
         }
 
@@ -1725,7 +1649,6 @@ namespace InkCanvasForClass_Remastered
             inkCanvas.EraserShape = new EllipseStylusShape(5, 5);
             inkCanvas.EditingMode = InkCanvasEditingMode.EraseByStroke;
 
-            inkCanvas_EditingModeChanged(inkCanvas, null);
             CancelSingleFingerDragMode();
 
             HideSubPanels();
@@ -1776,17 +1699,15 @@ namespace InkCanvasForClass_Remastered
 
         private void BtnClear_Click(object? sender, RoutedEventArgs? e)
         {
+            ClearCanvas();
+        }
+
+        private void ClearCanvas()
+        {
             // 批注或白板模式下先回到画笔再清屏，鼠标模式保持穿透。
             if (_viewModel.AppPenMode != InkCanvasEditingMode.Ink &&
                 (_viewModel.AppMode == AppMode.WhiteBoard || _viewModel.AppPenMode != InkCanvasEditingMode.None))
                 ActivatePen();
-
-            if (inkCanvas.Strokes.Count != 0)
-            {
-                var whiteboardIndex = _viewModel.WhiteboardCurrentPage;
-                if (_viewModel.AppMode == AppMode.Normal) whiteboardIndex = 0;
-                strokeCollections[whiteboardIndex] = inkCanvas.Strokes.Clone();
-            }
 
             ClearStrokes(false);
             inkPreviewOverlay.Children.Clear();
@@ -1794,6 +1715,7 @@ namespace InkCanvasForClass_Remastered
             CancelSingleFingerDragMode();
 
             if (Settings.ClearCanvasAndClearTimeMachine) timeMachine.ClearStrokeHistory();
+            RefreshWhiteboardPagePreviewsIfVisible();
         }
 
         private void CancelSingleFingerDragMode()
@@ -2206,21 +2128,14 @@ namespace InkCanvasForClass_Remastered
         {
             try
             {
-                string savePath = saveByUser
-                    ? _viewModel.AppMode == AppMode.Normal
-                        ? CommonDirectories.UserSaveAnnotationStrokesFolderPath
-                        : CommonDirectories.UserSaveWhiteboardStrokesFolderPath
-                    : _viewModel.AppMode == AppMode.Normal
-                        ? CommonDirectories.AutoSaveAnnotationStrokesFolderPath
-                        : CommonDirectories.AutoSaveWhiteboardStrokesFolderPath;
-
-                string savePathWithName = _viewModel.AppMode == AppMode.Normal
-                    ? Path.Combine(savePath, DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff") + ".icstk")
-                    : Path.Combine(savePath,
-                        DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff") + " Page-" +
-                        _viewModel.WhiteboardCurrentPage + ".icstk");
-                var fs = new FileStream(savePathWithName, FileMode.Create);
-                inkCanvas.Strokes.Save(fs);
+                var savePath = GetStrokeSavePath(saveByUser);
+                var fileName = DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss-fff") +
+                               (_viewModel.AppMode == AppMode.Normal
+                                   ? ".icstk"
+                                   : $" Page-{_viewModel.WhiteboardCurrentPage}.icstk");
+                var savePathWithName = Path.Combine(savePath, fileName);
+                using var stream = File.Create(savePathWithName);
+                inkCanvas.Strokes.Save(stream);
                 if (newNotice) ShowNotification("墨迹成功保存至 " + savePathWithName);
             }
             catch (Exception ex)
@@ -2229,9 +2144,30 @@ namespace InkCanvasForClass_Remastered
                 Logger.LogError(ex, "墨迹保存失败");
             }
         }
+
+        private string GetStrokeSavePath(bool saveByUser)
+        {
+            if (_viewModel.AppMode == AppMode.Normal)
+                return saveByUser
+                    ? CommonDirectories.UserSaveAnnotationStrokesFolderPath
+                    : CommonDirectories.AutoSaveAnnotationStrokesFolderPath;
+
+            return saveByUser
+                ? CommonDirectories.UserSaveWhiteboardStrokesFolderPath
+                : CommonDirectories.AutoSaveWhiteboardStrokesFolderPath;
+        }
         #endregion
 
         #region Screenshot
+        private bool HasEnoughStrokesForAutomaticSave() =>
+            inkCanvas.Strokes.Count > Settings.MinimumAutomationStrokeNumber;
+
+        private void SaveScreenshotBeforeClearIfNeeded()
+        {
+            if (Settings.IsAutoSaveStrokesAtClear && HasEnoughStrokesForAutomaticSave())
+                SaveScreenShot(true);
+        }
+
         private void SaveScreenShot(bool isHideNotification)
         {
             var filePath = ScreenshotHelper.SaveScreenshot(CommonDirectories.AutoSaveScreenshotsFolderPath);
@@ -2239,8 +2175,7 @@ namespace InkCanvasForClass_Remastered
             if (!isHideNotification)
                 ShowNotification($"截图成功保存至 {filePath}");
 
-            if (Settings.IsAutoSaveStrokesAtScreenshot)
-                SaveInkCanvasStrokes(false, false);
+            SaveStrokesAlongsideScreenshotIfNeeded();
         }
 
         private void SaveScreenShotToDesktop()
@@ -2250,6 +2185,11 @@ namespace InkCanvasForClass_Remastered
 
             ShowNotification($"截图成功保存至【桌面\\{fileName}】");
 
+            SaveStrokesAlongsideScreenshotIfNeeded();
+        }
+
+        private void SaveStrokesAlongsideScreenshotIfNeeded()
+        {
             if (Settings.IsAutoSaveStrokesAtScreenshot)
                 SaveInkCanvasStrokes(false, false);
         }
@@ -2495,10 +2435,6 @@ namespace InkCanvasForClass_Remastered
             catch { }
         }
 
-        private void GridInkCanvasSelectionCover_TouchDown(object sender, TouchEventArgs e) { }
-
-        private void GridInkCanvasSelectionCover_TouchUp(object sender, TouchEventArgs e) { }
-
         private Point lastTouchPointOnGridInkCanvasCover = new Point(0, 0);
 
         private void GridInkCanvasSelectionCover_PreviewTouchDown(object sender, TouchEventArgs e)
@@ -2601,11 +2537,6 @@ namespace InkCanvasForClass_Remastered
         private void PPTBtnRSResetBtn_Clicked(object sender, RoutedEventArgs e)
         {
             Settings.PPTRSButtonPosition = 0;
-        }
-
-        private void ToggleSwitchShowCursor_Toggled(object sender, RoutedEventArgs e)
-        {
-            inkCanvas_EditingModeChanged(inkCanvas, null);
         }
 
         #endregion
@@ -3790,8 +3721,6 @@ namespace InkCanvasForClass_Remastered
             //Logger.LogDebug("inkCanvas_ManipulationStarting");
             e.Mode = ManipulationModes.All;
         }
-
-        private void inkCanvas_ManipulationInertiaStarting(object sender, ManipulationInertiaStartingEventArgs e) { }
 
         private void Main_Grid_ManipulationCompleted(object sender, ManipulationCompletedEventArgs e)
         {
