@@ -1160,12 +1160,7 @@ namespace InkCanvasForClass_Remastered
             if (!_viewModel.CanUndo)
                 return;
 
-            //BtnUndo_Click的内容
-            if (inkCanvas.GetSelectedStrokes().Count != 0)
-            {
-                GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
-                inkCanvas.Select(new StrokeCollection());
-            }
+            ClearInkCanvasSelection();
 
             var item = timeMachine.Undo();
             ApplyHistoryToCanvas(item);
@@ -1178,12 +1173,7 @@ namespace InkCanvasForClass_Remastered
             if (!_viewModel.CanRedo)
                 return;
 
-            //BtnRedo_Click的内容
-            if (inkCanvas.GetSelectedStrokes().Count != 0)
-            {
-                GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
-                inkCanvas.Select(new StrokeCollection());
-            }
+            ClearInkCanvasSelection();
 
             var item = timeMachine.Redo();
             ApplyHistoryToCanvas(item);
@@ -1319,10 +1309,11 @@ namespace InkCanvasForClass_Remastered
 
         private void SymbolIconDelete_Click(object? sender, RoutedEventArgs? e)
         {
-            if (inkCanvas.GetSelectedStrokes().Count > 0)
+            var selectedStrokes = inkCanvas.GetSelectedStrokes();
+            if (selectedStrokes.Count > 0)
             {
-                inkCanvas.Strokes.Remove(inkCanvas.GetSelectedStrokes());
-                GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
+                inkCanvas.Strokes.Remove(selectedStrokes);
+                ClearInkCanvasSelection();
             }
             else if (inkCanvas.Strokes.Count > 0)
             {
@@ -2267,13 +2258,34 @@ namespace InkCanvasForClass_Remastered
         #region SelectionGestures
         #region Floating Control
 
+        private StrokeCollection GetSelectedStrokes() => inkCanvas.GetSelectedStrokes();
+
+        private void ClearInkCanvasSelection()
+        {
+            GridInkCanvasSelectionCover.Visibility = Visibility.Collapsed;
+            if (inkCanvas.GetSelectedStrokes().Count != 0)
+                inkCanvas.Select(new StrokeCollection());
+        }
+
+        private void UpdateSelectedStrokes(Action<Stroke> update)
+        {
+            var selectedStrokes = GetSelectedStrokes();
+            if (selectedStrokes.Count == 0)
+                return;
+
+            foreach (var stroke in selectedStrokes)
+                update(stroke);
+
+            CommitPendingDrawingAttributes();
+        }
+
         private void BorderStrokeSelectionCloneToNewBoard_Click(object sender, RoutedEventArgs e)
         {
             if (_viewModel.WhiteboardTotalPageCount >= MainViewModel.MaxWhiteboardPageCount) return;
 
-            var strokes = inkCanvas.GetSelectedStrokes();
+            var strokes = GetSelectedStrokes();
             if (strokes.Count == 0) return;
-            inkCanvas.Select(new StrokeCollection());
+            ClearInkCanvasSelection();
             strokes = strokes.Clone();
             WhiteBoardAddPage();
             inkCanvas.Strokes.Add(strokes);
@@ -2290,29 +2302,27 @@ namespace InkCanvasForClass_Remastered
             ChangeStrokeThickness(1.25);
         }
 
-        private void ChangeStrokeThickness(double multipler)
+        private void ChangeStrokeThickness(double multiplier)
         {
-            foreach (var stroke in inkCanvas.GetSelectedStrokes())
+            UpdateSelectedStrokes(stroke =>
             {
-                var newWidth = stroke.DrawingAttributes.Width * multipler;
-                var newHeight = stroke.DrawingAttributes.Height * multipler;
+                var newWidth = stroke.DrawingAttributes.Width * multiplier;
+                var newHeight = stroke.DrawingAttributes.Height * multiplier;
                 if (!(newWidth >= DrawingAttributes.MinWidth) || !(newWidth <= DrawingAttributes.MaxWidth)
                                                               || !(newHeight >= DrawingAttributes.MinHeight) ||
-                                                              !(newHeight <= DrawingAttributes.MaxHeight)) continue;
+                                                              !(newHeight <= DrawingAttributes.MaxHeight)) return;
                 stroke.DrawingAttributes.Width = newWidth;
                 stroke.DrawingAttributes.Height = newHeight;
-            }
-            CommitPendingDrawingAttributes();
+            });
         }
 
         private void GridPenWidthRestore_Click(object sender, RoutedEventArgs e)
         {
-            foreach (var stroke in inkCanvas.GetSelectedStrokes())
+            UpdateSelectedStrokes(stroke =>
             {
                 stroke.DrawingAttributes.Width = _viewModel.InkCanvasDrawingAttributes.Width;
                 stroke.DrawingAttributes.Height = _viewModel.InkCanvasDrawingAttributes.Height;
-            }
-            CommitPendingDrawingAttributes();
+            });
         }
 
         private void ImageFlipHorizontal_Click(object sender, RoutedEventArgs e)
@@ -2337,7 +2347,7 @@ namespace InkCanvasForClass_Remastered
 
         private void TransformSelectedStrokes(double rotation = 0, double scaleX = 1, double scaleY = 1)
         {
-            var strokes = inkCanvas.GetSelectedStrokes();
+            var strokes = GetSelectedStrokes();
             if (strokes.Count == 0) return;
 
             var bounds = inkCanvas.GetSelectionBounds();
