@@ -183,7 +183,6 @@ ICC 可以支持 WPS，但目前無法同時支持 MSOffice 和 WPS。若要啟�
 - [Microsoft.Extensions.Hosting](https://www.nuget.org/packages/Microsoft.Extensions.Hosting)
 - [Microsoft.Office.Interop.PowerPoint](https://www.nuget.org/packages/Microsoft.Office.Interop.PowerPoint/)
 - [MicrosoftOfficeCore](https://www.nuget.org/packages/MicrosoftOfficeCore)
-- [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)
 - [OSVersionExt](https://github.com/pruggitorg/detect-windows-version)
 
 

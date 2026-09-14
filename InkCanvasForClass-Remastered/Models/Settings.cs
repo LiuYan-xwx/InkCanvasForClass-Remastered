@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using InkCanvasForClass_Remastered.Enums;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 using System.IO;
 using WindowsShortcutFactory;
 

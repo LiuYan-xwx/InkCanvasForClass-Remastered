@@ -1,6 +1,6 @@
 ﻿using InkCanvasForClass_Remastered.Models;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+using System.Text.Json;
 using System.IO;
 using System.Reflection;
 
@@ -8,6 +8,10 @@ namespace InkCanvasForClass_Remastered.Services
 {
     public class SettingsService
     {
+        private static readonly JsonSerializerOptions JsonOptions = new()
+        {
+            WriteIndented = true
+        };
         private readonly ILogger<SettingsService> Logger;
         private const string settingsFileName = "Settings.json";
         private Settings _settings = new();
@@ -28,7 +32,7 @@ namespace InkCanvasForClass_Remastered.Services
                 if (File.Exists(settingsPath))
                 {
                     string text = File.ReadAllText(settingsPath);
-                    var loadedSettings = JsonConvert.DeserializeObject<Settings>(text);
+                    var loadedSettings = JsonSerializer.Deserialize<Settings>(text, JsonOptions);
                     if (loadedSettings != null)
                     {
                         _settings = loadedSettings;
@@ -52,7 +56,7 @@ namespace InkCanvasForClass_Remastered.Services
         {
             try
             {
-                var text = JsonConvert.SerializeObject(_settings, Formatting.Indented);
+                var text = JsonSerializer.Serialize(_settings, JsonOptions);
                 var settingsPath = Path.Combine(CommonDirectories.AppRootFolderPath, settingsFileName);
                 File.WriteAllText(settingsPath, text);
                 Logger.LogInformation("设置被保存");

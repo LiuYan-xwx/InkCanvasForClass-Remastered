@@ -47,7 +47,6 @@
     <PackageReference Include="Microsoft.Office.Interop.PowerPoint" Version="15.0.4420.1018" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.142" />
     <PackageReference Include="MicrosoftOfficeCore" Version="15.0.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="OSVersionExt" Version="4.1.0" />
     <PackageReference Include="Pastel" Version="7.0.1" />
     <PackageReference Include="WindowsShortcutFactory" Version="1.2.0" />

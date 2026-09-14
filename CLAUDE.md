@@ -45,7 +45,7 @@ There are no dedicated test projects. `dotnet test` is a validation pass only.
 - **Code-behind-heavy**: Most interaction logic lives in `MainWindow.xaml.cs` with partial helpers in `MainWindow_cs/MW_Icons.cs`. Avoid broad refactors unless explicitly requested.
 - **App modes**: Two modes via `AppMode` enum — `Normal` (annotation overlay) and `WhiteBoard` (full-screen whiteboard).
 - **PowerPoint integration**: `PowerPointService` wraps Microsoft.Office.Interop.PowerPoint COM — connects to running PowerPoint instance, handles slide show events (begin/end/next), and manages ink per slide.
-- **Settings**: JSON file via Newtonsoft.Json. `Settings` class uses `[ObservableProperty]` for property change notifications.
+- **Settings**: JSON file via `System.Text.Json`. `Settings` class uses `[ObservableProperty]` for property change notifications.
 - **Ink Canvas**: WPF's `System.Windows.Ink` APIs (`Stroke`, `StrokeCollection`, `InkCanvas`). Custom rendering and hit-testing.
 - **Logging**: Built on `Microsoft.Extensions.Logging` — file logger with auto-compression (`GZipHelper`), colorized console in Debug builds.
 
@@ -56,4 +56,4 @@ There are no dedicated test projects. `dotnet test` is a validation pass only.
 - The project targets `net10.0-windows7.0` — Windows-specific APIs throughout.
 - No unit/integration test projects exist.
 - Project uses single-instance mutex (`InkCanvasForClass-Remastered`).
-- Key NuGet dependencies: `iNKORE.UI.WPF.Modern` (Fluent/WinUI styling), `CommunityToolkit.Mvvm`, `Newtonsoft.Json`, `Hardcodet.NotifyIcon.Wpf`.
+- Key NuGet dependencies: `iNKORE.UI.WPF.Modern` (Fluent/WinUI styling), `CommunityToolkit.Mvvm`, `Hardcodet.NotifyIcon.Wpf`.
