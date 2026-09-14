@@ -2447,7 +2447,7 @@
                                     Background="#f4f4f5"
                                     BorderBrush="#a1a1aa"
                                     BorderThickness="0,1,1,1"
-                                    Click="BoardChangeBackgroundColorBtn_Click"
+                                    Command="{Binding ToggleWhiteboardBackgroundCommand}"
                                     Opacity="1"
                                     Style="{StaticResource ToolbarButtonStyle}"
                                     ToolTip="背景">
@@ -2653,7 +2653,7 @@
                                                                     Width="36"
                                                                     Height="20"
                                                                     ui:ControlHelper.CornerRadius="3"
-                                                                    Click="SwitchToDefaultPen"
+                                                                    Command="{Binding SwitchToDefaultPenCommand}"
                                                                     GroupName="BoardPenType"
                                                                     IsChecked="{Binding InkCanvasDrawingAttributes.IsHighlighter, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=False}"
                                                                     Style="{StaticResource PenTypeTabButtonStyle}"
@@ -2701,7 +2701,7 @@
                                                                     Width="52"
                                                                     Height="20"
                                                                     ui:ControlHelper.CornerRadius="3"
-                                                                    Click="SwitchToHighlighterPen"
+                                                                    Command="{Binding SwitchToHighlighterPenCommand}"
                                                                     GroupName="BoardPenType"
                                                                     IsChecked="{Binding InkCanvasDrawingAttributes.IsHighlighter, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=True}"
                                                                     Style="{StaticResource PenTypeTabButtonStyle}"
@@ -2932,7 +2932,7 @@
                                                                                 Width="45"
                                                                                 BorderBrush="Black"
                                                                                 BorderThickness="1"
-                                                                                Click="ColorThemeSwitch_Click"
+                                                                                Command="{Binding TogglePenPaletteCommand}"
                                                                                 Style="{StaticResource ColorThemeSwitchButtonStyle}"
                                                                                 ToolTip="切换配色">
                                                                                 <Grid Margin="3">
@@ -2943,7 +2943,7 @@
                                                                                         Margin="0,0,0,0"
                                                                                         VerticalAlignment="Top"
                                                                                         RenderOptions.BitmapScalingMode="HighQuality"
-                                                                                        Source="/Resources/Icons-Fluent/ic_fluent_weather_sunny_24_regular.png" />
+                                                                                        Source="{Binding ColorThemeIconPath}" />
                                                                                     <TextBlock
                                                                                         x:Name="BoardColorThemeSwitchTextBlock"
                                                                                         Margin="0,0,0,2"
@@ -2951,42 +2951,42 @@
                                                                                         VerticalAlignment="Bottom"
                                                                                         FontSize="11"
                                                                                         Foreground="Black"
-                                                                                        Text="亮系" />
+                                                                                        Text="{Binding ColorThemeLabel}" />
                                                                                 </Grid>
                                                                             </Button>
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BoardBorderPenColorBlack"
-                                                                                Background="Black"
+                                                                                Background="{Binding PenColorsById[0].Brush}"
                                                                                 BorderBrush="Black"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="0"
-                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=0}"
-                                                                                ToolTip="黑色" />
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding PenColorsById[0].Id}"
+                                                                                IsSelected="{Binding PenColorsById[0].IsSelected}"
+                                                                                ToolTip="{Binding PenColorsById[0].Name}" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BoardBorderPenColorWhite"
-                                                                                Background="White"
+                                                                                Background="{Binding PenColorsById[5].Brush}"
                                                                                 BorderBrush="#71717a"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="5"
-                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=5}"
-                                                                                ToolTip="白色"
-                                                                                UseDarkCheckMark="True" />
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding PenColorsById[5].Id}"
+                                                                                IsSelected="{Binding PenColorsById[5].IsSelected}"
+                                                                                ToolTip="{Binding PenColorsById[5].Name}"
+                                                                                UseDarkCheckMark="{Binding PenColorsById[5].UseDarkCheckMark}" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BoardBorderPenColorRed"
-                                                                                Background="#dc2626"
+                                                                                Background="{Binding PenColorsById[1].Brush}"
                                                                                 BorderBrush="#7f1d1d"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="1"
-                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=1}"
-                                                                                ToolTip="红色" />
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding PenColorsById[1].Id}"
+                                                                                IsSelected="{Binding PenColorsById[1].IsSelected}"
+                                                                                ToolTip="{Binding PenColorsById[1].Name}" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BoardBorderPenColorYellow"
-                                                                                Background="#eab308"
+                                                                                Background="{Binding PenColorsById[4].Brush}"
                                                                                 BorderBrush="#713f12"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="4"
-                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=4}"
-                                                                                ToolTip="黄色" />
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding PenColorsById[4].Id}"
+                                                                                IsSelected="{Binding PenColorsById[4].IsSelected}"
+                                                                                ToolTip="{Binding PenColorsById[4].Name}" />
                                                                         </Controls:UniformGrid>
                                                                     </ikw:SimpleStackPanel>
                                                                     <ikw:SimpleStackPanel
@@ -3000,44 +3000,44 @@
 
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BoardBorderPenColorGreen"
-                                                                                Background="#16a34a"
+                                                                                Background="{Binding PenColorsById[2].Brush}"
                                                                                 BorderBrush="#14532d"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="2"
-                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=2}"
-                                                                                ToolTip="绿色" />
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding PenColorsById[2].Id}"
+                                                                                IsSelected="{Binding PenColorsById[2].IsSelected}"
+                                                                                ToolTip="{Binding PenColorsById[2].Name}" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BoardBorderPenColorBlue"
-                                                                                Background="#2563eb"
+                                                                                Background="{Binding PenColorsById[3].Brush}"
                                                                                 BorderBrush="#1e3a8a"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="3"
-                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=3}"
-                                                                                ToolTip="蓝色" />
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding PenColorsById[3].Id}"
+                                                                                IsSelected="{Binding PenColorsById[3].IsSelected}"
+                                                                                ToolTip="{Binding PenColorsById[3].Name}" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BoardBorderPenColorPink"
-                                                                                Background="#db2777"
+                                                                                Background="{Binding PenColorsById[6].Brush}"
                                                                                 BorderBrush="#831843"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="6"
-                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=6}"
-                                                                                ToolTip="粉色" />
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding PenColorsById[6].Id}"
+                                                                                IsSelected="{Binding PenColorsById[6].IsSelected}"
+                                                                                ToolTip="{Binding PenColorsById[6].Name}" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BoardBorderPenColorTeal"
-                                                                                Background="#0d9488"
+                                                                                Background="{Binding PenColorsById[7].Brush}"
                                                                                 BorderBrush="#134e4a"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="7"
-                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=7}"
-                                                                                ToolTip="青色" />
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding PenColorsById[7].Id}"
+                                                                                IsSelected="{Binding PenColorsById[7].IsSelected}"
+                                                                                ToolTip="{Binding PenColorsById[7].Name}" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BoardBorderPenColorOrange"
-                                                                                Background="#ea580c"
+                                                                                Background="{Binding PenColorsById[8].Brush}"
                                                                                 BorderBrush="#7c2d12"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="8"
-                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=8}"
-                                                                                ToolTip="橙色" />
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding PenColorsById[8].Id}"
+                                                                                IsSelected="{Binding PenColorsById[8].IsSelected}"
+                                                                                ToolTip="{Binding PenColorsById[8].Name}" />
                                                                         </Controls:UniformGrid>
                                                                     </ikw:SimpleStackPanel>
                                                                 </Controls:UniformGrid>
@@ -3068,52 +3068,52 @@
                                                                             Columns="5">
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BoardHighlighterPenColorBlack"
-                                                                                Background="Black"
+                                                                                Background="{Binding HighlighterColorsById[100].Brush}"
                                                                                 BorderBrush="#e4e4e7"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="100"
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding HighlighterColorsById[100].Id}"
                                                                                 IsHighlighter="True"
-                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=100}"
-                                                                                ToolTip="荧光笔 · 黑色" />
+                                                                                IsSelected="{Binding HighlighterColorsById[100].IsSelected}"
+                                                                                ToolTip="{Binding HighlighterColorsById[100].Name}" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BoardHighlighterPenColorWhite"
-                                                                                Background="White"
+                                                                                Background="{Binding HighlighterColorsById[101].Brush}"
                                                                                 BorderBrush="#dddddd"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="101"
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding HighlighterColorsById[101].Id}"
                                                                                 IsHighlighter="True"
-                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=101}"
-                                                                                ToolTip="荧光笔 · 白色"
-                                                                                UseDarkCheckMark="True" />
+                                                                                IsSelected="{Binding HighlighterColorsById[101].IsSelected}"
+                                                                                ToolTip="{Binding HighlighterColorsById[101].Name}"
+                                                                                UseDarkCheckMark="{Binding HighlighterColorsById[101].UseDarkCheckMark}" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BoardHighlighterPenColorRed"
-                                                                                Background="#ef4444"
+                                                                                Background="{Binding HighlighterColorsById[102].Brush}"
                                                                                 BorderBrush="#fecaca"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="102"
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding HighlighterColorsById[102].Id}"
                                                                                 IsHighlighter="True"
-                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=102}"
-                                                                                ToolTip="荧光笔 · 红色" />
+                                                                                IsSelected="{Binding HighlighterColorsById[102].IsSelected}"
+                                                                                ToolTip="{Binding HighlighterColorsById[102].Name}" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BoardHighlighterPenColorYellow"
-                                                                                Background="#eab308"
+                                                                                Background="{Binding HighlighterColorsById[103].Brush}"
                                                                                 BorderBrush="#fef08a"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="103"
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding HighlighterColorsById[103].Id}"
                                                                                 IsHighlighter="True"
-                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=103}"
-                                                                                ToolTip="荧光笔 · 黄色"
-                                                                                UseDarkCheckMark="True" />
+                                                                                IsSelected="{Binding HighlighterColorsById[103].IsSelected}"
+                                                                                ToolTip="{Binding HighlighterColorsById[103].Name}"
+                                                                                UseDarkCheckMark="{Binding HighlighterColorsById[103].UseDarkCheckMark}" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BoardHighlighterPenColorGreen"
-                                                                                Background="#22c55e"
+                                                                                Background="{Binding HighlighterColorsById[104].Brush}"
                                                                                 BorderBrush="#bbf7d0"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="104"
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding HighlighterColorsById[104].Id}"
                                                                                 IsHighlighter="True"
-                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=104}"
-                                                                                ToolTip="荧光笔 · 绿色"
-                                                                                UseDarkCheckMark="True" />
+                                                                                IsSelected="{Binding HighlighterColorsById[104].IsSelected}"
+                                                                                ToolTip="{Binding HighlighterColorsById[104].Name}"
+                                                                                UseDarkCheckMark="{Binding HighlighterColorsById[104].UseDarkCheckMark}" />
                                                                         </Controls:UniformGrid>
                                                                     </ikw:SimpleStackPanel>
                                                                     <ikw:SimpleStackPanel
@@ -3126,50 +3126,50 @@
                                                                             Columns="5">
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BoardHighlighterPenColorZinc"
-                                                                                Background="#71717a"
+                                                                                Background="{Binding HighlighterColorsById[105].Brush}"
                                                                                 BorderBrush="#e4e4e7"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="105"
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding HighlighterColorsById[105].Id}"
                                                                                 IsHighlighter="True"
-                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=105}"
-                                                                                ToolTip="荧光笔 · 灰色" />
+                                                                                IsSelected="{Binding HighlighterColorsById[105].IsSelected}"
+                                                                                ToolTip="{Binding HighlighterColorsById[105].Name}" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BoardHighlighterPenColorBlue"
-                                                                                Background="#3b82f6"
+                                                                                Background="{Binding HighlighterColorsById[106].Brush}"
                                                                                 BorderBrush="#bfdbfe"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="106"
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding HighlighterColorsById[106].Id}"
                                                                                 IsHighlighter="True"
-                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=106}"
-                                                                                ToolTip="荧光笔 · 蓝色" />
+                                                                                IsSelected="{Binding HighlighterColorsById[106].IsSelected}"
+                                                                                ToolTip="{Binding HighlighterColorsById[106].Name}" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BoardHighlighterPenPenColorPurple"
-                                                                                Background="#a855f7"
+                                                                                Background="{Binding HighlighterColorsById[107].Brush}"
                                                                                 BorderBrush="#e9d5ff"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="107"
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding HighlighterColorsById[107].Id}"
                                                                                 IsHighlighter="True"
-                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=107}"
-                                                                                ToolTip="荧光笔 · 紫色" />
+                                                                                IsSelected="{Binding HighlighterColorsById[107].IsSelected}"
+                                                                                ToolTip="{Binding HighlighterColorsById[107].Name}" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BoardHighlighterPenColorTeal"
-                                                                                Background="#14b8a6"
+                                                                                Background="{Binding HighlighterColorsById[108].Brush}"
                                                                                 BorderBrush="#99f6e4"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="108"
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding HighlighterColorsById[108].Id}"
                                                                                 IsHighlighter="True"
-                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=108}"
-                                                                                ToolTip="荧光笔 · 青色"
-                                                                                UseDarkCheckMark="True" />
+                                                                                IsSelected="{Binding HighlighterColorsById[108].IsSelected}"
+                                                                                ToolTip="{Binding HighlighterColorsById[108].Name}"
+                                                                                UseDarkCheckMark="{Binding HighlighterColorsById[108].UseDarkCheckMark}" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BoardHighlighterPenColorOrange"
-                                                                                Background="#f97316"
+                                                                                Background="{Binding HighlighterColorsById[109].Brush}"
                                                                                 BorderBrush="#fed7aa"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="109"
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding HighlighterColorsById[109].Id}"
                                                                                 IsHighlighter="True"
-                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=109}"
-                                                                                ToolTip="荧光笔 · 橙色" />
+                                                                                IsSelected="{Binding HighlighterColorsById[109].IsSelected}"
+                                                                                ToolTip="{Binding HighlighterColorsById[109].Name}" />
                                                                         </Controls:UniformGrid>
                                                                     </ikw:SimpleStackPanel>
                                                                 </Controls:UniformGrid>
@@ -3317,7 +3317,7 @@
                                                         Width="40"
                                                         Height="20"
                                                         ui:ControlHelper.CornerRadius="3"
-                                                        Click="SwitchToCircleEraser"
+                                                        Command="{Binding SwitchToCircleEraserCommand}"
                                                         GroupName="BoardEraserType"
                                                         IsChecked="{Binding Settings.EraserShapeType, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=0}"
                                                         Style="{StaticResource EraserTypeTabButtonStyle}"
@@ -3360,7 +3360,7 @@
                                                         Width="40"
                                                         Height="20"
                                                         ui:ControlHelper.CornerRadius="3"
-                                                        Click="SwitchToRectangleEraser"
+                                                        Command="{Binding SwitchToRectangleEraserCommand}"
                                                         GroupName="BoardEraserType"
                                                         IsChecked="{Binding Settings.EraserShapeType, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=1}"
                                                         Style="{StaticResource EraserTypeTabButtonStyle}"
@@ -4233,7 +4233,7 @@
                                                                     Width="36"
                                                                     Height="20"
                                                                     ui:ControlHelper.CornerRadius="3"
-                                                                    Click="SwitchToDefaultPen"
+                                                                    Command="{Binding SwitchToDefaultPenCommand}"
                                                                     GroupName="PenType"
                                                                     IsChecked="{Binding InkCanvasDrawingAttributes.IsHighlighter, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=False}"
                                                                     Style="{StaticResource PenTypeTabButtonStyle}"
@@ -4281,7 +4281,7 @@
                                                                     Width="52"
                                                                     Height="20"
                                                                     ui:ControlHelper.CornerRadius="3"
-                                                                    Click="SwitchToHighlighterPen"
+                                                                    Command="{Binding SwitchToHighlighterPenCommand}"
                                                                     GroupName="PenType"
                                                                     IsChecked="{Binding InkCanvasDrawingAttributes.IsHighlighter, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=True}"
                                                                     Style="{StaticResource PenTypeTabButtonStyle}"
@@ -4512,7 +4512,7 @@
                                                                                 Width="45"
                                                                                 BorderBrush="Black"
                                                                                 BorderThickness="1"
-                                                                                Click="ColorThemeSwitch_Click"
+                                                                                Command="{Binding TogglePenPaletteCommand}"
                                                                                 Style="{StaticResource ColorThemeSwitchButtonStyle}"
                                                                                 ToolTip="切换配色">
                                                                                 <Grid Margin="3">
@@ -4523,7 +4523,7 @@
                                                                                         Margin="0,0,0,0"
                                                                                         VerticalAlignment="Top"
                                                                                         RenderOptions.BitmapScalingMode="HighQuality"
-                                                                                        Source="/Resources/Icons-Fluent/ic_fluent_weather_sunny_24_regular.png" />
+                                                                                        Source="{Binding ColorThemeIconPath}" />
                                                                                     <TextBlock
                                                                                         x:Name="ColorThemeSwitchTextBlock"
                                                                                         Margin="0,0,0,2"
@@ -4531,42 +4531,42 @@
                                                                                         VerticalAlignment="Bottom"
                                                                                         FontSize="11"
                                                                                         Foreground="Black"
-                                                                                        Text="亮系" />
+                                                                                        Text="{Binding ColorThemeLabel}" />
                                                                                 </Grid>
                                                                             </Button>
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BorderPenColorBlack"
-                                                                                Background="Black"
+                                                                                Background="{Binding PenColorsById[0].Brush}"
                                                                                 BorderBrush="Black"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="0"
-                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=0}"
-                                                                                ToolTip="黑色" />
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding PenColorsById[0].Id}"
+                                                                                IsSelected="{Binding PenColorsById[0].IsSelected}"
+                                                                                ToolTip="{Binding PenColorsById[0].Name}" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BorderPenColorWhite"
-                                                                                Background="White"
+                                                                                Background="{Binding PenColorsById[5].Brush}"
                                                                                 BorderBrush="#71717a"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="5"
-                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=5}"
-                                                                                ToolTip="白色"
-                                                                                UseDarkCheckMark="True" />
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding PenColorsById[5].Id}"
+                                                                                IsSelected="{Binding PenColorsById[5].IsSelected}"
+                                                                                ToolTip="{Binding PenColorsById[5].Name}"
+                                                                                UseDarkCheckMark="{Binding PenColorsById[5].UseDarkCheckMark}" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BorderPenColorRed"
-                                                                                Background="#dc2626"
+                                                                                Background="{Binding PenColorsById[1].Brush}"
                                                                                 BorderBrush="#7f1d1d"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="1"
-                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=1}"
-                                                                                ToolTip="红色" />
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding PenColorsById[1].Id}"
+                                                                                IsSelected="{Binding PenColorsById[1].IsSelected}"
+                                                                                ToolTip="{Binding PenColorsById[1].Name}" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BorderPenColorYellow"
-                                                                                Background="#eab308"
+                                                                                Background="{Binding PenColorsById[4].Brush}"
                                                                                 BorderBrush="#713f12"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="4"
-                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=4}"
-                                                                                ToolTip="黄色" />
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding PenColorsById[4].Id}"
+                                                                                IsSelected="{Binding PenColorsById[4].IsSelected}"
+                                                                                ToolTip="{Binding PenColorsById[4].Name}" />
                                                                         </Controls:UniformGrid>
                                                                     </ikw:SimpleStackPanel>
                                                                     <ikw:SimpleStackPanel
@@ -4580,44 +4580,44 @@
 
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BorderPenColorGreen"
-                                                                                Background="#16a34a"
+                                                                                Background="{Binding PenColorsById[2].Brush}"
                                                                                 BorderBrush="#14532d"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="2"
-                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=2}"
-                                                                                ToolTip="绿色" />
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding PenColorsById[2].Id}"
+                                                                                IsSelected="{Binding PenColorsById[2].IsSelected}"
+                                                                                ToolTip="{Binding PenColorsById[2].Name}" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BorderPenColorBlue"
-                                                                                Background="#2563eb"
+                                                                                Background="{Binding PenColorsById[3].Brush}"
                                                                                 BorderBrush="#1e3a8a"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="3"
-                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=3}"
-                                                                                ToolTip="蓝色" />
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding PenColorsById[3].Id}"
+                                                                                IsSelected="{Binding PenColorsById[3].IsSelected}"
+                                                                                ToolTip="{Binding PenColorsById[3].Name}" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BorderPenColorPink"
-                                                                                Background="#db2777"
+                                                                                Background="{Binding PenColorsById[6].Brush}"
                                                                                 BorderBrush="#831843"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="6"
-                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=6}"
-                                                                                ToolTip="粉色" />
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding PenColorsById[6].Id}"
+                                                                                IsSelected="{Binding PenColorsById[6].IsSelected}"
+                                                                                ToolTip="{Binding PenColorsById[6].Name}" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BorderPenColorTeal"
-                                                                                Background="#0d9488"
+                                                                                Background="{Binding PenColorsById[7].Brush}"
                                                                                 BorderBrush="#134e4a"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="7"
-                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=7}"
-                                                                                ToolTip="青色" />
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding PenColorsById[7].Id}"
+                                                                                IsSelected="{Binding PenColorsById[7].IsSelected}"
+                                                                                ToolTip="{Binding PenColorsById[7].Name}" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="BorderPenColorOrange"
-                                                                                Background="#ea580c"
+                                                                                Background="{Binding PenColorsById[8].Brush}"
                                                                                 BorderBrush="#7c2d12"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="8"
-                                                                                IsSelected="{Binding SelectedPenColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=8}"
-                                                                                ToolTip="橙色" />
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding PenColorsById[8].Id}"
+                                                                                IsSelected="{Binding PenColorsById[8].IsSelected}"
+                                                                                ToolTip="{Binding PenColorsById[8].Name}" />
                                                                         </Controls:UniformGrid>
                                                                     </ikw:SimpleStackPanel>
                                                                 </Controls:UniformGrid>
@@ -4648,52 +4648,52 @@
                                                                             Columns="5">
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="HighlighterPenColorBlack"
-                                                                                Background="Black"
+                                                                                Background="{Binding HighlighterColorsById[100].Brush}"
                                                                                 BorderBrush="#e4e4e7"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="100"
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding HighlighterColorsById[100].Id}"
                                                                                 IsHighlighter="True"
-                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=100}"
-                                                                                ToolTip="荧光笔 · 黑色" />
+                                                                                IsSelected="{Binding HighlighterColorsById[100].IsSelected}"
+                                                                                ToolTip="{Binding HighlighterColorsById[100].Name}" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="HighlighterPenColorWhite"
-                                                                                Background="White"
+                                                                                Background="{Binding HighlighterColorsById[101].Brush}"
                                                                                 BorderBrush="#dddddd"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="101"
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding HighlighterColorsById[101].Id}"
                                                                                 IsHighlighter="True"
-                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=101}"
-                                                                                ToolTip="荧光笔 · 白色"
-                                                                                UseDarkCheckMark="True" />
+                                                                                IsSelected="{Binding HighlighterColorsById[101].IsSelected}"
+                                                                                ToolTip="{Binding HighlighterColorsById[101].Name}"
+                                                                                UseDarkCheckMark="{Binding HighlighterColorsById[101].UseDarkCheckMark}" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="HighlighterPenColorRed"
-                                                                                Background="#ef4444"
+                                                                                Background="{Binding HighlighterColorsById[102].Brush}"
                                                                                 BorderBrush="#fecaca"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="102"
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding HighlighterColorsById[102].Id}"
                                                                                 IsHighlighter="True"
-                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=102}"
-                                                                                ToolTip="荧光笔 · 红色" />
+                                                                                IsSelected="{Binding HighlighterColorsById[102].IsSelected}"
+                                                                                ToolTip="{Binding HighlighterColorsById[102].Name}" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="HighlighterPenColorYellow"
-                                                                                Background="#eab308"
+                                                                                Background="{Binding HighlighterColorsById[103].Brush}"
                                                                                 BorderBrush="#fef08a"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="103"
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding HighlighterColorsById[103].Id}"
                                                                                 IsHighlighter="True"
-                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=103}"
-                                                                                ToolTip="荧光笔 · 黄色"
-                                                                                UseDarkCheckMark="True" />
+                                                                                IsSelected="{Binding HighlighterColorsById[103].IsSelected}"
+                                                                                ToolTip="{Binding HighlighterColorsById[103].Name}"
+                                                                                UseDarkCheckMark="{Binding HighlighterColorsById[103].UseDarkCheckMark}" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="HighlighterPenColorGreen"
-                                                                                Background="#22c55e"
+                                                                                Background="{Binding HighlighterColorsById[104].Brush}"
                                                                                 BorderBrush="#bbf7d0"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="104"
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding HighlighterColorsById[104].Id}"
                                                                                 IsHighlighter="True"
-                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=104}"
-                                                                                ToolTip="荧光笔 · 绿色"
-                                                                                UseDarkCheckMark="True" />
+                                                                                IsSelected="{Binding HighlighterColorsById[104].IsSelected}"
+                                                                                ToolTip="{Binding HighlighterColorsById[104].Name}"
+                                                                                UseDarkCheckMark="{Binding HighlighterColorsById[104].UseDarkCheckMark}" />
                                                                         </Controls:UniformGrid>
                                                                     </ikw:SimpleStackPanel>
                                                                     <ikw:SimpleStackPanel
@@ -4706,50 +4706,50 @@
                                                                             Columns="5">
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="HighlighterPenColorZinc"
-                                                                                Background="#71717a"
+                                                                                Background="{Binding HighlighterColorsById[105].Brush}"
                                                                                 BorderBrush="#e4e4e7"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="105"
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding HighlighterColorsById[105].Id}"
                                                                                 IsHighlighter="True"
-                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=105}"
-                                                                                ToolTip="荧光笔 · 灰色" />
+                                                                                IsSelected="{Binding HighlighterColorsById[105].IsSelected}"
+                                                                                ToolTip="{Binding HighlighterColorsById[105].Name}" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="HighlighterPenColorBlue"
-                                                                                Background="#3b82f6"
+                                                                                Background="{Binding HighlighterColorsById[106].Brush}"
                                                                                 BorderBrush="#bfdbfe"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="106"
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding HighlighterColorsById[106].Id}"
                                                                                 IsHighlighter="True"
-                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=106}"
-                                                                                ToolTip="荧光笔 · 蓝色" />
+                                                                                IsSelected="{Binding HighlighterColorsById[106].IsSelected}"
+                                                                                ToolTip="{Binding HighlighterColorsById[106].Name}" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="HighlighterPenPenColorPurple"
-                                                                                Background="#a855f7"
+                                                                                Background="{Binding HighlighterColorsById[107].Brush}"
                                                                                 BorderBrush="#e9d5ff"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="107"
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding HighlighterColorsById[107].Id}"
                                                                                 IsHighlighter="True"
-                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=107}"
-                                                                                ToolTip="荧光笔 · 紫色" />
+                                                                                IsSelected="{Binding HighlighterColorsById[107].IsSelected}"
+                                                                                ToolTip="{Binding HighlighterColorsById[107].Name}" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="HighlighterPenColorTeal"
-                                                                                Background="#14b8a6"
+                                                                                Background="{Binding HighlighterColorsById[108].Brush}"
                                                                                 BorderBrush="#99f6e4"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="108"
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding HighlighterColorsById[108].Id}"
                                                                                 IsHighlighter="True"
-                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=108}"
-                                                                                ToolTip="荧光笔 · 青色"
-                                                                                UseDarkCheckMark="True" />
+                                                                                IsSelected="{Binding HighlighterColorsById[108].IsSelected}"
+                                                                                ToolTip="{Binding HighlighterColorsById[108].Name}"
+                                                                                UseDarkCheckMark="{Binding HighlighterColorsById[108].UseDarkCheckMark}" />
                                                                             <controls:ColorSwatchButton
                                                                                 x:Name="HighlighterPenColorOrange"
-                                                                                Background="#f97316"
+                                                                                Background="{Binding HighlighterColorsById[109].Brush}"
                                                                                 BorderBrush="#fed7aa"
-                                                                                Click="PenColor_Click"
-                                                                                CommandParameter="109"
+                                                                                Command="{Binding SelectPenColorCommand}"
+                                                                                CommandParameter="{Binding HighlighterColorsById[109].Id}"
                                                                                 IsHighlighter="True"
-                                                                                IsSelected="{Binding SelectedHighlighterColor, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=109}"
-                                                                                ToolTip="荧光笔 · 橙色" />
+                                                                                IsSelected="{Binding HighlighterColorsById[109].IsSelected}"
+                                                                                ToolTip="{Binding HighlighterColorsById[109].Name}" />
                                                                         </Controls:UniformGrid>
                                                                     </ikw:SimpleStackPanel>
                                                                 </Controls:UniformGrid>
@@ -4912,7 +4912,7 @@
                                                     Width="40"
                                                     Height="20"
                                                     ui:ControlHelper.CornerRadius="3"
-                                                    Click="SwitchToCircleEraser"
+                                                    Command="{Binding SwitchToCircleEraserCommand}"
                                                     GroupName="EraserType"
                                                     IsChecked="{Binding Settings.EraserShapeType, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=0}"
                                                     Style="{StaticResource EraserTypeTabButtonStyle}"
@@ -4955,7 +4955,7 @@
                                                     Width="40"
                                                     Height="20"
                                                     ui:ControlHelper.CornerRadius="3"
-                                                    Click="SwitchToRectangleEraser"
+                                                    Command="{Binding SwitchToRectangleEraserCommand}"
                                                     GroupName="EraserType"
                                                     IsChecked="{Binding Settings.EraserShapeType, Mode=OneWay, Converter={StaticResource ValueEqualsConverter}, ConverterParameter=1}"
                                                     Style="{StaticResource EraserTypeTabButtonStyle}"

@@ -59,6 +59,7 @@ namespace InkCanvasForClass_Remastered
             Logger = logger;
 
             DataContext = _viewModel;
+            _viewModel.PenColorSelected += ViewModel_PenColorSelected;
 
             // 挂载PPT服务事件
             _powerPointService.SlideShowBegin += PptApplication_SlideShowBegin;
@@ -78,7 +79,7 @@ namespace InkCanvasForClass_Remastered
             timeMachine.OnUndoStateChanged += TimeMachine_OnUndoStateChanged;
             inkCanvas.Strokes.StrokesChanged += StrokesOnStrokesChanged;
 
-            CheckColorTheme(true);
+            _viewModel.SyncPenColorState();
         }
         private readonly DispatcherTimer topmostRefreshTimer = new()
         {
@@ -341,6 +342,7 @@ namespace InkCanvasForClass_Remastered
 
         private void Window_Closed(object sender, EventArgs e)
         {
+            _viewModel.PenColorSelected -= ViewModel_PenColorSelected;
             SystemEvents.DisplaySettingsChanged -= SystemEventsOnDisplaySettingsChanged;
             _notificationService.NotificationRequested -= OnNotificationRequested;
             _notificationCts?.Cancel();
@@ -530,23 +532,6 @@ namespace InkCanvasForClass_Remastered
         #endregion
 
         #region BoardIcons
-        private void BoardChangeBackgroundColorBtn_Click(object sender, RoutedEventArgs e)
-        {
-            if (!isLoaded) return;
-            Settings.UsingWhiteboard = !Settings.UsingWhiteboard;
-            _settingsService.SaveSettings();
-            if (Settings.UsingWhiteboard)
-            {
-                if (_viewModel.SelectedPenColor == 5) lastBoardInkColor = 0;
-            }
-            else
-            {
-                if (_viewModel.SelectedPenColor == 0) lastBoardInkColor = 5;
-            }
-
-            CheckColorTheme(true);
-        }
-
         private void BoardEraserIcon_Click(object sender, RoutedEventArgs e)
         {
             if (_viewModel.AppPenMode is InkCanvasEditingMode.EraseByPoint or InkCanvasEditingMode.EraseByStroke)
@@ -591,7 +576,9 @@ namespace InkCanvasForClass_Remastered
         #endregion
 
         #region Colors
-        private void ColorSwitchCheck()
+        private void ViewModel_PenColorSelected(object? sender, EventArgs e) => CompletePenColorSelection();
+
+        private void CompletePenColorSelection()
         {
             HideSubPanels();
 
@@ -610,268 +597,7 @@ namespace InkCanvasForClass_Remastered
                 inkCanvas.IsManipulationEnabled = true;
                 inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
                 CancelSingleFingerDragMode();
-                CheckColorTheme();
             }
-        }
-
-        private bool isUselightThemeColor = false, isDesktopUselightThemeColor = false;
-        private int lastDesktopInkColor = 1, lastBoardInkColor = 5;
-
-        private void CheckColorTheme(bool changeColorTheme = false)
-        {
-            if (changeColorTheme)
-                if (_viewModel.AppMode == AppMode.WhiteBoard)
-                {
-                    if (Settings.UsingWhiteboard)
-                    {
-                        isUselightThemeColor = false;
-                    }
-                    else
-                    {
-                        isUselightThemeColor = true;
-                    }
-                }
-
-            if (_viewModel.AppMode == AppMode.Normal)
-            {
-                isUselightThemeColor = isDesktopUselightThemeColor;
-                _viewModel.SelectedPenColor = lastDesktopInkColor;
-            }
-            else
-            {
-                _viewModel.SelectedPenColor = lastBoardInkColor;
-            }
-
-            double alpha = _viewModel.InkCanvasDrawingAttributes.Color.A;
-
-            if (!_viewModel.InkCanvasDrawingAttributes.IsHighlighter)
-            {
-                if (_viewModel.SelectedPenColor == 0)
-                {
-                    // Black
-                    _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 0, 0, 0);
-                }
-                else if (_viewModel.SelectedPenColor == 5)
-                {
-                    // White
-                    _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 255, 255, 255);
-                }
-                else if (isUselightThemeColor)
-                {
-                    if (_viewModel.SelectedPenColor == 1)
-                        // Red
-                        _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 239, 68, 68);
-                    else if (_viewModel.SelectedPenColor == 2)
-                        // Green
-                        _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 34, 197, 94);
-                    else if (_viewModel.SelectedPenColor == 3)
-                        // Blue
-                        _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 59, 130, 246);
-                    else if (_viewModel.SelectedPenColor == 4)
-                        // Yellow
-                        _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 250, 204, 21);
-                    else if (_viewModel.SelectedPenColor == 6)
-                        // Pink
-                        _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 236, 72, 153);
-                    else if (_viewModel.SelectedPenColor == 7)
-                        // Teal (亮色)
-                        _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 20, 184, 166);
-                    else if (_viewModel.SelectedPenColor == 8)
-                        // Orange (亮色)
-                        _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 249, 115, 22);
-                }
-                else
-                {
-                    if (_viewModel.SelectedPenColor == 1)
-                        // Red
-                        _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 220, 38, 38);
-                    else if (_viewModel.SelectedPenColor == 2)
-                        // Green
-                        _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 22, 163, 74);
-                    else if (_viewModel.SelectedPenColor == 3)
-                        // Blue
-                        _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 37, 99, 235);
-                    else if (_viewModel.SelectedPenColor == 4)
-                        // Yellow
-                        _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 234, 179, 8);
-                    else if (_viewModel.SelectedPenColor == 6)
-                        // Pink ( Purple )
-                        _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 147, 51, 234);
-                    else if (_viewModel.SelectedPenColor == 7)
-                        // Teal (暗色)
-                        _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 13, 148, 136);
-                    else if (_viewModel.SelectedPenColor == 8)
-                        // Orange (暗色)
-                        _viewModel.InkCanvasDrawingAttributes.Color = Color.FromArgb((byte)alpha, 234, 88, 12);
-                }
-            }
-            else
-            {
-                if (_viewModel.SelectedHighlighterColor == 100)
-                    // Black
-                    _viewModel.InkCanvasDrawingAttributes.Color = Color.FromRgb(0, 0, 0);
-                else if (_viewModel.SelectedHighlighterColor == 101)
-                    // White
-                    _viewModel.InkCanvasDrawingAttributes.Color = Color.FromRgb(250, 250, 250);
-                else if (_viewModel.SelectedHighlighterColor == 102)
-                    // Red
-                    _viewModel.InkCanvasDrawingAttributes.Color = Color.FromRgb(239, 68, 68);
-                else if (_viewModel.SelectedHighlighterColor == 103)
-                    // Yellow
-                    _viewModel.InkCanvasDrawingAttributes.Color = Color.FromRgb(253, 224, 71);
-                else if (_viewModel.SelectedHighlighterColor == 104)
-                    // Green
-                    _viewModel.InkCanvasDrawingAttributes.Color = Color.FromRgb(74, 222, 128);
-                else if (_viewModel.SelectedHighlighterColor == 105)
-                    // Zinc
-                    _viewModel.InkCanvasDrawingAttributes.Color = Color.FromRgb(113, 113, 122);
-                else if (_viewModel.SelectedHighlighterColor == 106)
-                    // Blue
-                    _viewModel.InkCanvasDrawingAttributes.Color = Color.FromRgb(59, 130, 246);
-                else if (_viewModel.SelectedHighlighterColor == 107)
-                    // Purple
-                    _viewModel.InkCanvasDrawingAttributes.Color = Color.FromRgb(168, 85, 247);
-                else if (_viewModel.SelectedHighlighterColor == 108)
-                    // teal
-                    _viewModel.InkCanvasDrawingAttributes.Color = Color.FromRgb(45, 212, 191);
-                else if (_viewModel.SelectedHighlighterColor == 109)
-                    // Orange
-                    _viewModel.InkCanvasDrawingAttributes.Color = Color.FromRgb(249, 115, 22);
-            }
-
-            if (isUselightThemeColor)
-            {
-                // 亮系
-                // 亮色的红色
-                BorderPenColorRed.Background = new SolidColorBrush(Color.FromRgb(239, 68, 68));
-                BoardBorderPenColorRed.Background = new SolidColorBrush(Color.FromRgb(239, 68, 68));
-                // 亮色的绿色
-                BorderPenColorGreen.Background = new SolidColorBrush(Color.FromRgb(34, 197, 94));
-                BoardBorderPenColorGreen.Background = new SolidColorBrush(Color.FromRgb(34, 197, 94));
-                // 亮色的蓝色
-                BorderPenColorBlue.Background = new SolidColorBrush(Color.FromRgb(59, 130, 246));
-                BoardBorderPenColorBlue.Background = new SolidColorBrush(Color.FromRgb(59, 130, 246));
-                // 亮色的黄色
-                BorderPenColorYellow.Background = new SolidColorBrush(Color.FromRgb(250, 204, 21));
-                BoardBorderPenColorYellow.Background = new SolidColorBrush(Color.FromRgb(250, 204, 21));
-                // 亮色的粉色
-                BorderPenColorPink.Background = new SolidColorBrush(Color.FromRgb(236, 72, 153));
-                BoardBorderPenColorPink.Background = new SolidColorBrush(Color.FromRgb(236, 72, 153));
-                // 亮色的Teal
-                BorderPenColorTeal.Background = new SolidColorBrush(Color.FromRgb(20, 184, 166));
-                BoardBorderPenColorTeal.Background = new SolidColorBrush(Color.FromRgb(20, 184, 166));
-                // 亮色的Orange
-                BorderPenColorOrange.Background = new SolidColorBrush(Color.FromRgb(249, 115, 22));
-                BoardBorderPenColorOrange.Background = new SolidColorBrush(Color.FromRgb(249, 115, 22));
-
-                var newImageSource = new BitmapImage();
-                newImageSource.BeginInit();
-                newImageSource.UriSource = new Uri("/Resources/Icons-Fluent/ic_fluent_weather_moon_24_regular.png",
-                    UriKind.RelativeOrAbsolute);
-                newImageSource.EndInit();
-                ColorThemeSwitchIcon.Source = newImageSource;
-                BoardColorThemeSwitchIcon.Source = newImageSource;
-
-                ColorThemeSwitchTextBlock.Text = "暗系";
-                BoardColorThemeSwitchTextBlock.Text = "暗系";
-            }
-            else
-            {
-                // 暗系
-                // 暗色的红色
-                BorderPenColorRed.Background = new SolidColorBrush(Color.FromRgb(220, 38, 38));
-                BoardBorderPenColorRed.Background = new SolidColorBrush(Color.FromRgb(220, 38, 38));
-                // 暗色的绿色
-                BorderPenColorGreen.Background = new SolidColorBrush(Color.FromRgb(22, 163, 74));
-                BoardBorderPenColorGreen.Background = new SolidColorBrush(Color.FromRgb(22, 163, 74));
-                // 暗色的蓝色
-                BorderPenColorBlue.Background = new SolidColorBrush(Color.FromRgb(37, 99, 235));
-                BoardBorderPenColorBlue.Background = new SolidColorBrush(Color.FromRgb(37, 99, 235));
-                // 暗色的黄色
-                BorderPenColorYellow.Background = new SolidColorBrush(Color.FromRgb(234, 179, 8));
-                BoardBorderPenColorYellow.Background = new SolidColorBrush(Color.FromRgb(234, 179, 8));
-                // 暗色的紫色对应亮色的粉色
-                BorderPenColorPink.Background = new SolidColorBrush(Color.FromRgb(147, 51, 234));
-                BoardBorderPenColorPink.Background = new SolidColorBrush(Color.FromRgb(147, 51, 234));
-                // 暗色的Teal
-                BorderPenColorTeal.Background = new SolidColorBrush(Color.FromRgb(13, 148, 136));
-                BoardBorderPenColorTeal.Background = new SolidColorBrush(Color.FromRgb(13, 148, 136));
-                // 暗色的Orange
-                BorderPenColorOrange.Background = new SolidColorBrush(Color.FromRgb(234, 88, 12));
-                BoardBorderPenColorOrange.Background = new SolidColorBrush(Color.FromRgb(234, 88, 12));
-
-                var newImageSource = new BitmapImage();
-                newImageSource.BeginInit();
-                newImageSource.UriSource = new Uri("/Resources/Icons-Fluent/ic_fluent_weather_sunny_24_regular.png",
-                    UriKind.RelativeOrAbsolute);
-                newImageSource.EndInit();
-                ColorThemeSwitchIcon.Source = newImageSource;
-                BoardColorThemeSwitchIcon.Source = newImageSource;
-
-                ColorThemeSwitchTextBlock.Text = "亮系";
-                BoardColorThemeSwitchTextBlock.Text = "亮系";
-            }
-        }
-
-        private void CheckLastColor(int color, bool isHighlighter = false)
-        {
-            if (isHighlighter)
-            {
-                _viewModel.SelectedHighlighterColor = color;
-            }
-            else
-            {
-                if (_viewModel.AppMode == AppMode.Normal) lastDesktopInkColor = color;
-                else lastBoardInkColor = color;
-            }
-        }
-
-        private void SwitchToDefaultPen(object? sender, RoutedEventArgs? e)
-        {
-            SetPenType(false);
-            CheckColorTheme();
-        }
-
-        private void SwitchToHighlighterPen(object sender, RoutedEventArgs e)
-        {
-            SetPenType(true);
-            CheckColorTheme();
-        }
-
-        private void SetPenType(bool isHighlighter)
-        {
-            var attributes = _viewModel.InkCanvasDrawingAttributes;
-            attributes.IsHighlighter = isHighlighter;
-            attributes.Width = isHighlighter ? Settings.HighlighterWidth / 2 : Settings.InkWidth;
-            attributes.Height = isHighlighter ? Settings.HighlighterWidth : Settings.InkWidth;
-            attributes.StylusTip = isHighlighter ? StylusTip.Rectangle : StylusTip.Ellipse;
-        }
-
-        private void PenColor_Click(object sender, RoutedEventArgs e)
-        {
-            if (sender is Button { CommandParameter: string value } && int.TryParse(value, out var color))
-                SelectPenColor(color);
-        }
-
-        private void SelectPenColor(int color)
-        {
-            if (color is >= 100 and <= 109)
-            {
-                CheckLastColor(color, true);
-                SetPenType(true);
-            }
-            else if (color is >= 0 and <= 8)
-            {
-                CheckLastColor(color);
-                if (_viewModel.InkCanvasDrawingAttributes.IsHighlighter)
-                    SetPenType(false);
-            }
-            else
-            {
-                return;
-            }
-
-            ColorSwitchCheck();
         }
 
         #endregion
@@ -1160,8 +886,8 @@ namespace InkCanvasForClass_Remastered
             // 切换到白板模式
             SwitchToWhiteboardMode();
 
-            SwitchToDefaultPen(null, null);
-            CheckColorTheme(true);
+            _viewModel.SwitchToDefaultPen();
+            _viewModel.ApplyWhiteboardPalette();
         }
 
         /// <summary>
@@ -1193,8 +919,8 @@ namespace InkCanvasForClass_Remastered
 
             CursorFloatingBarButton_Click(null, null);
 
-            SwitchToDefaultPen(null, null);
-            CheckColorTheme(true);
+            _viewModel.SwitchToDefaultPen();
+            _viewModel.SyncPenColorState();
         }
 
         /// <summary>
@@ -1212,9 +938,9 @@ namespace InkCanvasForClass_Remastered
 
             // 根据设置选择黑板或白板颜色
             if (Settings.UsingWhiteboard)
-                SelectPenColor(0);
+                _viewModel.SelectPenColor(0);
             else
-                SelectPenColor(5);
+                _viewModel.SelectPenColor(5);
         }
 
         /// <summary>
@@ -1612,15 +1338,8 @@ namespace InkCanvasForClass_Remastered
             ShowInkCanvas();
             StackPanelCanvasControls.Visibility = Visibility.Visible;
             CheckEnableTwoFingerGestureBtnVisibility(true);
-            ColorSwitchCheck();
+            CompletePenColorSelection();
             HideSubPanels(autoAlignCenter: true);
-        }
-
-        private void ColorThemeSwitch_Click(object sender, RoutedEventArgs e)
-        {
-            isUselightThemeColor = !isUselightThemeColor;
-            if (_viewModel.AppMode == AppMode.Normal) isDesktopUselightThemeColor = isUselightThemeColor;
-            CheckColorTheme();
         }
 
         private void EraserIcon_Click(object sender, RoutedEventArgs e)
@@ -2537,20 +2256,6 @@ namespace InkCanvasForClass_Remastered
         private void PPTBtnRSResetBtn_Clicked(object sender, RoutedEventArgs e)
         {
             Settings.PPTRSButtonPosition = 0;
-        }
-
-        #endregion
-
-        #region Canvas
-
-        private void SwitchToCircleEraser(object sender, RoutedEventArgs e)
-        {
-            Settings.EraserShapeType = 0;
-        }
-
-        private void SwitchToRectangleEraser(object sender, RoutedEventArgs e)
-        {
-            Settings.EraserShapeType = 1;
         }
 
         #endregion
