@@ -57,6 +57,7 @@ https://github.com/3382308510
 ## 开发
 > [!note]
 > 目前在 **master** 分支开发
+> 在 **Vibe2** 分支进行使用AI的重构
 
 关于本项目已经做出的修改和优化，可以查阅更改日志 [CHANGELOG.md](https://github.com/LiuYan-xwx/InkCanvasForClass-Remastered/blob/master/CHANGELOG.md)  
 
