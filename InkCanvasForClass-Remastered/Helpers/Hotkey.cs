@@ -2,20 +2,14 @@
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
+using Windows.Win32;
+using Windows.Win32.Foundation;
+using Windows.Win32.UI.Input.KeyboardAndMouse;
 
 namespace InkCanvasForClass_Remastered
 {
     static class Hotkey
     {
-        #region 系统api
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        static extern bool RegisterHotKey(IntPtr hWnd, int id, HotkeyModifiers fsModifiers, uint vk);
-
-        [DllImport("user32.dll")]
-        static extern bool UnregisterHotKey(IntPtr hWnd, int id);
-        #endregion
-
         /// <summary>
         /// 注册快捷键
         /// </summary>
@@ -36,7 +30,7 @@ namespace InkCanvasForClass_Remastered
             int id = keyid++;
 
             int vk = KeyInterop.VirtualKeyFromKey(key);
-            if (!RegisterHotKey(hwnd, id, fsModifiers, (uint)vk))
+            if (!PInvoke.RegisterHotKey(new HWND(hwnd), id, (HOT_KEY_MODIFIERS)(int)fsModifiers, (uint)vk))
             {
                 //throw new Exception("regist hotkey fail.");
                 return false;
@@ -71,7 +65,7 @@ namespace InkCanvasForClass_Remastered
             foreach (KeyValuePair<int, HotKeyCallBackHanlder> var in keymap)
             {
                 if (var.Value == callBack)
-                    _ = UnregisterHotKey(hWnd, var.Key);
+                    _ = PInvoke.UnregisterHotKey(new HWND(hWnd), var.Key);
             }
         }
 

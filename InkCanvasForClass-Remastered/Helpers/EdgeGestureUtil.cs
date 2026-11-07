@@ -1,5 +1,7 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Windows.Win32;
+using Windows.Win32.Foundation;
 
 namespace InkCanvasForClass_Remastered.Helpers
 {
@@ -155,15 +157,20 @@ namespace InkCanvasForClass_Remastered.Helpers
         #endregion
 
         #region "Methods"
-
-        [DllImport("shell32.dll", SetLastError = true)]
-        private static extern int SHGetPropertyStoreForWindow(IntPtr handle, ref Guid riid, ref IPropertyStore propertyStore);
-
-        public static void DisableEdgeGestures(IntPtr hwnd, bool enable)
+        public unsafe static void DisableEdgeGestures(IntPtr hwnd, bool enable)
         {
-            IPropertyStore? pPropStore = null;
-            int hr = SHGetPropertyStoreForWindow(hwnd, ref IID_PROPERTY_STORE, ref pPropStore);
-            if (hr == 0)
+            IPropertyStore pPropStore = null;
+            HRESULT hr = default;
+            //hr = PInvoke.SHGetPropertyStoreForWindow(new HWND(hwnd), ref IID_PROPERTY_STORE, ref pPropStore);
+            fixed (Guid* ptr = &IID_PROPERTY_STORE)
+            {
+                hr = PInvoke.SHGetPropertyStoreForWindow(new HWND(hwnd), ptr, out object? pPS);
+                if (hr.Succeeded && pPS is IPropertyStore store)
+                    pPropStore = store;
+                //pPropStore = (IPropertyStore)pPS;
+            }
+
+            if (hr.Succeeded && pPropStore is not null)
             {
                 PropertyKey propKey = new()
                 {
@@ -176,7 +183,7 @@ namespace InkCanvasForClass_Remastered.Helpers
                     boolVal = enable
                 };
                 pPropStore.SetValue(ref propKey, ref var);
-                _ = Marshal.FinalReleaseComObject(pPropStore);
+                Marshal.FinalReleaseComObject(pPropStore);
             }
         }
 

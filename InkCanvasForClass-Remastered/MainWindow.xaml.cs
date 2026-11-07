@@ -22,6 +22,8 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Windows.Win32;
+using Windows.Win32.UI.WindowsAndMessaging;
 using Application = System.Windows.Application;
 using File = System.IO.File;
 using MessageBox = iNKORE.UI.WPF.Modern.Controls.MessageBox;
@@ -346,9 +348,6 @@ namespace InkCanvasForClass_Remastered
             _settingsService.SaveSettings();
         }
 
-        [DllImport("user32.dll", SetLastError = true)]
-        public static extern bool MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
-
         private void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (Settings.IsEnableForceFullScreen)
@@ -356,7 +355,7 @@ namespace InkCanvasForClass_Remastered
                 if (isLoaded) ShowNotification(
                     $"检测到窗口大小变化，已自动恢复到全屏：{System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width}x{System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height}（缩放比例为{System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width / SystemParameters.PrimaryScreenWidth}x{System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height / SystemParameters.PrimaryScreenHeight}）");
                 WindowState = WindowState.Maximized;
-                MoveWindow(new WindowInteropHelper(this).Handle, 0, 0,
+                PInvoke.MoveWindow((Windows.Win32.Foundation.HWND)new WindowInteropHelper(this).Handle, 0, 0,
                     System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width,
                     System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height, true);
             }
@@ -4507,8 +4506,8 @@ namespace InkCanvasForClass_Remastered
 
                 // 转换 RECT 到 System.Drawing.Rectangle
                 var rect = new System.Drawing.Rectangle(
-                    windowRect.Left,
-                    windowRect.Top,
+                    windowRect.left,
+                    windowRect.top,
                     windowRect.Width,
                     windowRect.Height);
 
@@ -4997,32 +4996,9 @@ namespace InkCanvasForClass_Remastered
         private const int WS_EX_NOACTIVATE = 0x08000000;
         private const int GWL_EXSTYLE = -20;
 
-        public static IntPtr GetWindowLong(IntPtr hWnd, int nIndex)
-        {
-            return Environment.Is64BitProcess
-                ? GetWindowLong64(hWnd, nIndex)
-                : GetWindowLong32(hWnd, nIndex);
-        }
+        public static IntPtr GetWindowLong(IntPtr hWnd, int nIndex) => PInvoke.GetWindowLong((Windows.Win32.Foundation.HWND)hWnd, (WINDOW_LONG_PTR_INDEX)nIndex);
 
-        public static IntPtr SetWindowLong(IntPtr hWnd, int nIndex, IntPtr dwNewLong)
-        {
-            return Environment.Is64BitProcess
-                ? SetWindowLong64(hWnd, nIndex, dwNewLong)
-                : SetWindowLong32(hWnd, nIndex, dwNewLong);
-        }
-
-        [DllImport("user32.dll", EntryPoint = "GetWindowLong")]
-        private static extern IntPtr GetWindowLong32(IntPtr hWnd, int nIndex);
-
-        [DllImport("user32.dll", EntryPoint = "GetWindowLongPtr")]
-        private static extern IntPtr GetWindowLong64(IntPtr hWnd, int nIndex);
-
-        [DllImport("user32.dll", EntryPoint = "SetWindowLong")]
-        private static extern IntPtr SetWindowLong32(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
-
-        [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr")]
-        private static extern IntPtr SetWindowLong64(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
-
+        public static IntPtr SetWindowLong(IntPtr hWnd, int nIndex, IntPtr dwNewLong) => PInvoke.SetWindowLong((Windows.Win32.Foundation.HWND)hWnd, (WINDOW_LONG_PTR_INDEX)nIndex, (int)dwNewLong);
         #endregion
 
         private void SymbolIconTools_MouseUp(object sender, MouseButtonEventArgs e)

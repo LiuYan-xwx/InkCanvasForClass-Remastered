@@ -1,74 +1,68 @@
 ﻿using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
+using Windows.Win32;
+using Windows.Win32.Foundation;
 
 namespace InkCanvasForClass_Remastered.Helpers
 {
     internal class ForegroundWindowInfo
     {
-        [DllImport("user32.dll")]
-        private static extern IntPtr GetForegroundWindow();
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
-
-        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        private static extern int GetClassName(IntPtr hWnd, StringBuilder lpClassName, int nMaxCount);
-
-        [DllImport("user32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool GetWindowRect(IntPtr hWnd, out RECT lpRect);
-
-        [DllImport("user32.dll")]
-        private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct RECT
+        public unsafe static string WindowTitle()
         {
-            public int Left;
-            public int Top;
-            public int Right;
-            public int Bottom;
+            const int nChars = 256;
+            IntPtr buffer = Marshal.AllocHGlobal(nChars * sizeof(char));
+            try
+            {
+                PWSTR pWindowTitle = new((char*)buffer);
+                int length = PInvoke.GetWindowText(PInvoke.GetForegroundWindow(), pWindowTitle, nChars);
 
-            public int Width => Right - Left;
-            public int Height => Bottom - Top;
+                if (length > 0)
+                {
+                    return Marshal.PtrToStringUni(buffer, length);
+                }
+                return string.Empty;
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(buffer);
+            }
         }
 
-        public static string WindowTitle()
+        public unsafe static string WindowClassName()
         {
-            IntPtr foregroundWindowHandle = GetForegroundWindow();
-
             const int nChars = 256;
-            StringBuilder windowTitle = new(nChars);
-            _ = GetWindowText(foregroundWindowHandle, windowTitle, nChars);
+            IntPtr buffer = Marshal.AllocHGlobal(nChars * sizeof(char));
+            try
+            {
+                PWSTR pWindowTitle = new((char*)buffer);
+                int length = PInvoke.GetClassName(PInvoke.GetForegroundWindow(), pWindowTitle, nChars);
 
-            return windowTitle.ToString();
-        }
-
-        public static string WindowClassName()
-        {
-            IntPtr foregroundWindowHandle = GetForegroundWindow();
-
-            const int nChars = 256;
-            StringBuilder className = new(nChars);
-            _ = GetClassName(foregroundWindowHandle, className, nChars);
-
-            return className.ToString();
+                if (length > 0)
+                {
+                    return Marshal.PtrToStringUni(buffer, length);
+                }
+                return string.Empty;
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(buffer);
+            }
         }
 
         public static RECT WindowRect()
         {
-            IntPtr foregroundWindowHandle = GetForegroundWindow();
+            IntPtr foregroundWindowHandle = PInvoke.GetForegroundWindow();
 
-            _ = GetWindowRect(foregroundWindowHandle, out RECT windowRect);
+            _ = PInvoke.GetWindowRect(new HWND(foregroundWindowHandle), out RECT windowRect);
 
             return windowRect;
         }
 
         public static string ProcessName()
         {
-            IntPtr foregroundWindowHandle = GetForegroundWindow();
-            _ = GetWindowThreadProcessId(foregroundWindowHandle, out uint processId);
+            IntPtr foregroundWindowHandle = PInvoke.GetForegroundWindow();
+            _ = PInvoke.GetWindowThreadProcessId(new HWND(foregroundWindowHandle), out uint processId);
 
             try
             {
@@ -84,8 +78,8 @@ namespace InkCanvasForClass_Remastered.Helpers
 
         public static string ProcessPath()
         {
-            IntPtr foregroundWindowHandle = GetForegroundWindow();
-            _ = GetWindowThreadProcessId(foregroundWindowHandle, out uint processId);
+            IntPtr foregroundWindowHandle = PInvoke.GetForegroundWindow();
+            _ = PInvoke.GetWindowThreadProcessId(new HWND(foregroundWindowHandle), out uint processId);
 
             try
             {
