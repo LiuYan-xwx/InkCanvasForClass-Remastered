@@ -47,7 +47,7 @@ namespace InkCanvasForClass_Remastered.Services
             {
                 try
                 {
-                    return _pptApplication?.ActivePresentation?.Slides?.Count ?? -1;
+                    return ActivePresentation?.Slides?.Count ?? -1;
                 }
                 catch
                 {
@@ -62,7 +62,7 @@ namespace InkCanvasForClass_Remastered.Services
             {
                 try
                 {
-                    return _pptApplication?.ActivePresentation?.Name;
+                    return ActivePresentation?.Name;
                 }
                 catch
                 {
@@ -71,7 +71,7 @@ namespace InkCanvasForClass_Remastered.Services
             }
         }
 
-        public Presentation? ActivePresentation
+        private Presentation? ActivePresentation
         {
             get
             {
@@ -86,7 +86,7 @@ namespace InkCanvasForClass_Remastered.Services
             }
         }
 
-        public SlideShowWindow? ActiveSlideShowWindow
+        private SlideShowWindow? ActiveSlideShowWindow
         {
             get
             {
@@ -101,6 +101,8 @@ namespace InkCanvasForClass_Remastered.Services
                 }
             }
         }
+
+        public void ShowSlideNavigation() => ActiveSlideShowWindow?.SlideNavigation.Visible = true;
 
         public bool TryConnectToPowerPoint()
         {

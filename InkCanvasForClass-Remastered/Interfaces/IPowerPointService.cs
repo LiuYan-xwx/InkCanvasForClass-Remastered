@@ -40,15 +40,20 @@ namespace InkCanvasForClass_Remastered.Interfaces
         /// </summary>
         bool IsInSlideShow { get; }
 
-        /// <summary>
-        /// 获取当前活动的演示文稿对象。如果不存在则为 null。
-        /// </summary>
-        Presentation? ActivePresentation { get; }
+        ///// <summary>
+        ///// 获取当前活动的演示文稿对象。如果不存在则为 null。
+        ///// </summary>
+        //Presentation? ActivePresentation { get; }
+
+        ///// <summary>
+        ///// 获取当前活动的放映窗口对象。如果不存在则为 null。
+        ///// </summary>
+        //SlideShowWindow? ActiveSlideShowWindow { get; }
 
         /// <summary>
-        /// 获取当前活动的放映窗口对象。如果不存在则为 null。
+        /// 显示幻灯片导航界面。
         /// </summary>
-        SlideShowWindow? ActiveSlideShowWindow { get; }
+        void ShowSlideNavigation();
 
         /// <summary>
         /// 尝试连接到正在运行的PowerPoint实例并开始监听事件。
@@ -90,5 +95,6 @@ namespace InkCanvasForClass_Remastered.Interfaces
         /// 结束幻灯片放映。
         /// </summary>
         void EndSlideShow();
+        
     }
 }

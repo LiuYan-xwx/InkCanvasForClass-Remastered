@@ -1648,7 +1648,7 @@ namespace InkCanvasForClass_Remastered
             ActivateCursor();
             try
             {
-                _powerPointService.ActiveSlideShowWindow.SlideNavigation.Visible = true;
+                _powerPointService.ShowSlideNavigation();
             }
             catch (Exception ex)
             {
