@@ -4029,11 +4029,12 @@
                 Name="ViewboxFloatingBar"
                 Width="733"
                 Height="58"
-                Margin="100,5,0,0"
                 HorizontalAlignment="Left"
-                VerticalAlignment="Top">
+                VerticalAlignment="Top"
+                d:Visibility="Visible"
+                Visibility="Hidden">
                 <Viewbox.RenderTransform>
-                    <ScaleTransform x:Name="ViewboxFloatingBarScaleTransform" ScaleX="{Binding Settings.ViewboxFloatingBarScaleTransformValue}" ScaleY="{Binding Settings.ViewboxFloatingBarScaleTransformValue}" />
+                    <ScaleTransform ScaleX="{Binding Settings.ViewboxFloatingBarScaleTransformValue}" ScaleY="{Binding Settings.ViewboxFloatingBarScaleTransformValue}" />
                 </Viewbox.RenderTransform>
                 <Viewbox.Style>
                     <Style TargetType="Viewbox">
@@ -4054,8 +4055,8 @@
                         BorderBrush="#9952525b"
                         BorderThickness="1"
                         CornerRadius="5"
-                        MouseDown="SymbolIconEmoji_MouseDown"
-                        MouseUp="SymbolIconEmoji_MouseUp">
+                        MouseDown="FloatingBarHandle_MouseDown"
+                        MouseUp="FloatingBarDrag_MouseUp">
                         <ikw:SimpleStackPanel
                             Margin="0,2,0,2"
                             HorizontalAlignment="Center"
@@ -5367,8 +5368,8 @@
         <Grid
             Name="GridForFloatingBarDraging"
             Background="#01000000"
-            MouseMove="SymbolIconEmoji_MouseMove"
-            MouseUp="SymbolIconEmoji_MouseUp"
+            MouseMove="FloatingBarDrag_MouseMove"
+            MouseUp="FloatingBarDrag_MouseUp"
             Visibility="Collapsed" />
 
         <!--  // PPT 翻页按钮面板 //  -->

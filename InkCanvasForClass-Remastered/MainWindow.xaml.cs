@@ -70,10 +70,6 @@ namespace InkCanvasForClass_Remastered
 
             _notificationService.NotificationRequested += OnNotificationRequested;
 
-            ViewboxFloatingBar.Margin = new Thickness((SystemParameters.WorkArea.Width - 284) / 2,
-                SystemParameters.WorkArea.Height - 60, -2000, -200);
-            ViewboxFloatingBarMarginAnimation(100, true);
-
             InitTimers();
             timeMachine.OnRedoStateChanged += TimeMachine_OnRedoStateChanged;
             timeMachine.OnUndoStateChanged += TimeMachine_OnUndoStateChanged;
@@ -96,10 +92,7 @@ namespace InkCanvasForClass_Remastered
             switch (e.PropertyName)
             {
                 case nameof(Settings.ViewboxFloatingBarScaleTransformValue):
-                    if (_powerPointService.IsInSlideShow == true)
-                        ViewboxFloatingBarMarginAnimation(60);
-                    else
-                        ViewboxFloatingBarMarginAnimation(100, true);
+                    UpdateFloatingBarPosition();
                     break;
                 case nameof(Settings.EraserSize):
                 case nameof(Settings.EraserShapeType):
@@ -204,6 +197,8 @@ namespace InkCanvasForClass_Remastered
 
         private void Window_SourceInitialized(object sender, EventArgs e)
         {
+            SystemEvents.DisplaySettingsChanged += SystemEventsOnDisplaySettingsChanged;
+
             // 无焦点模式
             if (Settings.IsWindowNoActivate)
             {
@@ -253,57 +248,38 @@ namespace InkCanvasForClass_Remastered
             }
         }
 
+        private readonly DispatcherTimer _floatingBarScreenCheck = new() { Interval = TimeSpan.FromSeconds(3) };
+
         private void SystemEventsOnDisplaySettingsChanged(object? sender, EventArgs e)
         {
-            if (!Settings.IsEnableResolutionChangeDetection) return;
-            ShowNotification($"检测到显示器信息变化，变为{System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width}x{System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height}");
-            new Thread(() =>
+            Dispatcher.InvokeAsync(() =>
             {
-                var isFloatingBarOutsideScreen = false;
-                Dispatcher.Invoke(() =>
-                {
-                    isFloatingBarOutsideScreen = IsOutsideOfScreenHelper.IsOutsideOfScreen(ViewboxFloatingBar);
-                });
-                if (isFloatingBarOutsideScreen) dpiChangedDelayAction.DebounceAction(3000, null, () =>
-                {
-                    if (_viewModel.IsFloatingBarVisible)
-                    {
-                        if (_powerPointService.IsInSlideShow)
-                            ViewboxFloatingBarMarginAnimation(60);
-                        else
-                            ViewboxFloatingBarMarginAnimation(100, true);
-                    }
-                });
-            }).Start();
+                if (!IsLoaded || !Settings.IsEnableResolutionChangeDetection) return;
+                var bounds = System.Windows.Forms.Screen.FromHandle(new WindowInteropHelper(this).Handle).Bounds;
+                ShowNotification($"检测到显示器信息变化，变为{bounds.Width}x{bounds.Height}");
+                ScheduleFloatingBarScreenCheck();
+            });
         }
-
-        public DelayAction dpiChangedDelayAction = new DelayAction();
 
         private void MainWindow_OnDpiChanged(object sender, DpiChangedEventArgs e)
         {
-            if (e.OldDpi.DpiScaleX != e.NewDpi.DpiScaleX && e.OldDpi.DpiScaleY != e.NewDpi.DpiScaleY && Settings.IsEnableDPIChangeDetection)
-            {
-                ShowNotification($"系统DPI发生变化，从 {e.OldDpi.DpiScaleX}x{e.OldDpi.DpiScaleY} 变化为 {e.NewDpi.DpiScaleX}x{e.NewDpi.DpiScaleY}");
+            if (!Settings.IsEnableDPIChangeDetection) return;
+            ShowNotification($"系统DPI发生变化，从 {e.OldDpi.DpiScaleX}x{e.OldDpi.DpiScaleY} 变化为 {e.NewDpi.DpiScaleX}x{e.NewDpi.DpiScaleY}");
+            ScheduleFloatingBarScreenCheck();
+        }
 
-                new Thread(() =>
-                {
-                    var isFloatingBarOutsideScreen = false;
-                    var isInPPTPresentationMode = false;
-                    Dispatcher.Invoke(() =>
-                    {
-                        isFloatingBarOutsideScreen = IsOutsideOfScreenHelper.IsOutsideOfScreen(ViewboxFloatingBar);
-                        isInPPTPresentationMode = _powerPointService.IsInSlideShow;
-                    });
-                    if (isFloatingBarOutsideScreen) dpiChangedDelayAction.DebounceAction(3000, null, () =>
-                    {
-                        if (_viewModel.IsFloatingBarVisible)
-                        {
-                            if (isInPPTPresentationMode) ViewboxFloatingBarMarginAnimation(60);
-                            else ViewboxFloatingBarMarginAnimation(100, true);
-                        }
-                    });
-                }).Start();
-            }
+        private void ScheduleFloatingBarScreenCheck()
+        {
+            _floatingBarScreenCheck.Stop();
+            _floatingBarScreenCheck.Start();
+        }
+
+        private void FloatingBarScreenCheck_Tick(object? sender, EventArgs e)
+        {
+            _floatingBarScreenCheck.Stop();
+            if (!ShouldHideFloatingBar && ViewboxFloatingBar.IsVisible && _floatingBarDragStart == null &&
+                IsOutsideOfScreenHelper.IsOutsideOfScreen(ViewboxFloatingBar))
+                ResetFloatingBarPosition();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -344,6 +320,8 @@ namespace InkCanvasForClass_Remastered
         {
             _viewModel.PenColorSelected -= ViewModel_PenColorSelected;
             SystemEvents.DisplaySettingsChanged -= SystemEventsOnDisplaySettingsChanged;
+            _floatingBarScreenCheck.Stop();
+            _pendingFloatingBarPosition?.Abort();
             _notificationService.NotificationRequested -= OnNotificationRequested;
             _notificationCts?.Cancel();
             _notificationCts?.Dispose();
@@ -384,7 +362,7 @@ namespace InkCanvasForClass_Remastered
 
             await Dispatcher.InvokeAsync(() =>
             {
-                ViewboxFloatingBarMarginAnimation(-60);
+                UpdateFloatingBarPosition();
                 HideSubPanels();
             });
             isFloatingBarChangingHideMode = false;
@@ -407,13 +385,7 @@ namespace InkCanvasForClass_Remastered
             isFloatingBarChangingHideMode = true;
             _viewModel.IsFloatingBarVisible = true;
 
-            await Dispatcher.InvokeAsync(() =>
-            {
-                if (_powerPointService.IsInSlideShow)
-                    ViewboxFloatingBarMarginAnimation(60);
-                else
-                    ViewboxFloatingBarMarginAnimation(100, true);
-            });
+            await Dispatcher.InvokeAsync(UpdateFloatingBarPosition);
 
             isFloatingBarChangingHideMode = false;
         }
@@ -690,72 +662,152 @@ namespace InkCanvasForClass_Remastered
 
         #endregion “手勢”按鈕
 
-        #region 浮動工具欄的拖動實現
+        #region 浮动栏定位与拖动
 
-        private bool isDragDropInEffect = false;
-        private Point pos = new();
-        private Point downPos = new();
-        private Point pointDesktop = new(-1, -1); //用于记录上次在桌面时的坐标
-        private Point pointPPT = new(-1, -1); //用于记录上次在PPT中的坐标
+        private Point? _desktopFloatingBarPosition;
+        private Point? _slideShowFloatingBarPosition;
+        private Point? _floatingBarDragStart;
+        private Point _floatingBarDragOrigin;
+        private DispatcherOperation? _pendingFloatingBarPosition;
+        private ThicknessAnimation? _floatingBarAnimation;
 
-        private void SymbolIconEmoji_MouseMove(object sender, MouseEventArgs e)
+        private bool ShouldHideFloatingBar => _viewModel.AppMode == AppMode.WhiteBoard || !_viewModel.IsFloatingBarVisible;
+
+        private Point? SavedFloatingBarPosition
         {
-            if (isDragDropInEffect)
+            get => _powerPointService.IsInSlideShow ? _slideShowFloatingBarPosition : _desktopFloatingBarPosition;
+            set
             {
-                var xPos = e.GetPosition(null).X - pos.X + ViewboxFloatingBar.Margin.Left;
-                var yPos = e.GetPosition(null).Y - pos.Y + ViewboxFloatingBar.Margin.Top;
-                ViewboxFloatingBar.Margin = new Thickness(xPos, yPos, -2000, -200);
-
-                pos = e.GetPosition(null);
                 if (_powerPointService.IsInSlideShow)
-                    pointPPT = new Point(xPos, yPos);
+                    _slideShowFloatingBarPosition = value;
                 else
-                    pointDesktop = new Point(xPos, yPos);
+                    _desktopFloatingBarPosition = value;
             }
         }
 
-        private void SymbolIconEmoji_MouseDown(object sender, MouseButtonEventArgs e)
+        internal void ResetFloatingBarPosition()
         {
-            if (isViewboxFloatingBarMarginAnimationRunning)
+            SavedFloatingBarPosition = null;
+            UpdateFloatingBarPosition();
+        }
+
+
+        private Point GetFloatingBarPosition(bool hide)
+        {
+            var screen = System.Windows.Forms.Screen.FromHandle(new WindowInteropHelper(this).Handle);
+            var dpi = VisualTreeHelper.GetDpi(this);
+            var scale = Settings.ViewboxFloatingBarScaleTransformValue;
+            var screenHeight = screen.Bounds.Height / dpi.DpiScaleY;
+            var x = (screen.Bounds.Width / dpi.DpiScaleX - ViewboxFloatingBar.ActualWidth * scale) / 2;
+            if (hide)
+                return new Point(x, screenHeight + 60 * scale);
+
+            var workAreaBottom = (screen.WorkingArea.Bottom - screen.Bounds.Top) / dpi.DpiScaleY;
+            var y = _powerPointService.IsInSlideShow
+                ? screenHeight - 55 * scale
+                : workAreaBottom - (ViewboxFloatingBar.ActualHeight + 3) * scale;
+
+            const double snapDistance = 50;
+            if (SavedFloatingBarPosition is Point saved && Math.Abs(saved.Y - y) > snapDistance)
+                return saved;
+
+            SavedFloatingBarPosition = null;
+            return new Point(x, y);
+        }
+
+        // 右侧和底部留出布局空间，拖到屏幕边缘时保持工具栏的大小。
+        private static Thickness FloatingBarMargin(Point position) => new(position.X, position.Y, -2000, -200);
+
+        private void UpdateFloatingBarPosition()
+        {
+            if (_pendingFloatingBarPosition != null) return;
+            // 切换工具会改变 Viewbox 的实际宽度，等本轮布局完成后再定位。
+            var animate = isLoaded;
+            _pendingFloatingBarPosition = Dispatcher.InvokeAsync(() => MoveFloatingBar(animate), DispatcherPriority.Loaded);
+        }
+
+        private void MoveFloatingBar(bool animate)
+        {
+            _pendingFloatingBarPosition = null;
+            EndFloatingBarDrag();
+            var hide = ShouldHideFloatingBar;
+            var target = FloatingBarMargin(GetFloatingBarPosition(hide));
+            var from = ViewboxFloatingBar.Margin;
+            _floatingBarAnimation = null;
+            ViewboxFloatingBar.Margin = target;
+
+            if (!animate || from == target || (hide && ViewboxFloatingBar.Visibility == Visibility.Hidden))
             {
                 ViewboxFloatingBar.BeginAnimation(MarginProperty, null);
-                isViewboxFloatingBarMarginAnimationRunning = false;
+                ViewboxFloatingBar.Visibility = hide ? Visibility.Hidden : Visibility.Visible;
+                return;
             }
 
-            isDragDropInEffect = true;
-            pos = e.GetPosition(null);
-            downPos = e.GetPosition(null);
+            ViewboxFloatingBar.Visibility = Visibility.Visible;
+            var animation = new ThicknessAnimation(from, target, TimeSpan.FromMilliseconds(350))
+            {
+                EasingFunction = new CircleEase(),
+                FillBehavior = FillBehavior.Stop
+            };
+            _floatingBarAnimation = animation;
+            animation.Completed += (_, _) =>
+            {
+                if (_floatingBarAnimation != animation) return;
+                _floatingBarAnimation = null;
+                ViewboxFloatingBar.BeginAnimation(MarginProperty, null);
+                if (hide) ViewboxFloatingBar.Visibility = Visibility.Hidden;
+            };
+            ViewboxFloatingBar.BeginAnimation(MarginProperty, animation);
+        }
+
+        private void FloatingBarHandle_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (ShouldHideFloatingBar) return;
+            _pendingFloatingBarPosition?.Abort();
+            _pendingFloatingBarPosition = null;
+            var margin = ViewboxFloatingBar.Margin;
+            _floatingBarAnimation = null;
+            ViewboxFloatingBar.Margin = margin;
+            ViewboxFloatingBar.BeginAnimation(MarginProperty, null);
+
+            _floatingBarDragOrigin = new Point(margin.Left, margin.Top);
+            _floatingBarDragStart = e.GetPosition(this);
             GridForFloatingBarDraging.Visibility = Visibility.Visible;
         }
 
-        private void SymbolIconEmoji_MouseUp(object sender, MouseButtonEventArgs e)
+        private void FloatingBarDrag_MouseMove(object sender, MouseEventArgs e)
         {
-            isDragDropInEffect = false;
+            if (_floatingBarDragStart is not Point start) return;
+            var position = _floatingBarDragOrigin + (e.GetPosition(this) - start);
+            ViewboxFloatingBar.Margin = FloatingBarMargin(position);
+            SavedFloatingBarPosition = position;
+        }
 
-            if (e is null || (Math.Abs(downPos.X - e.GetPosition(null).X) <= 10 &&
-                              Math.Abs(downPos.Y - e.GetPosition(null).Y) <= 10))
+        private void FloatingBarDrag_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (_floatingBarDragStart is not Point start) return;
+            EndFloatingBarDrag();
+            var delta = e.GetPosition(this) - start;
+            if (Math.Abs(delta.X) <= 10 && Math.Abs(delta.Y) <= 10)
             {
-                if (BorderFloatingBarMainControls.Visibility == Visibility.Visible)
-                {
-                    BorderFloatingBarMainControls.Visibility = Visibility.Collapsed;
-                    CheckEnableTwoFingerGestureBtnVisibility(false);
-                }
-                else
-                {
-                    BorderFloatingBarMainControls.Visibility = Visibility.Visible;
-                    CheckEnableTwoFingerGestureBtnVisibility(true);
-                }
+                var show = BorderFloatingBarMainControls.Visibility != Visibility.Visible;
+                BorderFloatingBarMainControls.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+                CheckEnableTwoFingerGestureBtnVisibility(show);
             }
+        }
 
+        private void EndFloatingBarDrag()
+        {
+            _floatingBarDragStart = null;
             GridForFloatingBarDraging.Visibility = Visibility.Collapsed;
         }
 
-        #endregion 浮動工具欄的拖動實現
+        #endregion
 
-        #region 子面板和浮动栏位置
+        #region 子面板
 
-        private UIElement[] ToolbarSubPanels => new UIElement[]
-        {
+        private UIElement[] ToolbarSubPanels =>
+        [
             BorderTools,
             BoardBorderTools,
             PenPalette,
@@ -764,7 +816,7 @@ namespace InkCanvasForClass_Remastered
             EraserSizePanel,
             TwoFingerGestureBorder,
             BoardTwoFingerGestureBorder,
-        };
+        ];
 
         private void ToggleToolbarPanels(UIElement primaryPanel, UIElement companionPanel)
         {
@@ -780,11 +832,11 @@ namespace InkCanvasForClass_Remastered
 
         private void HideAllSubPanels(bool immediately = false)
         {
-            var panels = ToolbarSubPanels.Concat(new UIElement[]
-            {
+            var panels = ToolbarSubPanels.Concat(
+            [
                 BoardBorderLeftPageListView,
                 BoardBorderRightPageListView,
-            });
+            ]);
             foreach (var panel in panels)
             {
                 if (immediately)
@@ -804,17 +856,10 @@ namespace InkCanvasForClass_Remastered
             HideAllSubPanels();
 
             if (autoAlignCenter)
-                await CenterFloatingBarAsync();
+                UpdateFloatingBarPosition();
 
             await Task.Delay(150);
             isHidingSubPanelsWhenInking = false;
-        }
-
-        private async Task CenterFloatingBarAsync()
-        {
-            var useTaskbarHeight = !_powerPointService.IsInSlideShow && _viewModel.AppMode == AppMode.Normal;
-            await Task.Delay(50);
-            ViewboxFloatingBarMarginAnimation(useTaskbarHeight ? 100 : 60, useTaskbarHeight);
         }
 
         #endregion
@@ -850,7 +895,7 @@ namespace InkCanvasForClass_Remastered
 
         #region 白板按鈕和退出白板模式按鈕
 
-        private async void OpenWhiteboardFloatingBarButton_Click(object? sender, RoutedEventArgs? e)
+        private void OpenWhiteboardFloatingBarButton_Click(object? sender, RoutedEventArgs? e)
         {
             OpenWhiteboard();
         }
@@ -866,13 +911,6 @@ namespace InkCanvasForClass_Remastered
                 ShowInkCanvas();
             }
 
-            // 动画调整浮动工具栏位置
-            new Thread(() =>
-            {
-                Thread.Sleep(100);
-                Application.Current.Dispatcher.Invoke(() => ViewboxFloatingBarMarginAnimation(60));
-            }).Start();
-
             HideSubPanels();
 
             // 自动关闭多指书写、开启双指移动
@@ -885,6 +923,7 @@ namespace InkCanvasForClass_Remastered
 
             // 切换到白板模式
             SwitchToWhiteboardMode();
+            UpdateFloatingBarPosition();
 
             _viewModel.SwitchToDefaultPen();
             _viewModel.ApplyWhiteboardPalette();
@@ -896,17 +935,6 @@ namespace InkCanvasForClass_Remastered
         private void CloseWhiteboard()
         {
             HideSubPanelsImmediately();
-
-            // 动画调整浮动工具栏位置
-            var targetMargin = _powerPointService.IsInSlideShow ? 60 : 100;
-            var useTaskbarHeight = !_powerPointService.IsInSlideShow;
-
-            new Thread(() =>
-            {
-                Thread.Sleep(300);
-                Application.Current.Dispatcher.Invoke(() =>
-                    ViewboxFloatingBarMarginAnimation(targetMargin, useTaskbarHeight));
-            }).Start();
 
             // 自动启用多指书写
             if (Settings.AutoSwitchTwoFingerGesture)
@@ -1106,176 +1134,6 @@ namespace InkCanvasForClass_Remastered
             ToggleToolbarPanels(BorderTools, BoardBorderTools);
         }
 
-        private bool isViewboxFloatingBarMarginAnimationRunning = false;
-
-        public async void ViewboxFloatingBarMarginAnimation(int MarginFromEdge,
-            bool PosXCaculatedWithTaskbarHeight = false)
-        {
-            if (MarginFromEdge == 60) MarginFromEdge = 55;
-            await Dispatcher.InvokeAsync(() =>
-            {
-                if (_viewModel.AppMode == AppMode.WhiteBoard)
-                    MarginFromEdge = -60;
-                else
-                    ViewboxFloatingBar.Visibility = Visibility.Visible;
-                isViewboxFloatingBarMarginAnimationRunning = true;
-
-                double dpiScaleX = 1, dpiScaleY = 1;
-                var source = PresentationSource.FromVisual(this);
-                if (source != null)
-                {
-                    dpiScaleX = source.CompositionTarget.TransformToDevice.M11;
-                    dpiScaleY = source.CompositionTarget.TransformToDevice.M22;
-                }
-
-                var windowHandle = new WindowInteropHelper(this).Handle;
-                var screen = System.Windows.Forms.Screen.FromHandle(windowHandle);
-                double screenWidth = screen.Bounds.Width / dpiScaleX, screenHeight = screen.Bounds.Height / dpiScaleY;
-                var toolbarHeight = SystemParameters.PrimaryScreenHeight - SystemParameters.FullPrimaryScreenHeight -
-                                    SystemParameters.WindowCaptionHeight;
-                pos.X = (screenWidth - ViewboxFloatingBar.ActualWidth * ViewboxFloatingBarScaleTransform.ScaleX) / 2;
-
-                if (PosXCaculatedWithTaskbarHeight == false)
-                    pos.Y = screenHeight - MarginFromEdge * ViewboxFloatingBarScaleTransform.ScaleY;
-                else if (PosXCaculatedWithTaskbarHeight == true)
-                    pos.Y = screenHeight - ViewboxFloatingBar.ActualHeight * ViewboxFloatingBarScaleTransform.ScaleY -
-                            toolbarHeight - ViewboxFloatingBarScaleTransform.ScaleY * 3;
-
-                if (MarginFromEdge != -60)
-                {
-                    if (_powerPointService.IsInSlideShow)
-                    {
-                        if (pointPPT.X != -1 || pointPPT.Y != -1)
-                        {
-                            if (Math.Abs(pointPPT.Y - pos.Y) > 50)
-                                pos = pointPPT;
-                            else
-                                pointPPT = pos;
-                        }
-                    }
-                    else
-                    {
-                        if (pointDesktop.X != -1 || pointDesktop.Y != -1)
-                        {
-                            if (Math.Abs(pointDesktop.Y - pos.Y) > 50)
-                                pos = pointDesktop;
-                            else
-                                pointDesktop = pos;
-                        }
-                    }
-                }
-
-                var marginAnimation = new ThicknessAnimation
-                {
-                    Duration = TimeSpan.FromSeconds(0.35),
-                    From = ViewboxFloatingBar.Margin,
-                    To = new Thickness(pos.X, pos.Y, 0, -20)
-                };
-                marginAnimation.EasingFunction = new CircleEase();
-                ViewboxFloatingBar.BeginAnimation(MarginProperty, marginAnimation);
-            });
-
-            await Task.Delay(200);
-
-            await Dispatcher.InvokeAsync(() =>
-            {
-                ViewboxFloatingBar.Margin = new Thickness(pos.X, pos.Y, -2000, -200);
-                if (_viewModel.AppMode == AppMode.WhiteBoard) ViewboxFloatingBar.Visibility = Visibility.Hidden;
-            });
-        }
-
-        public async void PureViewboxFloatingBarMarginAnimationInDesktopMode()
-        {
-            await Dispatcher.InvokeAsync(() =>
-            {
-                ViewboxFloatingBar.Visibility = Visibility.Visible;
-                isViewboxFloatingBarMarginAnimationRunning = true;
-
-                double dpiScaleX = 1, dpiScaleY = 1;
-                var source = PresentationSource.FromVisual(this);
-                if (source != null)
-                {
-                    dpiScaleX = source.CompositionTarget.TransformToDevice.M11;
-                    dpiScaleY = source.CompositionTarget.TransformToDevice.M22;
-                }
-
-                var windowHandle = new WindowInteropHelper(this).Handle;
-                var screen = System.Windows.Forms.Screen.FromHandle(windowHandle);
-                double screenWidth = screen.Bounds.Width / dpiScaleX, screenHeight = screen.Bounds.Height / dpiScaleY;
-                var toolbarHeight = SystemParameters.PrimaryScreenHeight - SystemParameters.FullPrimaryScreenHeight -
-                                    SystemParameters.WindowCaptionHeight;
-                pos.X = (screenWidth - ViewboxFloatingBar.ActualWidth * ViewboxFloatingBarScaleTransform.ScaleX) / 2;
-
-                pos.Y = screenHeight - ViewboxFloatingBar.ActualHeight * ViewboxFloatingBarScaleTransform.ScaleY -
-                        toolbarHeight - ViewboxFloatingBarScaleTransform.ScaleY * 3;
-
-                if (pointDesktop.X != -1 || pointDesktop.Y != -1) pointDesktop = pos;
-
-                var marginAnimation = new ThicknessAnimation
-                {
-                    Duration = TimeSpan.FromSeconds(0.35),
-                    From = ViewboxFloatingBar.Margin,
-                    To = new Thickness(pos.X, pos.Y, 0, -20)
-                };
-                marginAnimation.EasingFunction = new CircleEase();
-                ViewboxFloatingBar.BeginAnimation(MarginProperty, marginAnimation);
-            });
-
-            await Task.Delay(349);
-
-            await Dispatcher.InvokeAsync(() =>
-            {
-                ViewboxFloatingBar.Margin = new Thickness(pos.X, pos.Y, -2000, -200);
-            });
-        }
-
-        public async void PureViewboxFloatingBarMarginAnimationInPPTMode()
-        {
-            await Dispatcher.InvokeAsync(() =>
-            {
-                ViewboxFloatingBar.Visibility = Visibility.Visible;
-                isViewboxFloatingBarMarginAnimationRunning = true;
-
-                double dpiScaleX = 1, dpiScaleY = 1;
-                var source = PresentationSource.FromVisual(this);
-                if (source != null)
-                {
-                    dpiScaleX = source.CompositionTarget.TransformToDevice.M11;
-                    dpiScaleY = source.CompositionTarget.TransformToDevice.M22;
-                }
-
-                var windowHandle = new WindowInteropHelper(this).Handle;
-                var screen = System.Windows.Forms.Screen.FromHandle(windowHandle);
-                double screenWidth = screen.Bounds.Width / dpiScaleX, screenHeight = screen.Bounds.Height / dpiScaleY;
-                var toolbarHeight = SystemParameters.PrimaryScreenHeight - SystemParameters.FullPrimaryScreenHeight -
-                                    SystemParameters.WindowCaptionHeight;
-                pos.X = (screenWidth - ViewboxFloatingBar.ActualWidth * ViewboxFloatingBarScaleTransform.ScaleX) / 2;
-
-                pos.Y = screenHeight - 55 * ViewboxFloatingBarScaleTransform.ScaleY;
-
-                if (pointPPT.X != -1 || pointPPT.Y != -1)
-                {
-                    pointPPT = pos;
-                }
-
-                var marginAnimation = new ThicknessAnimation
-                {
-                    Duration = TimeSpan.FromSeconds(0.35),
-                    From = ViewboxFloatingBar.Margin,
-                    To = new Thickness(pos.X, pos.Y, 0, -20)
-                };
-                marginAnimation.EasingFunction = new CircleEase();
-                ViewboxFloatingBar.BeginAnimation(MarginProperty, marginAnimation);
-            });
-
-            await Task.Delay(349);
-
-            await Dispatcher.InvokeAsync(() =>
-            {
-                ViewboxFloatingBar.Margin = new Thickness(pos.X, pos.Y, -2000, -200);
-            });
-        }
-
         private void CursorFloatingBarButton_Click(object? sender, RoutedEventArgs? e)
         {
             _viewModel.AppPenMode = InkCanvasEditingMode.None;
@@ -1309,14 +1167,7 @@ namespace InkCanvasForClass_Remastered
             StackPanelCanvasControls.Visibility = Visibility.Collapsed;
 
             if (_viewModel.IsFloatingBarVisible)
-            {
                 HideSubPanels(autoAlignCenter: true);
-
-                if (_powerPointService.IsInSlideShow)
-                    ViewboxFloatingBarMarginAnimation(60);
-                else
-                    ViewboxFloatingBarMarginAnimation(100, true);
-            }
         }
 
         private void PenIcon_Click(object? sender, RoutedEventArgs? e)
@@ -1663,11 +1514,11 @@ namespace InkCanvasForClass_Remastered
                 {
                     ActivatePen();
                 }
-                isEnteredSlideShowEndEvent = false;
-                if (_viewModel.IsFloatingBarVisible)
+                else if (_viewModel.IsFloatingBarVisible)
                 {
-                    ViewboxFloatingBarMarginAnimation(60);
+                    UpdateFloatingBarPosition();
                 }
+                isEnteredSlideShowEndEvent = false;
             });
             _previousSlideID = _powerPointService.CurrentSlidePosition;
         }
@@ -1738,8 +1589,6 @@ namespace InkCanvasForClass_Remastered
                 CursorFloatingBarButton_Click(null, null);
 
                 inkCanvas.Strokes.Clear();
-
-                ViewboxFloatingBarMarginAnimation(100, true);
             });
         }
 
@@ -2492,15 +2341,7 @@ namespace InkCanvasForClass_Remastered
                 timerKillProcess.Stop();
             }
 
-            // auto align
-            if (_powerPointService.IsInSlideShow)
-            {
-                ViewboxFloatingBarMarginAnimation(60);
-            }
-            else
-            {
-                ViewboxFloatingBarMarginAnimation(100, true);
-            }
+            UpdateFloatingBarPosition();
         }
         #endregion
 
@@ -2966,6 +2807,7 @@ namespace InkCanvasForClass_Remastered
 
         private void InitTimers()
         {
+            _floatingBarScreenCheck.Tick += FloatingBarScreenCheck_Tick;
             timerKillProcess.Tick += TimerKillProcess_Tick;
             timerKillProcess.Interval = TimeSpan.FromMilliseconds(2000);
             timerCheckAutoFold.Tick += timerCheckAutoFold_Tick;
