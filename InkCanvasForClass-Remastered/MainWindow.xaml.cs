@@ -2764,25 +2764,22 @@ namespace InkCanvasForClass_Remastered
         #endregion
 
         #region Timer
-        private DispatcherTimer timerKillProcess = new DispatcherTimer();
+        private readonly DispatcherTimer timerKillProcess = new() { Interval = TimeSpan.FromMilliseconds(2000) };
         private readonly DispatcherTimer _autoFoldTimer = new() { Interval = TimeSpan.FromMilliseconds(500) };
         private bool isHidingSubPanelsWhenInking = false; // 避免书写时触发二次关闭二级菜单导致动画不连续
 
-        private DispatcherTimer timerDisplayTime = new DispatcherTimer();
-        private DispatcherTimer timerDisplayDate = new DispatcherTimer();
+        private readonly DispatcherTimer timerDisplayTime = new() { Interval = TimeSpan.FromMilliseconds(1000) };
+        private readonly DispatcherTimer timerDisplayDate = new() { Interval = TimeSpan.FromMilliseconds(1000 * 60 * 60 * 1) };
 
         private void InitTimers()
         {
             _floatingBarScreenCheck.Tick += FloatingBarScreenCheck_Tick;
             timerKillProcess.Tick += TimerKillProcess_Tick;
-            timerKillProcess.Interval = TimeSpan.FromMilliseconds(2000);
             _autoFoldTimer.Tick += (_, _) => _viewModel.RefreshFloatingBarAutoFold();
 
             timerDisplayTime.Tick += TimerDisplayTime_Tick;
-            timerDisplayTime.Interval = TimeSpan.FromMilliseconds(1000);
             timerDisplayTime.Start();
             timerDisplayDate.Tick += TimerDisplayDate_Tick;
-            timerDisplayDate.Interval = TimeSpan.FromMilliseconds(1000 * 60 * 60 * 1);
             timerDisplayDate.Start();
             timerKillProcess.Start();
             _viewModel.NowDate = DateTime.Now.ToShortDateString().ToString();
