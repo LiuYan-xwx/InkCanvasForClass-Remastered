@@ -29,13 +29,7 @@ namespace InkCanvasForClass_Remastered.ViewModels
         }
 
         [RelayCommand(CanExecute = nameof(ShowMainWindowChecked))]
-        private void FoldFloatingBar()
-        {
-            if (MainWindow._viewModel.IsFloatingBarVisible)
-                _ = MainWindow.HideFloatingBar(true);
-            else
-                _ = MainWindow.ShowFloatingBar(true);
-        }
+        private void FoldFloatingBar() => MainWindow._viewModel.ToggleFloatingBar();
 
         [RelayCommand(CanExecute = nameof(ShowMainWindowChecked))]
         private void ResetFloatingBarPosition() => MainWindow.ResetFloatingBarPosition();

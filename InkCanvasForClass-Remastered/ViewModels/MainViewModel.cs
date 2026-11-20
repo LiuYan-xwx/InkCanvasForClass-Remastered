@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using InkCanvasForClass_Remastered.Enums;
+using InkCanvasForClass_Remastered.Helpers;
 using InkCanvasForClass_Remastered.Interfaces;
 using InkCanvasForClass_Remastered.Models;
 using InkCanvasForClass_Remastered.Services;
@@ -137,8 +138,48 @@ namespace InkCanvasForClass_Remastered.ViewModels
                 WhiteboardPages.RemoveAt(WhiteboardPages.Count - 1);
         }
 
+        private readonly ForegroundWindowInfo _foregroundWindow = new();
+        private AutoFoldTarget _autoFoldTarget;
+        private bool _keepFloatingBarFolded;
+
         [ObservableProperty]
-        public partial bool IsFloatingBarVisible { get; set; } = true;
+        public partial bool IsFloatingBarVisible { get; private set; } = true;
+
+        [RelayCommand]
+        internal void FoldFloatingBar()
+        {
+            _keepFloatingBarFolded = true;
+            IsFloatingBarVisible = false;
+        }
+
+        [RelayCommand]
+        private void UnfoldFloatingBar()
+        {
+            // 点击可能早于下一次前台窗口检测，按此刻的场景记住手动展开。
+            _autoFoldTarget = GetCurrentAutoFoldTarget();
+            _keepFloatingBarFolded = false;
+            IsFloatingBarVisible = true;
+        }
+
+        internal void ToggleFloatingBar()
+        {
+            if (IsFloatingBarVisible)
+                FoldFloatingBar();
+            else
+                UnfoldFloatingBar();
+        }
+
+        private AutoFoldTarget GetCurrentAutoFoldTarget() =>
+            _foregroundWindow.GetAutoFoldTarget(Settings, _powerPointService.IsInSlideShow) ?? _autoFoldTarget;
+
+        internal void RefreshFloatingBarAutoFold()
+        {
+            var target = GetCurrentAutoFoldTarget();
+            // 同一场景只在进入时自动收纳，用户随后可以从侧栏展开。
+            if (_autoFoldTarget == target) return;
+            _autoFoldTarget = target;
+            IsFloatingBarVisible = !_keepFloatingBarFolded && target == AutoFoldTarget.None;
+        }
 
         [ObservableProperty]
         public partial bool CanUndo { get; set; } = false;

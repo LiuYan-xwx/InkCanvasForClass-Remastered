@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Office.Interop.PowerPoint;
 using Microsoft.Win32;
 using OSVersionExtension;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -60,6 +61,7 @@ namespace InkCanvasForClass_Remastered
 
             DataContext = _viewModel;
             _viewModel.PenColorSelected += ViewModel_PenColorSelected;
+            PropertyChangedEventManager.AddHandler(_viewModel, FloatingBarVisibilityChanged, nameof(MainViewModel.IsFloatingBarVisible));
 
             // 挂载PPT服务事件
             _powerPointService.SlideShowBegin += PptApplication_SlideShowBegin;
@@ -112,7 +114,7 @@ namespace InkCanvasForClass_Remastered
                         EdgeGestureUtil.DisableEdgeGestures(new WindowInteropHelper(this).Handle, Settings.IsEnableEdgeGestureUtil);
                     break;
                 case nameof(Settings.IsEnableAutoFold):
-                    StartOrStoptimerCheckAutoFold();
+                    UpdateAutoFoldTimer();
                     break;
                 case nameof(Settings.IsAutoKillPptService):
                     StartOrStopTimerKillProcess();
@@ -212,7 +214,7 @@ namespace InkCanvasForClass_Remastered
         {
             SetWindowMode();
 
-            CursorFloatingBarButton_Click(null, null);
+            ActivateCursor();
 
             ApplySettingsToUI();
 
@@ -222,7 +224,7 @@ namespace InkCanvasForClass_Remastered
 
             if (Settings.IsHideFloatingBarOnStart)
             {
-                _ = HideFloatingBar();
+                _viewModel.FoldFloatingBar();
             }
             if (Settings.RefreshMainWindowTopmost)
             {
@@ -319,6 +321,12 @@ namespace InkCanvasForClass_Remastered
         private void Window_Closed(object sender, EventArgs e)
         {
             _viewModel.PenColorSelected -= ViewModel_PenColorSelected;
+            PropertyChangedEventManager.RemoveHandler(_viewModel, FloatingBarVisibilityChanged, nameof(MainViewModel.IsFloatingBarVisible));
+            Settings.PropertyChanged -= Settings_PropertyChanged;
+            _powerPointService.SlideShowBegin -= PptApplication_SlideShowBegin;
+            _powerPointService.SlideShowEnd -= PptApplication_SlideShowEnd;
+            _powerPointService.SlideShowNextSlide -= PptApplication_SlideShowNextSlide;
+            _autoFoldTimer.Stop();
             SystemEvents.DisplaySettingsChanged -= SystemEventsOnDisplaySettingsChanged;
             _floatingBarScreenCheck.Stop();
             _pendingFloatingBarPosition?.Abort();
@@ -329,67 +337,6 @@ namespace InkCanvasForClass_Remastered
         }
 
         #endregion Definations and Loading
-
-        #region AutoFold
-        private bool isFloatingBarChangingHideMode = false;
-
-        public void HideFloatingBar_Click(object sender, RoutedEventArgs e)
-        {
-            _ = HideFloatingBar(true);
-        }
-
-        public async Task HideFloatingBar(bool isHideManually = false)
-        {
-            foldFloatingBarByUser = isHideManually;
-
-            unfoldFloatingBarByUser = false;
-
-            if (isFloatingBarChangingHideMode)
-                return;
-
-            isFloatingBarChangingHideMode = true;
-            _viewModel.IsFloatingBarVisible = false;
-
-            await Dispatcher.InvokeAsync(() =>
-            {
-                if (_viewModel.AppMode == AppMode.WhiteBoard)
-                    CloseWhiteboard();
-                if (_powerPointService.IsInSlideShow)
-                    if (foldFloatingBarByUser && inkCanvas.Strokes.Count > 2)
-                        ShowNotification("正在清空墨迹并收纳至侧边栏，可进入批注模式后通过【撤销】功能来恢复原先墨迹。");
-                ClearAndMouseFloatingbarButton_Click(null, null);
-            });
-
-            await Dispatcher.InvokeAsync(() =>
-            {
-                UpdateFloatingBarPosition();
-                HideSubPanels();
-            });
-            isFloatingBarChangingHideMode = false;
-        }
-
-        private async void SidePanelUnFoldButton_Click(object sender, RoutedEventArgs e)
-        {
-            await ShowFloatingBar(true);
-        }
-
-        public async Task ShowFloatingBar(bool isShowManually = false)
-        {
-            unfoldFloatingBarByUser = isShowManually;
-
-            foldFloatingBarByUser = false;
-
-            if (isFloatingBarChangingHideMode)
-                return;
-
-            isFloatingBarChangingHideMode = true;
-            _viewModel.IsFloatingBarVisible = true;
-
-            await Dispatcher.InvokeAsync(UpdateFloatingBarPosition);
-
-            isFloatingBarChangingHideMode = false;
-        }
-        #endregion
 
         #region BoardControls
         private TimeMachineHistory[][] TimeMachineHistories = new TimeMachineHistory[101][]; //最多99页，0用来存储非白板时的墨迹以便还原
@@ -536,12 +483,12 @@ namespace InkCanvasForClass_Remastered
         private void BoardSymbolIconDelete_Click(object sender, RoutedEventArgs e)
         {
             ActivatePen();
-            SymbolIconDelete_Click(null, null);
+            DeleteSelectionOrClearCanvas();
         }
         private void BoardSymbolIconDeleteInkAndHistories_Click(object sender, RoutedEventArgs e)
         {
             ActivatePen();
-            SymbolIconDelete_Click(null, null);
+            DeleteSelectionOrClearCanvas();
             if (Settings.ClearCanvasAndClearTimeMachine == false) timeMachine.ClearStrokeHistory();
         }
 
@@ -662,7 +609,21 @@ namespace InkCanvasForClass_Remastered
 
         #endregion “手勢”按鈕
 
-        #region 浮动栏定位与拖动
+        #region 浮动栏收纳、定位与拖动
+
+        private void FloatingBarVisibilityChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (!_viewModel.IsFloatingBarVisible)
+            {
+                if (_viewModel.AppMode == AppMode.WhiteBoard)
+                    CloseWhiteboard();
+                if (_powerPointService.IsInSlideShow && inkCanvas.Strokes.Count > 2)
+                    ShowNotification("正在清空墨迹并收纳至侧边栏，可进入批注模式后通过【撤销】功能来恢复原先墨迹。");
+                ClearInkAndSwitchToCursor();
+                HideSubPanels();
+            }
+            UpdateFloatingBarPosition();
+        }
 
         private Point? _desktopFloatingBarPosition;
         private Point? _slideShowFloatingBarPosition;
@@ -945,7 +906,7 @@ namespace InkCanvasForClass_Remastered
             // 切换回屏幕模式
             SwitchToScreenMode();
 
-            CursorFloatingBarButton_Click(null, null);
+            ActivateCursor();
 
             _viewModel.SwitchToDefaultPen();
             _viewModel.SyncPenColorState();
@@ -1000,7 +961,9 @@ namespace InkCanvasForClass_Remastered
 
         #region 清空畫布按鈕
 
-        private void SymbolIconDelete_Click(object? sender, RoutedEventArgs? e)
+        private void SymbolIconDelete_Click(object? sender, RoutedEventArgs? e) => DeleteSelectionOrClearCanvas();
+
+        private void DeleteSelectionOrClearCanvas()
         {
             var selectedStrokes = GetSelectedStrokes();
             if (selectedStrokes.Count > 0)
@@ -1134,7 +1097,9 @@ namespace InkCanvasForClass_Remastered
             ToggleToolbarPanels(BorderTools, BoardBorderTools);
         }
 
-        private void CursorFloatingBarButton_Click(object? sender, RoutedEventArgs? e)
+        private void CursorFloatingBarButton_Click(object? sender, RoutedEventArgs? e) => ActivateCursor();
+
+        private void ActivateCursor()
         {
             _viewModel.AppPenMode = InkCanvasEditingMode.None;
 
@@ -1224,10 +1189,12 @@ namespace InkCanvasForClass_Remastered
             HideSubPanels();
         }
 
-        private void ClearAndMouseFloatingbarButton_Click(object? sender, RoutedEventArgs? e)
+        private void ClearAndMouseFloatingbarButton_Click(object? sender, RoutedEventArgs? e) => ClearInkAndSwitchToCursor();
+
+        private void ClearInkAndSwitchToCursor()
         {
-            SymbolIconDelete_Click(sender, null);
-            CursorFloatingBarButton_Click(null, null);
+            DeleteSelectionOrClearCanvas();
+            ActivateCursor();
         }
 
         private void CloseBordertools_Click(object sender, RoutedEventArgs e)
@@ -1442,11 +1409,7 @@ namespace InkCanvasForClass_Remastered
 
         private async void PptApplication_SlideShowBegin(SlideShowWindow Wn)
         {
-            if (Settings.IsAutoFoldInPPTSlideShow && _viewModel.IsFloatingBarVisible)
-                await HideFloatingBar(true);
-            else if (!_viewModel.IsFloatingBarVisible)
-                await ShowFloatingBar(true);
-
+            isEnteredSlideShowEndEvent = false;
             Logger.LogInformation("幻灯片放映开始");
 
             // 清理之前的数据
@@ -1464,7 +1427,12 @@ namespace InkCanvasForClass_Remastered
                 pptName + "_" + slidescount);
 
             //任何情况下都清除现有墨迹
-            await Application.Current.Dispatcher.InvokeAsync(() => inkCanvas.Strokes.Clear());
+            await Dispatcher.InvokeAsync(() =>
+            {
+                if (!_powerPointService.IsInSlideShow) return;
+                _viewModel.RefreshFloatingBarAutoFold();
+                inkCanvas.Strokes.Clear();
+            });
 
             //检查是否有已有墨迹，并加载
             if (Settings.IsAutoSaveStrokesInPowerPoint && Directory.Exists(strokePath))
@@ -1505,10 +1473,11 @@ namespace InkCanvasForClass_Remastered
 
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
+                if (!_powerPointService.IsInSlideShow) return;
                 if (_viewModel.AppMode == AppMode.WhiteBoard)
                     CloseWhiteboard();
 
-                if (Settings.IsShowCanvasAtNewSlideShow &&
+                if (_viewModel.IsFloatingBarVisible && Settings.IsShowCanvasAtNewSlideShow &&
                     !Settings.IsAutoFoldInPPTSlideShow &&
                     GridTransparencyFakeBackground.Background == null)
                 {
@@ -1518,15 +1487,12 @@ namespace InkCanvasForClass_Remastered
                 {
                     UpdateFloatingBarPosition();
                 }
-                isEnteredSlideShowEndEvent = false;
             });
             _previousSlideID = _powerPointService.CurrentSlidePosition;
         }
 
         private async void PptApplication_SlideShowEnd(Presentation Pres)
         {
-            if (!_viewModel.IsFloatingBarVisible)
-                await ShowFloatingBar(true);
             Logger.LogInformation("幻灯片放映结束");
 
             if (isEnteredSlideShowEndEvent)
@@ -1586,9 +1552,10 @@ namespace InkCanvasForClass_Remastered
 
             await Application.Current.Dispatcher.InvokeAsync(() =>
             {
-                CursorFloatingBarButton_Click(null, null);
-
+                if (_powerPointService.IsInSlideShow) return;
+                ActivateCursor();
                 inkCanvas.Strokes.Clear();
+                _viewModel.RefreshFloatingBarAutoFold();
             });
         }
 
@@ -1678,7 +1645,7 @@ namespace InkCanvasForClass_Remastered
             {
                 return;
             }
-            CursorFloatingBarButton_Click(null, null);
+            ActivateCursor();
             try
             {
                 _powerPointService.ActiveSlideShowWindow.SlideNavigation.Visible = true;
@@ -2111,12 +2078,11 @@ namespace InkCanvasForClass_Remastered
 
         #region Automation
 
-        private void StartOrStoptimerCheckAutoFold()
+        private void UpdateAutoFoldTimer()
         {
-            if (Settings.IsEnableAutoFold)
-                timerCheckAutoFold.Start();
-            else
-                timerCheckAutoFold.Stop();
+            _autoFoldTimer.IsEnabled = Settings.IsEnableAutoFold;
+            if (!_autoFoldTimer.IsEnabled)
+                _viewModel.RefreshFloatingBarAutoFold();
         }
 
         private void StartOrStopTimerKillProcess()
@@ -2330,7 +2296,7 @@ namespace InkCanvasForClass_Remastered
             }
 
             // Automation
-            StartOrStoptimerCheckAutoFold();
+            UpdateAutoFoldTimer();
 
             if (Settings.IsAutoKillPptService)
             {
@@ -2799,7 +2765,7 @@ namespace InkCanvasForClass_Remastered
 
         #region Timer
         private DispatcherTimer timerKillProcess = new DispatcherTimer();
-        private DispatcherTimer timerCheckAutoFold = new DispatcherTimer();
+        private readonly DispatcherTimer _autoFoldTimer = new() { Interval = TimeSpan.FromMilliseconds(500) };
         private bool isHidingSubPanelsWhenInking = false; // 避免书写时触发二次关闭二级菜单导致动画不连续
 
         private DispatcherTimer timerDisplayTime = new DispatcherTimer();
@@ -2810,8 +2776,7 @@ namespace InkCanvasForClass_Remastered
             _floatingBarScreenCheck.Tick += FloatingBarScreenCheck_Tick;
             timerKillProcess.Tick += TimerKillProcess_Tick;
             timerKillProcess.Interval = TimeSpan.FromMilliseconds(2000);
-            timerCheckAutoFold.Tick += timerCheckAutoFold_Tick;
-            timerCheckAutoFold.Interval = TimeSpan.FromMilliseconds(500);
+            _autoFoldTimer.Tick += (_, _) => _viewModel.RefreshFloatingBarAutoFold();
 
             timerDisplayTime.Tick += TimerDisplayTime_Tick;
             timerDisplayTime.Interval = TimeSpan.FromMilliseconds(1000);
@@ -2876,98 +2841,6 @@ namespace InkCanvasForClass_Remastered
             }
         }
 
-
-        private bool foldFloatingBarByUser = false; // 保持收纳操作不受自动收纳的控制
-        private bool unfoldFloatingBarByUser = false; // 允许用户在希沃软件内进行展开操作
-
-        private void timerCheckAutoFold_Tick(object? sender, EventArgs e)
-        {
-            if (isFloatingBarChangingHideMode) return;
-
-            try
-            {
-                var windowProcessName = ForegroundWindowInfo.ProcessName();
-                var windowTitle = ForegroundWindowInfo.WindowTitle();
-                var windowRect = ForegroundWindowInfo.WindowRect();
-
-                // 转换 RECT 到 System.Drawing.Rectangle
-                var rect = new System.Drawing.Rectangle(
-                    windowRect.Left,
-                    windowRect.Top,
-                    windowRect.Width,
-                    windowRect.Height);
-
-                bool shouldFold = ShouldFoldForCurrentWindow(windowProcessName, windowTitle, rect);
-
-                if (shouldFold)
-                {
-                    if (!unfoldFloatingBarByUser && _viewModel.IsFloatingBarVisible)
-                        _ = HideFloatingBar();
-                }
-                else
-                {
-                    if (!_viewModel.IsFloatingBarVisible && !foldFloatingBarByUser)
-                    {
-                        _ = ShowFloatingBar();
-                    }
-                    unfoldFloatingBarByUser = false;
-                }
-            }
-            catch { }
-        }
-
-        private bool ShouldFoldForCurrentWindow(string processName, string windowTitle, System.Drawing.Rectangle windowRect)
-        {
-            // PPT 幻灯片放映特殊处理
-            if (WinTabWindowsChecker.IsWindowExisted("幻灯片放映", false))
-            {
-                return Settings.IsAutoFoldInPPTSlideShow;
-            }
-
-            // 检查是否为全屏应用（工作区大小减去16像素的容错）
-            bool isFullScreen = windowRect.Height >= SystemParameters.WorkArea.Height - 16 &&
-                               windowRect.Width >= SystemParameters.WorkArea.Width - 16;
-
-            return processName switch
-            {
-                "EasiNote" => ShouldFoldEasiNote(windowTitle, windowRect),
-                "EasiCamera" => Settings.IsAutoFoldInEasiCamera && isFullScreen,
-                "EasiNote5C" => Settings.IsAutoFoldInEasiNote5C && isFullScreen,
-                _ => false
-            };
-        }
-
-        private bool ShouldFoldEasiNote(string windowTitle, System.Drawing.Rectangle windowRect)
-        {
-            if (ForegroundWindowInfo.ProcessPath() == "Unknown") return false;
-
-            try
-            {
-                var versionInfo = FileVersionInfo.GetVersionInfo(ForegroundWindowInfo.ProcessPath());
-                string? version = versionInfo.FileVersion;
-                string? prodName = versionInfo.ProductName;
-
-                if (version.StartsWith("5.") && Settings.IsAutoFoldInEasiNote)
-                {
-                    // EasiNote5: 排除桌面标注小窗口
-                    return !(windowTitle.Length == 0 && windowRect.Height < 500) ||
-                           !Settings.IsAutoFoldInEasiNoteIgnoreDesktopAnno;
-                }
-                else if (version.StartsWith("3.") && Settings.IsAutoFoldInEasiNote3)
-                {
-                    return true; // EasiNote3
-                }
-                else if (prodName.Contains("3C") && Settings.IsAutoFoldInEasiNote3C)
-                {
-                    // EasiNote3C: 需要全屏
-                    return windowRect.Height >= SystemParameters.WorkArea.Height - 16 &&
-                           windowRect.Width >= SystemParameters.WorkArea.Width - 16;
-                }
-            }
-            catch { }
-
-            return false;
-        }
 
         #endregion
 
